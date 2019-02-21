@@ -11,7 +11,7 @@ var middlewareAuth = (req, res, next) => {
     }
 }
 router.use('/user', require('./user'));
-router.use('/location', middlewareAuth, require('./location'));
-router.use('/type', middlewareAuth, require('./type'));
+router.use('/location', require('./location'));
+router.use('/type', require('./type'));
 
 module.exports = router

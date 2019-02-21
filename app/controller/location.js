@@ -11,17 +11,111 @@ exports.create = (req, res) => {
 }
 
 exports.getAllLocation = (req, res) => {
-    locations.findAll().then(_locations => {
-        res.status(200).json({ result: _locations })
+    const page_default = 1;
+    const per_page_default = 10;
+    var page, per_page;
+    if (typeof req.query.page === 'undefined') page = page_default;
+    else page = req.query.page
+    if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
+    else per_page = req.query.per_page
+    if (isNaN(page) || isNaN(per_page)) {
+        res.status(401).json({ msg: 'Params is invalid' })
+    }
+    else {
+        page = parseInt(page);
+        per_page = parseInt(per_page);
+        const query = {
+            include: [{
+                model: db.types
+            }],
+            limit: per_page,
+            offset: (page - 1) * per_page
+        };
+        locations.findAndCountAll(query).then(async _locations => {
+            //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
+            var next_page = page + 1;
+            //Kiểm tra còn dữ liệu không
+            if ((parseInt(_locations.rows.length) + (next_page - 2) * per_page) === parseInt(_locations.count))
+                next_page = -1;
+            if (parseInt(_locations.rows.length) === 0)
+                next_page = -1;
+            res.status(200).json({
+                itemCount: _locations.rows.length, //số lượng record được trả về
+                data: _locations.rows,
+                next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+            })
+        }).catch(err => {
+            res.status(400).json({ msg: err })
+        })
+    }
+}
+
+function toRad(num) {
+    return num * Math.PI / 180;
+}
+function getDistanceFromLatLonInKm(lat1, lng1, lat2, lng2) {
+    var R = 6371; // Radius of the earth in km
+    if (!!lat2 && !!lng2) {
+        let φ1 = toRad(lat1);
+        let φ2 = toRad(lat2);
+        let Δφ = toRad(lat2 - lat1);
+        let Δλ = toRad(lng2 - lng1);
+        let a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        let d = R * c;
+        return d;
+    }
+}
+
+filterListLocationByDistance = async (lat, lng, distance, _items) => {
+    console.log(distance)
+    return _items.filter(_location_item => {
+        var lat2 = _location_item.latitude;
+        var lng2 = _location_item.longitude;
+        console.log(getDistanceFromLatLonInKm(lat, lng, lat2, lng2), getDistanceFromLatLonInKm(lat, lng, lat2, lng2) < distance)
+        return getDistanceFromLatLonInKm(lat, lng, lat2, lng2) < distance;
+    })
+}
+
+exports.getLocationNearMe = async (req, res) => {
+    var distance_default = 1 //kilometer
+    var lat = req.body.lat;
+    var lng = req.body.lng;
+    var distance = req.body.distance;
+    if (typeof lat === 'undefined' ||
+        typeof lng === 'undefined' ||
+        isNaN(lat) || isNaN(lng) ||
+        (typeof distance !== 'undefined' && isNaN(distance))) {
+        return res.status(401).json({ msg: "Params is invalid" })
+    }
+    if (typeof distance === 'undefined') distance = distance_default;
+    lat = parseFloat(lat);
+    lng = parseFloat(lng);
+    distance = parseInt(distance);
+    var query = {
+        include: [{
+            model: db.types
+        }]
+    }
+    locations.findAll(query).then(async _items => {
+        const result = await filterListLocationByDistance(lat, lng, distance, _items)
+        res.status(200).json({
+            itemCount: result.length,
+            result: result,
+            distance: distance
+        })
     }).catch(err => {
-        res.status(401).json({ msg: err })
+        res.status(400).json({ msg: err })
     })
 }
 
 exports.getById = (req, res) => {
     const query = {
         where: { id: req.params.id },
-        include:[{
+        include: [{
             model: db.types
         }]
     }
