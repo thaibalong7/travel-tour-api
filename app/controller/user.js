@@ -10,6 +10,7 @@ exports.register = (req, res) => {
     })
     req.body.password = bcrypt.hashSync(req.body.password, null, null).toString();
     users.create(req.body).then(_user => {
+        _user.password = undefined
         return res.status(200).json(_user)
     }).catch(err => {
         return res.status(400).json({ msg: err })
@@ -31,6 +32,7 @@ exports.login = (req, res) => {
                     expiresIn: '1h'
                 }
             )
+            _user.password = undefined
             return res.status(200).json({
                 message: 'Auth successful',
                 token: token,
@@ -40,6 +42,22 @@ exports.login = (req, res) => {
         return res.status(401).json({ msg: 'Password is not corect' })
     }).catch(err => {
         res.status(402).json({ msg: err })
+    })
+
+}
+
+exports.me = (req, res) => {
+    const username = req.userData.username;
+    users.findOne({ where: { username: username } }).then(_user => {
+        if (!_user)
+            return res.status(400).json({ msg: "User is not exists" })
+        else {
+            _user.password = undefined
+            return res.status(200).json({
+                message: 'Auth successful',
+                profile: _user
+            })
+        }
     })
 
 }
