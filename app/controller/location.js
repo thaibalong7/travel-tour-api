@@ -64,18 +64,15 @@ function getDistanceFromLatLonInKm(lat1, lng1, lat2, lng2) {
             Math.cos(φ1) * Math.cos(φ2) *
             Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
         let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
         let d = R * c;
         return d;
     }
 }
 
 filterListLocationByDistance = async (lat, lng, distance, _items) => {
-    console.log(distance)
     return _items.filter(_location_item => {
         var lat2 = _location_item.latitude;
         var lng2 = _location_item.longitude;
-        console.log(getDistanceFromLatLonInKm(lat, lng, lat2, lng2), getDistanceFromLatLonInKm(lat, lng, lat2, lng2) < distance)
         return getDistanceFromLatLonInKm(lat, lng, lat2, lng2) < distance;
     })
 }
@@ -126,6 +123,56 @@ exports.getById = (req, res) => {
     })
 }
 
-exports.test = (req, res) => {
-    res.status(200).json({ msg: 'test thành cmn công' })
+exports.getLocationByType = async (req, res) => {
+    const type = req.params.typeId;
+    if (typeof type === 'undefined' || isNaN(type))
+        return res.status(401).json({ msg: 'Params is invalid' });
+    const query = {
+        where: { fk_type: type }
+    }
+    const _type = await db.types.findById(type);
+    locations.findAll(query).then(_locations => {
+        res.status(200).json({
+            result: _locations,
+            type: _type
+        })
+    }).catch(err => {
+        res.status(400).json({ msg: err })
+    })
 }
+
+exports.getByTypeNearMe = async (req, res) => {
+    const distance_default = 1; //kilometer
+    const type_default = 1; //Quán ăn - Nhà hàng
+    var lat = req.body.lat;
+    var lng = req.body.lng;
+    var distance = req.body.distance;
+    var type = req.body.type;
+    if (typeof lat === 'undefined' ||
+        typeof lng === 'undefined' ||
+        isNaN(lat) || isNaN(lng) ||
+        (typeof distance !== 'undefined' && isNaN(distance))) {
+        return res.status(401).json({ msg: "Params is invalid" })
+    }
+    if (typeof distance === 'undefined') distance = distance_default;
+    if (typeof type === 'undefined') type = type_default
+    lat = parseFloat(lat);
+    lng = parseFloat(lng);
+    distance = parseInt(distance);
+    var query = {
+        where: { fk_type: type },
+        include: [{
+            model: db.types
+        }]
+    }
+    locations.findAll(query).then(async _items => {
+        const result = await filterListLocationByDistance(lat, lng, distance, _items)
+        res.status(200).json({
+            itemCount: result.length,
+            result: result,
+            distance: distance
+        })
+    }).catch(err => {
+        res.status(400).json({ msg: err })
+    })
+} 
