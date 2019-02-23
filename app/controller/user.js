@@ -7,13 +7,13 @@ exports.register = (req, res) => {
     users.findAll({ where: { username: req.body.username } }).then(user => {
         if (user.length >= 1)
             return res.status(400).json({ msg: 'Username already exists' })
-    })
-    req.body.password = bcrypt.hashSync(req.body.password, null, null).toString();
-    users.create(req.body).then(_user => {
-        _user.password = undefined
-        return res.status(200).json(_user)
-    }).catch(err => {
-        return res.status(400).json({ msg: err })
+        req.body.password = bcrypt.hashSync(req.body.password, null, null).toString();
+        users.create(req.body).then(_user => {
+            _user.password = undefined
+            return res.status(200).json(_user)
+        }).catch(err => {
+            return res.status(400).json({ msg: err })
+        })
     })
 }
 
