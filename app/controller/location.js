@@ -1,6 +1,19 @@
 const db = require('../models');
 const locations = db.locations;
 
+addLinkFeaturedImg = async (_locations, host) => {
+    return _locations.map(item => {
+        if (item.featured_img === null) {
+            // item.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
+            return item;
+        }
+        else {
+            item.featured_img = host + '/assets/images/locationFeatured/' + item.featured_img;
+            return item;
+        }
+    })
+}
+
 exports.create = (req, res) => {
     locations.create(req.body).then(_location => {
         res.status(200).json(_location)
@@ -128,12 +141,16 @@ exports.getLocationByType = async (req, res) => {
     if (typeof type === 'undefined' || isNaN(type))
         return res.status(401).json({ msg: 'Params is invalid' });
     const query = {
-        where: { fk_type: type }
+        where: { fk_type: type },
+        include: [{
+            model: db.types
+        }],
     }
-    const _type = await db.types.findById(type);
-    locations.findAll(query).then(_locations => {
+    const _type = await db.types.findByPk(type);
+    locations.findAll(query).then(async _locations => {
+        const location_result = await addLinkFeaturedImg(_locations, req.headers.host)
         res.status(200).json({
-            result: _locations,
+            result: location_result,
             type: _type
         })
     }).catch(err => {

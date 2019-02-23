@@ -18,6 +18,16 @@ var env = require('dotenv').load();
 app.get('/', function (req, res) {
     res.send('Welcome to Passport with Sequelize');
 });
+//CORS middleware
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+    next();
+});
+
+app.use(express.static(__dirname + '/public')); //Serves resources from public folder
+
 //Models
 var models = require("./app/models");
 
@@ -37,7 +47,6 @@ var server = app.listen(server_port, server_host, function (err) {
     if (!err)
         console.log(`App listening at port ${server_port}`);
     else console.log(err)
-
 });
 
 module.exports = server;
