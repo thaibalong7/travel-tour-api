@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th2 23, 2019 lúc 12:09 PM
+-- Thời gian đã tạo: Th2 23, 2019 lúc 12:30 PM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `tours` (
 CREATE TABLE IF NOT EXISTS `types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `market` text COLLATE utf8_unicode_ci,
+  `marker` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `types` (
 -- Đang đổ dữ liệu cho bảng `types`
 --
 
-INSERT INTO `types` (`id`, `name`, `market`) VALUES
+INSERT INTO `types` (`id`, `name`, `marker`) VALUES
 (1, 'Quán ăn - Nhà hàng', NULL),
 (2, 'Khu vui chơi giải trí', NULL),
 (3, 'Chợ', NULL),
