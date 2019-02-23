@@ -8,7 +8,11 @@ module.exports = function (sequelize, Sequelize) {
     name: {
       type: Sequelize.STRING,
       allowNull: false
-    }
+    },
+    marker: {
+      type: Sequelize.TEXT,
+      allowNull: true
+    },
   },
     {
       charset: 'utf8',

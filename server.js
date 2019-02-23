@@ -3,6 +3,7 @@ var app = express();
 var passport = require('passport')
 var session = require('express-session')
 var bodyParser = require('body-parser')
+var cors = require('cors');
 //For BodyParser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -19,6 +20,13 @@ app.get('/', function (req, res) {
     res.send('Welcome to Passport with Sequelize');
 });
 //CORS middleware
+// app.use(cors({
+//     credentials: true,
+//     origin: '*',
+//     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTION'],
+//     allowedHeaders: ['Origin, X-Requested-With, Content-Type, Accept'],
+//     optionsSuccessStatus: 204
+//   }));
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");

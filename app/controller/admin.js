@@ -1,6 +1,7 @@
 const db = require('../models');
-const users = db.users;
+const admins = db.admins;
 const bcrypt = require('bcrypt-nodejs');
+
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 
@@ -11,13 +12,13 @@ const signOptions = {
     algorithm: "RS256"
 }
 exports.register = (req, res) => {
-    users.findAll({ where: { username: req.body.username } }).then(user => {
-        if (user.length >= 1)
+    admins.findAll({ where: { username: req.body.username } }).then(admin => {
+        if (admin.length >= 1)
             return res.status(400).json({ msg: 'Username already exists' })
         req.body.password = bcrypt.hashSync(req.body.password, null, null).toString();
-        users.create(req.body).then(_user => {
-            _user.password = undefined
-            return res.status(200).json(_user)
+        admins.create(req.body).then(_admin => {
+            _admin.password = undefined
+            return res.status(200).json(_admin)
         }).catch(err => {
             return res.status(400).json({ msg: err })
         })
@@ -25,38 +26,37 @@ exports.register = (req, res) => {
 }
 
 exports.login = (req, res) => {
-    users.findOne({ where: { username: req.body.username } }).then(async _user => {
-        if (!_user)
+    admins.findOne({ where: { username: req.body.username } }).then(async _admin => {
+        if (!_admin)
             return res.status(400).json({ msg: 'Username is not exists' })
-        if (bcrypt.compareSync(req.body.password, _user.password)) {
+        if (bcrypt.compareSync(req.body.password, _admin.password)) {
             const token = jwt.sign(
                 {
-                    username: _user.username,
-                    id: _user.id
+                    username: _admin.username,
+                    id: _admin.id,
+                    role: 'admin'
                 },
                 privateKEY,
                 signOptions
             )
-            _user.password = undefined
+            _admin.password = undefined
             return res.status(200).json({
                 message: 'Auth successful',
                 token: token,
-                profile: _user
+                profile: _admin
             })
         }
-        else
-            return res.status(401).json({ msg: 'Password is not corect' })
+        return res.status(401).json({ msg: 'Password is not corect' })
     }).catch(err => {
-        return res.status(402).json({ msg: err })
+        res.status(402).json({ msg: err })
     })
-
 }
 
 exports.me = (req, res) => {
-    const _user = req.userData;
-    _user.password = undefined;
+    const _admin = req.userData;
+    _admin.password = undefined;
     return res.status(200).json({
         message: 'Auth successful',
-        profile: _user
+        profile: _admin
     })
 }
