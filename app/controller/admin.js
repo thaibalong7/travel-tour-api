@@ -41,7 +41,7 @@ exports.login = (req, res) => {
             )
             _admin.password = undefined
             return res.status(200).json({
-                message: 'Auth successful',
+                msg: 'Auth successful',
                 token: token,
                 profile: _admin
             })
@@ -56,7 +56,7 @@ exports.me = (req, res) => {
     const _admin = req.userData;
     _admin.password = undefined;
     return res.status(200).json({
-        message: 'Auth successful',
+        msg: 'Auth successful',
         profile: _admin
     })
 }

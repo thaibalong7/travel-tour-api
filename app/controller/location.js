@@ -23,6 +23,25 @@ exports.create = (req, res) => {
 
 }
 
+exports.getAllWithoutPagination = (req, res) => {
+    try {
+        locations.findAll({
+            include: [{
+                model: db.types
+            }]
+        }).then(async rs => {
+            const result = await addLinkFeaturedImg(rs, req.headers.host)
+            res.status(200).json({
+                itemCount: rs.length, //số lượng record được trả về
+                data: result,
+            })
+        })
+    }
+    catch (err) {
+        res.status(400).json({ msg: err });
+    }
+}
+
 exports.getAllLocation = (req, res) => {
     const page_default = 1;
     const per_page_default = 10;
@@ -52,9 +71,10 @@ exports.getAllLocation = (req, res) => {
                 next_page = -1;
             if (parseInt(_locations.rows.length) === 0)
                 next_page = -1;
+            const result = await addLinkFeaturedImg(_locations.rows, req.headers.host)
             res.status(200).json({
                 itemCount: _locations.rows.length, //số lượng record được trả về
-                data: _locations.rows,
+                data: result,
                 next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
             })
         }).catch(err => {
@@ -112,9 +132,10 @@ exports.getLocationNearMe = async (req, res) => {
     }
     locations.findAll(query).then(async _items => {
         const result = await filterListLocationByDistance(lat, lng, distance, _items)
+        const result1 = await addLinkFeaturedImg(result, req.headers.host)
         res.status(200).json({
             itemCount: result.length,
-            result: result,
+            result: result1,
             distance: distance
         })
     }).catch(err => {
@@ -130,6 +151,9 @@ exports.getById = (req, res) => {
         }]
     }
     locations.findOne(query).then(_location => {
+        if (_location.featured_img !== null) {
+            _location.featured_img = req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+        }
         res.status(200).json({ result: _location })
     }).catch(err => {
         res.status(400).json({ msg: err });
@@ -184,9 +208,10 @@ exports.getByTypeNearMe = async (req, res) => {
     }
     locations.findAll(query).then(async _items => {
         const result = await filterListLocationByDistance(lat, lng, distance, _items)
+        const result1 = await addLinkFeaturedImg(result, req.headers.host)
         res.status(200).json({
             itemCount: result.length,
-            result: result,
+            result: result1,
             distance: distance
         })
     }).catch(err => {

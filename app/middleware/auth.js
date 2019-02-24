@@ -15,7 +15,7 @@ var middlewareAuthUser = (req, res, next) => {
         const decode = jwt.verify(token, publicKEY, verifyOptions);
         users.findOne({ where: { username: decode.username } }).then(_user => {
             if (!_user) {
-                res.status(401).json({ message: 'Auth failed' });
+                res.status(401).json({ msg: 'Auth failed' });
             }
             else {
                 req.userData = _user;
@@ -23,7 +23,7 @@ var middlewareAuthUser = (req, res, next) => {
             }
         })
     } catch (error) {
-        res.status(401).json({ message: 'Auth failed' });
+        res.status(401).json({ msg: 'Auth failed' });
     }
 }
 
@@ -33,19 +33,19 @@ var middlewareAuthAdmin = (req, res, next) => {
         const decode = jwt.verify(token, publicKEY, verifyOptions);
         admins.findOne({ where: { username: decode.username } }).then(_admin => {
             if (!_admin) {
-                res.status(401).json({ message: 'Auth failed' });
+                res.status(401).json({ msg: 'Auth failed' });
             }
             else {
                 if (decode.role === 'admin') {
                     req.userData = _admin;
                     next();
                 }
-                else res.status(401).json({ message: 'Auth failed' });
+                else res.status(401).json({ msg: 'Auth failed' });
             }
         })
        
     } catch (error) {
-        res.status(401).json({ message: 'Auth failed' });
+        res.status(401).json({ msg: 'Auth failed' });
     }
 }
 

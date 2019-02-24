@@ -39,7 +39,7 @@ exports.login = (req, res) => {
             )
             _user.password = undefined
             return res.status(200).json({
-                message: 'Auth successful',
+                msg: 'Auth successful',
                 token: token,
                 profile: _user
             })
@@ -56,7 +56,7 @@ exports.me = (req, res) => {
     const _user = req.userData;
     _user.password = undefined;
     return res.status(200).json({
-        message: 'Auth successful',
+        msg: 'Auth successful',
         profile: _user
     })
 }
