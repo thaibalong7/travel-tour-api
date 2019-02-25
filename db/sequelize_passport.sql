@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th2 23, 2019 lúc 12:30 PM
+-- Thời gian đã tạo: Th2 25, 2019 lúc 11:13 AM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -80,7 +80,10 @@ INSERT INTO `locations` (`id`, `latitude`, `longitude`, `name`, `address`, `desc
 
 CREATE TABLE IF NOT EXISTS `routes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `arrive_date` datetime NOT NULL,
+  `arrive_time` time NOT NULL,
+  `leave_time` time NOT NULL,
+  `day` int(11) NOT NULL,
+  `detail` text COLLATE utf8_unicode_ci,
   `fk_location` int(11) DEFAULT NULL,
   `fk_tour` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -97,11 +100,8 @@ CREATE TABLE IF NOT EXISTS `routes` (
 CREATE TABLE IF NOT EXISTS `tours` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `start_date` datetime NOT NULL,
-  `end_date` datetime NOT NULL,
-  `price` int(11) NOT NULL,
-  `num_current_people` int(11) NOT NULL,
-  `num_max_people` int(11) NOT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `policy` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -10,26 +10,14 @@ module.exports = function(sequelize, Sequelize) {
       allowNull: false,
       unique: true
     },
-    start_date: {
-      type: Sequelize.DATE,
-      allowNull: false
+    description: {
+      type: Sequelize.TEXT,
+      allowNull: true
     },
-    end_date: {
-      type: Sequelize.DATE,
-      allowNull: false
-    },
-    price: {
-      type: Sequelize.INTEGER,
-      allowNull: false
-    },
-    num_current_people: {
-      type: Sequelize.INTEGER,
-      allowNull: false
-    },
-    num_max_people: {
-      type: Sequelize.INTEGER,
-      allowNull: false
-    },
+    policy:{
+      type: Sequelize.TEXT,
+      allowNull: true
+    }
   },
   {
     charset: 'utf8',
@@ -40,6 +28,9 @@ module.exports = function(sequelize, Sequelize) {
 
   Tour.associate = (models) => {
     Tour.hasMany(models.routes, {foreignKey: 'fk_tour'})
+    Tour.hasMany(models.comments, {foreignKey: 'fk_tour'})
+    Tour.hasMany(models.ratings, {foreignKey: 'fk_tour'})
+    Tour.hasMany(models.tour_turns, {foreignKey: 'fk_tour'})
   }
   return Tour;
 }
