@@ -51,7 +51,7 @@ exports.getAllLocation = (req, res) => {
     if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
     else per_page = req.query.per_page
     if (isNaN(page) || isNaN(per_page)) {
-        res.status(401).json({ msg: 'Params is invalid' })
+        res.status(405).json({ msg: 'Params is invalid' })
     }
     else {
         page = parseInt(page);
@@ -64,10 +64,12 @@ exports.getAllLocation = (req, res) => {
             offset: (page - 1) * per_page
         };
         locations.findAndCountAll(query).then(async _locations => {
-            //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
             var next_page = page + 1;
             //Kiểm tra còn dữ liệu không
             if ((parseInt(_locations.rows.length) + (next_page - 2) * per_page) === parseInt(_locations.count))
+                next_page = -1;
+            //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
+            if ((parseInt(_locations.rows.length) < per_page))
                 next_page = -1;
             if (parseInt(_locations.rows.length) === 0)
                 next_page = -1;
@@ -119,7 +121,7 @@ exports.getLocationNearMe = async (req, res) => {
         typeof lng === 'undefined' ||
         isNaN(lat) || isNaN(lng) ||
         (typeof distance !== 'undefined' && isNaN(distance))) {
-        return res.status(401).json({ msg: "Params is invalid" })
+        return res.status(405).json({ msg: "Params is invalid" })
     }
     if (typeof distance === 'undefined') distance = distance_default;
     lat = parseFloat(lat);
@@ -157,7 +159,7 @@ exports.getLocationNearMe = async (req, res) => {
         ' HAVING distance < ' + distance +
         ' ORDER BY distance' +
         ' LIMIT 0 , 20;'
-    db.sequelize.query(query).then(async _items => {  
+    db.sequelize.query(query).then(async _items => {
         const result = await addLinkFeaturedImg(_items[0], req.headers.host)
         res.status(200).json({
             itemCount: result.length,
@@ -189,7 +191,7 @@ exports.getById = (req, res) => {
 exports.getLocationByType = async (req, res) => {
     const type = req.params.typeId;
     if (typeof type === 'undefined' || isNaN(type))
-        return res.status(401).json({ msg: 'Params is invalid' });
+        return res.status(405).json({ msg: 'Params is invalid' });
     const query = {
         where: { fk_type: type },
         include: [{
@@ -219,7 +221,7 @@ exports.getByTypeNearMe = async (req, res) => {
         typeof lng === 'undefined' ||
         isNaN(lat) || isNaN(lng) ||
         (typeof distance !== 'undefined' && isNaN(distance))) {
-        return res.status(401).json({ msg: "Params is invalid" })
+        return res.status(405).json({ msg: "Params is invalid" })
     }
     if (typeof distance === 'undefined') distance = distance_default;
     if (typeof type === 'undefined') type = type_default

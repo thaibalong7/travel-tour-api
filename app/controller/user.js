@@ -13,7 +13,7 @@ const signOptions = {
 exports.register = (req, res) => {
     users.findAll({ where: { username: req.body.username } }).then(user => {
         if (user.length >= 1)
-            return res.status(400).json({ msg: 'Username already exists' })
+            return res.status(403).json({ msg: 'Username already exists' })
         req.body.password = bcrypt.hashSync(req.body.password, null, null).toString();
         users.create(req.body).then(_user => {
             _user.password = undefined
@@ -27,7 +27,7 @@ exports.register = (req, res) => {
 exports.login = (req, res) => {
     users.findOne({ where: { username: req.body.username } }).then(async _user => {
         if (!_user)
-            return res.status(400).json({ msg: 'Username is not exists' })
+            return res.status(404).json({ msg: 'Username is not exists' })
         if (bcrypt.compareSync(req.body.password, _user.password)) {
             const token = jwt.sign(
                 {
@@ -45,9 +45,9 @@ exports.login = (req, res) => {
             })
         }
         else
-            return res.status(401).json({ msg: 'Password is not corect' })
+            return res.status(402).json({ msg: 'Password is not corect' })
     }).catch(err => {
-        return res.status(402).json({ msg: err })
+        return res.status(400).json({ msg: err })
     })
 
 }

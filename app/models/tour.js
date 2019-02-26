@@ -14,6 +14,10 @@ module.exports = function(sequelize, Sequelize) {
       type: Sequelize.TEXT,
       allowNull: true
     },
+    detail: {
+      type: Sequelize.TEXT,
+      allowNull: true
+    },
     policy:{
       type: Sequelize.TEXT,
       allowNull: true

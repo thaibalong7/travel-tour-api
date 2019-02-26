@@ -14,7 +14,7 @@ const signOptions = {
 exports.register = (req, res) => {
     admins.findAll({ where: { username: req.body.username } }).then(admin => {
         if (admin.length >= 1)
-            return res.status(400).json({ msg: 'Username already exists' })
+            return res.status(403).json({ msg: 'Username already exists' })
         req.body.password = bcrypt.hashSync(req.body.password, null, null).toString();
         admins.create(req.body).then(_admin => {
             _admin.password = undefined
@@ -28,7 +28,7 @@ exports.register = (req, res) => {
 exports.login = (req, res) => {
     admins.findOne({ where: { username: req.body.username } }).then(async _admin => {
         if (!_admin)
-            return res.status(400).json({ msg: 'Username is not exists' })
+            return res.status(404).json({ msg: 'Username is not exists' })
         if (bcrypt.compareSync(req.body.password, _admin.password)) {
             const token = jwt.sign(
                 {
@@ -46,9 +46,9 @@ exports.login = (req, res) => {
                 profile: _admin
             })
         }
-        return res.status(401).json({ msg: 'Password is not corect' })
+        return res.status(402).json({ msg: 'Password is not corect' })
     }).catch(err => {
-        res.status(402).json({ msg: err })
+        res.status(400).json({ msg: err })
     })
 }
 
