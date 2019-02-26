@@ -17,6 +17,10 @@ module.exports = function(sequelize, Sequelize) {
     policy:{
       type: Sequelize.TEXT,
       allowNull: true
+    },
+    price: {
+      type: Sequelize.INTEGER,
+      allowNull: false
     }
   },
   {

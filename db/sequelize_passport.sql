@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th2 25, 2019 lúc 11:13 AM
+-- Thời gian đã tạo: Th2 26, 2019 lúc 09:31 AM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -27,6 +27,69 @@ USE `sequelize_passport`;
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `admins`
+--
+
+CREATE TABLE IF NOT EXISTS `admins` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `admins`
+--
+
+INSERT INTO `admins` (`id`, `username`, `name`, `password`) VALUES
+(1, 'admin', 'ADMIN', '$2a$10$YhVl2OqbcNyQKarX8pb6..XsXpOgNZmXslgtZnKrcIOZ45rxVSkJm');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `book_tour_history`
+--
+
+CREATE TABLE IF NOT EXISTS `book_tour_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `book_time` datetime NOT NULL,
+  `status` text COLLATE utf8_unicode_ci NOT NULL,
+  `fk_tour_turn` int(11) DEFAULT NULL,
+  `fk_user` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tour_turn` (`fk_tour_turn`),
+  KEY `fk_user` (`fk_user`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `book_tour_history`
+--
+
+INSERT INTO `book_tour_history` (`id`, `book_time`, `status`, `fk_tour_turn`, `fk_user`) VALUES
+(1, '2019-02-25 11:20:00', '', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `comments`
+--
+
+CREATE TABLE IF NOT EXISTS `comments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `content` text COLLATE utf8_unicode_ci NOT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL,
+  `fk_tour` int(11) DEFAULT NULL,
+  `fk_user` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tour` (`fk_tour`),
+  KEY `fk_user` (`fk_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `locations`
 --
 
@@ -43,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `locations` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `fk_type` (`fk_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `locations`
@@ -67,10 +130,32 @@ INSERT INTO `locations` (`id`, `latitude`, `longitude`, `name`, `address`, `desc
 (15, 10.407799, 106.889526, 'Khu căn cứ Vàm Sát Đảo Khỉ', 'Long Hoà, Cần Giờ, Hồ Chí Minh, Việt Nam', '', 'VamSatDaoKhi.jpg', 'active', 17),
 (16, 10.779387, 106.692345, 'Bảo Tàng Chứng Tích Chiến Tranh', '28 Võ Văn Tần, Phường 6, Quận 3, Hồ Chí Minh 700000, Việt Nam', 'Bảo tàng tưởng niệm trưng bày các bức ảnh, vũ khí & vật phẩm khác từ các cuộc chiến tại Việt Nam & Đông Dương.\r\n', NULL, 'active', 15),
 (17, 10.774764, 106.666206, 'Bệnh viện Nhân dân 115', '527 Sư Vạn Hạnh, Phường 12, Quận 10, Hồ Chí Minh, Việt Nam', '', 'BenhVien115.jpg', 'active', 11),
-(18, 10.775388, 106.706627, 'Vườn hoa Bạch Đằng', 'Đường Tôn Đức Thắng, Bến Nghé, Quận 1, Hồ Chí Minh 700000, Việt Nam', '', NULL, 'active', 16),
 (19, 10.773343, 106.700890, 'Trung Tâm Thương Mại Sài Gòn Center', '65 Lê Lợi, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam\r\n\r\n', 'Saigon Centre là một khu phức hợp cao ốc do Công ty Keppel Land Watco I đầu tư tại Thành phố Hồ Chí Minh. Dự án này nằm ở quận 1.  Giai đoạn 1 đã hoàn tất. Giai đoạn 2 đã hoàn tất. Phức hợp này sẽ gồm 3 tòa nhà. Tòa nhà giai đoạn 1 đang sử dụng. Tòa nhà mới cao 193m, gồm 39 tầng và 4 tầng hầm. Năm 2016, khối đế của tòa nhà cũ đã được cải tạo lại cho đồng bộ với tòa số 2 lúc đó đang xây. Tòa nhà số 2 hoàn thành vào năm 2017.', 'SaiGonCenter.jpg', 'active', 8),
 (20, 10.900893, 106.818581, 'Du lịch Sinh thái Thủy Châu', '55 ĐT743A, Bình An, Dĩ An, Bình Dương, Việt Nam\r\n\r\n', 'Khu du lịch Thủy Châu nằm tại Bình Thắng, Dĩ An, Bình Dương, chỉ cách trung tâm thành phố Sài Gòn chừng 20km nên rất thuận tiện cho các bạn trẻ lẫn gia đình ở Sài Gòn và các khu vực lân cận Bình Dương dã ngoại mỗi dịp cuối tuần.\r\n    Toàn bộ không gian từ rừng cây đến suối đá, từ hồ bơi đến thác nước róc rách đều nhân tạo nhưng với sự đầu tư kỹ lưỡng và có diện tích lên đến 18 héc-ta, khu du lịch Thủy Châu như khu vườn xanh tự nhiên ‘mọc’ lên kề thành phố mà bấy lâu người ta vẫn vô tình bỏ qua. Vừa bước vào cổng, ai cũng có một cảm giác chung đó chính là sự trong trẻo, mát lành và hoàn toàn không có tiếng ồn khó chịu của còi xe, của khói bụi', NULL, 'active', 17),
-(21, 10.870391, 106.825790, 'Khu Du Lịch Suối Mơ', 'Đường 11, Long Thạnh Mỹ, Quận 9, Hồ Chí Minh, Việt Nam', 'Tọa lạc tại xã Trà Cổ, huyện Tân Phú, tỉnh Đồng Nai, Công viên Suối Mơ được ví như thiên đường “biển trên rừng” với kiến tạo thiên nhiên ấn tượng cùng dòng suối trong vắt, những ngọn thác mát lạnh kết hợp tuyệt mỹ với khu hồ tắm rộng với diện tích lên đến 150.000 m².\r\nĐể đến với Suối Mơ, bạn sẽ mất khoảng 3 giờ di chuyển bằng xe máy từ Sài Gòn. Tham khảo lộ trình như sau: Xuất phát theo hướng QL1 khoảng hơn 64 km đến Ngã 3 Dầu Dây, sau đó rẽ trái theo QL 20 hướng lên Đà Lạt khoảng 48 km nữa, qua cột số 48 UBND huyện Định Quán khoảng 700m rồi rẽ phải chạy sâu vào bên trong là đến Suối Mơ.\r\n', 'suoi-mo-park.jpg', 'active', 17);
+(21, 10.870391, 106.825790, 'Khu Du Lịch Suối Mơ', 'Đường 11, Long Thạnh Mỹ, Quận 9, Hồ Chí Minh, Việt Nam', 'Tọa lạc tại xã Trà Cổ, huyện Tân Phú, tỉnh Đồng Nai, Công viên Suối Mơ được ví như thiên đường “biển trên rừng” với kiến tạo thiên nhiên ấn tượng cùng dòng suối trong vắt, những ngọn thác mát lạnh kết hợp tuyệt mỹ với khu hồ tắm rộng với diện tích lên đến 150.000 m².\r\nĐể đến với Suối Mơ, bạn sẽ mất khoảng 3 giờ di chuyển bằng xe máy từ Sài Gòn. Tham khảo lộ trình như sau: Xuất phát theo hướng QL1 khoảng hơn 64 km đến Ngã 3 Dầu Dây, sau đó rẽ trái theo QL 20 hướng lên Đà Lạt khoảng 48 km nữa, qua cột số 48 UBND huyện Định Quán khoảng 700m rồi rẽ phải chạy sâu vào bên trong là đến Suối Mơ.\r\n', 'suoi-mo-park.jpg', 'active', 17),
+(22, 10.777874, 106.696632, 'Dinh Độc Lập', '135 Nam Kỳ Khởi Nghĩa, Phường Bến Thành, Quận 1, Hồ Chí Minh 700000, Việt Nam', 'Di tích lịch sử về chiến tranh Việt Nam cho phép tham quan văn phòng chính phủ, phòng chỉ huy và hiện vật.\r\n', 'Dinh_Doc_Lap.JPG', 'active', 17),
+(23, 10.769716, 106.699265, 'Bảo tàng Mỹ thuật Thành phố Hồ Chí Minh', '97A Phó Đức Chính, Phường Nguyễn Thái Bìn, Quận 1, Hồ Chí Minh, Việt Nam', 'Bảo tàng Mỹ thuật Thành phố Hồ Chí Minh tọa lạc tại số 97 Phó Đức Chính, Quận 1, Thành phố Hồ Chí Minh, Việt Nam; được thành lập năm 1987 và đi vào hoạt động năm 1991. Tòa nhà bao gồm 3 tầng, trưng bày các tác phẩm hội họa, điêu khắc, cổ vật có giá trị mỹ thuật cao. Đây là một trong những trung tâm mỹ thuật lớn nhất nước\r\nĐây là một tòa nhà tráng lệ kết hợp hài hòa lối kiến trúc Á Đông (Trung Quốc) và châu Âu (Pháp), do ông Rivera (một kiến trúc sư người Pháp) thiết kế vào năm 1929, và xây xong vào năm 1934. Chủ tòa nhà này là ông Hui Bon Hoa (hay còn gọi là Hứa Bổn Hòa, tục gọi chú Hỏa; 1845-1901), là một thương nhân giàu có và nổi tiếng của đất Sài Gòn xưa. Ông cũng đã là chủ của nhiều công trình nổi tiếng khác như Khách sạn Majestic, Bệnh viện Từ Dũ, Trung tâm cấp cứu Sài Gòn, chùa Phụng Sơn v.v...[1]\r\n\r\nNăm 1987, tòa nhà được lập thành Bảo tàng Mỹ thuật Thành phố Hồ Chí Minh, nhưng vì thiếu hiện vật nên đến năm 1992 mới đi vào hoạt động. Đến nay, nó đã trở thành một trung tâm mỹ thuật lớn của Việt Nam, lưu trữ rất nhiều tác phẩm hội họa, điêu khắc và cổ vật mỹ thuật trong lịch sử đất nước và nhân loại, gồm cả những tác phẩm có giá trị cao như bức tranh sơn mài Vườn xuân Bắc Trung Nam của danh họa Nguyễn Gia Trí.\r\n\r\n', 'Bao_Tang_My_Thuat_HCM.jpg', 'active', 15),
+(24, 10.788048, 106.704697, 'Bảo tàng Lịch sử Việt Nam', '2 Nguyễn Bỉnh Khiêm, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam', 'Bảo tàng Lịch sử thành phố Hồ Chí Minh tọa lạc tại số 2 đường Nguyễn Bỉnh Khiêm, phường Bến Nghé, Quận 1, bên cạnh Thảo Cầm Viên Sài Gòn. Đây là nơi bảo tồn và trưng bày hàng chục ngàn hiện vật quý được sưu tầm trong và ngoài nước Việt Nam.\r\n\r\n', 'bao_tang_lich_su_viet_nam.jpg', 'active', 15),
+(25, 10.779823, 106.699036, 'Nhà thờ Đức Bà Sài Gòn', '01 Công xã Paris, Bến Nghé, Quận 1, Quận 1 Hồ Chí Minh, Việt Nam', 'Nhà thờ Công giáo được xây dựng bằng gạch Pháp vào những năm 1880 và có các tháp chuông Rô-măng cao 58m.', 'nha_tho_duc_ba.jpg', 'active', 13),
+(26, 10.779880, 106.699905, 'Bưu Điện Trung Tâm Thành Phố', 'Số 125 Công xã Paris, Bến Nghé, Quận 1, Hồ Chí Minh 710009, Việt Nam', 'Bưu điện trung tâm hoành tráng hoàn thành năm 1891, với sảnh chính có mái vòm & mặt sơn mang dấu ấn thời gian.', 'buu-dien-trung-tam-sai-gon.jpg', 'active', 17),
+(27, 10.767623, 106.693916, 'Trippy.vn', '220 Đường Đề Thám, Phường Phạm Ngũ Lão, Quận 1, Hồ Chí Minh 700000, Việt Nam', 'Trung tâm lữ hành Quốc tế Trippy', NULL, 'active', NULL),
+(28, 10.753528, 106.661179, 'Miếu Bà Thiên Hậu - Tuệ Thành Hội quán', '710 Nguyễn Trãi, Phường 11, Quận 5, Hồ Chí Minh, Việt Nam', 'Ngôi chùa thờ nữ thần biển từ thế kỷ 18 này có kiến ​​trúc Trung Hoa đầy màu sắc, trang trí công phu.', 'Chua_Ba_Thien_Hau.jpg', 'active', 13);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `ratings`
+--
+
+CREATE TABLE IF NOT EXISTS `ratings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `rate` int(11) NOT NULL,
+  `fk_tour` int(11) DEFAULT NULL,
+  `fk_user` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tour` (`fk_tour`),
+  KEY `fk_user` (`fk_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -89,7 +174,19 @@ CREATE TABLE IF NOT EXISTS `routes` (
   PRIMARY KEY (`id`),
   KEY `fk_location` (`fk_location`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `routes`
+--
+
+INSERT INTO `routes` (`id`, `arrive_time`, `leave_time`, `day`, `detail`, `fk_location`, `fk_tour`) VALUES
+(1, '07:00:00', '07:30:00', 0, 'Tập trung chuẩn bị xuất phát', 27, 1),
+(2, '08:10:00', '09:00:00', 0, 'Tham quan Bảo tàng chứng tích chiến tranh trên đường Võ Văn Tần.', 16, 1),
+(3, '09:15:00', '10:15:00', 0, 'Di chuyển đến Dinh Độc Lập.', 22, 1),
+(4, '10:20:00', '11:00:00', 0, 'Dạo chơi ở Nhà thờ Đức Bà.', 25, 1),
+(5, '11:05:00', '11:35:00', 0, 'Tham quan Bưu điện Thành phố.', 26, 1),
+(6, '12:00:00', '12:00:00', 0, 'Đoàn về lại điểm đón ban đầu, kết thúc hành trình.', 27, 1);
 
 -- --------------------------------------------------------
 
@@ -102,9 +199,42 @@ CREATE TABLE IF NOT EXISTS `tours` (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci,
   `policy` text COLLATE utf8_unicode_ci,
+  `price` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `tours`
+--
+
+INSERT INTO `tours` (`id`, `name`, `description`, `policy`, `price`) VALUES
+(1, 'Tour tham quan Sài Gòn (nửa ngày)', 'Tham quan những địa danh mang đậm dấu ấn lịch sử như Bảo tàng chứng tích chiến tranh, Dinh Độc Lập.\r\nTìm hiểu nét văn hóa và một số kiến trúc độc đáo - điều tạo nên một phần linh hồn mảnh đất Sài Gòn: Nhà thờ Đức Bà, Bưu điện thành phố.\r\n\r\nBạn được trải nghiệm những gì?\r\nHành trình bắt đầu với chuyến thăm Bảo tàng chứng tích chiến tranh - top 5 trong số 25 bảo tàng hấp dẫn nhất châu Á. Đến với bảo tàng, bạn sẽ giật mình nhận ra đằng sau một cuộc sống hòa bình, yên ổn - mà bạn tưởng chừng như hiển nhiên này - là cả một chặng đường lịch sử thấm đẫm máu và nước mắt của dân tộc. Bảo tàng chứng tích chiến tranh như một nốt lặng tĩnh tâm giữa chốn phồn hoa đô hội, giúp bạn thêm yêu, thêm trân trọng cuộc sống thanh bình này.\r\n\r\nĐiểm dừng chân tiếp theo của Tour tham quan Sài Gòn chính là Dinh Độc Lập - một di tích quốc gia đặc biệt, dấu son quyền lực của của quá khứ. Dinh Độc Lập còn cuốn hút bạn bởi những câu chuyện lịch sử thú vị về sự hình thành, sự tồn tại, ý nghĩa văn hóa trong lối kiến trúc độc đáo và những dấu mốc lịch sử của đất nước mà nó đã mang trong mình hàng trăm năm qua. Chỉ vài giờ tham quan ngắn ngủi nhưng đủ giúp bạn hình dung về một giai đoạn lịch sử đầy biến động, và thêm tự hào về chiến thắng lịch sử vẻ vang của dân tộc Việt Nam.\r\n\r\nCuối hành trình, hãy trở về trung tâm thành phố để thăm Nhà thờ Đức Bà. Nơi giao hòa giữa nét cổ xưa và hiện đại, giữa kiến trúc phương Tây và văn hóa phương Đông. Bạn sẽ không khỏi trầm trồ thán phục trước màu gạch nơi đây vẫn giữ nguyên vẹn màu hồng tươi, chẳng bám chút bụi rêu, dẫu trải qua bao nắng mưa, thử thách. Nếu muốn tận hưởng hết vẻ đẹp của Nhà thờ Đức Bà, hãy dành chút thời gian ngồi lại, thưởng thức thú vui cà phê bệt trong ánh đèn lung linh phản chiếu từ các tòa cao ốc, cùng hòa nhịp sống với người Sài Gòn khi đêm về. Lúc đó bạn sẽ nhận ra Nhà thờ Đức Bà tựa như một nốt nhạc bình yên giữa bản nhạc xô bồ, vội vã của đất Sài Gòn này.\r\n\r\nLịch trình\r\n\r\nBuổi sáng:\r\n\r\nXe và hướng dẫn viên Trung tâm lữ hành Quốc tế Trippy đón Quý khách tại điểm hẹn, khởi hành đi tham quan.\r\nTham quan Bảo tàng chứng tích chiến tranh trên đường Võ Văn Tần.\r\nDi chuyển đến Dinh Độc Lập.\r\nDạo chơi ở Nhà thờ Đức Bà.\r\nTham quan Bưu điện Thành phố.\r\nBuổi trưa:\r\n\r\nĐoàn về lại điểm đón ban đầu, kết thúc hành trình.\r\n', NULL, 20000);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `tour_turns`
+--
+
+CREATE TABLE IF NOT EXISTS `tour_turns` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `start_date` datetime NOT NULL,
+  `end_date` datetime NOT NULL,
+  `num_current_people` int(11) DEFAULT NULL,
+  `num_max_people` int(11) NOT NULL,
+  `fk_tour` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tour` (`fk_tour`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `tour_turns`
+--
+
+INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, `num_max_people`, `fk_tour`) VALUES
+(1, '2019-02-28 00:00:00', '2019-02-28 00:00:00', 1, 15, 1),
+(2, '2019-03-02 00:00:00', '2019-03-02 00:00:00', 0, 15, 1);
 
 -- --------------------------------------------------------
 
@@ -117,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `types` (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `marker` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `types`
@@ -140,7 +270,8 @@ INSERT INTO `types` (`id`, `name`, `marker`) VALUES
 (14, 'Khách sạn', NULL),
 (15, 'Bảo tàng', NULL),
 (16, 'Công viên', NULL),
-(17, 'Điểm thu hút khách du lịch', NULL);
+(17, 'Điểm thu hút khách du lịch', NULL),
+(18, 'Điểm xuất phát - kết thúc tour', NULL);
 
 -- --------------------------------------------------------
 
@@ -171,10 +302,31 @@ INSERT INTO `users` (`id`, `username`, `name`, `password`, `sex`, `birthdate`, `
 --
 
 --
+-- Các ràng buộc cho bảng `book_tour_history`
+--
+ALTER TABLE `book_tour_history`
+  ADD CONSTRAINT `book_tour_history_ibfk_1` FOREIGN KEY (`fk_tour_turn`) REFERENCES `tour_turns` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `book_tour_history_ibfk_2` FOREIGN KEY (`fk_user`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `comments`
+--
+ALTER TABLE `comments`
+  ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`fk_tour`) REFERENCES `tours` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`fk_user`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
 -- Các ràng buộc cho bảng `locations`
 --
 ALTER TABLE `locations`
   ADD CONSTRAINT `locations_ibfk_1` FOREIGN KEY (`fk_type`) REFERENCES `types` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `ratings`
+--
+ALTER TABLE `ratings`
+  ADD CONSTRAINT `ratings_ibfk_1` FOREIGN KEY (`fk_tour`) REFERENCES `tours` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `ratings_ibfk_2` FOREIGN KEY (`fk_user`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `routes`
@@ -182,6 +334,12 @@ ALTER TABLE `locations`
 ALTER TABLE `routes`
   ADD CONSTRAINT `routes_ibfk_1` FOREIGN KEY (`fk_location`) REFERENCES `locations` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `routes_ibfk_2` FOREIGN KEY (`fk_tour`) REFERENCES `tours` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `tour_turns`
+--
+ALTER TABLE `tour_turns`
+  ADD CONSTRAINT `tour_turns_ibfk_1` FOREIGN KEY (`fk_tour`) REFERENCES `tours` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

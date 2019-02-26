@@ -125,17 +125,43 @@ exports.getLocationNearMe = async (req, res) => {
     lat = parseFloat(lat);
     lng = parseFloat(lng);
     distance = parseInt(distance);
-    var query = {
-        include: [{
-            model: db.types
-        }]
-    }
-    locations.findAll(query).then(async _items => {
-        const result = await filterListLocationByDistance(lat, lng, distance, _items)
-        const result1 = await addLinkFeaturedImg(result, req.headers.host)
+
+    // var query = {
+    //     include: [{
+    //         model: db.types
+    //     }]
+    // }
+    // locations.findAll(query).then(async _items => {
+    //     const result = await filterListLocationByDistance(lat, lng, distance, _items)
+    //     const result1 = await addLinkFeaturedImg(result, req.headers.host)
+    //     res.status(200).json({
+    //         itemCount: result.length,
+    //         data: result1,
+    //         distance: distance
+    //     })
+    // }).catch(err => {
+    //     res.status(400).json({ msg: err })
+    // })
+
+    var query = 'SELECT' +
+        '*, (' +
+        '6371 * acos (' +
+        'cos ( radians(' + lat + ') )' +
+        '* cos( radians( latitude ) )' +
+        '* cos( radians( longitude ) - radians(' + lng + ') )' +
+        '+ sin ( radians(' + lat + ') )' +
+        '* sin( radians( latitude ) )' +
+        ')' +
+        ') AS distance' +
+        ' FROM locations' +
+        ' HAVING distance < ' + distance +
+        ' ORDER BY distance' +
+        ' LIMIT 0 , 20;'
+    db.sequelize.query(query).then(async _items => {  
+        const result = await addLinkFeaturedImg(_items[0], req.headers.host)
         res.status(200).json({
             itemCount: result.length,
-            result: result1,
+            data: result,
             distance: distance
         })
     }).catch(err => {
@@ -154,7 +180,7 @@ exports.getById = (req, res) => {
         if (_location.featured_img !== null) {
             _location.featured_img = req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
         }
-        res.status(200).json({ result: _location })
+        res.status(200).json({ data: _location })
     }).catch(err => {
         res.status(400).json({ msg: err });
     })
@@ -174,7 +200,7 @@ exports.getLocationByType = async (req, res) => {
     locations.findAll(query).then(async _locations => {
         const location_result = await addLinkFeaturedImg(_locations, req.headers.host)
         res.status(200).json({
-            result: location_result,
+            data: location_result,
             type: _type
         })
     }).catch(err => {
@@ -211,7 +237,7 @@ exports.getByTypeNearMe = async (req, res) => {
         const result1 = await addLinkFeaturedImg(result, req.headers.host)
         res.status(200).json({
             itemCount: result.length,
-            result: result1,
+            data: result1,
             distance: distance
         })
     }).catch(err => {
