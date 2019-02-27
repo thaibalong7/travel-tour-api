@@ -10,4 +10,6 @@ router.get('/getById/:id', tours.getById);
 // example call api http://localhost:5000/tour/getByLocation?idLocation=26&per_page=3&page=1
 router.get('/getByLocation', tours.getByLocation);
 
+router.get('/searchByName', tours.searchByName);
+
 module.exports = router

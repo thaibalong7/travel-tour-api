@@ -13,6 +13,12 @@ exports.getByTour = (req, res) => {
     const idTour = req.params.idTour;
     const query = {
         where: { fk_tour: idTour },
+        include: [{
+            model: db.locations,
+            include: [{
+                model: db.types
+            }]
+        }],
         order: [['day', 'ASC'], ['arrive_time', 'ASC']]
     }
     routes.findAll(query).then(_routes => {
