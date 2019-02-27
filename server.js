@@ -3,7 +3,14 @@ var app = express();
 var passport = require('passport')
 var session = require('express-session')
 var bodyParser = require('body-parser')
-var env = require('dotenv').load();
+var env = require('dotenv');
+
+process.env.NODE_ENV = process.env.NODE_ENV || 'development'
+const configFileMapping = {
+    'development': './env/.env.development',
+    'production': './env/.env.production'
+}
+env.config({ path: configFileMapping[process.env.NODE_ENV] })
 // var cors = require('cors');
 //CORS middleware
 // app.use(cors({
@@ -14,7 +21,7 @@ var env = require('dotenv').load();
 //     optionsSuccessStatus: 204
 //   }));
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", env.parsed.NODE_ENV === 'production' ? "*" : "http://localhost:3000");
+    res.header("Access-Control-Allow-Origin", process.env.NODE_ENV === 'production' ? "*" : "http://localhost:3000");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
     next();

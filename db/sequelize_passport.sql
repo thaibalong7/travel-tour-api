@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th2 26, 2019 lúc 05:40 PM
+-- Thời gian đã tạo: Th2 27, 2019 lúc 06:54 AM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `locations` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `fk_type` (`fk_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `locations`
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `locations` (
 
 INSERT INTO `locations` (`id`, `latitude`, `longitude`, `name`, `address`, `description`, `featured_img`, `status`, `fk_type`) VALUES
 (1, 10.866021, 106.803017, 'Khu du lịch Suối Tiên', '120 Xa lộ Hà Nội, Phường Tân Phú, Quận 9, Hồ Chí Minh 700000, Việt Nam', '\r\nCông viên giải trí có nhiều khu vui chơi và hoạt động dưới nước đa dạng được xây dựa trên hình tượng Đức Phật.', 'SuoiTien.jpg', 'active', 2),
-(2, 10.806031, 106.667915, 'Chùa Phổ Quang', '64/3 Huỳnh Lan Khanh, phường 2, quận Tân Bình, Tp . Hồ Chí Minh', 'Chùa Phổ Quang tọa lạc ở số 64/3 Huỳnh Lan Khanh, phường 2, quận Tân Bình, Tp . Hồ Chí Minh  (số cũ 64/3 đường Phổ Quang phường 2, quận Tân Bình). Chùa thuộc hệ phái Bắc tông. Nằm gần cuối con đường nhỏ, gắn liền với những thăng trầm của lịch sử, đây là địa điểm thu hút nhiều du khách đến tham quan. Cảnh quan nơi đây rất đẹp và thanh tịnh.\r\n\r\nMột trong những đặc điểm khiến chùa Phổ Quang trở thành nơi được nhiều du khách yêu thích tìm đến chính là nét thanh bình, yên ả khó tìm thấy giữa lòng thành phố đông đúc người, xe. Đứng ở đây vào bất cứ thời điểm nào trong ngày cũng có thể nghe được tiếng chim kêu ríu rít, mọi âu lo phiền muộn cùng những bon chen tất bật gác bỏ lại bên ngoài. Nét đẹp ngày nay ở chùa Phổ Quang hài hòa, gắn liền với cảnh vật xung quanh. Có lẽ vì thế mà hàng năm chùa Phổ Quang chào đón rất nhiều du khách tìm đến chiêm bái, vãn cảnh, thả mình vào không gian thoáng tịnh.\r\n', 'ChuaPhoQuang.jpg', 'active', 13),
+(2, 10.806031, 106.667915, 'Chùa Phổ Quang', '64/3 Huỳnh Lan Khanh, phường 2, quận Tân Bình, Tp . Hồ Chí Minh', 'Chùa Phổ Quang tọa lạc ở số 64/3 Huỳnh Lan Khanh, phường 2, quận Tân Bình, Tp . Hồ Chí Minh  (số cũ 64/3 đường Phổ Quang phường 2, quận Tân Bình). Chùa thuộc hệ phái Bắc tông. Nằm gần cuối con đường nhỏ, gắn liền với những thăng trầm của lịch sử, đây là địa điểm thu hút nhiều du khách đến tham quan. Cảnh quan nơi đây rất đẹp và thanh tịnh.\r\n\r\nMột trong những đặc điểm khiến chùa Phổ Quang trở thành nơi được nhiều du khách yêu thích tìm đến chính là nét thanh bình, yên ả khó tìm thấy giữa lòng thành phố đông đúc người, xe. Đứng ở đây vào bất cứ thời điểm nào trong ngày cũng có thể nghe được tiếng chim kêu ríu rít, mọi âu lo phiền muộn cùng những bon chen tất bật gác bỏ lại bên ngoài. Nét đẹp ngày nay ở chùa Phổ Quang hài hòa, gắn liền với cảnh vật xung quanh. Có lẽ vì thế mà hàng năm chùa Phổ Quang chào đón rất nhiều du khách tìm đến chiêm bái, vãn cảnh, thả mình vào không gian thoáng tịnh.\r\n', 'ChuaPhoQuang.jpg', 'active', 19),
 (3, 10.784394, 106.684029, 'Bệnh viện Tai Mũi Họng Thành phố Hồ Chí Minh', '155-157 Trần Quốc Thảo, Phường 9, Quận 3, Hồ Chí Minh 70010, Việt Nam', 'Bệnh viện chuyên tai mũi họng', 'BenhVienTaiMuiHong.jpg', 'active', 11),
 (4, 10.781772, 106.705444, 'Silverland Sakyo Hotel & Spa, Ho Chi Minh City', '10A Lê Thánh Tôn, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam', 'Silverland Sakyo Hotel & Spa nằm ở trung tâm Thành phố Hồ Chí Minh, hòa quyện tâm hồn Sài Gòn với thanh thản trong văn hoá Nhật Bản. Khách sạn có hồ bơi trên sân thượng, 2 nhà hàng và quán bar ngay trong khuôn viên. Quý khách có thể tận hưởng các liệu pháp trẻ hoá tại KL Spa hoặc đơn giản chỉ cần thư giãn ở khu vực tiếp khách. Internet miễn phí cũng được cung cấp cho khách.  Khách sạn đầy đủ tiện nghi này nằm trong bán kính 600 m từ UBND thành phố Hồ Chí Minh và Bưu điện Thành phố. Sân bay Quốc tế Tân Sơn Nhất chỉ cách khách sạn 7 km. Dịch vụ đưa/đón sân bay có thể được thu xếp với một khoản phí nhỏ.  Các phòng nghỉ tại đây có lối bài trí sang trọng và được gắn máy điều hòa toàn bộ. Tủ lạnh mini, TV màn hình phẳng và tiện nghi pha trà/cà phê cũng được cung cấp trong phòng. Phòng tắm riêng đi kèm máy sấy tóc và áo choàng tắm sang trọng. Một số phòng còn có bồn tắm riêng.  Khách có thể thưởng thức một tách trà trong khi thư giãn trên sân hiên hoặc tận hưởng dịch vụ mát-xa truyền thống. Cả tiện nghi phòng xông hơi khô và phòng xông hơi ướt, dịch vụ thu đổi ngoại tệ, lễ tân 24 giờ và trung tâm dịch vụ doanh nhân đều được cung cấp tại đây.  Silverland Jolie Restaurant phục vụ tiệc tự chọn với một loạt các món ăn kiểu châu Á và quốc tế, đồng thời quý khách có thể thưởng thức các món ăn kiểu Nhật Bản chính thống tại Sakyo Sushi & Hot Pot Restaurant. Dịch vụ phòng cũng được cung cấp.  Quận 1 là lựa chọn tuyệt vời cho du khách thích bảo tàng, chợ và hoạt động giải trí về đêm.  Đây là khu vực ở TP. Hồ Chí Minh mà khách yêu thích, theo các đánh giá độc lập.  Chỗ nghỉ này là một trong những vị trí được đánh giá tốt nhất ở TP. Hồ Chí Minh! Khách thích nơi đây hơn so với những chỗ nghỉ khác trong khu vực.', 'Silverland-Sakyo-Hotel-Spa.jpg', 'active', 14),
 (5, 10.766179, 106.642029, 'Công viên Văn hóa Đầm Sen', 'Số 3 Hòa Bình, Phường 3, Quận 11, Hồ Chí Minh, Việt Nam', 'Tổ hợp vui chơi giải trí cho gia đình với các hoạt động cưỡi ngựa, công viên nước, rạp chiếu phim & sở thú.', NULL, 'active', 2),
@@ -139,8 +139,36 @@ INSERT INTO `locations` (`id`, `latitude`, `longitude`, `name`, `address`, `desc
 (25, 10.779823, 106.699036, 'Nhà thờ Đức Bà Sài Gòn', '01 Công xã Paris, Bến Nghé, Quận 1, Quận 1 Hồ Chí Minh, Việt Nam', 'Nhà thờ Công giáo được xây dựng bằng gạch Pháp vào những năm 1880 và có các tháp chuông Rô-măng cao 58m.', 'nha_tho_duc_ba.jpg', 'active', 13),
 (26, 10.779880, 106.699905, 'Bưu Điện Trung Tâm Thành Phố', 'Số 125 Công xã Paris, Bến Nghé, Quận 1, Hồ Chí Minh 710009, Việt Nam', 'Bưu điện trung tâm hoành tráng hoàn thành năm 1891, với sảnh chính có mái vòm & mặt sơn mang dấu ấn thời gian.', 'buu-dien-trung-tam-sai-gon.jpg', 'active', 17),
 (27, 10.767623, 106.693916, 'Trippy.vn', '220 Đường Đề Thám, Phường Phạm Ngũ Lão, Quận 1, Hồ Chí Minh 700000, Việt Nam', 'Trung tâm lữ hành Quốc tế Trippy', NULL, 'active', 18),
-(28, 10.753528, 106.661179, 'Miếu Bà Thiên Hậu - Tuệ Thành Hội quán', '710 Nguyễn Trãi, Phường 11, Quận 5, Hồ Chí Minh, Việt Nam', 'Ngôi chùa thờ nữ thần biển từ thế kỷ 18 này có kiến ​​trúc Trung Hoa đầy màu sắc, trang trí công phu.', 'Chua_Ba_Thien_Hau.jpg', 'active', 13),
-(30, 10.768344, 106.694313, 'VIET FUN TRAVEL Company Ltd', '28/13 Bùi Viện, Phường Phạm Ngũ Lão, Quận 1, Hồ Chí Minh, Việt Nam', 'Văn phòng Viet Fun Travel', NULL, 'active', 18);
+(28, 10.753528, 106.661179, 'Miếu Bà Thiên Hậu - Tuệ Thành Hội quán', '710 Nguyễn Trãi, Phường 11, Quận 5, Hồ Chí Minh, Việt Nam', 'Ngôi chùa thờ nữ thần biển từ thế kỷ 18 này có kiến ​​trúc Trung Hoa đầy màu sắc, trang trí công phu.', 'Chua_Ba_Thien_Hau.jpg', 'active', 19),
+(30, 10.768344, 106.694313, 'VIET FUN TRAVEL Company Ltd', '28/13 Bùi Viện, Phường Phạm Ngũ Lão, Quận 1, Hồ Chí Minh, Việt Nam', 'Văn phòng Viet Fun Travel', NULL, 'active', 18),
+(31, 11.936261, 108.437660, 'Nhà Thờ Con Gà ', '7A1, Đường Lê Đại Hành, Phường 3, Thành Phố Đà Lạt, Tỉnh Lâm Đồng\r\n', 'Nhà thờ chính tòa Ðà Lạt là một nhà thờ công giáo ở Việt Nam. Đây là nhà thờ chính tòa của vị giám mục Giáo phận Đà Lạt, cũng là nhà thờ lớn nhất Đà Lạt, một trong những công trình kiến trúc tiêu biểu và cổ xưa nhất của thành phố này do người Pháp để lại.\r\n', '1.png', 'active', 13),
+(32, 11.930179, 108.429581, 'Dinh Bảo Đại', '13 Triệu Việt Vương, Phường 4, Thành phố Đà Lạt, Lâm Đồng, Việt Nam\r\n', 'Ngôi dinh thự cổ được chính vua Bảo Đại  vị vua cuối cùng của Việt Nam xây dựng để nghỉ ngơi và làm việc tại Đà Lạt.', '2.png', 'active', 15),
+(33, 11.903660, 108.434471, 'Thiền viện Trúc Lâm, Hồ Tuyền Lâm', 'núi Phụng Hoàng, Phường 3, Tp. Đà Lạt, Lâm Đồng, Việt Nam', 'Du ngoạn bằng cáp treo qua đồi Rôbin, ngắm cảnh rừng thông, hồ Tuyền Lâm và núi Phượng Hoàng từ trên cao.', '3.png', 'active', 19),
+(34, 11.981397, 108.453827, 'Showroom hoa nghệ thuật', '7A/1 Đào Đà Lạt, Mai Anh Đào, Phường 8, Thành phố Đà Lạt, Lâm Đồng, Việt Nam', 'Chiêm ngưỡng các bình hoa khô được cắm nghệ thuật khéo léo với công nghệ sấy khô nhưng vẫn giữ nguyên màu sắc và hình dáng.', '4.png', 'active', 17),
+(35, 11.945831, 108.412415, 'Làng hoa Vạn Thành ', 'Unnamed Road, Phường 5, Thành phố Đà Lạt, Lâm Đồng, Việt Nam', 'Là một trong những làng hoa lớn của Đà Lạt - một địa điểm du lịch ấn tượng của Đà lạt. Đoàn tìm hiểu và chiêm ngưỡng các loài hoa đẹp, quý: đồng tiền, cẩm chướng, ly ly, hoa lan, thạch thảo, vương quốc của hoa hồng với những vườn hoa hồng nhung, hồng ánh trăng, hồng cánh sen…Tham quan Vườn bí đỏ khổng lồ; Vườn dâu sạch trồng theo công nghệ Nhật Bản; Vườn cà chua bi,...\r\n', '5.png', 'active', 17),
+(36, 12.006024, 108.380913, 'Thung lũng vàng', 'Unnamed Road, Lát, Lạc Dương, Lâm Đồng, Việt Nam', 'Hồ Dan Kia, Vườn đá Tứ linh,  Suối thác, rừng thông,... ', '6.png', 'active', 17),
+(37, 12.019278, 108.424355, 'Langbiang', 'Langbian, Thị trấn Lạc Dương, Lạc Dương, Lâm Đồng, Việt Nam', 'oàn đi qua xã Lát, đi qua các vườn rau sạch đến Khu Du lịch Langbiang - Chinh phục đỉnh Langbiang bằng xe jeep (tự túc).', '7.png', 'active', 17),
+(38, 11.941599, 108.453941, 'Ga xe lửa', 'Quang Trung, Phường 9, Thành phố Đà Lạt, Lâm Đồng, Việt Nam', 'Nhà ga cổ đẹp nhất Đông Dương, mang nét hài hòa giữa kiến trúc phương Tây và kiểu nhà rông Tây nguyên truyền thống.', '8.png', 'active', 17),
+(39, 11.944258, 108.499474, 'Chùa Linh Phước', 'Unnamed Road, Phường 11, Thành phố Đà Lạt, Lâm Đồng, Việt Nam', 'Còn gọi là Chùa Ve chai - Một ngôi chùa đẹp được xây dựng công phu với kiến trúc nghệ thuật độc đáo làm từ ve chai.', '9.png', 'active', 19),
+(40, 11.935385, 108.440933, 'Khách sạn Lucky Clover', '51-5 Hà Huy Tập, Phường 3, Thành phố Đà Lạt, Lâm Đồng, Việt Nam', 'Đặt phòng Khách Sạn nhanh chóng, tiện lợi, giá rẻ, đầy đủ tiện nghi. Hỗ trợ đưa đón Miễn Phí. Đặt trước có Phòng. Giá luôn Ưu đãi. Đi lại thuận lợi. Phòng đa dạng.', '10.png', 'active', 14),
+(41, 11.876680, 108.470268, 'Thác Prenn', '20 Đường cao tốc Liên Khương - Prenn, Phường 3, Thành phố Đà Lạt, Lâm Đồng', 'Nằm ngay dưới chân đèo Prenn, trên đoạn đường từ Thành phố Hồ Chí Minh lên Đà Lạt. thác Prenn là một trong những đoạn thác còn giữ được vẻ hoang sơ của núi rừng Tây Nguyên, là một trong những khu du lịch sinh thái về rừng, suối.', '11.png', 'active', 17),
+(42, 11.689610, 108.263924, 'Thác Pongour', 'Thôn Tân Nghĩa, Đức Trọng, Lâm Đồng', 'Thác Pongour, còn gọi là thác Bảy tầng là một ngọn thác tại huyện Đức Trọng, tỉnh Lâm Đồng, nằm cách Đà Lạt 50 km về hướng Nam. Thác đổ từ độ cao gần 40 mét, trải rộng hơn 100 mét, qua hệ thống đá bậc thang bảy tầng.', '12.png', 'active', 17),
+(43, 11.640416, 107.742035, 'Thác Dambri', 'Thôn 14, Lý Thái Tổ, Đambri, Đam Bri, tp. Bảo Lộc, Lâm Đồng', 'Đambri là một thác nước đẹp, cao nhất vùng Lâm Đồng. Nguồn nước của dòng thác từ trê dsdasg 17 km, nằm giữa khung cảnh rừng nguyên sinh hoang sơ, hùng vĩ với nhiều loài động vật, thực vật quý hiếm.', '13.png', 'active', 17),
+(44, 12.216125, 109.241158, 'Vinpearl Land Nha Trang', 'Vịnh Nha Trang, Việt Nam', 'Toạ lạc trên đảo Hòn Tre xinh đẹp giữa biển khơi và bãi biển trong xanh quanh năm, Vinpearl Land được biết đến như điểm đến du lịch Nha Trang – “thiên đường của miền nhiệt đới” hấp dẫn mọi du khách. Khi đặt chân đến địa điểm du lịch này, bạn sẽ được lưu trú tại khu nghỉ dưỡng, khách sạn Vinpearl Land Nha Trang 5 sao hàng đầu, chiêm ngưỡng những khu vườn tuyệt đẹp mang trong mình một ốc đảo xanh, hồ bơi nước ngọt lý tưởng, phố mua sắm bậc nhất.', '14.png', 'active', 2),
+(45, 12.358465, 109.277626, 'Vịnh Ninh Vân', 'Vũng Ninh Vân, Tx. Ninh Hòa, Việt Nam', 'vịnh Ninh Vân đẹp như một nàng tiên mơ màng giữa chốn biển xanh bao la. Nằm trên bán đảo Hòn Mèo, vịnh Ninh Vân cách thành phố Nha Trang khoảng 60km, nên du khách có thể di chuyển bằng tàu cao tốc tới đây, đồng thời có thể ngắm toàn cảnh vịnh biển Nha Trang tuyệt đẹp từ trên tàu. ', '15.png', 'active', 17),
+(46, 12.207174, 109.214653, 'Viện Hải dương học Nha Trang', 'Cầu Đá - Hòn Một, Vĩnh Hoà, Thành phố Nha Trang, Khánh Hòa, Việt Nam', 'Viện Hải dương học Nha Trang là nơi nghiên cứu đời sống các loài động thực vật biển tại thành phố Nha Trang tỉnh Khánh Hòa.  Lưu ý bạn có thể đặt ngay các khách sạn gần Viện hải Dương học để thuận tiện cho việc vui chơi, tham quan du lịch tại đây.', '16.png', 'active', 15),
+(47, 12.246796, 109.188065, 'Nhà thờ Đá Nha Trang', '1 Thái Nguyên, Phước Tân, Tp. Nha Trang, Khánh Hòa 650000, Việt Nam', 'Nhà thờ Đá Nha Trang là một địa danh nổi tiếng của thành phố, nơi đây mang nhiều giá trị lịch sử và văn hóa hơn  một nhà thờ tôn giáo thông thường. Như một nhân chứng lịch sử, Nhà thờ Đá đã chứng kiến bao sự đổi thay theo thời gian của thành phố này, và giờ đây, chính nó cũng là cảnh quan xinh đẹp, góp phần làm nên sức hút cho thành phố biển  mộng mơ.', '17.png', 'active', 13),
+(48, 16.026552, 108.032661, 'Bà Nà Hills', 'Hòa Vang, Đà Nẵng, Việt Nam', 'Với một chuyến cáp treo Bà Nà, bạn sẽ tiến đến khung cảnh thiên nhiên đẹp tựa chốn bồng lai tiên cảnh. Vừa là một phương tiện giúp bạn tiết kiệm thời gian, từ cáp treo bạn cũng có cơ hội ngắm nhìn núi non, mây trời và những công trình đặc sắc của Bà Nà Hills.', '18.png', 'active', 17),
+(49, 16.095369, 108.243256, 'Bảo tàng 3D TrickEye', '183-125 Trần Nhân Tông, Sơn Trà, Đà Nẵng, Việt Nam', 'Không chỉ được chiêm ngưỡng các tác phẩm 3D, hoạt động thú vị và chủ yếu ở Art in Paradise chính là tạo dáng và chụp ảnh. Bạn có thể hóa thân thành những nhân vật cổ tích trong thế giới thần tiên, đặt chân vào khu rừng bí ẩn giữa những lăng mộ Ai Cập cổ đại hay hóa thân thành những chú chim đại bàng tung cánh…', '19.png', 'active', 15),
+(50, 15.874937, 108.341583, 'Ký Ức Hội An Show', 'Cẩm Châu, Hội An, Quảng Nam, Việt Nam', 'Trở về với miền Faifo trong những khung cảnh mang đậm màu sắc hoài cổ của Ký Ức Hội An Show. Đây cũng là chương trình duy nhất đang giữ 2 kỷ lục “Sân khấu ngoài trời lớn nhất Việt Nam” và “Chương trình biểu diễn nghệ thuật thường nhật có số lượng diễn viên tham gia đông nhất” gần 500 người.', '20.png', 'active', 2),
+(51, 10.343408, 107.074318, 'Bãi Trước vũng tàu', 'Phường 1, Tp. Vũng Tàu, Bà Rịa - Vũng Tàu, Việt Nam', 'Trung tâm của thành phố Vũng Tàu nằm ở bãi trước, nơi đây tập trung khá nhiều cao ốc và các khu mua bán sầm uất. Du khách thường chọn bãi tắm ở khu vực bãi sau vì bãi trước ô nhiễm hơn do mật độ dân cư sinh sống và du khách tập trung đông đúc. Tuy nhiên, bãi trước sẽ là nơi lý tưởng để bạn ngắm hoàng hôn hoặc đi dạo.', '21.png', 'active', 17),
+(52, 10.500100, 107.479095, 'Hồ Cốc', 'Bưng Riềng, Xuyên Mộc, Bà Rịa - Vũng Tàu, Việt Nam', 'Là điểm du lịch hấp dẫn du khách bởi nét hoang sơ nguyên thủy hiếm có. Biển ở đây nước trong xanh in đáy cát quanh năm, khu bãi tắm cát trắng trải rộng, độ dốc thoai thoải và đặc biệt đẹp thơ mộng nhờ các tảng đá nằm trong bãi tắm tạo nên những đợt sóng biển tung bọt trắng xóa.', '22.png', 'active', 17),
+(53, 10.374046, 107.071320, 'Thích Ca Phật Đài Vũng Tàu', 'Hẻm 365 Trần Phú, Phường 5, Thành phố Vũng Tầu, Bà Rịa - Vũng Tàu, Việt Nam', 'Đây là một ngôi chùa nằm trên sườn núi Lớn của thành phố Vũng Tàu. Vẻ đẹp của ngôi chùa kết hợp rất khéo léo giữa kiến trúc tôn giáo và phong cảnh thiên nhiên. Đáng chú ý nhất là ngọn tháp Bát Giác cao 19m và tượng Phật Thích Ca ngồi thiền trên tòa sen xây bên lưng chừng núi, du khách đứng từ xa có thể chiêm ngưỡng được.\r\n', '23.png', 'active', 19),
+(54, 10.326448, 107.084534, 'Tượng Đức Chúa dang tay Vũng Tàu', 'Núi Nhỏ, Phường 2, Tp. Vũng Tàu, Bà Rịa - Vũng Tàu, Việt Nam', 'Tượng Chúa Ki-Tô hay Tượng Đức Chúa dang tay đứng trên đỉnh Núi Nhỏ của thành phố Vũng Tàu, được xây từ năm 1974. Bức tượng này cao 32 m, sải tay dài 18,3 m trên độ cao 170 m nhìn ra biển, bên trong có cầu thang 133 bậc lên tận 2 tay của tượng. Bức tượng có thể xem như một phiên bản tương tự tượng chúa dang tay tại thành phố Rio de Janeiro ở Brasil.', '24.png', 'active', 17),
+(55, 10.350637, 107.067848, 'Bạch Dinh Vũng Tàu', 'Đường lên Bạch Dinh, Phường 1, Thành phố Vũng Tầu, Bà Rịa - Vũng Tàu, Việt Nam', 'Năm 1898, Toàn quyền Đông Dương Paul Doumer đã cho xây Bạch Dinh (Villa Blanche) trên nền pháo đài Phước Thắng nơi từng khai hỏa bắn vào tàu chiến Pháp gần 50 năm trước. Bạch Dinh là một công trình kiến trúc La Mã 3 tầng, cao 19 m, lưng tựa vào Núi Lớn. Tại đây hiện còn lưu giữ 19 khẩu thần công.', '25.png', 'active', 15),
+(56, 10.777020, 106.703552, 'Nhà hát Thành Phố Hồ Chí Minh', '7 Công Trường Lam Sơn, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam', 'nhà hát được xây dựng vào năm 1897 theo phong cách kiến trúc tân cổ điển. Nhà hát có kiến trúc cổ kính, uy nghi với một trệt, hai tầng lầu, 1.800 ghế, hệ thống âm thanh ánh sáng hiện đại.', NULL, 'active', 2),
+(57, 10.762955, 106.682236, 'Đại học Khoa Học Tự Nhiên Đại Học Quốc Gia, TPHCM', '227 đường Nguyễn Văn Cừ, Phường 4, Quận 5, Hồ Chí Minh, Việt Nam', '', NULL, 'active', 18),
+(58, 16.067415, 108.224823, 'Sun River Hotel', '132-134-136 Bạch Đằng, Quận Hải Châu, TP. Đà Nẵng', 'Khách sạn với 50 phòng đạt chuẩn 3 sao, được thiết kế theo phong cách hiện đại, nội thất sang trọng, trang nhã. Tại Sun River, quý khách sẽ được tận hưởng những cảm giác ấn tượng và khó quên. Hệ thống phòng tiêu chuẩn 3 sao với tầm nhìn thoáng đãng giúp quý khách thoải mái ngắm nhìn bao quát dòng sông Hàn hoặc toàn cảnh thành phố. Để đáp ứng đầy đủ nhất các nhu cầu về nghỉ ngơi, ẩm thực, giải trí và công việc của quý khách, khách sạn cung cấp những tiện nghi và dịch vụ đa dạng như: nhà hàng, bar & cafe ...\r\n', '28.png', 'active', 14);
 
 -- --------------------------------------------------------
 
@@ -175,7 +203,7 @@ CREATE TABLE IF NOT EXISTS `routes` (
   PRIMARY KEY (`id`),
   KEY `fk_location` (`fk_location`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `routes`
@@ -194,7 +222,44 @@ INSERT INTO `routes` (`id`, `arrive_time`, `leave_time`, `day`, `detail`, `fk_lo
 (10, '13:00:00', '14:00:00', 0, 'Buổi chiều, tham quan Dinh Thống Nhất, nơi trước đây là tổng hành dinh của Mỹ đặt tại miền Nam Việt Nam.', 22, 2),
 (11, '14:15:00', '14:45:00', 0, 'Tham quan nhà thờ Đức Bà', 25, 2),
 (12, '15:00:00', '16:00:00', 0, 'Tham quan bưu điện thành phố', 26, 2),
-(13, '17:00:00', '17:00:00', 0, 'Quý khách kết thúc Tour Du Lịch Tham Quan Sài Gòn 1 Ngày tại văn phòng. Chia tay quý khách và hẹn gặp lại.\r\n', 30, 2);
+(13, '17:00:00', '17:00:00', 0, 'Quý khách kết thúc Tour Du Lịch Tham Quan Sài Gòn 1 Ngày tại văn phòng. Chia tay quý khách và hẹn gặp lại.\r\n', 30, 2),
+(14, '10:00:00', '10:00:00', 1, NULL, 51, 3),
+(15, '18:00:00', '06:00:00', 1, NULL, 40, 3),
+(16, '07:30:00', '09:00:00', 2, NULL, 31, 3),
+(17, '09:30:00', '11:30:00', 2, NULL, 33, 3),
+(18, '13:30:00', '15:30:00', 2, NULL, 32, 3),
+(19, '16:00:00', '18:00:00', 2, NULL, 34, 3),
+(20, '19:00:00', '06:00:00', 2, NULL, 40, 3),
+(21, '07:00:00', '08:30:00', 3, NULL, 38, 3),
+(22, '09:00:00', '11:00:00', 3, NULL, 35, 3),
+(23, '12:00:00', '14:00:00', 3, NULL, 40, 3),
+(24, '21:00:00', '21:00:00', 3, NULL, 51, 3),
+(25, '07:30:00', '07:30:00', 1, NULL, 57, 4),
+(26, '08:00:00', '09:30:00', 1, NULL, 25, 4),
+(27, '09:30:00', '11:30:00', 1, NULL, 26, 4),
+(28, '13:30:00', '15:00:00', 1, NULL, 56, 4),
+(29, '15:00:00', '15:00:00', 1, NULL, 57, 4),
+(30, '07:00:00', '07:00:00', 1, NULL, 26, 5),
+(31, '14:00:00', '15:00:00', 1, NULL, 41, 5),
+(32, '16:00:00', '17:30:00', 1, NULL, 33, 5),
+(33, '18:00:00', '06:00:00', 1, NULL, 40, 5),
+(34, '07:30:00', '09:30:00', 2, NULL, 36, 5),
+(35, '10:00:00', '11:35:00', 2, NULL, 32, 5),
+(36, '14:00:00', '16:00:00', 2, NULL, 35, 5),
+(37, '16:30:00', '18:30:00', 2, NULL, 34, 5),
+(38, '19:00:00', '06:30:00', 2, NULL, 40, 5),
+(39, '08:00:00', '09:00:00', 3, NULL, 31, 5),
+(40, '09:30:00', '11:30:00', 3, NULL, 38, 5),
+(41, '14:00:00', '15:30:00', 3, NULL, 39, 5),
+(42, '16:30:00', '18:30:00', 3, NULL, 37, 5),
+(43, '19:30:00', '05:00:00', 3, NULL, 40, 5),
+(44, '10:00:00', '13:00:00', 4, NULL, 58, 5),
+(45, '13:30:00', '14:30:00', 4, NULL, 49, 5),
+(46, '16:00:00', '19:00:00', 4, NULL, 50, 5),
+(47, '20:30:00', '08:00:00', 4, NULL, 58, 5),
+(48, '09:00:00', '17:00:00', 5, NULL, 48, 5),
+(49, '16:00:00', '07:30:00', 5, NULL, 58, 5),
+(50, '19:00:00', '19:00:00', 6, NULL, 26, 5);
 
 -- --------------------------------------------------------
 
@@ -211,15 +276,18 @@ CREATE TABLE IF NOT EXISTS `tours` (
   `price` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tours`
 --
 
 INSERT INTO `tours` (`id`, `name`, `description`, `detail`, `policy`, `price`) VALUES
-(1, 'Tour tham quan Sài Gòn (nửa ngày)', 'Tham quan những địa danh mang đậm dấu ấn lịch sử như Bảo tàng chứng tích chiến tranh, Dinh Độc Lập.\r\nTìm hiểu nét văn hóa và một số kiến trúc độc đáo - điều tạo nên một phần linh hồn mảnh đất Sài Gòn: Nhà thờ Đức Bà, Bưu điện thành phố.\r\n\r\nBạn được trải nghiệm những gì?\r\nHành trình bắt đầu với chuyến thăm Bảo tàng chứng tích chiến tranh - top 5 trong số 25 bảo tàng hấp dẫn nhất châu Á. Đến với bảo tàng, bạn sẽ giật mình nhận ra đằng sau một cuộc sống hòa bình, yên ổn - mà bạn tưởng chừng như hiển nhiên này - là cả một chặng đường lịch sử thấm đẫm máu và nước mắt của dân tộc. Bảo tàng chứng tích chiến tranh như một nốt lặng tĩnh tâm giữa chốn phồn hoa đô hội, giúp bạn thêm yêu, thêm trân trọng cuộc sống thanh bình này.\r\n\r\nĐiểm dừng chân tiếp theo của Tour tham quan Sài Gòn chính là Dinh Độc Lập - một di tích quốc gia đặc biệt, dấu son quyền lực của của quá khứ. Dinh Độc Lập còn cuốn hút bạn bởi những câu chuyện lịch sử thú vị về sự hình thành, sự tồn tại, ý nghĩa văn hóa trong lối kiến trúc độc đáo và những dấu mốc lịch sử của đất nước mà nó đã mang trong mình hàng trăm năm qua. Chỉ vài giờ tham quan ngắn ngủi nhưng đủ giúp bạn hình dung về một giai đoạn lịch sử đầy biến động, và thêm tự hào về chiến thắng lịch sử vẻ vang của dân tộc Việt Nam.\r\n\r\nCuối hành trình, hãy trở về trung tâm thành phố để thăm Nhà thờ Đức Bà. Nơi giao hòa giữa nét cổ xưa và hiện đại, giữa kiến trúc phương Tây và văn hóa phương Đông. Bạn sẽ không khỏi trầm trồ thán phục trước màu gạch nơi đây vẫn giữ nguyên vẹn màu hồng tươi, chẳng bám chút bụi rêu, dẫu trải qua bao nắng mưa, thử thách. Nếu muốn tận hưởng hết vẻ đẹp của Nhà thờ Đức Bà, hãy dành chút thời gian ngồi lại, thưởng thức thú vui cà phê bệt trong ánh đèn lung linh phản chiếu từ các tòa cao ốc, cùng hòa nhịp sống với người Sài Gòn khi đêm về. Lúc đó bạn sẽ nhận ra Nhà thờ Đức Bà tựa như một nốt nhạc bình yên giữa bản nhạc xô bồ, vội vã của đất Sài Gòn này.', 'Buổi sáng:  Xe và hướng dẫn viên Trung tâm lữ hành Quốc tế Trippy đón Quý khách tại điểm hẹn, khởi hành đi tham quan. Tham quan Bảo tàng chứng tích chiến tranh trên đường Võ Văn Tần. Di chuyển đến Dinh Độc Lập. Dạo chơi ở Nhà thờ Đức Bà. Tham quan Bưu điện Thành phố. Buổi trưa:  Đoàn về lại điểm đón ban đầu, kết thúc hành trình.', NULL, 20000),
-(2, 'Tham Quan Sài Gòn - TP. HCM 1 Ngày', 'Sài Gòn - Tp.HCM là trung tâm du lịch lớn nhất nước, thu hút hàng năm 70% lượng khách quốc tế đến Việt Nam. Với nhịp sống sôi động, các công trình kiến trúc Pháp cổ: Nhà thờ Đức Bà, Dinh Thống Nhất, Ủy ban nhân dân thành phố, Bưu điện thành phố; khu phố người Hoa và vô số các khu vui chơi, giải trí đã tạo nên sức hấp dẫn của Sài gòn.\r\n\r\nNỔI BẬT:\r\n\r\nCụm kiến trúc thời Pháp + Mỹ: Dinh Thống Nhất, Nhà Thờ Đức Bà, Bưu Điện Thành Phố, Uỷ Ban Nhân Dân Thành Phố. Khu vực hoạt động của người Hoa ở Sài Gòn: Chợ Lớn, chợ Bình Tây.\r\nBảo tàng chiến tích chiến tranh.', '', NULL, 550000);
+(1, 'Tour tham quan Sài Gòn (nửa ngày)', 'Tham quan những địa danh mang đậm dấu ấn lịch sử như Bảo tàng chứng tích chiến tranh, Dinh Độc Lập.\r\nTìm hiểu nét văn hóa và một số kiến trúc độc đáo - điều tạo nên một phần linh hồn mảnh đất Sài Gòn: Nhà thờ Đức Bà, Bưu điện thành phố.\r\n\r\nBạn được trải nghiệm những gì?\r\nHành trình bắt đầu với chuyến thăm Bảo tàng chứng tích chiến tranh - top 5 trong số 25 bảo tàng hấp dẫn nhất châu Á. Đến với bảo tàng, bạn sẽ giật mình nhận ra đằng sau một cuộc sống hòa bình, yên ổn - mà bạn tưởng chừng như hiển nhiên này - là cả một chặng đường lịch sử thấm đẫm máu và nước mắt của dân tộc. Bảo tàng chứng tích chiến tranh như một nốt lặng tĩnh tâm giữa chốn phồn hoa đô hội, giúp bạn thêm yêu, thêm trân trọng cuộc sống thanh bình này.\r\n\r\nĐiểm dừng chân tiếp theo của Tour tham quan Sài Gòn chính là Dinh Độc Lập - một di tích quốc gia đặc biệt, dấu son quyền lực của của quá khứ. Dinh Độc Lập còn cuốn hút bạn bởi những câu chuyện lịch sử thú vị về sự hình thành, sự tồn tại, ý nghĩa văn hóa trong lối kiến trúc độc đáo và những dấu mốc lịch sử của đất nước mà nó đã mang trong mình hàng trăm năm qua. Chỉ vài giờ tham quan ngắn ngủi nhưng đủ giúp bạn hình dung về một giai đoạn lịch sử đầy biến động, và thêm tự hào về chiến thắng lịch sử vẻ vang của dân tộc Việt Nam.\r\n\r\nCuối hành trình, hãy trở về trung tâm thành phố để thăm Nhà thờ Đức Bà. Nơi giao hòa giữa nét cổ xưa và hiện đại, giữa kiến trúc phương Tây và văn hóa phương Đông. Bạn sẽ không khỏi trầm trồ thán phục trước màu gạch nơi đây vẫn giữ nguyên vẹn màu hồng tươi, chẳng bám chút bụi rêu, dẫu trải qua bao nắng mưa, thử thách. Nếu muốn tận hưởng hết vẻ đẹp của Nhà thờ Đức Bà, hãy dành chút thời gian ngồi lại, thưởng thức thú vui cà phê bệt trong ánh đèn lung linh phản chiếu từ các tòa cao ốc, cùng hòa nhịp sống với người Sài Gòn khi đêm về. Lúc đó bạn sẽ nhận ra Nhà thờ Đức Bà tựa như một nốt nhạc bình yên giữa bản nhạc xô bồ, vội vã của đất Sài Gòn này.', 'Buổi sáng:  Xe và hướng dẫn viên Trung tâm lữ hành Quốc tế Trippy đón Quý khách tại điểm hẹn, khởi hành đi tham quan. Tham quan Bảo tàng chứng tích chiến tranh trên đường Võ Văn Tần. Di chuyển đến Dinh Độc Lập. Dạo chơi ở Nhà thờ Đức Bà. Tham quan Bưu điện Thành phố. Buổi trưa:  Đoàn về lại điểm đón ban đầu, kết thúc hành trình.', NULL, 200000),
+(2, 'Tham Quan Sài Gòn - TP. HCM 1 Ngày', 'Sài Gòn - Tp.HCM là trung tâm du lịch lớn nhất nước, thu hút hàng năm 70% lượng khách quốc tế đến Việt Nam. Với nhịp sống sôi động, các công trình kiến trúc Pháp cổ: Nhà thờ Đức Bà, Dinh Thống Nhất, Ủy ban nhân dân thành phố, Bưu điện thành phố; khu phố người Hoa và vô số các khu vui chơi, giải trí đã tạo nên sức hấp dẫn của Sài gòn.\r\n\r\nNỔI BẬT:\r\n\r\nCụm kiến trúc thời Pháp + Mỹ: Dinh Thống Nhất, Nhà Thờ Đức Bà, Bưu Điện Thành Phố, Uỷ Ban Nhân Dân Thành Phố. Khu vực hoạt động của người Hoa ở Sài Gòn: Chợ Lớn, chợ Bình Tây.\r\nBảo tàng chiến tích chiến tranh.', '', NULL, 550000),
+(3, 'Vũng Tàu - Đà Lạt', 'Tour Đà Lạt - Vũng tàu giá rẻ của công ty, với các địa điểm du lịch hàng đầu Việt Nam sẽ khiến bạn và gia đình có những giây phút đáng nhớ trong cuộc đời.', 'Ngày 1: Vũng Tàu - Đà Lạt - Khách sạn. (Ăn sáng, trưa chiều).\r\nNgày 2: Khách sạn - Nhà thờ Con Gà - Thiền viện Trúc Lâm - Dinh Bảo Đại - Showroom hoa nghệ thuật  - Khách sạn. (Ăn sáng, trưa).\r\nNgày 3: Khách sạn - Ga xe lửa cổ - Làng hoa Vạn Thành - Khách sạn (Đà lạt) - Vũng Tàu (Ăn sáng, trưa ,chiều).', 'Nếu Quý khách hủy tour từ 5 ngày trở lên so với ngày khởi hành, chịu phí: 10%\r\nNếu Quý khách hủy sau 2 ngày đến trước ngày đi 24 tiếng: 50%.\r\nNếu Quý khách hủy trong vòng 24 giờ: chịu phí 100 %.', 5000000),
+(4, 'Thành phố Hồ Chí Minh 1 ngày', 'Hành trình du lịch Sài Gòn 1 ngày đưa du khách đến với thành phố mang tên Bác, từ lâu đã là trung tâm văn hóa, kinh tế của Việt Nam, thành phố này còn có có tên gọi khác là Hòn Ngọc Viễn Đông. Đến thành phố Hồ Chí Minh, thành phố có hơn 300 tuổi đời, bạn sẽ thấy những tòa nhà cao tầng, khu vui chơi giải trí, trung tâm mua sắm. Bên cạnh đó những phồn hoa chốn đô thị thì bạn cũng có thể thấy những biệt thự cổ kính, chợ truyền thống lâu đời…\r\n', 'Đại học Khoa Học Tự Nhiên - Nhà thờ Chánh Tòa Đức Bà Sài Gòn - Bưu điện TPHCM - Nhà hát TPHCM - Đại học Khoa học Tự Nhiên (Ăn trưa)', 'Nếu Quý khách hủy tour: chịu phí 100 %.\r\n', 100000),
+(5, 'TPHCM - Đà Lạt - Đà Nẵng', 'Tour TPHCM - Đà Lạt - Đà Nẵng sẽ dừng chân tại một thành phố du lịch nổi tiếng được mệnh danh là Thành phố ngàn thông, Thành phố hoa anh đào, Thành phố mù sương... Cho dù với tên gọi nào thì Đà Lạt vẫn luôn có sức quyến rũ đặc biệt đối với du khách bốn phương bởi khí hậu mát mẻ, không khí trong lành, khung cảnh nên thơ và những truyền thuyết tình yêu lãng mạn. Và  đến với dải đất miền Trung với nhiều nắng gió lại là nơi lưu giữ những giá trị văn hóa con người tạo dựng. Trên dải đất hẹp từ Quảng Bình tới Quảng Nam hình thành nên con đường du lịch di sản miền Trung đã trở thành điểm đến thu hút đông đảo du khách trong và ngoài nước. Hành trình khám phá bức tranh miền Trung xinh đẹp, của Đà Nẵng nổi tiếng với bờ biển dài, quyến rũ; của Hội An nơi phố cổ bình yên, cổ kính; của đất Huế kinh thành lộng lẫy chốn hoàng cung… tất cả tạo ấn tượng cho du khách tham quan. ', 'Ngày 1: Bưu điện TPHCM - Thác Prenn - Thiền viện Trúc Lâm - Khách sạn (Ăn trưa, Ăn tối).\r\nNgày 2 : Khách sạn - Thũng lũng vàng - Dinh Bảo Đại - Làng Hoa Vạn Thành - Showroom hoa nghệ thuật  - Khách sạn. (Ăn sáng, trưa, tối).\r\nNgày 3: Khách sạn - Nhà thờ Con Gà - Ga xe lửa - Chùa Linh Phước - Langbiang - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 4: Khách sạn (Đà Lạt) - Khách sạn (Đà Nẵng) - Bảo tàng 3D TrickEye - Ký Ức Hội An Show - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 5: Khách sạn - Bà Nà Hills - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 6: Khách sạn(Đà Nẵng) -  Bưu điện TPHCM (Ăn sáng, trưa, tối).', 'Nếu Quý khách hủy tour từ 7 ngày trở lên so với ngày khởi hành, chịu phí: 10%\r\nNếu Quý khách hủy sau 3 ngày đến trước ngày đi 2 ngày: 50%.\r\nNếu Quý khách hủy trong vòng 2 ngày: chịu phí 100 %.\r\n', 13000000);
 
 -- --------------------------------------------------------
 
@@ -229,24 +297,27 @@ INSERT INTO `tours` (`id`, `name`, `description`, `detail`, `policy`, `price`) V
 
 CREATE TABLE IF NOT EXISTS `tour_turns` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `start_date` datetime NOT NULL,
-  `end_date` datetime NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
   `num_current_people` int(11) DEFAULT NULL,
   `num_max_people` int(11) NOT NULL,
   `fk_tour` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tour_turns`
 --
 
 INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, `num_max_people`, `fk_tour`) VALUES
-(1, '2019-02-28 00:00:00', '2019-02-28 00:00:00', 1, 15, 1),
-(2, '2019-03-02 00:00:00', '2019-03-02 00:00:00', 0, 15, 1),
-(3, '2019-03-02 00:00:00', '2019-02-02 00:00:00', 0, 20, 2),
-(4, '2019-03-09 00:00:00', '2019-03-09 00:00:00', 0, 20, 2);
+(1, '2019-02-28', '2019-02-28', 1, 15, 1),
+(2, '2019-03-02', '2019-03-02', 0, 15, 1),
+(3, '2019-03-02', '2019-03-02', 0, 20, 2),
+(4, '2019-03-09', '2019-03-09', 0, 20, 2),
+(5, '2019-03-04', '2019-03-06', 0, 60, 3),
+(6, '2019-03-08', '2019-03-08', 0, 30, 4),
+(7, '2019-03-10', '2019-03-15', 0, 50, 5);
 
 -- --------------------------------------------------------
 
@@ -259,31 +330,32 @@ CREATE TABLE IF NOT EXISTS `types` (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `marker` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `types`
 --
 
 INSERT INTO `types` (`id`, `name`, `marker`) VALUES
-(1, 'Quán ăn - Nhà hàng', NULL),
-(2, 'Khu vui chơi giải trí', NULL),
-(3, 'Chợ', NULL),
-(4, 'Chợ đêm', NULL),
-(5, 'Cafe - Trà sữa', NULL),
-(6, 'Trạm xe buýt', NULL),
-(7, 'Cây xăng', NULL),
-(8, 'Khu mua sắm - Trung tâm thương mại', NULL),
-(9, 'Thể thao', NULL),
-(10, 'Công an', NULL),
-(11, 'Bệnh viện', NULL),
-(12, 'Ngân hàng', NULL),
-(13, 'Nhà thờ - Chùa', NULL),
-(14, 'Khách sạn', NULL),
-(15, 'Bảo tàng', NULL),
-(16, 'Công viên', NULL),
-(17, 'Điểm thu hút khách du lịch', NULL),
-(18, 'Điểm xuất phát - kết thúc tour', NULL);
+(1, 'Quán ăn - Nhà hàng', 'restaurant'),
+(2, 'Khu vui chơi giải trí', 'amusement'),
+(3, 'Chợ', 'market'),
+(4, 'Chợ đêm', 'marketnight'),
+(5, 'Cafe - Trà sữa', 'cafe_and_milk_tea'),
+(6, 'Trạm xe buýt', 'bus_stop'),
+(7, 'Cây xăng', 'gas_station'),
+(8, 'Khu mua sắm - Trung tâm thương mại', 'mall'),
+(9, 'Thể thao', 'sport'),
+(10, 'Công an', 'police'),
+(11, 'Bệnh viện', 'hospital'),
+(12, 'Ngân hàng', 'bank'),
+(13, 'Nhà thờ', 'church'),
+(14, 'Khách sạn', 'hotel'),
+(15, 'Bảo tàng', 'museum'),
+(16, 'Công viên', 'park'),
+(17, 'Điểm thu hút khách du lịch', 'tourist_area'),
+(18, 'Điểm xuất phát - kết thúc tour', 'start_end'),
+(19, 'Chùa', 'temple');
 
 -- --------------------------------------------------------
 
