@@ -1,6 +1,7 @@
 const db = require('../models');
 const tours = db.tours;
-
+var Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 exports.create = (req, res) => {
     tours.create(req.body).then(_tour => {
         res.status(200).json(_tour)
@@ -40,10 +41,9 @@ exports.getAllTour = (req, res) => {
                 next_page = -1;
             if (parseInt(_tours.rows.length) === 0)
                 next_page = -1;
-            const result = await addLinkFeaturedImg(_tours.rows, req.headers.host)
             res.status(200).json({
                 itemCount: _tours.rows.length, //số lượng record được trả về
-                data: result,
+                data: _tours.rows,
                 next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
             })
         }).catch(err => {
@@ -69,3 +69,107 @@ exports.getById = (req, res) => {
         })
 }
 
+async function paginate(array, page_size, page_number) {
+    --page_number; // because pages logically start with 1, but technically with 0
+    return array.slice(page_number * page_size, (page_number + 1) * page_size);
+}
+
+
+
+exports.getByLocation = (req, res) => {
+    try {
+        const idLocation = req.query.idLocation;
+        const page_default = 1;
+        const per_page_default = 10;
+        var page, per_page;
+        if (typeof req.query.page === 'undefined') page = page_default;
+        else page = req.query.page
+        if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
+        else per_page = req.query.per_page
+        if (isNaN(page) || isNaN(per_page)) {
+            return res.status(405).json({ msg: 'Params is invalid' })
+        }
+        else {
+            page = parseInt(page);
+            per_page = parseInt(per_page);
+            const query = {
+                include: [{
+                    model: db.tour_turns,
+                    where: {
+                        start_date: {
+                            [Op.gt]: new Date()
+                        }
+                    }
+                },
+                {
+                    model: db.routes,
+                    where: {
+                        fk_location: idLocation
+                    }
+                }],
+                limit: per_page,
+                offset: (page - 1) * per_page
+            }
+            tours.findAndCountAll(query).then(_tours => {
+                var next_page = page + 1;
+                //Kiểm tra còn dữ liệu không
+                if ((parseInt(_tours.rows.length) + (next_page - 2) * per_page) === parseInt(_tours.count))
+                    next_page = -1;
+                //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
+                if ((parseInt(_tours.rows.length) < per_page))
+                    next_page = -1;
+                if (parseInt(_tours.rows.length) === 0)
+                    next_page = -1;
+                return res.status(200).json({
+                    itemCount: _tours.rows.length, //số lượng record được trả về
+                    data: _tours.rows,
+                    next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+                })
+            })
+
+            // const query = {
+            //     attributes: [],
+            //     include: [{
+            //         model: db.tours,
+            //         attributes: ['id']
+            //     }],
+            //     where: {
+            //         fk_location: idLocation
+            //     }
+            // };
+            // db.routes.findAll(query).then(async _routes => {
+            //     var next_page = page + 1;
+            //     const _tours = _routes.map(value => {
+            //         return value.tour
+            //     })
+            //     let _uniqueTours = [...new Set(_tours.map(item => item.id))]
+            //     let _resultTours = await paginate(_uniqueTours, per_page, page)
+            //     if (_resultTours.length < per_page) next_page = -1;
+            //     tours.findAll({
+            //         where: {
+            //             id: {
+            //                 [Op.in]: [1, 2]
+            //             }
+            //         },
+            //         include: [{
+            //             model: db.tour_turns,
+            //             where: {
+            //                 start_date: {
+            //                     [Op.gt]: new Date()
+            //                 }
+            //             }
+            //         }]
+            //     }).then(_resultTourWithData => {
+            //         return res.status(200).json({
+            //             itemCount: _resultTourWithData.length, //số lượng record được trả về
+            //             data: _resultTourWithData,
+            //             next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+            //         })
+            //     })
+            // })
+        }
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err })
+    }
+}

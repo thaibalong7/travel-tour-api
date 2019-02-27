@@ -6,4 +6,8 @@ router.get('/getAll', tours.getAllTour);
 
 router.get('/getById/:id', tours.getById);
 
+// Gởi lên id location, trả về những tour đi ngang qua điểm đó (những tour phải có tour_turns còn nhận order)
+// example call api http://localhost:5000/tour/getByLocation?idLocation=26&per_page=3&page=1
+router.get('/getByLocation', tours.getByLocation);
+
 module.exports = router
