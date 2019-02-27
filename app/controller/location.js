@@ -1,5 +1,7 @@
 const db = require('../models');
 const locations = db.locations;
+var Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 addLinkFeaturedImg = async (_locations, host) => {
     return _locations.map(item => {
@@ -11,6 +13,30 @@ addLinkFeaturedImg = async (_locations, host) => {
             item.featured_img = host + '/assets/images/locationFeatured/' + item.featured_img;
             return item;
         }
+    })
+}
+
+addLinkFeaturedImgAndTour = async (_locations, host) => {
+    return _locations.map(async item => {
+        const query = {
+            attributes: ['id', 'name'],
+            include: [
+                {
+                    attributes: [],
+                    model: db.routes,
+                    where: {
+                        fk_location: item.id
+                    }
+                }]
+        }
+        item.dataValues.tours = await db.tours.findAll(query);
+        if (item.featured_img === null) {
+            // location.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
+        }
+        else {
+            item.featured_img = host + '/assets/images/locationFeatured/' + item.featured_img;
+        }
+        return item;
     })
 }
 
@@ -43,6 +69,7 @@ exports.getAllWithoutPagination = (req, res) => {
 }
 
 exports.getAllLocation = (req, res) => {
+    var isAddTours = (req.query.tour == 'true');
     const page_default = 1;
     const per_page_default = 10;
     var page, per_page;
@@ -73,12 +100,24 @@ exports.getAllLocation = (req, res) => {
                 next_page = -1;
             if (parseInt(_locations.rows.length) === 0)
                 next_page = -1;
-            const result = await addLinkFeaturedImg(_locations.rows, req.headers.host)
-            res.status(200).json({
-                itemCount: _locations.rows.length, //số lượng record được trả về
-                data: result,
-                next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
-            })
+            if (isAddTours) {
+                const result = await addLinkFeaturedImgAndTour(_locations.rows, req.headers.host)
+                Promise.all(result).then(completed => {
+                    res.status(200).json({
+                        itemCount: completed.length, //số lượng record được trả về
+                        data: completed,
+                        next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+                    })
+                })
+            }
+            else {
+                const result = await addLinkFeaturedImg(_locations.rows, req.headers.host)
+                res.status(200).json({
+                    itemCount: _locations.rows.length, //số lượng record được trả về
+                    data: result,
+                    next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+                })
+            }
         }).catch(err => {
             res.status(400).json({ msg: err })
         })
@@ -113,6 +152,7 @@ filterListLocationByDistance = async (lat, lng, distance, _items) => {
 }
 
 exports.getLocationNearMe = async (req, res) => {
+    var isAddTours = (req.query.tour == 'true');
     var distance_default = 1 //kilometer
     var lat = req.body.lat;
     var lng = req.body.lng;
@@ -127,48 +167,68 @@ exports.getLocationNearMe = async (req, res) => {
     lat = parseFloat(lat);
     lng = parseFloat(lng);
     distance = parseInt(distance);
+    var query = {
+        include: [{
+            model: db.types
+        }],
+        where: db.sequelize.and(
+            lat && lng && distance ? db.sequelize.where(
+                db.sequelize.literal(`6371 * acos(cos(radians(${lat})) * cos(radians(locations.latitude)) * cos(radians(${lng}) - radians(locations.longitude)) + sin(radians(${lat})) * sin(radians(locations.latitude)))`),
+                '<=',
+                distance,
+            ) : null,
+        ),
+        limit: 20,
+        offset: 0
+    }
+    locations.findAll(query).then(async _items => {
+        // const result = await filterListLocationByDistance(lat, lng, distance, _items)
+        if (isAddTours) {
+            const result = await addLinkFeaturedImgAndTour(_items, req.headers.host)
+            Promise.all(result).then(completed => {
+                res.status(200).json({
+                    itemCount: completed.length,
+                    data: completed,
+                    distance: distance
+                })
+            })
+        }
+        else {
+            const result = await addLinkFeaturedImg(_items, req.headers.host)
+            res.status(200).json({
+                itemCount: result.length,
+                data: result,
+                distance: distance
+            })
+        }
+    }).catch(err => {
+        res.status(400).json({ msg: err })
+    })
 
-    // var query = {
-    //     include: [{
-    //         model: db.types
-    //     }]
-    // }
-    // locations.findAll(query).then(async _items => {
-    //     const result = await filterListLocationByDistance(lat, lng, distance, _items)
-    //     const result1 = await addLinkFeaturedImg(result, req.headers.host)
+    // var query = 'SELECT' +
+    //     '*, (' +
+    //     '6371 * acos (' +
+    //     'cos ( radians(' + lat + ') )' +
+    //     '* cos( radians( latitude ) )' +
+    //     '* cos( radians( longitude ) - radians(' + lng + ') )' +
+    //     '+ sin ( radians(' + lat + ') )' +
+    //     '* sin( radians( latitude ) )' +
+    //     ')' +
+    //     ') AS distance' +
+    //     ' FROM locations INNER JOIN types ON locations.fk_type = types.id' +
+    //     ' HAVING distance < ' + distance +
+    //     ' ORDER BY distance' +
+    //     ' LIMIT 0 , 20;'
+    // db.sequelize.query(query).then(async _items => {
+    //     const result = await addLinkFeaturedImg(_items[0], req.headers.host)
     //     res.status(200).json({
     //         itemCount: result.length,
-    //         data: result1,
+    //         data: result,
     //         distance: distance
     //     })
     // }).catch(err => {
     //     res.status(400).json({ msg: err })
     // })
-
-    var query = 'SELECT' +
-        '*, (' +
-        '6371 * acos (' +
-        'cos ( radians(' + lat + ') )' +
-        '* cos( radians( latitude ) )' +
-        '* cos( radians( longitude ) - radians(' + lng + ') )' +
-        '+ sin ( radians(' + lat + ') )' +
-        '* sin( radians( latitude ) )' +
-        ')' +
-        ') AS distance' +
-        ' FROM locations' +
-        ' HAVING distance < ' + distance +
-        ' ORDER BY distance' +
-        ' LIMIT 0 , 20;'
-    db.sequelize.query(query).then(async _items => {
-        const result = await addLinkFeaturedImg(_items[0], req.headers.host)
-        res.status(200).json({
-            itemCount: result.length,
-            data: result,
-            distance: distance
-        })
-    }).catch(err => {
-        res.status(400).json({ msg: err })
-    })
 }
 
 exports.getById = (req, res) => {
@@ -211,6 +271,7 @@ exports.getLocationByType = async (req, res) => {
 }
 
 exports.getByTypeNearMe = async (req, res) => {
+    var isAddTours = (req.query.tour == 'true');
     const distance_default = 1; //kilometer
     const type_default = 1; //Quán ăn - Nhà hàng
     var lat = req.body.lat;
@@ -229,19 +290,39 @@ exports.getByTypeNearMe = async (req, res) => {
     lng = parseFloat(lng);
     distance = parseInt(distance);
     var query = {
-        where: { fk_type: type },
+        where: db.sequelize.and(
+            lat && lng && distance ? db.sequelize.where(
+                db.sequelize.literal(`6371 * acos(cos(radians(${lat})) * cos(radians(locations.latitude)) * cos(radians(${lng}) - radians(locations.longitude)) + sin(radians(${lat})) * sin(radians(locations.latitude)))`),
+                '<=',
+                distance,
+            ) : null,
+            { fk_type: type }
+        )
+        ,
         include: [{
             model: db.types
         }]
     }
     locations.findAll(query).then(async _items => {
-        const result = await filterListLocationByDistance(lat, lng, distance, _items)
-        const result1 = await addLinkFeaturedImg(result, req.headers.host)
-        res.status(200).json({
-            itemCount: result.length,
-            data: result1,
-            distance: distance
-        })
+        // const result = await filterListLocationByDistance(lat, lng, distance, _items)
+        if (isAddTours) {
+            const result = await addLinkFeaturedImgAndTour(_items, req.headers.host)
+            Promise.all(result).then(completed => {
+                res.status(200).json({
+                    itemCount: completed.length,
+                    data: completed,
+                    distance: distance
+                })
+            })
+        }
+        else {
+            const result = await addLinkFeaturedImg(_items, req.headers.host)
+            res.status(200).json({
+                itemCount: result.length,
+                data: result,
+                distance: distance
+            })
+        }
     }).catch(err => {
         res.status(400).json({ msg: err })
     })

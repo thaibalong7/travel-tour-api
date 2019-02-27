@@ -12,4 +12,6 @@ router.get('/getByLocation', tours.getByLocation);
 
 router.get('/searchByName', tours.searchByName);
 
+router.get('/searchByPrice', tours.searchByPrice)
+
 module.exports = router
