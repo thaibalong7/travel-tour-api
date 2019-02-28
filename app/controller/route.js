@@ -28,11 +28,11 @@ const addLinkFeaturedImgAndTour = async (_routes, host) => {
                 }]
         }
         item.location.dataValues.tours = await db.tours.findAll(query);
-        if (item.featured_img === null) {
+        if (item.location.featured_img === null) {
             // location.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
         }
         else {
-            item.featured_img = host + '/assets/images/locationFeatured/' + item.featured_img;
+            item.location.featured_img = host + '/assets/images/locationFeatured/' + item.location.featured_img;
         }
         return item;
     })
