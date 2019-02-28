@@ -14,9 +14,10 @@ exports.update = (req, res) => {
         where: {
             id: req.body.id
         }
-    }).then(type => {
+    }).then(async type => {
         res.status(200).json({
             msg: 'Update successfull',
+            data: await types.findByPk(req.body.id)
         })
     }).catch(err => {
         res.status(400).json({ msg: err })

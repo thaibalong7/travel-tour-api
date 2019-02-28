@@ -48,12 +48,13 @@ exports.create = (req, res) => {
     })
 }
 
-exports.updateWithoutFeaturedImg = async (req, res) => {
+exports.updateWithoutFeaturedImg = (req, res) => {
     try {
         req.body.featured_img = undefined;
-        locations.update(req.body, { where: { id: req.body.id } }).then(location => {
+        locations.update(req.body, { where: { id: req.body.id } }).then(async location => {
             res.status(200).json({
                 msg: 'Update successfull',
+                data: await locations.findByPk(req.body.id)
             })
         })
     }
