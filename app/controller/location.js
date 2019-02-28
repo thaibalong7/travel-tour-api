@@ -46,7 +46,20 @@ exports.create = (req, res) => {
     }).catch(err => {
         res.status(400).json({ msg: err })
     })
+}
 
+exports.updateWithoutFeaturedImg = async (req, res) => {
+    try {
+        req.body.featured_img = undefined;
+        locations.update(req.body, { where: { id: req.body.id } }).then(location => {
+            res.status(200).json({
+                msg: 'Update successfull',
+            })
+        })
+    }
+    catch (err) {
+        res.status(400).json({ msg: err })
+    }
 }
 
 exports.getAllWithoutPagination = (req, res) => {

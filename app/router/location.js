@@ -18,4 +18,6 @@ router.get('/getByType/:typeId', locations.getLocationByType)
 // example call api: http://localhost:5000/location/getByTypeNearMe?&tour=false
 router.post('/getByTypeNearMe', locations.getByTypeNearMe) //req.body.lat .lng .distance .type
 
+router.post('/updateWithoutFeaturedImg', locations.updateWithoutFeaturedImg)
+
 module.exports = router
