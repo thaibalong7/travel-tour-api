@@ -3,7 +3,7 @@ const locations = db.locations;
 var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 
-addLinkFeaturedImg = async (_locations, host) => {
+const addLinkFeaturedImg = async (_locations, host) => {
     return _locations.map(item => {
         if (item.featured_img === null) {
             // item.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
@@ -16,7 +16,7 @@ addLinkFeaturedImg = async (_locations, host) => {
     })
 }
 
-addLinkFeaturedImgAndTour = async (_locations, host) => {
+const addLinkFeaturedImgAndTour = async (_locations, host) => {
     return _locations.map(async item => {
         const query = {
             attributes: ['id', 'name'],
@@ -143,7 +143,7 @@ function getDistanceFromLatLonInKm(lat1, lng1, lat2, lng2) {
     }
 }
 
-filterListLocationByDistance = async (lat, lng, distance, _items) => {
+const filterListLocationByDistance = async (lat, lng, distance, _items) => {
     return _items.filter(_location_item => {
         var lat2 = _location_item.latitude;
         var lng2 = _location_item.longitude;

@@ -1,7 +1,7 @@
 const db = require('../models');
 const routes = db.routes;
 
-addLinkFeaturedImg = async (_routes, host) => {
+const addLinkFeaturedImg = async (_routes, host) => {
     return _routes.map(item => {
         if (item.location.featured_img === null) {
             // item.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
@@ -14,7 +14,7 @@ addLinkFeaturedImg = async (_routes, host) => {
     })
 }
 
-addLinkFeaturedImgAndTour = async (_routes, host) => {
+const addLinkFeaturedImgAndTour = async (_routes, host) => {
     return _routes.map(async item => {
         const query = {
             attributes: ['id', 'name'],
