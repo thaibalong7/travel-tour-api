@@ -6,4 +6,7 @@ router.post('/register', users.register);
 router.post('/login', users.login);
 router.get('/me', middlewareAuthUser, users.me);
 
+router.put('/updateSex', middlewareAuthUser, users.updateSex);
+router.put('/updateBirthday', middlewareAuthUser, users.updateBirthday);
+
 module.exports = router

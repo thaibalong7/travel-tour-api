@@ -90,7 +90,7 @@ exports.login = async (req, res) => {
             }
             else {
                 //err params
-                return res.status(404).json({ msg: 'Params is invalid' })
+                return res.status(405).json({ msg: 'Params is invalid' })
             }
         }
         users.findOne(query).then(async _user => {
@@ -100,7 +100,9 @@ exports.login = async (req, res) => {
                 const token = jwt.sign(
                     {
                         username: _user.username,
-                        id: _user.id
+                        id: _user.id,
+                        phone: _user.phone,
+                        email: _user.email
                     },
                     privateKEY,
                     signOptions
@@ -124,10 +126,49 @@ exports.login = async (req, res) => {
 }
 
 exports.me = (req, res) => {
+    try {
+        const _user = req.userData;
+        _user.password = undefined;
+        return res.status(200).json({
+            msg: 'Auth successful',
+            profile: _user
+        })
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err })
+    }
+}
+
+exports.updateSex = async (req, res) => {
     const _user = req.userData;
-    _user.password = undefined;
-    return res.status(200).json({
-        msg: 'Auth successful',
-        profile: _user
-    })
+    if (typeof req.body.sex === 'undefined') {
+        //err params
+        return res.status(405).json({ msg: 'Params is invalid' })
+    }
+    else {
+        _user.sex = req.body.sex;
+        await _user.save();
+        _user.password = undefined;
+        return res.status(200).json({
+            msg: 'Update successful',
+            profile: _user
+        })
+    }
+}
+
+exports.updateBirthday = async (req, res) => {
+    const _user = req.userData;
+    if (typeof req.body.birthday === 'undefined') {
+        //err params
+        return res.status(405).json({ msg: 'Params is invalid' })
+    }
+    else {
+        _user.birthday = req.body.birthday;
+        await _user.save();
+        _user.password = undefined;
+        return res.status(200).json({
+            msg: 'Update successful',
+            profile: _user
+        })
+    }
 }

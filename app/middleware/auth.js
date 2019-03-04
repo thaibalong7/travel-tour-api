@@ -13,7 +13,7 @@ var middlewareAuthUser = (req, res, next) => {
     try {
         const token = req.headers.authorization;
         const decode = jwt.verify(token, publicKEY, verifyOptions);
-        users.findOne({ where: { username: decode.username } }).then(_user => {
+        users.findByPk(decode.id).then(_user => {
             if (!_user) {
                 res.status(401).json({ msg: 'Auth failed' });
             }
