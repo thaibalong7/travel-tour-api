@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
-        name: {
+        fullname: {
             type: Sequelize.STRING,
             allowNull: false
         },
@@ -28,6 +28,14 @@ module.exports = (sequelize, Sequelize) => {
         },
         phone: {
             type: Sequelize.STRING,
+            allowNull: false
+        },
+        email: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        avatar: {
+            type: Sequelize.STRING
         }
     },
         {
