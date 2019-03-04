@@ -58,11 +58,18 @@ exports.getById = (req, res) => {
     const query = {
         where: { id: idTour },
         include: [{
-            model: db.tour_turns
+            model: db.tour_turns,
+            order: [['start_date', 'DESC']]
         },
         {
             model: db.routes,
-            order: [['day', 'ASC'], ['arrive_time', 'ASC']]
+            order: [['day', 'ASC'], ['arrive_time', 'ASC']],
+            include:[{
+                model: db.locations,
+                include: [{
+                    model: db.types
+                }]
+            }]
         }]
     }
     tours.findOne(query).then(_tour => {
