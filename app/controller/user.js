@@ -3,7 +3,8 @@ const users = db.users;
 const bcrypt = require('bcrypt-nodejs');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
-const _ = require('lodash')
+const _ = require('lodash');
+// var fs = require('fs');
 // use 'utf8' to get string instead of byte array  (512 bit key)
 var privateKEY = fs.readFileSync('./app/middleware/private.key', 'utf8');
 const signOptions = {
@@ -109,6 +110,8 @@ exports.login = async (req, res) => {
                     signOptions
                 )
                 const user = _.omit(_user.dataValues, 'password');
+                if (user.avatar !== null)
+                    user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
                 return res.status(200).json({
                     msg: 'Auth successful',
                     token: token,
@@ -131,6 +134,8 @@ exports.me = (req, res) => {
         const _user = req.userData;
         _user.password = undefined;
         const user = _.omit(_user.dataValues, 'password');
+        if (user.avatar !== null)
+            user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
         return res.status(200).json({
             msg: 'Auth successful',
             profile: user
@@ -151,6 +156,8 @@ exports.updateSex = async (req, res) => {
         _user.sex = req.body.sex;
         await _user.save();
         const user = _.omit(_user.dataValues, 'password');
+        if (user.avatar !== null)
+            user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
         return res.status(200).json({
             msg: 'Update successful',
             profile: user
@@ -158,16 +165,52 @@ exports.updateSex = async (req, res) => {
     }
 }
 
-exports.updateBirthday = async (req, res) => {
+exports.updateBirthdate = async (req, res) => {
     const _user = req.userData;
-    if (typeof req.body.birthday === 'undefined') {
+    if (typeof req.body.birthdate === 'undefined') {
         //err params
         return res.status(405).json({ msg: 'Params is invalid' })
     }
     else {
-        _user.birthday = req.body.birthday;
+        _user.birthdate = req.body.birthdate;
         await _user.save();
         const user = _.omit(_user.dataValues, 'password');
+        if (user.avatar !== null)
+            user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
+        return res.status(200).json({
+            msg: 'Update successful',
+            profile: user
+        })
+    }
+}
+
+exports.update = async (req, res) => {
+    const _user = req.userData;
+    if (typeof req.body.birthdate !== 'undefined')
+        _user.birthdate = new Date(req.body.birthdate)
+    if (typeof req.body.sex !== 'undefined')
+        _user.sex = req.body.sex
+    if (typeof req.file !== 'undefined') {
+        fs.writeFile('public/assets/avatar/' + req.file.originalname, req.file.buffer, async (err) => {
+            if (err) {
+                return res.status(400).json({ msg: err })
+            }
+            let avatar = req.headers.host + '/assets/avatar/' + req.file.originalname;
+            _user.avatar = req.file.originalname;
+            await _user.save();
+            const user = _.omit(_user.dataValues, 'password');
+            user.avatar = avatar;
+            return res.status(200).json({
+                msg: 'Update successful',
+                profile: user
+            })
+        })
+    }
+    else {
+        await _user.save();
+        const user = _.omit(_user.dataValues, 'password');
+        if (user.avatar !== null)
+            user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
         return res.status(200).json({
             msg: 'Update successful',
             profile: user
