@@ -13,14 +13,20 @@ var middlewareAuthUser = (req, res, next) => {
     try {
         const token = req.headers.authorization;
         const decode = jwt.verify(token, publicKEY, verifyOptions);
-        users.findByPk(decode.id).then(_user => {
-            if (!_user) {
+        db.blacklist_tokens.findOne({ where: { token: token } }).then(_blacktoken => {
+            if (!_blacktoken) {
+                users.findByPk(decode.id).then(_user => {
+                    if (!_user) {
+                        res.status(401).json({ msg: 'Auth failed' });
+                    }
+                    else {
+                        req.userData = _user;
+                        next();
+                    }
+                })
+            }
+            else
                 res.status(401).json({ msg: 'Auth failed' });
-            }
-            else {
-                req.userData = _user;
-                next();
-            }
         })
     } catch (error) {
         res.status(401).json({ msg: 'Auth failed' });
@@ -43,7 +49,7 @@ var middlewareAuthAdmin = (req, res, next) => {
                 else res.status(401).json({ msg: 'Auth failed' });
             }
         })
-       
+
     } catch (error) {
         res.status(401).json({ msg: 'Auth failed' });
     }

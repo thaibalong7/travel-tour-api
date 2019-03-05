@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt-nodejs');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const helper = require('../helper')
 // var fs = require('fs');
 // use 'utf8' to get string instead of byte array  (512 bit key)
 var privateKEY = fs.readFileSync('./app/middleware/private.key', 'utf8');
@@ -12,28 +13,18 @@ const signOptions = {
     algorithm: "RS256"
 }
 
-async function validateEmail(email) {
-    var Regex = /(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/
-    return Regex.test(email);
-}
-
-async function validatePhoneNumber(phone_number) {
-    var Regex = /^\d{10}$/
-    return Regex.test(phone_number);
-}
-
 exports.register = async (req, res) => {
     try {
-        if (await validateEmail(req.body.email)) {
+        if (await helper.validateEmail(req.body.email)) {
             //true //valid
-            if (await validatePhoneNumber(req.body.phone)) {
+            if (await helper.validatePhoneNumber(req.body.phone)) {
                 //true //valid
                 const checkUser = await users.findOne({
                     where: db.sequelize.literal(`email='${req.body.email}' OR phone='${req.body.phone}'`)
                 })
                 if (!checkUser) {
                     req.body.password = bcrypt.hashSync(req.body.password, null, null).toString();
-                    users.create(req.body).then(_user => {
+                    users.create(req.body).then(async _user => {
                         const token = jwt.sign(
                             {
                                 fullname: _user.fullname,
@@ -44,6 +35,7 @@ exports.register = async (req, res) => {
                             privateKEY,
                             signOptions
                         )
+                        _user = await users.findByPk(_user.id);
                         const user = _.omit(_user.dataValues, 'password');
                         return res.status(200).json({
                             msg: 'Register successful',
@@ -73,7 +65,7 @@ exports.login = async (req, res) => {
     //login by email or phone
     try {
         var query;
-        if (await validateEmail(req.body.username)) {
+        if (await helper.validateEmail(req.body.username)) {
             //login by email
             query = {
                 where: {
@@ -82,7 +74,7 @@ exports.login = async (req, res) => {
             }
         }
         else {
-            if (await validatePhoneNumber(req.body.username)) {
+            if (await helper.validatePhoneNumber(req.body.username)) {
                 //login by phone
                 query = {
                     where: {
@@ -215,5 +207,16 @@ exports.update = async (req, res) => {
             msg: 'Update successful',
             profile: user
         })
+    }
+}
+
+exports.logout = (req, res) => {
+    try {
+        const token = req.headers.authorization;
+        db.blacklist_tokens.create({ token: token });
+        return res.status(200).json({ msg: 'Logout successful' })
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err })
     }
 }

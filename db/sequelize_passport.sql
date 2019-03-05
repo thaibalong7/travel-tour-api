@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 05, 2019 lúc 11:41 AM
+-- Thời gian đã tạo: Th3 05, 2019 lúc 04:35 PM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -45,6 +45,25 @@ CREATE TABLE IF NOT EXISTS `admins` (
 INSERT INTO `admins` (`id`, `username`, `name`, `password`) VALUES
 (1, 'admin', 'ADMIN', '$2a$10$YhVl2OqbcNyQKarX8pb6..XsXpOgNZmXslgtZnKrcIOZ45rxVSkJm'),
 (2, 'nnlinh97', 'nnlinh', '$2a$10$JyHUnzm6z5/l1NdQR0IJjOrpMnGbm456hRqMa2a2CN26vrTLThrZe');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `blacklist_tokens`
+--
+
+CREATE TABLE IF NOT EXISTS `blacklist_tokens` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `blacklist_tokens`
+--
+
+INSERT INTO `blacklist_tokens` (`id`, `token`) VALUES
+(6, 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsbmFtZSI6Im5ldyB1c3NlciIsImlkIjo5LCJwaG9uZSI6IjAxMDI1MjE1NDgiLCJlbWFpbCI6Im5ld3VzZXJAZ21haWwuY29tIiwiaWF0IjoxNTUxNzk2NzI4LCJleHAiOjE1NTE4ODMxMjh9.BkR6GK9On1Tg2j9W1D2zUhOLujiemRLARf33_9GnmnIMJLhx50R_cAufp4iiBOtuqSIr-NUAknG-6iiJnz1hyg');
 
 -- --------------------------------------------------------
 
@@ -273,6 +292,7 @@ CREATE TABLE IF NOT EXISTS `tours` (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci,
   `detail` text COLLATE utf8_unicode_ci NOT NULL,
+  `featured_img` text COLLATE utf8_unicode_ci,
   `policy` text COLLATE utf8_unicode_ci,
   `price` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -283,12 +303,12 @@ CREATE TABLE IF NOT EXISTS `tours` (
 -- Đang đổ dữ liệu cho bảng `tours`
 --
 
-INSERT INTO `tours` (`id`, `name`, `description`, `detail`, `policy`, `price`) VALUES
-(1, 'Tour tham quan Sài Gòn (nửa ngày)', 'Tham quan những địa danh mang đậm dấu ấn lịch sử như Bảo tàng chứng tích chiến tranh, Dinh Độc Lập.\r\nTìm hiểu nét văn hóa và một số kiến trúc độc đáo - điều tạo nên một phần linh hồn mảnh đất Sài Gòn: Nhà thờ Đức Bà, Bưu điện thành phố.\r\n\r\nBạn được trải nghiệm những gì?\r\nHành trình bắt đầu với chuyến thăm Bảo tàng chứng tích chiến tranh - top 5 trong số 25 bảo tàng hấp dẫn nhất châu Á. Đến với bảo tàng, bạn sẽ giật mình nhận ra đằng sau một cuộc sống hòa bình, yên ổn - mà bạn tưởng chừng như hiển nhiên này - là cả một chặng đường lịch sử thấm đẫm máu và nước mắt của dân tộc. Bảo tàng chứng tích chiến tranh như một nốt lặng tĩnh tâm giữa chốn phồn hoa đô hội, giúp bạn thêm yêu, thêm trân trọng cuộc sống thanh bình này.\r\n\r\nĐiểm dừng chân tiếp theo của Tour tham quan Sài Gòn chính là Dinh Độc Lập - một di tích quốc gia đặc biệt, dấu son quyền lực của của quá khứ. Dinh Độc Lập còn cuốn hút bạn bởi những câu chuyện lịch sử thú vị về sự hình thành, sự tồn tại, ý nghĩa văn hóa trong lối kiến trúc độc đáo và những dấu mốc lịch sử của đất nước mà nó đã mang trong mình hàng trăm năm qua. Chỉ vài giờ tham quan ngắn ngủi nhưng đủ giúp bạn hình dung về một giai đoạn lịch sử đầy biến động, và thêm tự hào về chiến thắng lịch sử vẻ vang của dân tộc Việt Nam.\r\n\r\nCuối hành trình, hãy trở về trung tâm thành phố để thăm Nhà thờ Đức Bà. Nơi giao hòa giữa nét cổ xưa và hiện đại, giữa kiến trúc phương Tây và văn hóa phương Đông. Bạn sẽ không khỏi trầm trồ thán phục trước màu gạch nơi đây vẫn giữ nguyên vẹn màu hồng tươi, chẳng bám chút bụi rêu, dẫu trải qua bao nắng mưa, thử thách. Nếu muốn tận hưởng hết vẻ đẹp của Nhà thờ Đức Bà, hãy dành chút thời gian ngồi lại, thưởng thức thú vui cà phê bệt trong ánh đèn lung linh phản chiếu từ các tòa cao ốc, cùng hòa nhịp sống với người Sài Gòn khi đêm về. Lúc đó bạn sẽ nhận ra Nhà thờ Đức Bà tựa như một nốt nhạc bình yên giữa bản nhạc xô bồ, vội vã của đất Sài Gòn này.', 'Buổi sáng:  Xe và hướng dẫn viên Trung tâm lữ hành Quốc tế Trippy đón Quý khách tại điểm hẹn, khởi hành đi tham quan. Tham quan Bảo tàng chứng tích chiến tranh trên đường Võ Văn Tần. Di chuyển đến Dinh Độc Lập. Dạo chơi ở Nhà thờ Đức Bà. Tham quan Bưu điện Thành phố. Buổi trưa:  Đoàn về lại điểm đón ban đầu, kết thúc hành trình.', NULL, 200000),
-(2, 'Tham Quan Sài Gòn - TP. HCM 1 Ngày', 'Sài Gòn - Tp.HCM là trung tâm du lịch lớn nhất nước, thu hút hàng năm 70% lượng khách quốc tế đến Việt Nam. Với nhịp sống sôi động, các công trình kiến trúc Pháp cổ: Nhà thờ Đức Bà, Dinh Thống Nhất, Ủy ban nhân dân thành phố, Bưu điện thành phố; khu phố người Hoa và vô số các khu vui chơi, giải trí đã tạo nên sức hấp dẫn của Sài gòn.\r\n\r\nNỔI BẬT:\r\n\r\nCụm kiến trúc thời Pháp + Mỹ: Dinh Thống Nhất, Nhà Thờ Đức Bà, Bưu Điện Thành Phố, Uỷ Ban Nhân Dân Thành Phố. Khu vực hoạt động của người Hoa ở Sài Gòn: Chợ Lớn, chợ Bình Tây.\r\nBảo tàng chiến tích chiến tranh.', '', NULL, 550000),
-(3, 'Vũng Tàu - Đà Lạt', 'Tour Đà Lạt - Vũng tàu giá rẻ của công ty, với các địa điểm du lịch hàng đầu Việt Nam sẽ khiến bạn và gia đình có những giây phút đáng nhớ trong cuộc đời.', 'Ngày 1: Vũng Tàu - Đà Lạt - Khách sạn. (Ăn sáng, trưa chiều).\r\nNgày 2: Khách sạn - Nhà thờ Con Gà - Thiền viện Trúc Lâm - Dinh Bảo Đại - Showroom hoa nghệ thuật  - Khách sạn. (Ăn sáng, trưa).\r\nNgày 3: Khách sạn - Ga xe lửa cổ - Làng hoa Vạn Thành - Khách sạn (Đà lạt) - Vũng Tàu (Ăn sáng, trưa ,chiều).', 'Nếu Quý khách hủy tour từ 5 ngày trở lên so với ngày khởi hành, chịu phí: 10%\r\nNếu Quý khách hủy sau 2 ngày đến trước ngày đi 24 tiếng: 50%.\r\nNếu Quý khách hủy trong vòng 24 giờ: chịu phí 100 %.', 5000000),
-(4, 'Thành phố Hồ Chí Minh 1 ngày', 'Hành trình du lịch Sài Gòn 1 ngày đưa du khách đến với thành phố mang tên Bác, từ lâu đã là trung tâm văn hóa, kinh tế của Việt Nam, thành phố này còn có có tên gọi khác là Hòn Ngọc Viễn Đông. Đến thành phố Hồ Chí Minh, thành phố có hơn 300 tuổi đời, bạn sẽ thấy những tòa nhà cao tầng, khu vui chơi giải trí, trung tâm mua sắm. Bên cạnh đó những phồn hoa chốn đô thị thì bạn cũng có thể thấy những biệt thự cổ kính, chợ truyền thống lâu đời…\r\n', 'Đại học Khoa Học Tự Nhiên - Nhà thờ Chánh Tòa Đức Bà Sài Gòn - Bưu điện TPHCM - Nhà hát TPHCM - Đại học Khoa học Tự Nhiên (Ăn trưa)', 'Nếu Quý khách hủy tour: chịu phí 100 %.\r\n', 100000),
-(5, 'TPHCM - Đà Lạt - Đà Nẵng', 'Tour TPHCM - Đà Lạt - Đà Nẵng sẽ dừng chân tại một thành phố du lịch nổi tiếng được mệnh danh là Thành phố ngàn thông, Thành phố hoa anh đào, Thành phố mù sương... Cho dù với tên gọi nào thì Đà Lạt vẫn luôn có sức quyến rũ đặc biệt đối với du khách bốn phương bởi khí hậu mát mẻ, không khí trong lành, khung cảnh nên thơ và những truyền thuyết tình yêu lãng mạn. Và  đến với dải đất miền Trung với nhiều nắng gió lại là nơi lưu giữ những giá trị văn hóa con người tạo dựng. Trên dải đất hẹp từ Quảng Bình tới Quảng Nam hình thành nên con đường du lịch di sản miền Trung đã trở thành điểm đến thu hút đông đảo du khách trong và ngoài nước. Hành trình khám phá bức tranh miền Trung xinh đẹp, của Đà Nẵng nổi tiếng với bờ biển dài, quyến rũ; của Hội An nơi phố cổ bình yên, cổ kính; của đất Huế kinh thành lộng lẫy chốn hoàng cung… tất cả tạo ấn tượng cho du khách tham quan. ', 'Ngày 1: Bưu điện TPHCM - Thác Prenn - Thiền viện Trúc Lâm - Khách sạn (Ăn trưa, Ăn tối).\r\nNgày 2 : Khách sạn - Thũng lũng vàng - Dinh Bảo Đại - Làng Hoa Vạn Thành - Showroom hoa nghệ thuật  - Khách sạn. (Ăn sáng, trưa, tối).\r\nNgày 3: Khách sạn - Nhà thờ Con Gà - Ga xe lửa - Chùa Linh Phước - Langbiang - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 4: Khách sạn (Đà Lạt) - Khách sạn (Đà Nẵng) - Bảo tàng 3D TrickEye - Ký Ức Hội An Show - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 5: Khách sạn - Bà Nà Hills - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 6: Khách sạn(Đà Nẵng) -  Bưu điện TPHCM (Ăn sáng, trưa, tối).', 'Nếu Quý khách hủy tour từ 7 ngày trở lên so với ngày khởi hành, chịu phí: 10%\r\nNếu Quý khách hủy sau 3 ngày đến trước ngày đi 2 ngày: 50%.\r\nNếu Quý khách hủy trong vòng 2 ngày: chịu phí 100 %.\r\n', 13000000);
+INSERT INTO `tours` (`id`, `name`, `description`, `detail`, `featured_img`, `policy`, `price`) VALUES
+(1, 'Tour tham quan Sài Gòn (nửa ngày)', 'Tham quan những địa danh mang đậm dấu ấn lịch sử như Bảo tàng chứng tích chiến tranh, Dinh Độc Lập.\r\nTìm hiểu nét văn hóa và một số kiến trúc độc đáo - điều tạo nên một phần linh hồn mảnh đất Sài Gòn: Nhà thờ Đức Bà, Bưu điện thành phố.\r\n\r\nBạn được trải nghiệm những gì?\r\nHành trình bắt đầu với chuyến thăm Bảo tàng chứng tích chiến tranh - top 5 trong số 25 bảo tàng hấp dẫn nhất châu Á. Đến với bảo tàng, bạn sẽ giật mình nhận ra đằng sau một cuộc sống hòa bình, yên ổn - mà bạn tưởng chừng như hiển nhiên này - là cả một chặng đường lịch sử thấm đẫm máu và nước mắt của dân tộc. Bảo tàng chứng tích chiến tranh như một nốt lặng tĩnh tâm giữa chốn phồn hoa đô hội, giúp bạn thêm yêu, thêm trân trọng cuộc sống thanh bình này.\r\n\r\nĐiểm dừng chân tiếp theo của Tour tham quan Sài Gòn chính là Dinh Độc Lập - một di tích quốc gia đặc biệt, dấu son quyền lực của của quá khứ. Dinh Độc Lập còn cuốn hút bạn bởi những câu chuyện lịch sử thú vị về sự hình thành, sự tồn tại, ý nghĩa văn hóa trong lối kiến trúc độc đáo và những dấu mốc lịch sử của đất nước mà nó đã mang trong mình hàng trăm năm qua. Chỉ vài giờ tham quan ngắn ngủi nhưng đủ giúp bạn hình dung về một giai đoạn lịch sử đầy biến động, và thêm tự hào về chiến thắng lịch sử vẻ vang của dân tộc Việt Nam.\r\n\r\nCuối hành trình, hãy trở về trung tâm thành phố để thăm Nhà thờ Đức Bà. Nơi giao hòa giữa nét cổ xưa và hiện đại, giữa kiến trúc phương Tây và văn hóa phương Đông. Bạn sẽ không khỏi trầm trồ thán phục trước màu gạch nơi đây vẫn giữ nguyên vẹn màu hồng tươi, chẳng bám chút bụi rêu, dẫu trải qua bao nắng mưa, thử thách. Nếu muốn tận hưởng hết vẻ đẹp của Nhà thờ Đức Bà, hãy dành chút thời gian ngồi lại, thưởng thức thú vui cà phê bệt trong ánh đèn lung linh phản chiếu từ các tòa cao ốc, cùng hòa nhịp sống với người Sài Gòn khi đêm về. Lúc đó bạn sẽ nhận ra Nhà thờ Đức Bà tựa như một nốt nhạc bình yên giữa bản nhạc xô bồ, vội vã của đất Sài Gòn này.', 'Buổi sáng:  Xe và hướng dẫn viên Trung tâm lữ hành Quốc tế Trippy đón Quý khách tại điểm hẹn, khởi hành đi tham quan. Tham quan Bảo tàng chứng tích chiến tranh trên đường Võ Văn Tần. Di chuyển đến Dinh Độc Lập. Dạo chơi ở Nhà thờ Đức Bà. Tham quan Bưu điện Thành phố. Buổi trưa:  Đoàn về lại điểm đón ban đầu, kết thúc hành trình.', NULL, NULL, 200000),
+(2, 'Tham Quan Sài Gòn - TP. HCM 1 Ngày', 'Sài Gòn - Tp.HCM là trung tâm du lịch lớn nhất nước, thu hút hàng năm 70% lượng khách quốc tế đến Việt Nam. Với nhịp sống sôi động, các công trình kiến trúc Pháp cổ: Nhà thờ Đức Bà, Dinh Thống Nhất, Ủy ban nhân dân thành phố, Bưu điện thành phố; khu phố người Hoa và vô số các khu vui chơi, giải trí đã tạo nên sức hấp dẫn của Sài gòn.\r\n\r\nNỔI BẬT:\r\n\r\nCụm kiến trúc thời Pháp + Mỹ: Dinh Thống Nhất, Nhà Thờ Đức Bà, Bưu Điện Thành Phố, Uỷ Ban Nhân Dân Thành Phố. Khu vực hoạt động của người Hoa ở Sài Gòn: Chợ Lớn, chợ Bình Tây.\r\nBảo tàng chiến tích chiến tranh.', '', NULL, NULL, 550000),
+(3, 'Vũng Tàu - Đà Lạt', 'Tour Đà Lạt - Vũng tàu giá rẻ của công ty, với các địa điểm du lịch hàng đầu Việt Nam sẽ khiến bạn và gia đình có những giây phút đáng nhớ trong cuộc đời.', 'Ngày 1: Vũng Tàu - Đà Lạt - Khách sạn. (Ăn sáng, trưa chiều).\r\nNgày 2: Khách sạn - Nhà thờ Con Gà - Thiền viện Trúc Lâm - Dinh Bảo Đại - Showroom hoa nghệ thuật  - Khách sạn. (Ăn sáng, trưa).\r\nNgày 3: Khách sạn - Ga xe lửa cổ - Làng hoa Vạn Thành - Khách sạn (Đà lạt) - Vũng Tàu (Ăn sáng, trưa ,chiều).', NULL, 'Nếu Quý khách hủy tour từ 5 ngày trở lên so với ngày khởi hành, chịu phí: 10%\r\nNếu Quý khách hủy sau 2 ngày đến trước ngày đi 24 tiếng: 50%.\r\nNếu Quý khách hủy trong vòng 24 giờ: chịu phí 100 %.', 5000000),
+(4, 'Thành phố Hồ Chí Minh 1 ngày', 'Hành trình du lịch Sài Gòn 1 ngày đưa du khách đến với thành phố mang tên Bác, từ lâu đã là trung tâm văn hóa, kinh tế của Việt Nam, thành phố này còn có có tên gọi khác là Hòn Ngọc Viễn Đông. Đến thành phố Hồ Chí Minh, thành phố có hơn 300 tuổi đời, bạn sẽ thấy những tòa nhà cao tầng, khu vui chơi giải trí, trung tâm mua sắm. Bên cạnh đó những phồn hoa chốn đô thị thì bạn cũng có thể thấy những biệt thự cổ kính, chợ truyền thống lâu đời…\r\n', 'Đại học Khoa Học Tự Nhiên - Nhà thờ Chánh Tòa Đức Bà Sài Gòn - Bưu điện TPHCM - Nhà hát TPHCM - Đại học Khoa học Tự Nhiên (Ăn trưa)', NULL, 'Nếu Quý khách hủy tour: chịu phí 100 %.\r\n', 100000),
+(5, 'TPHCM - Đà Lạt - Đà Nẵng', 'Tour TPHCM - Đà Lạt - Đà Nẵng sẽ dừng chân tại một thành phố du lịch nổi tiếng được mệnh danh là Thành phố ngàn thông, Thành phố hoa anh đào, Thành phố mù sương... Cho dù với tên gọi nào thì Đà Lạt vẫn luôn có sức quyến rũ đặc biệt đối với du khách bốn phương bởi khí hậu mát mẻ, không khí trong lành, khung cảnh nên thơ và những truyền thuyết tình yêu lãng mạn. Và  đến với dải đất miền Trung với nhiều nắng gió lại là nơi lưu giữ những giá trị văn hóa con người tạo dựng. Trên dải đất hẹp từ Quảng Bình tới Quảng Nam hình thành nên con đường du lịch di sản miền Trung đã trở thành điểm đến thu hút đông đảo du khách trong và ngoài nước. Hành trình khám phá bức tranh miền Trung xinh đẹp, của Đà Nẵng nổi tiếng với bờ biển dài, quyến rũ; của Hội An nơi phố cổ bình yên, cổ kính; của đất Huế kinh thành lộng lẫy chốn hoàng cung… tất cả tạo ấn tượng cho du khách tham quan. ', 'Ngày 1: Bưu điện TPHCM - Thác Prenn - Thiền viện Trúc Lâm - Khách sạn (Ăn trưa, Ăn tối).\r\nNgày 2 : Khách sạn - Thũng lũng vàng - Dinh Bảo Đại - Làng Hoa Vạn Thành - Showroom hoa nghệ thuật  - Khách sạn. (Ăn sáng, trưa, tối).\r\nNgày 3: Khách sạn - Nhà thờ Con Gà - Ga xe lửa - Chùa Linh Phước - Langbiang - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 4: Khách sạn (Đà Lạt) - Khách sạn (Đà Nẵng) - Bảo tàng 3D TrickEye - Ký Ức Hội An Show - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 5: Khách sạn - Bà Nà Hills - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 6: Khách sạn(Đà Nẵng) -  Bưu điện TPHCM (Ăn sáng, trưa, tối).', NULL, 'Nếu Quý khách hủy tour từ 7 ngày trở lên so với ngày khởi hành, chịu phí: 10%\r\nNếu Quý khách hủy sau 3 ngày đến trước ngày đi 2 ngày: 50%.\r\nNếu Quý khách hủy trong vòng 2 ngày: chịu phí 100 %.\r\n', 13000000);
 
 -- --------------------------------------------------------
 
@@ -375,7 +395,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `avatar` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `users`
@@ -386,7 +406,8 @@ INSERT INTO `users` (`id`, `username`, `fullname`, `password`, `sex`, `birthdate
 (3, 'thaibalong', 'Thái Bá Long 2', '$2a$10$8SBPUyrj4QpJ8sHJbP1oAelXSTnNUDZX6YyvG3b0adczBWoeEDD9y', 'male', NULL, NULL, 'tblong@gmail.com', NULL),
 (4, 'nguoila', 'Người Lạ Ơi', '$2a$10$e4s.xPY2iZZ6nvD9wnZZcOHCC3kjycEQhkkZ79qieZ4PkvpAK/Zi.', 'male', NULL, '0702524116', 'la@gmail.com', NULL),
 (5, 'nguoila', 'Người Lạ Ơi 02', '$2a$10$k3u4SQeoH1k..vxPcbbIkuTtcopvtqoWJykbYQzah0yQ5InD452Sm', 'female', NULL, '0802524116', 'la02@gmail.com', NULL),
-(7, 'nnlinh97', 'Người Lạ', '$2a$10$o48sRtWBKq/t5xuBrXCcM.klfGp8d7LrEW7HEXnk.XBD1Ck5rQeuG', 'male', '1997-11-15 00:00:00', '0102524119', 'la0003@gmail.com', 'anh avatar dep 2.jpg');
+(7, 'nnlinh97', 'Người Lạ', '$2a$10$o48sRtWBKq/t5xuBrXCcM.klfGp8d7LrEW7HEXnk.XBD1Ck5rQeuG', 'male', '1997-10-14 00:00:00', '0102524119', 'la0003@gmail.com', 'anh avatar dep 2.jpg'),
+(9, '', 'new usser', '$2a$10$pMGL.MIV1OA3bh1K.btHne8yN1SUh30ohbkZNtNYGDSeFmfuxbG76', 'male', NULL, '0102521548', 'newuser@gmail.com', NULL);
 
 --
 -- Các ràng buộc cho các bảng đã đổ

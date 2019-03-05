@@ -4,7 +4,7 @@ var passport = require('passport')
 var session = require('express-session')
 var bodyParser = require('body-parser')
 var env = require('dotenv');
-
+var cronjob = require('./app/cronjob');
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const configFileMapping = {
     'development': './env/.env.development',
@@ -63,5 +63,8 @@ var server = app.listen(server_port, server_host, function (err) {
         console.log(`App listening at port ${server_port}`);
     else console.log(err)
 });
+
+cronjob.cron_ckeck_token();
+
 
 module.exports = server;

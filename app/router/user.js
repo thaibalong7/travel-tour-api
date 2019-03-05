@@ -14,4 +14,5 @@ router.put('/updateBirthdate', middlewareAuthUser, users.updateBirthdate);
 
 router.put('/update', middlewareAuthUser, upload.single('avatar'), users.update);
 
+router.get('/logout', middlewareAuthUser, users.logout);
 module.exports = router
