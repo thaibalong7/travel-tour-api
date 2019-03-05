@@ -18,6 +18,10 @@ module.exports = function(sequelize, Sequelize) {
       type: Sequelize.TEXT,
       allowNull: true
     },
+    featured_img: {
+      type: Sequelize.TEXT,
+      allowNull: true
+    },
     policy:{
       type: Sequelize.TEXT,
       allowNull: true
