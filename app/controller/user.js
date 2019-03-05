@@ -3,7 +3,7 @@ const users = db.users;
 const bcrypt = require('bcrypt-nodejs');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
-
+const _ = require('lodash')
 // use 'utf8' to get string instead of byte array  (512 bit key)
 var privateKEY = fs.readFileSync('./app/middleware/private.key', 'utf8');
 const signOptions = {
@@ -33,10 +33,9 @@ exports.register = async (req, res) => {
                 if (!checkUser) {
                     req.body.password = bcrypt.hashSync(req.body.password, null, null).toString();
                     users.create(req.body).then(_user => {
-                        _user.password = undefined
                         const token = jwt.sign(
                             {
-                                username: _user.username,
+                                fullname: _user.fullname,
                                 id: _user.id,
                                 phone: _user.phone,
                                 email: _user.email
@@ -44,10 +43,11 @@ exports.register = async (req, res) => {
                             privateKEY,
                             signOptions
                         )
+                        const user = _.omit(_user.dataValues, 'password');
                         return res.status(200).json({
                             msg: 'Register successful',
                             token: token,
-                            profile: _user
+                            profile: user
                         })
                     })
                 }
@@ -66,19 +66,6 @@ exports.register = async (req, res) => {
     catch (err) {
         return res.status(400).json({ msg: err })
     }
-
-
-    // users.findAll({ where: { username: req.body.username } }).then(user => {
-    //     if (user.length >= 1)
-    //         return res.status(403).json({ msg: 'Username already exists' })
-    //     req.body.password = bcrypt.hashSync(req.body.password, null, null).toString();
-    //     users.create(req.body).then(_user => {
-    //         _user.password = undefined
-    //         return res.status(200).json(_user)
-    //     }).catch(err => {
-    //         return res.status(400).json({ msg: err })
-    //     })
-    // })
 }
 
 exports.login = async (req, res) => {
@@ -113,7 +100,7 @@ exports.login = async (req, res) => {
             if (bcrypt.compareSync(req.body.password, _user.password)) {
                 const token = jwt.sign(
                     {
-                        username: _user.username,
+                        fullname: _user.fullname,
                         id: _user.id,
                         phone: _user.phone,
                         email: _user.email
@@ -121,11 +108,11 @@ exports.login = async (req, res) => {
                     privateKEY,
                     signOptions
                 )
-                _user.password = undefined
+                const user = _.omit(_user.dataValues, 'password');
                 return res.status(200).json({
                     msg: 'Auth successful',
                     token: token,
-                    profile: _user
+                    profile: user
                 })
             }
             else
@@ -143,9 +130,10 @@ exports.me = (req, res) => {
     try {
         const _user = req.userData;
         _user.password = undefined;
+        const user = _.omit(_user.dataValues, 'password');
         return res.status(200).json({
             msg: 'Auth successful',
-            profile: _user
+            profile: user
         })
     }
     catch (err) {
@@ -162,10 +150,10 @@ exports.updateSex = async (req, res) => {
     else {
         _user.sex = req.body.sex;
         await _user.save();
-        _user.password = undefined;
+        const user = _.omit(_user.dataValues, 'password');
         return res.status(200).json({
             msg: 'Update successful',
-            profile: _user
+            profile: user
         })
     }
 }
@@ -179,10 +167,10 @@ exports.updateBirthday = async (req, res) => {
     else {
         _user.birthday = req.body.birthday;
         await _user.save();
-        _user.password = undefined;
+        const user = _.omit(_user.dataValues, 'password');
         return res.status(200).json({
             msg: 'Update successful',
-            profile: _user
+            profile: user
         })
     }
 }
