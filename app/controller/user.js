@@ -34,7 +34,21 @@ exports.register = async (req, res) => {
                     req.body.password = bcrypt.hashSync(req.body.password, null, null).toString();
                     users.create(req.body).then(_user => {
                         _user.password = undefined
-                        return res.status(200).json(_user)
+                        const token = jwt.sign(
+                            {
+                                username: _user.username,
+                                id: _user.id,
+                                phone: _user.phone,
+                                email: _user.email
+                            },
+                            privateKEY,
+                            signOptions
+                        )
+                        return res.status(200).json({
+                            msg: 'Register successful',
+                            token: token,
+                            profile: _user
+                        })
                     })
                 }
                 else {
