@@ -24,6 +24,7 @@ exports.register = async (req, res) => {
                 })
                 if (!checkUser) {
                     req.body.password = bcrypt.hashSync(req.body.password, null, null).toString();
+                    req.body.type = 'local';
                     users.create(req.body).then(async _user => {
                         const token = jwt.sign(
                             {
@@ -102,7 +103,7 @@ exports.login = async (req, res) => {
                     signOptions
                 )
                 const user = _.omit(_user.dataValues, 'password');
-                if (user.avatar !== null)
+                if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1)
                     user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
                 return res.status(200).json({
                     msg: 'Auth successful',
@@ -121,12 +122,73 @@ exports.login = async (req, res) => {
     }
 }
 
+exports.loginWithFacebook = (req, res) => {
+    try {
+        const user_facebook = req.body.userData;
+        users.findOne({ where: { email: user_facebook.email } }).then(_user => {
+            if (_user) {
+                //user này có tồn tại trong table user
+                const token = jwt.sign(
+                    {
+                        fullname: _user.fullname,
+                        id: _user.id,
+                        phone: _user.phone,
+                        email: _user.email
+                    },
+                    privateKEY,
+                    signOptions
+                )
+                const user = _.omit(_user.dataValues, 'password');
+                if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1)
+                    user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
+                return res.status(200).json({
+                    msg: 'Auth successful',
+                    token: token,
+                    profile: user
+                })
+            }
+            else {
+                //user này k tồn tại trong table user
+                users.create({
+                    email: user_facebook.email,
+                    fullname: user_facebook.name,
+                    avatar: 'https://graph.facebook.com/' + user_facebook.id + '/picture?width=100',
+                    password: bcrypt.hashSync('', null, null).toString(),
+                    type: 'facebook'
+                }).then(async _user => {
+                    const token = jwt.sign(
+                        {
+                            fullname: _user.fullname,
+                            id: _user.id,
+                            phone: _user.phone,
+                            email: _user.email
+                        },
+                        privateKEY,
+                        signOptions
+                    )
+                    _user = await users.findByPk(_user.id);
+                    const user = _.omit(_user.dataValues, 'password');
+                    return res.status(200).json({
+                        msg: 'Register and auth successful',
+                        token: token,
+                        profile: user
+                    })
+                })
+            }
+        })
+    }
+    catch (e) {
+        return res.status(400).json({ msg: 'Login fail' })
+    }
+}
+
+
 exports.me = (req, res) => {
     try {
         const _user = req.userData;
         _user.password = undefined;
         const user = _.omit(_user.dataValues, 'password');
-        if (user.avatar !== null)
+        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1)
             user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
         return res.status(200).json({
             msg: 'Auth successful',
@@ -148,7 +210,7 @@ exports.updateSex = async (req, res) => {
         _user.sex = req.body.sex;
         await _user.save();
         const user = _.omit(_user.dataValues, 'password');
-        if (user.avatar !== null)
+        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1)
             user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
         return res.status(200).json({
             msg: 'Update successful',
@@ -167,7 +229,7 @@ exports.updateBirthdate = async (req, res) => {
         _user.birthdate = req.body.birthdate;
         await _user.save();
         const user = _.omit(_user.dataValues, 'password');
-        if (user.avatar !== null)
+        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1)
             user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
         return res.status(200).json({
             msg: 'Update successful',
@@ -182,13 +244,19 @@ exports.update = async (req, res) => {
         _user.birthdate = new Date(req.body.birthdate)
     if (typeof req.body.sex !== 'undefined')
         _user.sex = req.body.sex
+    if (typeof req.body.phone !== 'undefined')
+        _user.phone = req.body.phone
+    if (typeof req.body.email !== 'undefined')
+        _user.email = req.body.email
+    if (typeof req.body.fullname !== 'undefined')
+        _user.fullname = req.body.fullname
     if (typeof req.file !== 'undefined') {
-        fs.writeFile('public/assets/avatar/' + req.file.originalname, req.file.buffer, async (err) => {
+        fs.writeFile('public/assets/avatar/' + _user.id + '-' + req.file.originalname, req.file.buffer, async (err) => {
             if (err) {
                 return res.status(400).json({ msg: err })
             }
-            let avatar = req.headers.host + '/assets/avatar/' + req.file.originalname;
-            _user.avatar = req.file.originalname;
+            let avatar = req.headers.host + '/assets/avatar/' + _user.id + '-' + req.file.originalname;
+            _user.avatar = _user.id + '-' + req.file.originalname;
             await _user.save();
             const user = _.omit(_user.dataValues, 'password');
             user.avatar = avatar;
@@ -201,7 +269,7 @@ exports.update = async (req, res) => {
     else {
         await _user.save();
         const user = _.omit(_user.dataValues, 'password');
-        if (user.avatar !== null)
+        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1)
             user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
         return res.status(200).json({
             msg: 'Update successful',
@@ -217,6 +285,25 @@ exports.logout = (req, res) => {
         return res.status(200).json({ msg: 'Logout successful' })
     }
     catch (err) {
+        return res.status(400).json({ msg: err })
+    }
+}
+
+exports.updatePassword = async (req, res) => {
+    try {
+        const _user = req.userData;
+        const old_password = req.body.old_password;
+        const new_password = req.body.new_password;
+        if (bcrypt.compareSync(old_password, _user.password)) {
+            _user.password = bcrypt.hashSync(new_password, null, null).toString();
+            await _user.save();
+            return res.status(200).json({ msg: 'Update successful' })
+        }
+        else {
+            return res.status(400).json({ msg: 'Old password is not corect' })
+        }
+    }
+    catch (e) {
         return res.status(400).json({ msg: err })
     }
 }

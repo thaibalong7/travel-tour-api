@@ -11,7 +11,6 @@ module.exports = (sequelize, Sequelize) => {
         },
         fullname: {
             type: Sequelize.STRING,
-            allowNull: false
         },
         password: {
             type: Sequelize.STRING,
@@ -27,14 +26,15 @@ module.exports = (sequelize, Sequelize) => {
         },
         phone: {
             type: Sequelize.STRING,
-            allowNull: false
         },
         email: {
             type: Sequelize.STRING,
-            allowNull: false
         },
         avatar: {
             type: Sequelize.STRING
+        },
+        type: {
+            type: Sequelize.ENUM('facebook', 'local')
         }
     },
         {

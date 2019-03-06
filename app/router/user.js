@@ -7,10 +7,12 @@ let upload = multer(); //setting the default folder for multer
 
 router.post('/register', users.register);
 router.post('/login', users.login);
+router.post('/loginWithFacebook', users.loginWithFacebook);
 router.get('/me', middlewareAuthUser, users.me);
 
 router.put('/updateSex', middlewareAuthUser, users.updateSex);
 router.put('/updateBirthdate', middlewareAuthUser, users.updateBirthdate);
+router.put('/updatePassword', middlewareAuthUser, users.updatePassword)
 
 router.put('/update', middlewareAuthUser, upload.single('avatar'), users.update);
 
