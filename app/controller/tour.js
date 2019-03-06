@@ -70,6 +70,9 @@ exports.getById = (req, res) => {
                     model: db.types
                 }]
             }]
+        },
+        {
+            model: db.tour_images
         }]
     }
     tours.findOne(query).then(_tour => {

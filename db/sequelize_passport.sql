@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 06, 2019 lúc 07:53 AM
+-- Thời gian đã tạo: Th3 06, 2019 lúc 04:23 PM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -57,13 +57,6 @@ CREATE TABLE IF NOT EXISTS `blacklist_tokens` (
   `token` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Đang đổ dữ liệu cho bảng `blacklist_tokens`
---
-
-INSERT INTO `blacklist_tokens` (`id`, `token`) VALUES
-(6, 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsbmFtZSI6Im5ldyB1c3NlciIsImlkIjo5LCJwaG9uZSI6IjAxMDI1MjE1NDgiLCJlbWFpbCI6Im5ld3VzZXJAZ21haWwuY29tIiwiaWF0IjoxNTUxNzk2NzI4LCJleHAiOjE1NTE4ODMxMjh9.BkR6GK9On1Tg2j9W1D2zUhOLujiemRLARf33_9GnmnIMJLhx50R_cAufp4iiBOtuqSIr-NUAknG-6iiJnz1hyg');
 
 -- --------------------------------------------------------
 
@@ -313,6 +306,20 @@ INSERT INTO `tours` (`id`, `name`, `description`, `detail`, `featured_img`, `pol
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `tour_images`
+--
+
+CREATE TABLE IF NOT EXISTS `tour_images` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text COLLATE utf8_unicode_ci NOT NULL,
+  `fk_tour` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tour` (`fk_tour`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `tour_turns`
 --
 
@@ -449,6 +456,12 @@ ALTER TABLE `ratings`
 ALTER TABLE `routes`
   ADD CONSTRAINT `routes_ibfk_1` FOREIGN KEY (`fk_location`) REFERENCES `locations` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `routes_ibfk_2` FOREIGN KEY (`fk_tour`) REFERENCES `tours` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `tour_images`
+--
+ALTER TABLE `tour_images`
+  ADD CONSTRAINT `tour_images_ibfk_1` FOREIGN KEY (`fk_tour`) REFERENCES `tours` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `tour_turns`

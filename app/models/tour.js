@@ -43,6 +43,7 @@ module.exports = function(sequelize, Sequelize) {
     Tour.hasMany(models.comments, {foreignKey: 'fk_tour'})
     Tour.hasMany(models.ratings, {foreignKey: 'fk_tour'})
     Tour.hasMany(models.tour_turns, {foreignKey: 'fk_tour'})
+    Tour.hasMany(models.tour_images, {foreignKey: 'fk_tour'})
   }
   return Tour;
 }
