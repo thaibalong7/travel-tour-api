@@ -30,6 +30,17 @@ const addLinkLocationFeaturedImgOfListRoutes = async (_routes, host) => {
     })
 }
 
+const addLinkTourImgOfListToursImg = async (_tour_image, host) => {
+    return _tour_image.map(item => {
+        //chắc chắn dữ liệu luôn đúng
+        if (process.env.NODE_ENV === 'development')
+            item.name = 'http://' + host + '/assets/images/tourImage/' + item.name
+        else
+            item.name = 'https://' + host + '/assets/images/tourImage/' + item.name;
+        return item;
+    })
+}
+
 exports.create = (req, res) => {
     tours.create(req.body).then(_tour => {
         res.status(200).json(_tour)
@@ -111,7 +122,8 @@ exports.getById = (req, res) => {
             else
                 _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img
         }
-        await addLinkLocationFeaturedImgOfListRoutes(_tour.routes, req.headers.host)
+        await addLinkLocationFeaturedImgOfListRoutes(_tour.routes, req.headers.host);
+        await addLinkTourImgOfListToursImg(_tour.tour_images, req.headers.host);
         res.status(200).json({ data: _tour })
     })
         .catch(err => {
