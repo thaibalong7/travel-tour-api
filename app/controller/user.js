@@ -239,7 +239,7 @@ exports.updateBirthdate = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
-    const _user = req.userData;
+    var _user = req.userData;
     if (typeof req.body.birthdate !== 'undefined')
         _user.birthdate = new Date(req.body.birthdate)
     if (typeof req.body.sex !== 'undefined')
@@ -258,6 +258,7 @@ exports.update = async (req, res) => {
             let avatar = req.headers.host + '/assets/avatar/' + _user.id + '-' + req.file.originalname;
             _user.avatar = _user.id + '-' + req.file.originalname;
             await _user.save();
+            _user = await users.findByPk(_user.id);
             const user = _.omit(_user.dataValues, 'password');
             user.avatar = avatar;
             return res.status(200).json({
@@ -268,6 +269,7 @@ exports.update = async (req, res) => {
     }
     else {
         await _user.save();
+        _user = await users.findByPk(_user.id);
         const user = _.omit(_user.dataValues, 'password');
         if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1)
             user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;

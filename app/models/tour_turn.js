@@ -6,11 +6,11 @@ module.exports = function (sequelize, Sequelize) {
       type: Sequelize.INTEGER
     },
     start_date: {
-      type: Sequelize.DATE,
+      type: Sequelize.DATEONLY,
       allowNull: false,
     },
     end_date: {
-      type: Sequelize.DATE,
+      type: Sequelize.DATEONLY,
       allowNull: false,
     },
     num_current_people: {
