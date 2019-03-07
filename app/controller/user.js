@@ -103,8 +103,12 @@ exports.login = async (req, res) => {
                     signOptions
                 )
                 const user = _.omit(_user.dataValues, 'password');
-                if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1)
-                    user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
+                if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1) {
+                    if (process.env.NODE_ENV === 'development')
+                        user.avatar = 'http://' + req.headers.host + '/assets/avatar/' + user.avatar;
+                    else
+                        user.avatar = 'https://' + req.headers.host + '/assets/avatar/' + user.avatar;
+                }
                 return res.status(200).json({
                     msg: 'Auth successful',
                     token: token,
@@ -139,8 +143,12 @@ exports.loginWithFacebook = (req, res) => {
                     signOptions
                 )
                 const user = _.omit(_user.dataValues, 'password');
-                if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1)
-                    user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
+                if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1) {
+                    if (process.env.NODE_ENV === 'development')
+                        user.avatar = 'http://' + req.headers.host + '/assets/avatar/' + user.avatar;
+                    else
+                        user.avatar = 'https://' + req.headers.host + '/assets/avatar/' + user.avatar;
+                }
                 return res.status(200).json({
                     msg: 'Auth successful',
                     token: token,
@@ -188,8 +196,12 @@ exports.me = (req, res) => {
         const _user = req.userData;
         _user.password = undefined;
         const user = _.omit(_user.dataValues, 'password');
-        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1)
-            user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
+        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1) {
+            if (process.env.NODE_ENV === 'development')
+                user.avatar = 'http://' + req.headers.host + '/assets/avatar/' + user.avatar;
+            else
+                user.avatar = 'https://' + req.headers.host + '/assets/avatar/' + user.avatar;
+        }
         return res.status(200).json({
             msg: 'Auth successful',
             profile: user
@@ -210,8 +222,12 @@ exports.updateSex = async (req, res) => {
         _user.sex = req.body.sex;
         await _user.save();
         const user = _.omit(_user.dataValues, 'password');
-        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1)
-            user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
+        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1) {
+            if (process.env.NODE_ENV === 'development')
+                user.avatar = 'http://' + req.headers.host + '/assets/avatar/' + user.avatar;
+            else
+                user.avatar = 'https://' + req.headers.host + '/assets/avatar/' + user.avatar;
+        }
         return res.status(200).json({
             msg: 'Update successful',
             profile: user
@@ -229,8 +245,12 @@ exports.updateBirthdate = async (req, res) => {
         _user.birthdate = req.body.birthdate;
         await _user.save();
         const user = _.omit(_user.dataValues, 'password');
-        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1)
-            user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
+        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1) {
+            if (process.env.NODE_ENV === 'development')
+                user.avatar = 'http://' + req.headers.host + '/assets/avatar/' + user.avatar;
+            else
+                user.avatar = 'https://' + req.headers.host + '/assets/avatar/' + user.avatar;
+        }
         return res.status(200).json({
             msg: 'Update successful',
             profile: user
@@ -255,8 +275,12 @@ exports.update = async (req, res) => {
             if (err) {
                 return res.status(400).json({ msg: err })
             }
-            let avatar = req.headers.host + '/assets/avatar/' + _user.id + '-' + req.file.originalname;
             _user.avatar = _user.id + '-' + req.file.originalname;
+            let avatar;
+            if (process.env.NODE_ENV === 'development')
+                avatar = 'http://' + req.headers.host + '/assets/avatar/' + _user.id + '-' + req.file.originalname;
+            else
+                avatar = 'https://' + req.headers.host + '/assets/avatar/' + _user.id + '-' + req.file.originalname;
             await _user.save();
             _user = await users.findByPk(_user.id);
             const user = _.omit(_user.dataValues, 'password');
@@ -271,8 +295,12 @@ exports.update = async (req, res) => {
         await _user.save();
         _user = await users.findByPk(_user.id);
         const user = _.omit(_user.dataValues, 'password');
-        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1)
-            user.avatar = req.headers.host + '/assets/avatar/' + user.avatar;
+        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1) {
+            if (process.env.NODE_ENV === 'development')
+                user.avatar = 'http://' + req.headers.host + '/assets/avatar/' + user.avatar;
+            else
+                user.avatar = 'https://' + req.headers.host + '/assets/avatar/' + user.avatar;
+        }
         return res.status(200).json({
             msg: 'Update successful',
             profile: user

@@ -1,19 +1,6 @@
 const db = require('../models');
 const routes = db.routes;
 
-const addLinkFeaturedImg = async (_routes, host) => {
-    return _routes.map(item => {
-        if (item.location.featured_img === null) {
-            // item.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
-            return item;
-        }
-        else {
-            item.location.featured_img = host + '/assets/images/locationFeatured/' + item.location.featured_img;
-            return item;
-        }
-    })
-}
-
 const addLinkFeaturedImgAndTour = async (_routes, host) => {
     return _routes.map(async item => {
         const query = {
@@ -32,7 +19,10 @@ const addLinkFeaturedImgAndTour = async (_routes, host) => {
             // location.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
         }
         else {
-            item.location.featured_img = host + '/assets/images/locationFeatured/' + item.location.featured_img;
+            if (process.env.NODE_ENV === 'development')
+                item.location.featured_img = 'http://' + host + '/assets/images/locationFeatured/' + item.location.featured_img;
+            else
+                item.location.featured_img = 'https://' + host + '/assets/images/locationFeatured/' + item.location.featured_img;
         }
         return item;
     })
@@ -60,11 +50,11 @@ exports.getByTour = (req, res) => {
     }
     routes.findAll(query).then(async _routes => {
         const result = await addLinkFeaturedImgAndTour(_routes, req.headers.host)
-        Promise.all(result).then(completed =>{
+        Promise.all(result).then(completed => {
             res.status(200).json({
                 data: completed,
             })
-        })  
+        })
     }).catch(err => {
         res.status(400).json({ msg: err })
     })

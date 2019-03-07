@@ -10,7 +10,10 @@ const addLinkFeaturedImg = async (_locations, host) => {
             return item;
         }
         else {
-            item.featured_img = host + '/assets/images/locationFeatured/' + item.featured_img;
+            if (process.env.NODE_ENV === 'development')
+                item.featured_img = 'http://' + host + '/assets/images/locationFeatured/' + item.featured_img;
+            else
+                item.featured_img = 'https://' + host + '/assets/images/locationFeatured/' + item.featured_img;
             return item;
         }
     })
@@ -34,7 +37,10 @@ const addLinkFeaturedImgAndTour = async (_locations, host) => {
             // location.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
         }
         else {
-            item.featured_img = host + '/assets/images/locationFeatured/' + item.featured_img;
+            if (process.env.NODE_ENV === 'development')
+                item.featured_img = 'http://' + host + '/assets/images/locationFeatured/' + item.featured_img;
+            else
+                item.featured_img = 'https://' + host + '/assets/images/locationFeatured/' + item.featured_img;
         }
         return item;
     })
@@ -254,7 +260,10 @@ exports.getById = (req, res) => {
     }
     locations.findOne(query).then(_location => {
         if (_location.featured_img !== null) {
-            _location.featured_img = req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+            if (process.env.NODE_ENV === 'development')
+                _location.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+            else
+                _location.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
         }
         res.status(200).json({ data: _location })
     }).catch(err => {
