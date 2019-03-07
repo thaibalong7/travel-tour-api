@@ -1,7 +1,7 @@
 const db = require('../models');
 const routes = db.routes;
 
-const addLinkFeaturedImgAndTour = async (_routes, host) => {
+const addLinkLocationFeaturedImgOfListRoutesAndAddTour = async (_routes, host) => {
     return _routes.map(async item => {
         const query = {
             attributes: ['id', 'name'],
@@ -49,7 +49,7 @@ exports.getByTour = (req, res) => {
         order: [['day', 'ASC'], ['arrive_time', 'ASC']]
     }
     routes.findAll(query).then(async _routes => {
-        const result = await addLinkFeaturedImgAndTour(_routes, req.headers.host)
+        const result = await addLinkLocationFeaturedImgOfListRoutesAndAddTour(_routes, req.headers.host)
         Promise.all(result).then(completed => {
             res.status(200).json({
                 data: completed,

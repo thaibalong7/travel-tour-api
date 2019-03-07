@@ -3,7 +3,18 @@ const locations = db.locations;
 var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 
-const addLinkFeaturedImg = async (_locations, host) => {
+const addLinkToursFeaturedImgOfListTours = async (tours, host) => {
+    return tours.map(item => {
+        if (item.featured_img !== null) {
+            if (process.env.NODE_ENV === 'development')
+                item.featured_img = 'http://' + host + '/assets/images/tourFeatured/' + item.featured_img
+            else
+                item.featured_img = 'https://' + host + '/assets/images/tourFeatured/' + item.featured_img
+        }
+    })
+}
+
+const addLinkLocationFeaturedImgOfListLocations = async (_locations, host) => {
     return _locations.map(item => {
         if (item.featured_img === null) {
             // item.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
@@ -19,10 +30,10 @@ const addLinkFeaturedImg = async (_locations, host) => {
     })
 }
 
-const addLinkFeaturedImgAndTour = async (_locations, host) => {
+const addLinkLocationFeaturedImgOfListLocationsAndAddTour = async (_locations, host) => {
     return _locations.map(async item => {
         const query = {
-            attributes: ['id', 'name'],
+            attributes: ['id', 'name', 'featured_img'],
             include: [
                 {
                     attributes: [],
@@ -33,6 +44,7 @@ const addLinkFeaturedImgAndTour = async (_locations, host) => {
                 }]
         }
         item.dataValues.tours = await db.tours.findAll(query);
+        await addLinkToursFeaturedImgOfListTours(item.dataValues.tours, host);
         if (item.featured_img === null) {
             // location.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
         }
@@ -76,7 +88,7 @@ exports.getAllWithoutPagination = (req, res) => {
                 model: db.types
             }]
         }).then(async rs => {
-            const result = await addLinkFeaturedImg(rs, req.headers.host)
+            const result = await addLinkLocationFeaturedImgOfListLocations(rs, req.headers.host)
             res.status(200).json({
                 itemCount: rs.length, //số lượng record được trả về
                 data: result,
@@ -121,7 +133,7 @@ exports.getAllLocation = (req, res) => {
             if (parseInt(_locations.rows.length) === 0)
                 next_page = -1;
             if (isAddTours) {
-                const result = await addLinkFeaturedImgAndTour(_locations.rows, req.headers.host)
+                const result = await addLinkLocationFeaturedImgOfListLocationsAndAddTour(_locations.rows, req.headers.host)
                 Promise.all(result).then(completed => {
                     res.status(200).json({
                         itemCount: completed.length, //số lượng record được trả về
@@ -131,7 +143,7 @@ exports.getAllLocation = (req, res) => {
                 })
             }
             else {
-                const result = await addLinkFeaturedImg(_locations.rows, req.headers.host)
+                const result = await addLinkLocationFeaturedImgOfListLocations(_locations.rows, req.headers.host)
                 res.status(200).json({
                     itemCount: _locations.rows.length, //số lượng record được trả về
                     data: result,
@@ -204,7 +216,7 @@ exports.getLocationNearMe = async (req, res) => {
     locations.findAll(query).then(async _items => {
         // const result = await filterListLocationByDistance(lat, lng, distance, _items)
         if (isAddTours) {
-            const result = await addLinkFeaturedImgAndTour(_items, req.headers.host)
+            const result = await addLinkLocationFeaturedImgOfListLocationsAndAddTour(_items, req.headers.host)
             Promise.all(result).then(completed => {
                 res.status(200).json({
                     itemCount: completed.length,
@@ -214,7 +226,7 @@ exports.getLocationNearMe = async (req, res) => {
             })
         }
         else {
-            const result = await addLinkFeaturedImg(_items, req.headers.host)
+            const result = await addLinkLocationFeaturedImgOfListLocations(_items, req.headers.host)
             res.status(200).json({
                 itemCount: result.length,
                 data: result,
@@ -283,7 +295,7 @@ exports.getLocationByType = async (req, res) => {
     }
     const _type = await db.types.findByPk(type);
     locations.findAll(query).then(async _locations => {
-        const location_result = await addLinkFeaturedImg(_locations, req.headers.host)
+        const location_result = await addLinkLocationFeaturedImgOfListLocations(_locations, req.headers.host)
         res.status(200).json({
             data: location_result,
             type: _type
@@ -329,7 +341,7 @@ exports.getByTypeNearMe = async (req, res) => {
     locations.findAll(query).then(async _items => {
         // const result = await filterListLocationByDistance(lat, lng, distance, _items)
         if (isAddTours) {
-            const result = await addLinkFeaturedImgAndTour(_items, req.headers.host)
+            const result = await addLinkLocationFeaturedImgOfListLocationsAndAddTour(_items, req.headers.host)
             Promise.all(result).then(completed => {
                 res.status(200).json({
                     itemCount: completed.length,
@@ -339,7 +351,7 @@ exports.getByTypeNearMe = async (req, res) => {
             })
         }
         else {
-            const result = await addLinkFeaturedImg(_items, req.headers.host)
+            const result = await addLinkLocationFeaturedImgOfListLocations(_items, req.headers.host)
             res.status(200).json({
                 itemCount: result.length,
                 data: result,

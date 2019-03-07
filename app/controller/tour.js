@@ -2,6 +2,34 @@ const db = require('../models');
 const tours = db.tours;
 var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
+
+const addLinkToursFeaturedImgOfListTours = async (tours, host) => {
+    return tours.map(item => {
+        if (item.featured_img !== null) {
+            if (process.env.NODE_ENV === 'development')
+                item.featured_img = 'http://' + host + '/assets/images/tourFeatured/' + item.featured_img
+            else
+                item.featured_img = 'https://' + host + '/assets/images/tourFeatured/' + item.featured_img
+        }
+    })
+}
+
+const addLinkLocationFeaturedImgOfListRoutes = async (_routes, host) => {
+    return _routes.map(item => {
+        if (item.location.featured_img === null) {
+            // item.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
+            return item;
+        }
+        else {
+            if (process.env.NODE_ENV === 'development')
+                item.location.featured_img = 'http://' + host + '/assets/images/locationFeatured/' + item.location.featured_img;
+            else
+                item.location.featured_img = 'https://' + host + '/assets/images/locationFeatured/' + item.location.featured_img;
+            return item;
+        }
+    })
+}
+
 exports.create = (req, res) => {
     tours.create(req.body).then(_tour => {
         res.status(200).json(_tour)
@@ -41,6 +69,7 @@ exports.getAllTour = (req, res) => {
                 next_page = -1;
             if (parseInt(_tours.rows.length) === 0)
                 next_page = -1;
+            await addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
             res.status(200).json({
                 itemCount: _tours.rows.length, //số lượng record được trả về
                 data: _tours.rows,
@@ -64,7 +93,7 @@ exports.getById = (req, res) => {
         {
             model: db.routes,
             order: [['day', 'ASC'], ['arrive_time', 'ASC']],
-            include:[{
+            include: [{
                 model: db.locations,
                 include: [{
                     model: db.types
@@ -75,7 +104,14 @@ exports.getById = (req, res) => {
             model: db.tour_images
         }]
     }
-    tours.findOne(query).then(_tour => {
+    tours.findOne(query).then(async _tour => {
+        if (_tour.featured_img !== null) {
+            if (process.env.NODE_ENV === 'development')
+                _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img
+            else
+                _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img
+        }
+        await addLinkLocationFeaturedImgOfListRoutes(_tour.routes, req.headers.host)
         res.status(200).json({ data: _tour })
     })
         .catch(err => {
@@ -126,7 +162,7 @@ exports.getByLocation = (req, res) => {
                 limit: per_page,
                 offset: (page - 1) * per_page
             }
-            tours.findAndCountAll(query).then(_tours => {
+            tours.findAndCountAll(query).then(async _tours => {
                 var next_page = page + 1;
                 //Kiểm tra còn dữ liệu không
                 if ((parseInt(_tours.rows.length) + (next_page - 2) * per_page) === parseInt(_tours.count))
@@ -136,6 +172,7 @@ exports.getByLocation = (req, res) => {
                     next_page = -1;
                 if (parseInt(_tours.rows.length) === 0)
                     next_page = -1;
+                await addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
                 return res.status(200).json({
                     itemCount: _tours.rows.length, //số lượng record được trả về
                     data: _tours.rows,
@@ -217,7 +254,7 @@ exports.searchByName = (req, res) => {
                     model: db.tour_turns
                 }],
             }
-            tours.findAndCountAll(query).then(_tours => {
+            tours.findAndCountAll(query).then(async _tours => {
                 var next_page = page + 1;
                 //Kiểm tra còn dữ liệu không
                 if ((parseInt(_tours.rows.length) + (next_page - 2) * per_page) === parseInt(_tours.count))
@@ -227,6 +264,7 @@ exports.searchByName = (req, res) => {
                     next_page = -1;
                 if (parseInt(_tours.rows.length) === 0)
                     next_page = -1;
+                await addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
                 res.status(200).json({
                     itemCount: _tours.rows.length, //số lượng record được trả về
                     data: _tours.rows,
@@ -267,7 +305,7 @@ exports.searchByPrice = (req, res) => {
                     model: db.tour_turns
                 }],
             }
-            tours.findAndCountAll(query).then(_tours => {
+            tours.findAndCountAll(query).then(async _tours => {
                 var next_page = page + 1;
                 //Kiểm tra còn dữ liệu không
                 if ((parseInt(_tours.rows.length) + (next_page - 2) * per_page) === parseInt(_tours.count))
@@ -277,6 +315,7 @@ exports.searchByPrice = (req, res) => {
                     next_page = -1;
                 if (parseInt(_tours.rows.length) === 0)
                     next_page = -1;
+                await addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
                 res.status(200).json({
                     itemCount: _tours.rows.length, //số lượng record được trả về
                     data: _tours.rows,
