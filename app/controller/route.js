@@ -1,5 +1,7 @@
 const db = require('../models');
 const routes = db.routes;
+const helper_add_link = require('../helper/add_full_link');
+const link_img = require('../config/config').link_img
 
 const addLinkLocationFeaturedImgOfListRoutesAndAddTour = async (_routes, host) => {
     return _routes.map(async item => {
@@ -20,9 +22,9 @@ const addLinkLocationFeaturedImgOfListRoutesAndAddTour = async (_routes, host) =
         }
         else {
             if (process.env.NODE_ENV === 'development')
-                item.location.featured_img = 'http://' + host + '/assets/images/locationFeatured/' + item.location.featured_img;
+                item.location.featured_img = 'http://' + host + link_img.link_location_featured + item.location.featured_img;
             else
-                item.location.featured_img = 'https://' + host + '/assets/images/locationFeatured/' + item.location.featured_img;
+                item.location.featured_img = 'https://' + host + link_img.link_location_featured + item.location.featured_img;
         }
         return item;
     })

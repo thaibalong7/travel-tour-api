@@ -2,44 +2,7 @@ const db = require('../models');
 const tours = db.tours;
 var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-
-const addLinkToursFeaturedImgOfListTours = async (tours, host) => {
-    return tours.map(item => {
-        if (item.featured_img !== null) {
-            if (process.env.NODE_ENV === 'development')
-                item.featured_img = 'http://' + host + '/assets/images/tourFeatured/' + item.featured_img
-            else
-                item.featured_img = 'https://' + host + '/assets/images/tourFeatured/' + item.featured_img
-        }
-    })
-}
-
-const addLinkLocationFeaturedImgOfListRoutes = async (_routes, host) => {
-    return _routes.map(item => {
-        if (item.location.featured_img === null) {
-            // item.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
-            return item;
-        }
-        else {
-            if (process.env.NODE_ENV === 'development')
-                item.location.featured_img = 'http://' + host + '/assets/images/locationFeatured/' + item.location.featured_img;
-            else
-                item.location.featured_img = 'https://' + host + '/assets/images/locationFeatured/' + item.location.featured_img;
-            return item;
-        }
-    })
-}
-
-const addLinkTourImgOfListToursImg = async (_tour_image, host) => {
-    return _tour_image.map(item => {
-        //chắc chắn dữ liệu luôn đúng
-        if (process.env.NODE_ENV === 'development')
-            item.name = 'http://' + host + '/assets/images/tourImage/' + item.name
-        else
-            item.name = 'https://' + host + '/assets/images/tourImage/' + item.name;
-        return item;
-    })
-}
+const helper_add_link = require('../helper/add_full_link');
 
 exports.create = (req, res) => {
     tours.create(req.body).then(_tour => {
@@ -80,7 +43,7 @@ exports.getAllTour = (req, res) => {
                 next_page = -1;
             if (parseInt(_tours.rows.length) === 0)
                 next_page = -1;
-            await addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
+            await helper_add_link.addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
             res.status(200).json({
                 itemCount: _tours.rows.length, //số lượng record được trả về
                 data: _tours.rows,
@@ -122,8 +85,8 @@ exports.getById = (req, res) => {
             else
                 _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img
         }
-        await addLinkLocationFeaturedImgOfListRoutes(_tour.routes, req.headers.host);
-        await addLinkTourImgOfListToursImg(_tour.tour_images, req.headers.host);
+        await helper_add_link.addLinkLocationFeaturedImgOfListRoutes(_tour.routes, req.headers.host);
+        await helper_add_link.addLinkTourImgOfListToursImg(_tour.tour_images, req.headers.host);
         res.status(200).json({ data: _tour })
     })
         .catch(err => {
@@ -184,7 +147,7 @@ exports.getByLocation = (req, res) => {
                     next_page = -1;
                 if (parseInt(_tours.rows.length) === 0)
                     next_page = -1;
-                await addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
+                await helper_add_link.addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
                 return res.status(200).json({
                     itemCount: _tours.rows.length, //số lượng record được trả về
                     data: _tours.rows,
@@ -276,7 +239,7 @@ exports.searchByName = (req, res) => {
                     next_page = -1;
                 if (parseInt(_tours.rows.length) === 0)
                     next_page = -1;
-                await addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
+                await helper_add_link.addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
                 res.status(200).json({
                     itemCount: _tours.rows.length, //số lượng record được trả về
                     data: _tours.rows,
@@ -327,7 +290,7 @@ exports.searchByPrice = (req, res) => {
                     next_page = -1;
                 if (parseInt(_tours.rows.length) === 0)
                     next_page = -1;
-                await addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
+                await helper_add_link.addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
                 res.status(200).json({
                     itemCount: _tours.rows.length, //số lượng record được trả về
                     data: _tours.rows,

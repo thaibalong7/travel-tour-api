@@ -1,6 +1,3 @@
-
-
-
 module.exports = {
     validateEmail: async function (email) {
         var Regex = /(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/

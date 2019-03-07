@@ -2,33 +2,8 @@ const db = require('../models');
 const locations = db.locations;
 var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-
-const addLinkToursFeaturedImgOfListTours = async (tours, host) => {
-    return tours.map(item => {
-        if (item.featured_img !== null) {
-            if (process.env.NODE_ENV === 'development')
-                item.featured_img = 'http://' + host + '/assets/images/tourFeatured/' + item.featured_img
-            else
-                item.featured_img = 'https://' + host + '/assets/images/tourFeatured/' + item.featured_img
-        }
-    })
-}
-
-const addLinkLocationFeaturedImgOfListLocations = async (_locations, host) => {
-    return _locations.map(item => {
-        if (item.featured_img === null) {
-            // item.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
-            return item;
-        }
-        else {
-            if (process.env.NODE_ENV === 'development')
-                item.featured_img = 'http://' + host + '/assets/images/locationFeatured/' + item.featured_img;
-            else
-                item.featured_img = 'https://' + host + '/assets/images/locationFeatured/' + item.featured_img;
-            return item;
-        }
-    })
-}
+const helper_add_link = require('../helper/add_full_link');
+const link_img = require('../config/config').link_img
 
 const addLinkLocationFeaturedImgOfListLocationsAndAddTour = async (_locations, host) => {
     return _locations.map(async item => {
@@ -44,15 +19,15 @@ const addLinkLocationFeaturedImgOfListLocationsAndAddTour = async (_locations, h
                 }]
         }
         item.dataValues.tours = await db.tours.findAll(query);
-        await addLinkToursFeaturedImgOfListTours(item.dataValues.tours, host);
+        await helper_add_link.addLinkToursFeaturedImgOfListTours(item.dataValues.tours, host);
         if (item.featured_img === null) {
             // location.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
         }
         else {
             if (process.env.NODE_ENV === 'development')
-                item.featured_img = 'http://' + host + '/assets/images/locationFeatured/' + item.featured_img;
+                item.featured_img = 'http://' + host + link_img.link_location_featured + item.featured_img;
             else
-                item.featured_img = 'https://' + host + '/assets/images/locationFeatured/' + item.featured_img;
+                item.featured_img = 'https://' + host + link_img.link_location_featured + item.featured_img;
         }
         return item;
     })
@@ -88,7 +63,7 @@ exports.getAllWithoutPagination = (req, res) => {
                 model: db.types
             }]
         }).then(async rs => {
-            const result = await addLinkLocationFeaturedImgOfListLocations(rs, req.headers.host)
+            const result = await helper_add_link.addLinkLocationFeaturedImgOfListLocations(rs, req.headers.host)
             res.status(200).json({
                 itemCount: rs.length, //số lượng record được trả về
                 data: result,
@@ -143,7 +118,7 @@ exports.getAllLocation = (req, res) => {
                 })
             }
             else {
-                const result = await addLinkLocationFeaturedImgOfListLocations(_locations.rows, req.headers.host)
+                const result = await helper_add_link.addLinkLocationFeaturedImgOfListLocations(_locations.rows, req.headers.host)
                 res.status(200).json({
                     itemCount: _locations.rows.length, //số lượng record được trả về
                     data: result,
@@ -226,7 +201,7 @@ exports.getLocationNearMe = async (req, res) => {
             })
         }
         else {
-            const result = await addLinkLocationFeaturedImgOfListLocations(_items, req.headers.host)
+            const result = await helper_add_link.addLinkLocationFeaturedImgOfListLocations(_items, req.headers.host)
             res.status(200).json({
                 itemCount: result.length,
                 data: result,
@@ -236,31 +211,6 @@ exports.getLocationNearMe = async (req, res) => {
     }).catch(err => {
         res.status(400).json({ msg: err })
     })
-
-    // var query = 'SELECT' +
-    //     '*, (' +
-    //     '6371 * acos (' +
-    //     'cos ( radians(' + lat + ') )' +
-    //     '* cos( radians( latitude ) )' +
-    //     '* cos( radians( longitude ) - radians(' + lng + ') )' +
-    //     '+ sin ( radians(' + lat + ') )' +
-    //     '* sin( radians( latitude ) )' +
-    //     ')' +
-    //     ') AS distance' +
-    //     ' FROM locations INNER JOIN types ON locations.fk_type = types.id' +
-    //     ' HAVING distance < ' + distance +
-    //     ' ORDER BY distance' +
-    //     ' LIMIT 0 , 20;'
-    // db.sequelize.query(query).then(async _items => {
-    //     const result = await addLinkFeaturedImg(_items[0], req.headers.host)
-    //     res.status(200).json({
-    //         itemCount: result.length,
-    //         data: result,
-    //         distance: distance
-    //     })
-    // }).catch(err => {
-    //     res.status(400).json({ msg: err })
-    // })
 }
 
 exports.getById = (req, res) => {
@@ -295,7 +245,7 @@ exports.getLocationByType = async (req, res) => {
     }
     const _type = await db.types.findByPk(type);
     locations.findAll(query).then(async _locations => {
-        const location_result = await addLinkLocationFeaturedImgOfListLocations(_locations, req.headers.host)
+        const location_result = await helper_add_link.addLinkLocationFeaturedImgOfListLocations(_locations, req.headers.host)
         res.status(200).json({
             data: location_result,
             type: _type
@@ -351,7 +301,7 @@ exports.getByTypeNearMe = async (req, res) => {
             })
         }
         else {
-            const result = await addLinkLocationFeaturedImgOfListLocations(_items, req.headers.host)
+            const result = await helper_add_link.addLinkLocationFeaturedImgOfListLocations(_items, req.headers.host)
             res.status(200).json({
                 itemCount: result.length,
                 data: result,

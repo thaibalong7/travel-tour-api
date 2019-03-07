@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt-nodejs');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
-const helper = require('../helper')
+const validate_helper = require('../helper/validate')
 // var fs = require('fs');
 // use 'utf8' to get string instead of byte array  (512 bit key)
 var privateKEY = fs.readFileSync('./app/middleware/private.key', 'utf8');
@@ -15,9 +15,9 @@ const signOptions = {
 
 exports.register = async (req, res) => {
     try {
-        if (await helper.validateEmail(req.body.email)) {
+        if (await validate_helper.validateEmail(req.body.email)) {
             //true //valid
-            if (await helper.validatePhoneNumber(req.body.phone)) {
+            if (await validate_helper.validatePhoneNumber(req.body.phone)) {
                 //true //valid
                 const checkUser = await users.findOne({
                     where: db.sequelize.literal(`email='${req.body.email}' OR phone='${req.body.phone}'`)
@@ -66,7 +66,7 @@ exports.login = async (req, res) => {
     //login by email or phone
     try {
         var query;
-        if (await helper.validateEmail(req.body.username)) {
+        if (await validate_helper.validateEmail(req.body.username)) {
             //login by email
             query = {
                 where: {
@@ -75,7 +75,7 @@ exports.login = async (req, res) => {
             }
         }
         else {
-            if (await helper.validatePhoneNumber(req.body.username)) {
+            if (await validate_helper.validatePhoneNumber(req.body.username)) {
                 //login by phone
                 query = {
                     where: {
