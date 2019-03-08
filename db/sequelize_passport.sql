@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 08, 2019 lúc 09:43 AM
+-- Thời gian đã tạo: Th3 08, 2019 lúc 05:55 PM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `locations` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `fk_type` (`fk_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `locations`
@@ -185,21 +185,32 @@ INSERT INTO `locations` (`id`, `latitude`, `longitude`, `name`, `address`, `desc
 (59, 10.779933, 106.699020, 'Thành phố Hồ Chí Minh', 'Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam', 'Thành phố Hồ Chí Minh (thường được gọi là Sài Gòn) là một thành phố ở miền nam Việt Nam nổi tiếng với vai trò nòng cốt trong chiến tranh Việt Nam. Sài Gòn cũng được biết đến với địa danh của thực dân Pháp, trong đó có Nhà thờ Đức Bà được xây dựng hoàn toàn bằng nguyên liệu nhập khẩu từ Pháp và Bưu điện trung tâm được xây dựng vào thế kỷ 19. Quán ăn nằm dọc các đường phố Sài Gòn, nhất là xung quanh chợ Bến Thành nhộn nhịp.\r\n', '31.png', 'active', 18),
 (60, 10.960426, 108.314247, 'Vịnh Cam Ranh', 'Mũi Né, Thành phố Phan Thiết, Bình Thuận, Việt Nam', 'Đến với Cam Ranh bạn có thể hòa mình vào khung cảnh thiên nhiên thơ mộng với cảnh quan hoang sơ ít có sự tác động của bàn tay con người.', '33.png', 'active', 17),
 (61, 10.924974, 108.115746, 'Thành phố Phan Thiết', 'Lê Lợi, Tp. Phan Thiết, Bình Thuận, Việt Nam', 'Từ cảnh quan thiên nhiên đa dạng của đồi cát bay Mũi Né, những hòn đảo lớn nhỏ; đến những di tích lịch sử minh chứng cho nền văn minh Chăm Pa hưng thịnh một thời … ', '32.png', 'active', 17),
-(62, 12.133787, 109.210663, 'Thành phố Nha Trang', 'Đèo Cù Hin, Cam Hải Đông, Cam Lâm, Khánh Hòa, Việt Nam\r\n', 'Nha Trang là một thành phố ven biển và là trung tâm chính trị, kinh tế, văn hóa, khoa học kỹ thuật và du lịch của tỉnh Khánh Hòa, Việt Nam. Trước khi trở thành phần đất của Việt Nam, Nha Trang thuộc về Chiêm Thành. Các di tích của người Chăm vẫn còn tại nhiều nơi ở Nha Trang.\r\n', '34.png', 'active', 17),
-(63, 16.076515, 108.222130, 'Thành phố Đà Nẵng', 'Hải Châu, Đà Nẵng, Việt Nam\r\n', 'Đà Nẵng nằm giữa ba di sản thế giới: cố đô Huế, phố cổ Hội An và thánh địa Mỹ Sơn. Đà Nẵng còn có nhiều danh thắng tuyệt đẹp say lòng du khách như Ngũ Hành Sơn, Bà Nà, bán đảo Sơn Trà, đèo Hải Vân, sông Hàn thơ mộng và cầu quay Sông Hàn – niềm tự hào của thành phố, và biển Mỹ Khê đẹp nhất hành tinh.\r\n', '35.png', 'active', 17),
-(64, 16.004740, 108.261780, 'Ngũ Hành Sơn', 'Hoà Hải, Ngũ Hành Sơn, Đà Nẵng, Việt Nam', 'Ngũ Hành Sơn hay núi Non Nước là tên chung của một danh thắng gồm 5 ngọn núi đá vôi nhô lên trên một bãi cát ven biển, trên một diện tích khoảng 2 km2, gồm: Kim Sơn, Mộc Sơn, Thủy Sơn, Hỏa Sơn và Thổ Sơn, nằm cách trung tâm thành phố Đà Nẵng khoảng 8 km về phía Đông Nam, ngay trên tuyến đường Đà Nẵng - Hội An', '36.png', 'active', 17),
+(62, 12.227315, 109.199524, 'Meriton hotel', '7 Trần Phú, P, Thành phố Nha Trang, Khánh Hòa, Việt Nam\r\n', 'Nằm trong bán kính 30 m từ Bãi biển Nha Trang, khách sạn Meriton Hotel ở thành phố Nha Trang này có tầm nhìn ra toàn cảnh từ quán sky pool bar. Du khách có thể dùng bữa tại nhà hàng ngay trong', '34.png', 'active', 14),
+(63, 16.045147, 108.227043, 'The Blossom Resort Đà Nẵng\r\n', 'khu đảo xanh mở rộng, Lô A1, A2, Hoà Cường Bắc, Hải Châu, Đà Nẵng 550000, Việt Nam', 'The Blossom Resort Đà Nẵng gồm 28 phòng trong đó có 16 phòng khách sạn và 12 villas được thiết kế theo phong cách Nhật Bản kết hợp giữa truyền thống và hiện đại. Các phòng được trang bị các tiện nghi như TV truyền hình cáp màn hình phẳng, phòng tắm riêng đi kèm bồn tắm, áo choàng tắm và dép,...có ban công hoặc sân hiên.\r\nCác phòng Superior có bồn tắm spa hoặc phòng xông hơi khô. \r\n', '35.png', 'active', 14),
+(64, 16.004740, 108.261780, 'Ngũ Hành Sơn', 'Hoà Hải, Ngũ Hành Sơn, Đà Nẵng 550000, Việt Nam', 'Ngũ Hành Sơn hay núi Non Nước là tên chung của một danh thắng gồm 5 ngọn núi đá vôi nhô lên trên một bãi cát ven biển, trên một diện tích khoảng 2 km2, gồm: Kim Sơn, Mộc Sơn, Thủy Sơn, Hỏa Sơn và Thổ Sơn, nằm cách trung tâm thành phố Đà Nẵng khoảng 8 km về phía Đông Nam, ngay trên tuyến đường Đà Nẵng - Hội An', '36.png', 'active', 17),
 (65, 15.879651, 108.334671, 'Phố Cổ Hội An', 'Hội An, Quảng Nam, Việt Nam', 'Phố cổ Hội An là một thành phố nổi tiếng của tỉnh Quảng Nam, một phố cổ giữ được gần như nguyên vẹn với hơn 1000 di tích kiến trúc từ phố xá, nhà cửa, hội quán, đình, chùa, miếu, nhà thờ tộc, giếng cổ… đến các món ăn truyền thống, tâm hồn của người dân nơi đây. Một lần du lịch Hội An sẽ làm say đắm lòng du khách bởi những nét đẹp trường tồn cùng thời gian, vô cùng mộc mạc, bình dị.', '37.png', 'active', 17),
-(66, 16.469395, 107.577896, 'Cố Đô Huế', 'Tp. Huế, Thừa Thiên Huế, Việt Nam', 'Quần thể di tích Cố đô Huế hay Quần thể di tích Huế là những di tích lịch sử - văn hoá do triều Nguyễn chủ trương xây dựng trong khoảng thời gian từ đầu thế kỷ 19 đến nửa đầu thế kỷ 20 trên địa bàn kinh đô Huế xưa', '38.png', 'active', 15),
+(66, 16.468939, 107.598732, 'Gold hotel Huế', '28 Bà Triệu tổ 16, Phú Hội, Thành phố Huế, Thừa Thiên Huế, Việt Nam', '', '38.png', 'active', 14),
 (67, 17.590996, 106.283424, 'Động Phong Nha', 'Phong Nha, Bố Trạch, Quảng Bình, Việt Nam', 'Động Phong Nha là danh thắng tiêu biểu nhất của hệ thống hang động thuộc quần thể danh thắng Phong Nha – Kẻ Bàng. Phong Nha được bình chọn là một trong những hang động đẹp nhất thế giới với các tiêu chí: Sông ngầm dài nhất, Hồ nước ngầm đẹp nhất. Cửa hang cao và rộng nhất, Các bãi cát, bãi đá ngầm đẹp nhất, Hang khô rộng và đẹp nhất, Hệ thống thạch nhũ kỳ ảo và tráng lệ nhất, Hang động nước dài nhất. Động Phong Nha là một điểm đến được nhiều du khách lựa chọn trong chuyến du lịch Quảng Bình.', '39.png', 'active', 17),
-(68, 21.036999, 105.834648, 'Thành phố Hà Nội', 'Điện Biên, Điện Bàn, Ba Đình, Hà Nội, Việt Nam\r\n', 'Thành phố Hà Nội là Thủ đô ngàn năm văn hiến với những di tích cổ xưa, cuộc sống yên bình. Nếu đã một lần du lịch Hà Nội, chắc chắn bạn không thể nào quên không khí đặc trưng nơi đây, với Hồ Gươm, Hồ Tây, những quán cafe trầm mặc, những con đường nhỏ và những gánh hàng rong. ', '40.png', 'active', 17),
+(68, 21.033213, 105.852287, 'Tirant Hotel', '38 Phố Gia Ngư, Hàng Bạc, Hoàn Kiếm, Hà Nội, Việt Nam\r\n', 'Hà Nội Tirant Hotel, một khách sạn trung tâm thành phố xinh đẹp phương Đông mới tại Hà Nội , pha trộn phương Đông tiện nghi sang trọng với dịch vụ trực quan. Khám phá những nét vui vẻ nhiều thiết lập chúng tôi xa , xa nhau từ khách sạn boutique khác trong khu phố cổ Hà Nội .\r\n', '40.png', 'active', 14),
 (69, 20.285284, 105.906616, 'Hoa Lư', 'Trường Yên, Hoa Lư, Ninh Bình, Việt Nam', 'Cố đô Hoa Lư là một quần thể kiến trúc đặc sắc ở tỉnh Ninh Bình, đã được UNESCO công nhận là một trong 4 vùng lõi thuộc quần thể di sản Thế giới Tràng An. Nơi đây cũng được nhà nước xếp hạng là quần thể kiến trúc, di tích lịch sử Quốc gia đặc biệt quan trọng, cần được hết sức gìn giữ.', '41.png', 'active', 15),
 (70, 20.942163, 107.182716, 'Vịnh Hạ Long', 'Vịnh Hạ Long, Thành phố Hạ Long, Quảng Ninh, Việt Nam', 'Vịnh Hạ Long nằm ngoài khơi bờ biển phía đông bắc của Việt Nam, sở hữu khoảng 2.000 đảo và mỏm đá vôi với đủ hình thù và kích cỡ lớn bé khác nhau, nổi lên trên mặt nước biển trong xanh tĩnh lặng. Không khí xung quanh thường được bao phủ trong màn sương, điều này góp phần làm cho nơi đây thêm phần kỳ bí.', '42.png', 'active', 17),
 (71, 21.161560, 106.714798, 'Yên Tử', 'Thượng Yên Công, Tp. Uông Bí, Quảng Ninh, Việt Nam', 'Khu di tích danh thắng Yên Tử là một quần thể chùa, am, tháp, tượng, rừng cây cổ thụ và cảnh vật thiên nhiên nằm rải rác từ dốc Đỏ theo chiều cao dần đến đỉnh núi. Quần thể di tích Yên Tử nằm gần đường 18A, thuộc xã Thượng Yên Công, thành phố Uông Bí, tỉnh Quảng Ninh.', '43.png', 'active', 19),
 (72, 20.619184, 105.747787, 'Chùa Hương', 'Hương Sơn, Mỹ Đức, Hà Nội, Việt Nam', 'Nét thanh tịnh của miền đất Phật đã tạo cho con người, cảnh vật hòa lẫn vào không gian khi vào hội, Đường vào chùa Hương tấp nập vào ra hàng trăm thuyền, cộng thú vui ngồi thuyền vãng cảnh lạc vào non tiên cõi Phật. Nhẹ nhàng thả hồn mình trôi nhẹ theo mái chèo qua dòng Suối Yến trong xanh, hai bên bờ cây cối xanh tươi, đầu hạ thì hoa gạo nở đỏ rực như những đốm lửa, mùa thu suối Yến ngập tràn sắc tím của hoa súng, mùa xuân thì hoa ban, hoa mận nở trắng trên các triền núi. Cảm giác đó thật tuyệt vời mà chỉ đến với chùa Hương bạn mới cảm nhận được.', '44.png', 'active', 19),
-(73, 22.479942, 103.976295, 'Lào Cai', 'Võ Nguyên Giáp, TX.Lào Cai, Lào Cai, Việt Nam', 'Lào Cai là khu du lịch trọng tâm của miền Bắc với những thắng cảnh Sa Pa thị trấn trong mây, chợ tình quyến rũ, đỉnh Phan Xi Păng và Cửa khẩu Quốc tế Lào Cai Hà Khẩu. Lào Cai có nhiều địa danh lịch sử, hang động tự nhiên, đặc sản và là nơi mang đậm nét đặc trưng văn hoá độc đáo của nhiều dân tộc anh em.', '45.png', 'active', 17),
+(73, 22.466394, 103.987251, 'Hoàng Gia Hotel', 'Trần Hưng Đạo, Bắc Cường, TX.Lào Cai, Lào Cai, Việt Nam\r\n', 'Hoàng gia Hotel là khách sạn mang phong cách chuyên nghiệp, cùng một hệ thống với Khách sạn Kiều Linh, đã có kinh nghiệm nhiều năm tại Lào Cai và được nhiều du khách đánh giá cao là điểm đến lý tưởng với khuôn viên rộng rãi, thoáng mát và những thiết bị sang trọng, hiện đại cùng với đội ngũ nhân viên chuyên nghiệp.', '45.png', 'active', 14),
 (74, 22.334965, 103.842949, 'Hàm Rồng', 'Hàm Rồng, TT. Sa Pa, Sa Pa, Lào Cai, Việt Nam\r\n', '', '48.png', 'active', 17),
 (75, 22.336809, 103.842201, 'Sapa', 'Xuan Vien Street, TT. Sa Pa, Lào Cai, Việt Nam', 'Nằm phía Tây Bắc tổ quốc, Sa Pa ẩn chứa bao điều kỳ diệu của cảnh sắc thiên nhiên, con người. Thị trấn trong mây hấp dẫn du khách với quang cảnh núi non hùng vĩ cùng trải nghiệm độc đáo với cuộc sống của đồng bào dân tộc thiểu số.', '46.png', 'active', 17),
-(76, 22.330980, 103.834038, 'Bản Cát Cát', 'San Sả Hồ, Sa Pa, Lào Cai, Việt Nam', 'Bản Cát Cát hay thôn Cát Cát là một làng dân tộc Mông nằm cách thị trấn Sa Pa 2 km. Đây là điểm tham quan hấp dẫn của du lịch Sa Pa nói riêng và Lào Cai nói chung. Làng Cát Cát được hình thành từ giữa thế kỷ 19 do một bộ phận dân tộc ít người quần tụ theo phương pháp mật tập.', '47.png', 'active', 17);
+(76, 22.330980, 103.834038, 'Bản Cát Cát', 'San Sả Hồ, Sa Pa, Lào Cai, Việt Nam', 'Bản Cát Cát hay thôn Cát Cát là một làng dân tộc Mông nằm cách thị trấn Sa Pa 2 km. Đây là điểm tham quan hấp dẫn của du lịch Sa Pa nói riêng và Lào Cai nói chung. Làng Cát Cát được hình thành từ giữa thế kỷ 19 do một bộ phận dân tộc ít người quần tụ theo phương pháp mật tập.', '47.png', 'active', 17),
+(80, 12.550699, 109.230484, 'Bãi biển Dốc Lết Nha Trang', 'Tỉnh Lộ 652B, Ninh Hải, Ninh Hòa, Khánh Hòa, Việt Nam', 'Dốc Lết là một trong những bãi biển đẹp nhất tỉnh Khánh Hòa. Với bãi biển trải dài, bãi cát trắng cao và hàng dương soi bóng dài trên cát. Dốc Lết hiện nay là địa điểm tham quan du lịch hấp dẫn ở Khánh Hòa.', '50.png', 'active', 17),
+(81, 12.236945, 109.193878, 'Trung tâm Ngọc Trai Long Beach Pearl Nha Trang', '34 Nguyễn Thiện Thuật, Tân Lập, Thành phố Nha Trang, Khánh Hòa, Việt Nam', 'Là một trong hai trung tâm Ngọc Trai lớn nhất khu vực miền trung do tập đoàn Long Beach Pearl đầu tư. Đến đây Quý khách được nghe giới thiệu về qui trình nuôi cấy - khai thác - chế tác ngọc trai, được tham quan khu trưng bày với hơn 3.000 mẫu ngọc trai thiết kế tinh tế - đẹp mắt và sang trọng.', '51.png', 'active', 15),
+(82, 12.010877, 109.216400, 'Sân bay Cam Ranh', 'Nguyễn Tất Thành, Cam Hải Đông, Tp. Cam Ranh, Khánh Hòa, Việt Nam', 'Sân bay quốc tế Cam Ranh là sân bay dân sự chính phục vụ cho tỉnh Khánh Hòa và các tỉnh Cực Nam Trung Bộ. Đến thời điểm năm 2012, sân bay này đã đạt lượng khách thông qua 1 triệu lượt/năm và 4.858.362 lượt khách vào năm 2016', '52.png', 'active', 20),
+(83, 16.056429, 108.202576, 'Sân bay Quốc tế Đà Nẵng', 'Phường Hòa Thuận Tây, Hòa Thuận Tây, Hải Châu, Đà Nẵng, Việt Nam', 'Sân bay quốc tế Đà Nẵng là cảng hàng không lớn nhất của khu vực miền Trung - Tây Nguyên Việt Nam và lớn thứ ba của Việt Nam, nằm ở quận Hải Châu, cách trung tâm thành phố Đà Nẵng 3 km, với tổng diện tích khu vực sân bay là 842 ha, trong đó diện tích khu vực hàng không dân dụng là 150 ha. Đây là điểm bay quan trọng của miền Trung Việt Nam và cả nước.', '53.png', 'active', 20),
+(84, 16.116199, 108.273315, 'Bán đảo Sơn Trà', 'Bán đảo Sơn Trà, Đà Nẵng, Việt Nam', 'Sơn Trà khác lạ hoàn toàn so với trung tâm thành phố Đà Nẵng. Không có náo nhiệt, không có ồn ào, không có khói bụi, không đông đúc đầy xe. Sơn Trà chỉ có những con dốc cao nằm giữa rừng cây xanh mát, những khu nghỉ dưỡng kín cổng cao tường như là dành riêng cho giới thượng lưu. Bỏ ra một ngày khám phá bán đảo Sơn Trà vừa là để tham quan các điểm đến, vừa tận hưởng được bầu không khí trong lành nơi đây', '54.png', 'active', 17),
+(85, 16.706812, 107.194229, 'Thánh địa La Vang', 'Lê Lợi, Hải Phú, Hải Lăng, Quảng Trị, Việt Nam', 'Đức Mẹ La Vang là tên gọi mà giáo dân Công giáo Việt Nam đề cập đến sự kiện Đức Mẹ Maria hiện ra trong một thời kỳ mà đạo Công giáo bị bắt bớ tại Việt Nam. La Vang ngày nay là một thánh địa và là nơi hành hương quan trọng của người Công giáo Việt Nam, nằm ở huyện Hải Lăng, tỉnh Quảng Trị, thuộc Tổng Giáo phận Huế. ', '55.png', 'active', 13),
+(86, 16.469564, 107.577896, 'Kinh thành Huế', 'Cửa Ngăn, Phú Hậu, Thành phố Huế, Thừa Thiên Huế, Việt Nam', 'Hoàng cung cổ kính tọa lạc trong quần thể rộng lớn có tường bao quanh của tử cấm thành.', '56.png', 'active', 15),
+(87, 16.397741, 107.700752, 'Sân bay quốc tế Phú Bài', 'Khu 8, Hương Thủy, Thừa Thiên Huế, Việt Nam', 'Sân bay quốc tế Phú Bài là sân bay phục vụ thành phố Huế tỉnh Thừa Thiên Huế, Việt Nam. Mã của sân bay Phú Bài trong hệ thống du lịch IATA là HUI. Năm 2011, sân bay này đã phục vụ 5800 lượt chuyến bay hạ và cất cánh với tổng số 780.000 lượt khách. Năm 2015, sân bay này phục vụ 1,3 triệu lượt khách', '57.png', 'active', 20),
+(88, 21.218639, 105.804001, 'Sân bay quốc tế Nội Bài', 'Phú Minh, Sóc Sơn, Hà Nội, Việt Nam', 'Sân bay quốc tế Nội Bài, tên giao dịch chính thức: Cảng hàng không quốc tế Nội Bài, tiếng Anh: Noi Bai International Airport là cảng hàng không quốc tế phục vụ chính cho Thủ đô Hà Nội và vùng lân cận, thay thế cho sân bay Gia Lâm cũ.', '58.png', 'active', 20),
+(89, 20.950932, 107.035912, 'Royal HaLong Hotel', 'Bãi Cháy, Thành phố Hạ Long, Quảng Ninh, Việt Nam', 'Royal Hạ Long Hotel là khách sạn hướng biển đầu tiên, cũng như duy nhất tại khu vực đường bao biển Hòn Gai, trung tâm văn hóa, tài chính, chính trị và mua sắm của thành phố Hạ Long. \r\nRoyal Hạ Long Hotel là khách sạn hướng biển đầu tiên, cũng như duy nhất tại khu vực đường bao biển Hòn Gai, trung tâm văn hóa, tài chính, chính trị và mua sắm của thành phố Hạ Long. ', '59.png', 'active', 14),
+(90, 21.036758, 105.834656, 'Lăng Chủ Tịch Hồ Chí Minh', '2 Hùng Vương, Điện Bàn, Ba Đình, Hà Nội 100000, Việt Nam', 'Thi hài của Chủ tịch Hồ Chí Minh, lãnh tụ nước Việt Nam, được đặt tại lăng mộ và khu di tích lịch sử này.', '60.png', 'active', 15);
 
 -- --------------------------------------------------------
 
@@ -245,8 +256,8 @@ CREATE TABLE IF NOT EXISTS `ratings` (
 
 CREATE TABLE IF NOT EXISTS `routes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `arrive_time` time NOT NULL,
-  `leave_time` time NOT NULL,
+  `arrive_time` time DEFAULT NULL,
+  `leave_time` time DEFAULT NULL,
   `day` int(11) NOT NULL,
   `detail` text COLLATE utf8_unicode_ci,
   `fk_location` int(11) DEFAULT NULL,
@@ -254,27 +265,27 @@ CREATE TABLE IF NOT EXISTS `routes` (
   PRIMARY KEY (`id`),
   KEY `fk_location` (`fk_location`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `routes`
 --
 
 INSERT INTO `routes` (`id`, `arrive_time`, `leave_time`, `day`, `detail`, `fk_location`, `fk_tour`) VALUES
-(1, '07:00:00', '07:30:00', 0, 'Tập trung chuẩn bị xuất phát', 27, 1),
-(2, '09:15:00', '10:15:00', 0, 'Di chuyển đến Dinh Độc Lập.', 22, 1),
-(3, '11:05:00', '11:35:00', 0, 'Tham quan Bưu điện Thành phố.', 26, 1),
-(4, '10:20:00', '11:00:00', 0, 'Dạo chơi ở Nhà thờ Đức Bà.', 25, 1),
-(5, '08:10:00', '09:00:00', 0, 'Tham quan Bảo tàng chứng tích chiến tranh trên đường Võ Văn Tần.', 16, 1),
-(6, '12:00:00', '12:00:00', 0, 'Đoàn về lại điểm đón ban đầu, kết thúc hành trình.', 27, 1),
-(7, '08:00:00', '08:30:00', 0, 'Khởi hành từ văn phòng Viet Fun Travel bắt đầu Tour Du Lịch Tham Quan Sài Gòn 1 Ngày', 30, 2),
-(8, '09:10:00', '10:00:00', 0, 'Quý khách đến tham quan Bảo tàng chiến tích chiến tranh', 16, 2),
-(9, '10:20:00', '12:00:00', 0, 'Tham quan chùa Bà Thiên Hậu. \r\n11h20 sẽ di chuyển sang chợ Bình Tây để tham quan và ăn trưa, mua quà lưu niệm', 28, 2),
-(10, '13:00:00', '14:00:00', 0, 'Buổi chiều, tham quan Dinh Thống Nhất, nơi trước đây là tổng hành dinh của Mỹ đặt tại miền Nam Việt Nam.', 22, 2),
-(11, '14:15:00', '14:45:00', 0, 'Tham quan nhà thờ Đức Bà', 25, 2),
-(12, '15:00:00', '16:00:00', 0, 'Tham quan bưu điện thành phố', 26, 2),
-(13, '17:00:00', '17:00:00', 0, 'Quý khách kết thúc Tour Du Lịch Tham Quan Sài Gòn 1 Ngày tại văn phòng. Chia tay quý khách và hẹn gặp lại.\r\n', 30, 2),
-(14, '10:00:00', '10:00:00', 1, NULL, 51, 3),
+(1, '07:00:00', '07:30:00', 1, 'Tập trung chuẩn bị xuất phát', 27, 1),
+(2, '09:15:00', '10:15:00', 1, 'Di chuyển đến Dinh Độc Lập.', 22, 1),
+(3, '11:05:00', '11:35:00', 1, 'Tham quan Bưu điện Thành phố.', 26, 1),
+(4, '10:20:00', '11:00:00', 1, 'Dạo chơi ở Nhà thờ Đức Bà.', 25, 1),
+(5, '08:10:00', '09:00:00', 1, 'Tham quan Bảo tàng chứng tích chiến tranh trên đường Võ Văn Tần.', 16, 1),
+(6, '12:00:00', NULL, 1, 'Đoàn về lại điểm đón ban đầu, kết thúc hành trình.', 27, 1),
+(7, '08:00:00', '08:30:00', 1, 'Khởi hành từ văn phòng Viet Fun Travel bắt đầu Tour Du Lịch Tham Quan Sài Gòn 1 Ngày', 30, 2),
+(8, '09:10:00', '10:00:00', 1, 'Quý khách đến tham quan Bảo tàng chiến tích chiến tranh', 16, 2),
+(9, '10:20:00', '12:00:00', 1, 'Tham quan chùa Bà Thiên Hậu. \r\n11h20 sẽ di chuyển sang chợ Bình Tây để tham quan và ăn trưa, mua quà lưu niệm', 28, 2),
+(10, '13:00:00', '14:00:00', 1, 'Buổi chiều, tham quan Dinh Thống Nhất, nơi trước đây là tổng hành dinh của Mỹ đặt tại miền Nam Việt Nam.', 22, 2),
+(11, '14:15:00', '14:45:00', 1, 'Tham quan nhà thờ Đức Bà', 25, 2),
+(12, '15:00:00', '16:00:00', 1, 'Tham quan bưu điện thành phố', 26, 2),
+(13, '17:00:00', NULL, 1, 'Quý khách kết thúc Tour Du Lịch Tham Quan Sài Gòn 1 Ngày tại văn phòng. Chia tay quý khách và hẹn gặp lại.\r\n', 30, 2),
+(14, NULL, '10:00:00', 1, NULL, 51, 3),
 (15, '18:00:00', '06:00:00', 1, NULL, 40, 3),
 (16, '07:30:00', '09:00:00', 2, NULL, 31, 3),
 (17, '09:30:00', '11:30:00', 2, NULL, 33, 3),
@@ -284,13 +295,13 @@ INSERT INTO `routes` (`id`, `arrive_time`, `leave_time`, `day`, `detail`, `fk_lo
 (21, '07:00:00', '08:30:00', 3, NULL, 38, 3),
 (22, '09:00:00', '11:00:00', 3, NULL, 35, 3),
 (23, '12:00:00', '14:00:00', 3, NULL, 40, 3),
-(24, '21:00:00', '21:00:00', 3, NULL, 51, 3),
-(25, '07:30:00', '07:30:00', 1, NULL, 57, 4),
+(24, '21:00:00', NULL, 3, NULL, 51, 3),
+(25, NULL, '07:30:00', 1, NULL, 57, 4),
 (26, '08:00:00', '09:30:00', 1, NULL, 25, 4),
 (27, '09:30:00', '11:30:00', 1, NULL, 26, 4),
 (28, '13:30:00', '15:00:00', 1, NULL, 56, 4),
-(29, '15:00:00', '15:00:00', 1, NULL, 57, 4),
-(30, '07:00:00', '07:00:00', 1, NULL, 26, 5),
+(29, '15:00:00', NULL, 1, NULL, 57, 4),
+(30, '06:30:00', '07:00:00', 1, NULL, 26, 5),
 (31, '14:00:00', '15:00:00', 1, NULL, 41, 5),
 (32, '16:00:00', '17:30:00', 1, NULL, 33, 5),
 (33, '18:00:00', '06:00:00', 1, NULL, 40, 5),
@@ -310,11 +321,47 @@ INSERT INTO `routes` (`id`, `arrive_time`, `leave_time`, `day`, `detail`, `fk_lo
 (47, '20:30:00', '08:00:00', 4, NULL, 58, 5),
 (48, '09:00:00', '17:00:00', 5, NULL, 48, 5),
 (49, '16:00:00', '07:30:00', 5, NULL, 58, 5),
-(50, '19:00:00', '19:00:00', 6, NULL, 26, 5),
-(51, '04:00:00', '04:00:00', 1, 'di chuyển bằng đường bộ', 59, 6),
+(50, '19:00:00', NULL, 6, NULL, 26, 5),
+(51, NULL, '04:00:00', 1, 'di chuyển bằng đường bộ', 25, 6),
 (52, '09:00:00', '11:00:00', 1, 'di chuyển bằng đường bộ', 61, 6),
-(53, '12:00:00', '15:00:00', 1, NULL, 61, 6),
-(54, '18:00:00', '18:00:00', 1, NULL, 62, 6);
+(53, '12:00:00', '15:00:00', 1, NULL, 60, 6),
+(54, '18:00:00', '07:00:00', 1, NULL, 62, 6),
+(56, '09:00:00', '14:00:00', 2, NULL, 80, 6),
+(57, '15:00:00', '17:00:00', 2, NULL, 81, 6),
+(58, '19:00:00', '06:00:00', 2, NULL, 62, 6),
+(59, '09:00:00', '10:00:00', 3, NULL, 82, 6),
+(60, '11:00:00', '11:30:00', 3, NULL, 83, 6),
+(61, '12:00:00', '14:00:00', 3, NULL, 63, 6),
+(62, '15:00:00', '18:00:00', 3, NULL, 84, 6),
+(63, '19:00:00', '07:00:00', 3, NULL, 63, 6),
+(64, '08:30:00', '11:00:00', 4, NULL, 64, 6),
+(65, '12:30:00', '14:00:00', 4, NULL, 63, 6),
+(66, '16:00:00', '19:00:00', 4, NULL, 65, 6),
+(67, '21:00:00', '08:00:00', 4, NULL, 63, 6),
+(68, '09:00:00', '17:00:00', 5, NULL, 48, 6),
+(69, '19:00:00', '07:00:00', 5, NULL, 66, 6),
+(70, '09:00:00', '11:00:00', 6, NULL, 85, 6),
+(71, '13:00:00', '18:00:00', 6, NULL, 67, 6),
+(72, '20:00:00', '08:00:00', 6, NULL, 66, 6),
+(73, '09:00:00', '11:30:00', 7, NULL, 86, 6),
+(74, '14:00:00', '15:00:00', 7, NULL, 87, 6),
+(75, '15:30:00', '16:30:00', 7, NULL, 88, 6),
+(76, '18:30:00', '08:00:00', 7, NULL, 68, 6),
+(77, '10:30:00', '16:00:00', 8, NULL, 69, 6),
+(78, '18:00:00', '08:00:00', 8, NULL, 68, 6),
+(79, '10:00:00', '15:00:00', 9, NULL, 70, 6),
+(80, '16:30:00', '08:00:00', 9, NULL, 89, 6),
+(81, '09:00:00', '14:00:00', 10, NULL, 71, 6),
+(82, '19:00:00', '07:00:00', 10, NULL, 68, 6),
+(83, '08:00:00', '15:00:00', 11, NULL, 72, 6),
+(84, '19:00:00', '20:30:00', 11, NULL, 68, 6),
+(85, '06:00:00', '07:00:00', 12, NULL, 73, 6),
+(86, '10:00:00', '18:00:00', 12, NULL, 76, 6),
+(87, '20:00:00', '08:00:00', 12, NULL, 73, 6),
+(88, '10:30:00', '14:00:00', 13, NULL, 74, 6),
+(89, '21:00:00', '09:00:00', 13, NULL, 68, 6),
+(90, '10:00:00', '12:00:00', 14, NULL, 90, 6),
+(91, '14:00:00', '15:00:00', 14, NULL, 88, 6);
 
 -- --------------------------------------------------------
 
@@ -358,7 +405,7 @@ CREATE TABLE IF NOT EXISTS `tour_images` (
   `fk_tour` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tour_images`
@@ -410,7 +457,18 @@ INSERT INTO `tour_images` (`id`, `name`, `fk_tour`) VALUES
 (43, 'VT_DL_4.png', 3),
 (44, 'VT_DL_3.png', 3),
 (45, 'VT_DL_2.png', 3),
-(46, 'VT_DL_1.png', 3);
+(46, 'VT_DL_1.png', 3),
+(47, 'N_B_1.png', 6),
+(48, 'N_B_2.png', 6),
+(49, 'N_B_3.png', 6),
+(50, 'N_B_4.png', 6),
+(51, 'N_B_5.png', 6),
+(52, 'N_B_6.png', 6),
+(53, 'N_B_7.png', 6),
+(54, 'N_B_8.png', 6),
+(55, 'N_B_9.png', 6),
+(56, 'N_B_10.png', 6),
+(57, 'N_B_11.png', 6);
 
 -- --------------------------------------------------------
 
@@ -455,7 +513,7 @@ CREATE TABLE IF NOT EXISTS `types` (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `marker` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `types`
@@ -480,7 +538,8 @@ INSERT INTO `types` (`id`, `name`, `marker`) VALUES
 (16, 'Công viên', 'park'),
 (17, 'Điểm thu hút khách du lịch', 'tourist_area'),
 (18, 'Điểm xuất phát - kết thúc tour', 'start_end'),
-(19, 'Chùa', 'temple');
+(19, 'Chùa', 'temple'),
+(20, 'Sân bay', 'airport');
 
 -- --------------------------------------------------------
 
