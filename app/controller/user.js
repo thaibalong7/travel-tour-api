@@ -271,16 +271,18 @@ exports.update = async (req, res) => {
     if (typeof req.body.fullname !== 'undefined')
         _user.fullname = req.body.fullname
     if (typeof req.file !== 'undefined') {
-        fs.writeFile('public/assets/avatar/' + _user.id + '-' + req.file.originalname, req.file.buffer, async (err) => {
+        var date = new Date();
+        var timestamp = date.getTime();
+        fs.writeFile('public/assets/avatar/' + _user.id + '-' + timestamp + '.jpg', req.file.buffer, async (err) => {
             if (err) {
                 return res.status(400).json({ msg: err })
             }
-            _user.avatar = _user.id + '-' + req.file.originalname;
+            _user.avatar = _user.id + '-' + timestamp + '.jpg';
             let avatar;
             if (process.env.NODE_ENV === 'development')
-                avatar = 'http://' + req.headers.host + '/assets/avatar/' + _user.id + '-' + req.file.originalname;
+                avatar = 'http://' + req.headers.host + '/assets/avatar/' + _user.avatar;
             else
-                avatar = 'https://' + req.headers.host + '/assets/avatar/' + _user.id + '-' + req.file.originalname;
+                avatar = 'https://' + req.headers.host + '/assets/avatar/' + _user.avatar;
             await _user.save();
             _user = await users.findByPk(_user.id);
             const user = _.omit(_user.dataValues, 'password');
@@ -333,7 +335,7 @@ exports.updatePassword = async (req, res) => {
             return res.status(400).json({ msg: 'Old password is not corect' })
         }
     }
-    catch (e) {
+    catch (err) {
         return res.status(400).json({ msg: err })
     }
 }
