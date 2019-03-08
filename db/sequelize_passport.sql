@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 07, 2019 lúc 08:19 AM
+-- Thời gian đã tạo: Th3 08, 2019 lúc 09:43 AM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `blacklist_tokens` (
 CREATE TABLE IF NOT EXISTS `book_tour_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `book_time` datetime NOT NULL,
-  `status` text COLLATE utf8_unicode_ci NOT NULL,
+  `status` enum('booked','paid','cancelled') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'booked',
   `fk_tour_turn` int(11) DEFAULT NULL,
   `fk_user` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `book_tour_history` (
 --
 
 INSERT INTO `book_tour_history` (`id`, `book_time`, `status`, `fk_tour_turn`, `fk_user`) VALUES
-(1, '2019-02-25 11:20:00', '', 1, 1);
+(1, '2019-02-25 11:20:00', 'booked', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `locations` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `fk_type` (`fk_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `locations`
@@ -181,7 +181,45 @@ INSERT INTO `locations` (`id`, `latitude`, `longitude`, `name`, `address`, `desc
 (55, 10.350637, 107.067848, 'Bạch Dinh Vũng Tàu', 'Đường lên Bạch Dinh, Phường 1, Thành phố Vũng Tầu, Bà Rịa - Vũng Tàu, Việt Nam', 'Năm 1898, Toàn quyền Đông Dương Paul Doumer đã cho xây Bạch Dinh (Villa Blanche) trên nền pháo đài Phước Thắng nơi từng khai hỏa bắn vào tàu chiến Pháp gần 50 năm trước. Bạch Dinh là một công trình kiến trúc La Mã 3 tầng, cao 19 m, lưng tựa vào Núi Lớn. Tại đây hiện còn lưu giữ 19 khẩu thần công.', '25.png', 'active', 15),
 (56, 10.777020, 106.703552, 'Nhà hát Thành Phố Hồ Chí Minh', '7 Công Trường Lam Sơn, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam', 'nhà hát được xây dựng vào năm 1897 theo phong cách kiến trúc tân cổ điển. Nhà hát có kiến trúc cổ kính, uy nghi với một trệt, hai tầng lầu, 1.800 ghế, hệ thống âm thanh ánh sáng hiện đại.', NULL, 'active', 2),
 (57, 10.762955, 106.682236, 'Đại học Khoa Học Tự Nhiên Đại Học Quốc Gia, TPHCM', '227 đường Nguyễn Văn Cừ, Phường 4, Quận 5, Hồ Chí Minh, Việt Nam', '', NULL, 'active', 18),
-(58, 16.067415, 108.224823, 'Sun River Hotel', '132-134-136 Bạch Đằng, Quận Hải Châu, TP. Đà Nẵng', 'Khách sạn với 50 phòng đạt chuẩn 3 sao, được thiết kế theo phong cách hiện đại, nội thất sang trọng, trang nhã. Tại Sun River, quý khách sẽ được tận hưởng những cảm giác ấn tượng và khó quên. Hệ thống phòng tiêu chuẩn 3 sao với tầm nhìn thoáng đãng giúp quý khách thoải mái ngắm nhìn bao quát dòng sông Hàn hoặc toàn cảnh thành phố. Để đáp ứng đầy đủ nhất các nhu cầu về nghỉ ngơi, ẩm thực, giải trí và công việc của quý khách, khách sạn cung cấp những tiện nghi và dịch vụ đa dạng như: nhà hàng, bar & cafe ...\r\n', '28.png', 'active', 14);
+(58, 16.067415, 108.224823, 'Sun River Hotel', '132-134-136 Bạch Đằng, Quận Hải Châu, TP. Đà Nẵng', 'Khách sạn với 50 phòng đạt chuẩn 3 sao, được thiết kế theo phong cách hiện đại, nội thất sang trọng, trang nhã. Tại Sun River, quý khách sẽ được tận hưởng những cảm giác ấn tượng và khó quên. Hệ thống phòng tiêu chuẩn 3 sao với tầm nhìn thoáng đãng giúp quý khách thoải mái ngắm nhìn bao quát dòng sông Hàn hoặc toàn cảnh thành phố. Để đáp ứng đầy đủ nhất các nhu cầu về nghỉ ngơi, ẩm thực, giải trí và công việc của quý khách, khách sạn cung cấp những tiện nghi và dịch vụ đa dạng như: nhà hàng, bar & cafe ...\r\n', '28.png', 'active', 14),
+(59, 10.779933, 106.699020, 'Thành phố Hồ Chí Minh', 'Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam', 'Thành phố Hồ Chí Minh (thường được gọi là Sài Gòn) là một thành phố ở miền nam Việt Nam nổi tiếng với vai trò nòng cốt trong chiến tranh Việt Nam. Sài Gòn cũng được biết đến với địa danh của thực dân Pháp, trong đó có Nhà thờ Đức Bà được xây dựng hoàn toàn bằng nguyên liệu nhập khẩu từ Pháp và Bưu điện trung tâm được xây dựng vào thế kỷ 19. Quán ăn nằm dọc các đường phố Sài Gòn, nhất là xung quanh chợ Bến Thành nhộn nhịp.\r\n', '31.png', 'active', 18),
+(60, 10.960426, 108.314247, 'Vịnh Cam Ranh', 'Mũi Né, Thành phố Phan Thiết, Bình Thuận, Việt Nam', 'Đến với Cam Ranh bạn có thể hòa mình vào khung cảnh thiên nhiên thơ mộng với cảnh quan hoang sơ ít có sự tác động của bàn tay con người.', '33.png', 'active', 17),
+(61, 10.924974, 108.115746, 'Thành phố Phan Thiết', 'Lê Lợi, Tp. Phan Thiết, Bình Thuận, Việt Nam', 'Từ cảnh quan thiên nhiên đa dạng của đồi cát bay Mũi Né, những hòn đảo lớn nhỏ; đến những di tích lịch sử minh chứng cho nền văn minh Chăm Pa hưng thịnh một thời … ', '32.png', 'active', 17),
+(62, 12.133787, 109.210663, 'Thành phố Nha Trang', 'Đèo Cù Hin, Cam Hải Đông, Cam Lâm, Khánh Hòa, Việt Nam\r\n', 'Nha Trang là một thành phố ven biển và là trung tâm chính trị, kinh tế, văn hóa, khoa học kỹ thuật và du lịch của tỉnh Khánh Hòa, Việt Nam. Trước khi trở thành phần đất của Việt Nam, Nha Trang thuộc về Chiêm Thành. Các di tích của người Chăm vẫn còn tại nhiều nơi ở Nha Trang.\r\n', '34.png', 'active', 17),
+(63, 16.076515, 108.222130, 'Thành phố Đà Nẵng', 'Hải Châu, Đà Nẵng, Việt Nam\r\n', 'Đà Nẵng nằm giữa ba di sản thế giới: cố đô Huế, phố cổ Hội An và thánh địa Mỹ Sơn. Đà Nẵng còn có nhiều danh thắng tuyệt đẹp say lòng du khách như Ngũ Hành Sơn, Bà Nà, bán đảo Sơn Trà, đèo Hải Vân, sông Hàn thơ mộng và cầu quay Sông Hàn – niềm tự hào của thành phố, và biển Mỹ Khê đẹp nhất hành tinh.\r\n', '35.png', 'active', 17),
+(64, 16.004740, 108.261780, 'Ngũ Hành Sơn', 'Hoà Hải, Ngũ Hành Sơn, Đà Nẵng, Việt Nam', 'Ngũ Hành Sơn hay núi Non Nước là tên chung của một danh thắng gồm 5 ngọn núi đá vôi nhô lên trên một bãi cát ven biển, trên một diện tích khoảng 2 km2, gồm: Kim Sơn, Mộc Sơn, Thủy Sơn, Hỏa Sơn và Thổ Sơn, nằm cách trung tâm thành phố Đà Nẵng khoảng 8 km về phía Đông Nam, ngay trên tuyến đường Đà Nẵng - Hội An', '36.png', 'active', 17),
+(65, 15.879651, 108.334671, 'Phố Cổ Hội An', 'Hội An, Quảng Nam, Việt Nam', 'Phố cổ Hội An là một thành phố nổi tiếng của tỉnh Quảng Nam, một phố cổ giữ được gần như nguyên vẹn với hơn 1000 di tích kiến trúc từ phố xá, nhà cửa, hội quán, đình, chùa, miếu, nhà thờ tộc, giếng cổ… đến các món ăn truyền thống, tâm hồn của người dân nơi đây. Một lần du lịch Hội An sẽ làm say đắm lòng du khách bởi những nét đẹp trường tồn cùng thời gian, vô cùng mộc mạc, bình dị.', '37.png', 'active', 17),
+(66, 16.469395, 107.577896, 'Cố Đô Huế', 'Tp. Huế, Thừa Thiên Huế, Việt Nam', 'Quần thể di tích Cố đô Huế hay Quần thể di tích Huế là những di tích lịch sử - văn hoá do triều Nguyễn chủ trương xây dựng trong khoảng thời gian từ đầu thế kỷ 19 đến nửa đầu thế kỷ 20 trên địa bàn kinh đô Huế xưa', '38.png', 'active', 15),
+(67, 17.590996, 106.283424, 'Động Phong Nha', 'Phong Nha, Bố Trạch, Quảng Bình, Việt Nam', 'Động Phong Nha là danh thắng tiêu biểu nhất của hệ thống hang động thuộc quần thể danh thắng Phong Nha – Kẻ Bàng. Phong Nha được bình chọn là một trong những hang động đẹp nhất thế giới với các tiêu chí: Sông ngầm dài nhất, Hồ nước ngầm đẹp nhất. Cửa hang cao và rộng nhất, Các bãi cát, bãi đá ngầm đẹp nhất, Hang khô rộng và đẹp nhất, Hệ thống thạch nhũ kỳ ảo và tráng lệ nhất, Hang động nước dài nhất. Động Phong Nha là một điểm đến được nhiều du khách lựa chọn trong chuyến du lịch Quảng Bình.', '39.png', 'active', 17),
+(68, 21.036999, 105.834648, 'Thành phố Hà Nội', 'Điện Biên, Điện Bàn, Ba Đình, Hà Nội, Việt Nam\r\n', 'Thành phố Hà Nội là Thủ đô ngàn năm văn hiến với những di tích cổ xưa, cuộc sống yên bình. Nếu đã một lần du lịch Hà Nội, chắc chắn bạn không thể nào quên không khí đặc trưng nơi đây, với Hồ Gươm, Hồ Tây, những quán cafe trầm mặc, những con đường nhỏ và những gánh hàng rong. ', '40.png', 'active', 17),
+(69, 20.285284, 105.906616, 'Hoa Lư', 'Trường Yên, Hoa Lư, Ninh Bình, Việt Nam', 'Cố đô Hoa Lư là một quần thể kiến trúc đặc sắc ở tỉnh Ninh Bình, đã được UNESCO công nhận là một trong 4 vùng lõi thuộc quần thể di sản Thế giới Tràng An. Nơi đây cũng được nhà nước xếp hạng là quần thể kiến trúc, di tích lịch sử Quốc gia đặc biệt quan trọng, cần được hết sức gìn giữ.', '41.png', 'active', 15),
+(70, 20.942163, 107.182716, 'Vịnh Hạ Long', 'Vịnh Hạ Long, Thành phố Hạ Long, Quảng Ninh, Việt Nam', 'Vịnh Hạ Long nằm ngoài khơi bờ biển phía đông bắc của Việt Nam, sở hữu khoảng 2.000 đảo và mỏm đá vôi với đủ hình thù và kích cỡ lớn bé khác nhau, nổi lên trên mặt nước biển trong xanh tĩnh lặng. Không khí xung quanh thường được bao phủ trong màn sương, điều này góp phần làm cho nơi đây thêm phần kỳ bí.', '42.png', 'active', 17),
+(71, 21.161560, 106.714798, 'Yên Tử', 'Thượng Yên Công, Tp. Uông Bí, Quảng Ninh, Việt Nam', 'Khu di tích danh thắng Yên Tử là một quần thể chùa, am, tháp, tượng, rừng cây cổ thụ và cảnh vật thiên nhiên nằm rải rác từ dốc Đỏ theo chiều cao dần đến đỉnh núi. Quần thể di tích Yên Tử nằm gần đường 18A, thuộc xã Thượng Yên Công, thành phố Uông Bí, tỉnh Quảng Ninh.', '43.png', 'active', 19),
+(72, 20.619184, 105.747787, 'Chùa Hương', 'Hương Sơn, Mỹ Đức, Hà Nội, Việt Nam', 'Nét thanh tịnh của miền đất Phật đã tạo cho con người, cảnh vật hòa lẫn vào không gian khi vào hội, Đường vào chùa Hương tấp nập vào ra hàng trăm thuyền, cộng thú vui ngồi thuyền vãng cảnh lạc vào non tiên cõi Phật. Nhẹ nhàng thả hồn mình trôi nhẹ theo mái chèo qua dòng Suối Yến trong xanh, hai bên bờ cây cối xanh tươi, đầu hạ thì hoa gạo nở đỏ rực như những đốm lửa, mùa thu suối Yến ngập tràn sắc tím của hoa súng, mùa xuân thì hoa ban, hoa mận nở trắng trên các triền núi. Cảm giác đó thật tuyệt vời mà chỉ đến với chùa Hương bạn mới cảm nhận được.', '44.png', 'active', 19),
+(73, 22.479942, 103.976295, 'Lào Cai', 'Võ Nguyên Giáp, TX.Lào Cai, Lào Cai, Việt Nam', 'Lào Cai là khu du lịch trọng tâm của miền Bắc với những thắng cảnh Sa Pa thị trấn trong mây, chợ tình quyến rũ, đỉnh Phan Xi Păng và Cửa khẩu Quốc tế Lào Cai Hà Khẩu. Lào Cai có nhiều địa danh lịch sử, hang động tự nhiên, đặc sản và là nơi mang đậm nét đặc trưng văn hoá độc đáo của nhiều dân tộc anh em.', '45.png', 'active', 17),
+(74, 22.334965, 103.842949, 'Hàm Rồng', 'Hàm Rồng, TT. Sa Pa, Sa Pa, Lào Cai, Việt Nam\r\n', '', '48.png', 'active', 17),
+(75, 22.336809, 103.842201, 'Sapa', 'Xuan Vien Street, TT. Sa Pa, Lào Cai, Việt Nam', 'Nằm phía Tây Bắc tổ quốc, Sa Pa ẩn chứa bao điều kỳ diệu của cảnh sắc thiên nhiên, con người. Thị trấn trong mây hấp dẫn du khách với quang cảnh núi non hùng vĩ cùng trải nghiệm độc đáo với cuộc sống của đồng bào dân tộc thiểu số.', '46.png', 'active', 17),
+(76, 22.330980, 103.834038, 'Bản Cát Cát', 'San Sả Hồ, Sa Pa, Lào Cai, Việt Nam', 'Bản Cát Cát hay thôn Cát Cát là một làng dân tộc Mông nằm cách thị trấn Sa Pa 2 km. Đây là điểm tham quan hấp dẫn của du lịch Sa Pa nói riêng và Lào Cai nói chung. Làng Cát Cát được hình thành từ giữa thế kỷ 19 do một bộ phận dân tộc ít người quần tụ theo phương pháp mật tập.', '47.png', 'active', 17);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `passengers`
+--
+
+CREATE TABLE IF NOT EXISTS `passengers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `fullname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `phone` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `birthdate` date DEFAULT NULL,
+  `sex` enum('male','female','other') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address` text COLLATE utf8_unicode_ci,
+  `passport` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `type` enum('child','adult') COLLATE utf8_unicode_ci DEFAULT 'adult',
+  `fk_book_tour` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_book_tour` (`fk_book_tour`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -216,7 +254,7 @@ CREATE TABLE IF NOT EXISTS `routes` (
   PRIMARY KEY (`id`),
   KEY `fk_location` (`fk_location`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `routes`
@@ -272,7 +310,11 @@ INSERT INTO `routes` (`id`, `arrive_time`, `leave_time`, `day`, `detail`, `fk_lo
 (47, '20:30:00', '08:00:00', 4, NULL, 58, 5),
 (48, '09:00:00', '17:00:00', 5, NULL, 48, 5),
 (49, '16:00:00', '07:30:00', 5, NULL, 58, 5),
-(50, '19:00:00', '19:00:00', 6, NULL, 26, 5);
+(50, '19:00:00', '19:00:00', 6, NULL, 26, 5),
+(51, '04:00:00', '04:00:00', 1, 'di chuyển bằng đường bộ', 59, 6),
+(52, '09:00:00', '11:00:00', 1, 'di chuyển bằng đường bộ', 61, 6),
+(53, '12:00:00', '15:00:00', 1, NULL, 61, 6),
+(54, '18:00:00', '18:00:00', 1, NULL, 62, 6);
 
 -- --------------------------------------------------------
 
@@ -290,18 +332,19 @@ CREATE TABLE IF NOT EXISTS `tours` (
   `price` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tours`
 --
 
 INSERT INTO `tours` (`id`, `name`, `description`, `detail`, `featured_img`, `policy`, `price`) VALUES
-(1, 'Tour tham quan Sài Gòn (nửa ngày)', 'Tham quan những địa danh mang đậm dấu ấn lịch sử như Bảo tàng chứng tích chiến tranh, Dinh Độc Lập.\r\nTìm hiểu nét văn hóa và một số kiến trúc độc đáo - điều tạo nên một phần linh hồn mảnh đất Sài Gòn: Nhà thờ Đức Bà, Bưu điện thành phố.\r\n\r\nBạn được trải nghiệm những gì?\r\nHành trình bắt đầu với chuyến thăm Bảo tàng chứng tích chiến tranh - top 5 trong số 25 bảo tàng hấp dẫn nhất châu Á. Đến với bảo tàng, bạn sẽ giật mình nhận ra đằng sau một cuộc sống hòa bình, yên ổn - mà bạn tưởng chừng như hiển nhiên này - là cả một chặng đường lịch sử thấm đẫm máu và nước mắt của dân tộc. Bảo tàng chứng tích chiến tranh như một nốt lặng tĩnh tâm giữa chốn phồn hoa đô hội, giúp bạn thêm yêu, thêm trân trọng cuộc sống thanh bình này.\r\n\r\nĐiểm dừng chân tiếp theo của Tour tham quan Sài Gòn chính là Dinh Độc Lập - một di tích quốc gia đặc biệt, dấu son quyền lực của của quá khứ. Dinh Độc Lập còn cuốn hút bạn bởi những câu chuyện lịch sử thú vị về sự hình thành, sự tồn tại, ý nghĩa văn hóa trong lối kiến trúc độc đáo và những dấu mốc lịch sử của đất nước mà nó đã mang trong mình hàng trăm năm qua. Chỉ vài giờ tham quan ngắn ngủi nhưng đủ giúp bạn hình dung về một giai đoạn lịch sử đầy biến động, và thêm tự hào về chiến thắng lịch sử vẻ vang của dân tộc Việt Nam.\r\n\r\nCuối hành trình, hãy trở về trung tâm thành phố để thăm Nhà thờ Đức Bà. Nơi giao hòa giữa nét cổ xưa và hiện đại, giữa kiến trúc phương Tây và văn hóa phương Đông. Bạn sẽ không khỏi trầm trồ thán phục trước màu gạch nơi đây vẫn giữ nguyên vẹn màu hồng tươi, chẳng bám chút bụi rêu, dẫu trải qua bao nắng mưa, thử thách. Nếu muốn tận hưởng hết vẻ đẹp của Nhà thờ Đức Bà, hãy dành chút thời gian ngồi lại, thưởng thức thú vui cà phê bệt trong ánh đèn lung linh phản chiếu từ các tòa cao ốc, cùng hòa nhịp sống với người Sài Gòn khi đêm về. Lúc đó bạn sẽ nhận ra Nhà thờ Đức Bà tựa như một nốt nhạc bình yên giữa bản nhạc xô bồ, vội vã của đất Sài Gòn này.', 'Buổi sáng:  Xe và hướng dẫn viên Trung tâm lữ hành Quốc tế Trippy đón Quý khách tại điểm hẹn, khởi hành đi tham quan. Tham quan Bảo tàng chứng tích chiến tranh trên đường Võ Văn Tần. Di chuyển đến Dinh Độc Lập. Dạo chơi ở Nhà thờ Đức Bà. Tham quan Bưu điện Thành phố. Buổi trưa:  Đoàn về lại điểm đón ban đầu, kết thúc hành trình.', NULL, NULL, 200000),
-(2, 'Tham Quan Sài Gòn - TP. HCM 1 Ngày', 'Sài Gòn - Tp.HCM là trung tâm du lịch lớn nhất nước, thu hút hàng năm 70% lượng khách quốc tế đến Việt Nam. Với nhịp sống sôi động, các công trình kiến trúc Pháp cổ: Nhà thờ Đức Bà, Dinh Thống Nhất, Ủy ban nhân dân thành phố, Bưu điện thành phố; khu phố người Hoa và vô số các khu vui chơi, giải trí đã tạo nên sức hấp dẫn của Sài gòn.\r\n\r\nNỔI BẬT:\r\n\r\nCụm kiến trúc thời Pháp + Mỹ: Dinh Thống Nhất, Nhà Thờ Đức Bà, Bưu Điện Thành Phố, Uỷ Ban Nhân Dân Thành Phố. Khu vực hoạt động của người Hoa ở Sài Gòn: Chợ Lớn, chợ Bình Tây.\r\nBảo tàng chiến tích chiến tranh.', '', NULL, NULL, 550000),
-(3, 'Vũng Tàu - Đà Lạt', 'Tour Đà Lạt - Vũng tàu giá rẻ của công ty, với các địa điểm du lịch hàng đầu Việt Nam sẽ khiến bạn và gia đình có những giây phút đáng nhớ trong cuộc đời.', 'Ngày 1: Vũng Tàu - Đà Lạt - Khách sạn. (Ăn sáng, trưa chiều).\r\nNgày 2: Khách sạn - Nhà thờ Con Gà - Thiền viện Trúc Lâm - Dinh Bảo Đại - Showroom hoa nghệ thuật  - Khách sạn. (Ăn sáng, trưa).\r\nNgày 3: Khách sạn - Ga xe lửa cổ - Làng hoa Vạn Thành - Khách sạn (Đà lạt) - Vũng Tàu (Ăn sáng, trưa ,chiều).', NULL, 'Nếu Quý khách hủy tour từ 5 ngày trở lên so với ngày khởi hành, chịu phí: 10%\r\nNếu Quý khách hủy sau 2 ngày đến trước ngày đi 24 tiếng: 50%.\r\nNếu Quý khách hủy trong vòng 24 giờ: chịu phí 100 %.', 5000000),
-(4, 'Thành phố Hồ Chí Minh 1 ngày', 'Hành trình du lịch Sài Gòn 1 ngày đưa du khách đến với thành phố mang tên Bác, từ lâu đã là trung tâm văn hóa, kinh tế của Việt Nam, thành phố này còn có có tên gọi khác là Hòn Ngọc Viễn Đông. Đến thành phố Hồ Chí Minh, thành phố có hơn 300 tuổi đời, bạn sẽ thấy những tòa nhà cao tầng, khu vui chơi giải trí, trung tâm mua sắm. Bên cạnh đó những phồn hoa chốn đô thị thì bạn cũng có thể thấy những biệt thự cổ kính, chợ truyền thống lâu đời…\r\n', 'Đại học Khoa Học Tự Nhiên - Nhà thờ Chánh Tòa Đức Bà Sài Gòn - Bưu điện TPHCM - Nhà hát TPHCM - Đại học Khoa học Tự Nhiên (Ăn trưa)', NULL, 'Nếu Quý khách hủy tour: chịu phí 100 %.\r\n', 100000),
-(5, 'TPHCM - Đà Lạt - Đà Nẵng', 'Tour TPHCM - Đà Lạt - Đà Nẵng sẽ dừng chân tại một thành phố du lịch nổi tiếng được mệnh danh là Thành phố ngàn thông, Thành phố hoa anh đào, Thành phố mù sương... Cho dù với tên gọi nào thì Đà Lạt vẫn luôn có sức quyến rũ đặc biệt đối với du khách bốn phương bởi khí hậu mát mẻ, không khí trong lành, khung cảnh nên thơ và những truyền thuyết tình yêu lãng mạn. Và  đến với dải đất miền Trung với nhiều nắng gió lại là nơi lưu giữ những giá trị văn hóa con người tạo dựng. Trên dải đất hẹp từ Quảng Bình tới Quảng Nam hình thành nên con đường du lịch di sản miền Trung đã trở thành điểm đến thu hút đông đảo du khách trong và ngoài nước. Hành trình khám phá bức tranh miền Trung xinh đẹp, của Đà Nẵng nổi tiếng với bờ biển dài, quyến rũ; của Hội An nơi phố cổ bình yên, cổ kính; của đất Huế kinh thành lộng lẫy chốn hoàng cung… tất cả tạo ấn tượng cho du khách tham quan. ', 'Ngày 1: Bưu điện TPHCM - Thác Prenn - Thiền viện Trúc Lâm - Khách sạn (Ăn trưa, Ăn tối).\r\nNgày 2 : Khách sạn - Thũng lũng vàng - Dinh Bảo Đại - Làng Hoa Vạn Thành - Showroom hoa nghệ thuật  - Khách sạn. (Ăn sáng, trưa, tối).\r\nNgày 3: Khách sạn - Nhà thờ Con Gà - Ga xe lửa - Chùa Linh Phước - Langbiang - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 4: Khách sạn (Đà Lạt) - Khách sạn (Đà Nẵng) - Bảo tàng 3D TrickEye - Ký Ức Hội An Show - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 5: Khách sạn - Bà Nà Hills - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 6: Khách sạn(Đà Nẵng) -  Bưu điện TPHCM (Ăn sáng, trưa, tối).', NULL, 'Nếu Quý khách hủy tour từ 7 ngày trở lên so với ngày khởi hành, chịu phí: 10%\r\nNếu Quý khách hủy sau 3 ngày đến trước ngày đi 2 ngày: 50%.\r\nNếu Quý khách hủy trong vòng 2 ngày: chịu phí 100 %.\r\n', 13000000);
+(1, 'Tour tham quan Sài Gòn (nửa ngày)', 'Tham quan những địa danh mang đậm dấu ấn lịch sử như Bảo tàng chứng tích chiến tranh, Dinh Độc Lập.\r\nTìm hiểu nét văn hóa và một số kiến trúc độc đáo - điều tạo nên một phần linh hồn mảnh đất Sài Gòn: Nhà thờ Đức Bà, Bưu điện thành phố.\r\n\r\nBạn được trải nghiệm những gì?\r\nHành trình bắt đầu với chuyến thăm Bảo tàng chứng tích chiến tranh - top 5 trong số 25 bảo tàng hấp dẫn nhất châu Á. Đến với bảo tàng, bạn sẽ giật mình nhận ra đằng sau một cuộc sống hòa bình, yên ổn - mà bạn tưởng chừng như hiển nhiên này - là cả một chặng đường lịch sử thấm đẫm máu và nước mắt của dân tộc. Bảo tàng chứng tích chiến tranh như một nốt lặng tĩnh tâm giữa chốn phồn hoa đô hội, giúp bạn thêm yêu, thêm trân trọng cuộc sống thanh bình này.\r\n\r\nĐiểm dừng chân tiếp theo của Tour tham quan Sài Gòn chính là Dinh Độc Lập - một di tích quốc gia đặc biệt, dấu son quyền lực của của quá khứ. Dinh Độc Lập còn cuốn hút bạn bởi những câu chuyện lịch sử thú vị về sự hình thành, sự tồn tại, ý nghĩa văn hóa trong lối kiến trúc độc đáo và những dấu mốc lịch sử của đất nước mà nó đã mang trong mình hàng trăm năm qua. Chỉ vài giờ tham quan ngắn ngủi nhưng đủ giúp bạn hình dung về một giai đoạn lịch sử đầy biến động, và thêm tự hào về chiến thắng lịch sử vẻ vang của dân tộc Việt Nam.\r\n\r\nCuối hành trình, hãy trở về trung tâm thành phố để thăm Nhà thờ Đức Bà. Nơi giao hòa giữa nét cổ xưa và hiện đại, giữa kiến trúc phương Tây và văn hóa phương Đông. Bạn sẽ không khỏi trầm trồ thán phục trước màu gạch nơi đây vẫn giữ nguyên vẹn màu hồng tươi, chẳng bám chút bụi rêu, dẫu trải qua bao nắng mưa, thử thách. Nếu muốn tận hưởng hết vẻ đẹp của Nhà thờ Đức Bà, hãy dành chút thời gian ngồi lại, thưởng thức thú vui cà phê bệt trong ánh đèn lung linh phản chiếu từ các tòa cao ốc, cùng hòa nhịp sống với người Sài Gòn khi đêm về. Lúc đó bạn sẽ nhận ra Nhà thờ Đức Bà tựa như một nốt nhạc bình yên giữa bản nhạc xô bồ, vội vã của đất Sài Gòn này.', 'Buổi sáng:  Xe và hướng dẫn viên Trung tâm lữ hành Quốc tế Trippy đón Quý khách tại điểm hẹn, khởi hành đi tham quan. Tham quan Bảo tàng chứng tích chiến tranh trên đường Võ Văn Tần. Di chuyển đến Dinh Độc Lập. Dạo chơi ở Nhà thờ Đức Bà. Tham quan Bưu điện Thành phố. Buổi trưa:  Đoàn về lại điểm đón ban đầu, kết thúc hành trình.', 'SG_featured_image.png', NULL, 200000),
+(2, 'Tham Quan Sài Gòn - TP. HCM 1 Ngày', 'Sài Gòn - Tp.HCM là trung tâm du lịch lớn nhất nước, thu hút hàng năm 70% lượng khách quốc tế đến Việt Nam. Với nhịp sống sôi động, các công trình kiến trúc Pháp cổ: Nhà thờ Đức Bà, Dinh Thống Nhất, Ủy ban nhân dân thành phố, Bưu điện thành phố; khu phố người Hoa và vô số các khu vui chơi, giải trí đã tạo nên sức hấp dẫn của Sài gòn.\r\n\r\nNỔI BẬT:\r\n\r\nCụm kiến trúc thời Pháp + Mỹ: Dinh Thống Nhất, Nhà Thờ Đức Bà, Bưu Điện Thành Phố, Uỷ Ban Nhân Dân Thành Phố. Khu vực hoạt động của người Hoa ở Sài Gòn: Chợ Lớn, chợ Bình Tây.\r\nBảo tàng chiến tích chiến tranh.', '', 'SG_TPHCM_featured_image.png', NULL, 550000),
+(3, 'Vũng Tàu - Đà Lạt', 'Tour Đà Lạt - Vũng tàu giá rẻ của công ty, với các địa điểm du lịch hàng đầu Việt Nam sẽ khiến bạn và gia đình có những giây phút đáng nhớ trong cuộc đời.', 'Ngày 1: Vũng Tàu - Đà Lạt - Khách sạn. (Ăn sáng, trưa chiều).\r\nNgày 2: Khách sạn - Nhà thờ Con Gà - Thiền viện Trúc Lâm - Dinh Bảo Đại - Showroom hoa nghệ thuật  - Khách sạn. (Ăn sáng, trưa).\r\nNgày 3: Khách sạn - Ga xe lửa cổ - Làng hoa Vạn Thành - Khách sạn (Đà lạt) - Vũng Tàu (Ăn sáng, trưa ,chiều).', 'VT_DL_featured_image.png', 'Nếu Quý khách hủy tour từ 5 ngày trở lên so với ngày khởi hành, chịu phí: 10%\r\nNếu Quý khách hủy sau 2 ngày đến trước ngày đi 24 tiếng: 50%.\r\nNếu Quý khách hủy trong vòng 24 giờ: chịu phí 100 %.', 5000000),
+(4, 'Thành phố Hồ Chí Minh 1 ngày', 'Hành trình du lịch Sài Gòn 1 ngày đưa du khách đến với thành phố mang tên Bác, từ lâu đã là trung tâm văn hóa, kinh tế của Việt Nam, thành phố này còn có có tên gọi khác là Hòn Ngọc Viễn Đông. Đến thành phố Hồ Chí Minh, thành phố có hơn 300 tuổi đời, bạn sẽ thấy những tòa nhà cao tầng, khu vui chơi giải trí, trung tâm mua sắm. Bên cạnh đó những phồn hoa chốn đô thị thì bạn cũng có thể thấy những biệt thự cổ kính, chợ truyền thống lâu đời…\r\n', 'Đại học Khoa Học Tự Nhiên - Nhà thờ Chánh Tòa Đức Bà Sài Gòn - Bưu điện TPHCM - Nhà hát TPHCM - Đại học Khoa học Tự Nhiên (Ăn trưa)', 'TPHCM_featured_image.png', 'Nếu Quý khách hủy tour: chịu phí 100 %.\r\n', 100000),
+(5, 'TPHCM - Đà Lạt - Đà Nẵng', 'Tour TPHCM - Đà Lạt - Đà Nẵng sẽ dừng chân tại một thành phố du lịch nổi tiếng được mệnh danh là Thành phố ngàn thông, Thành phố hoa anh đào, Thành phố mù sương... Cho dù với tên gọi nào thì Đà Lạt vẫn luôn có sức quyến rũ đặc biệt đối với du khách bốn phương bởi khí hậu mát mẻ, không khí trong lành, khung cảnh nên thơ và những truyền thuyết tình yêu lãng mạn. Và  đến với dải đất miền Trung với nhiều nắng gió lại là nơi lưu giữ những giá trị văn hóa con người tạo dựng. Trên dải đất hẹp từ Quảng Bình tới Quảng Nam hình thành nên con đường du lịch di sản miền Trung đã trở thành điểm đến thu hút đông đảo du khách trong và ngoài nước. Hành trình khám phá bức tranh miền Trung xinh đẹp, của Đà Nẵng nổi tiếng với bờ biển dài, quyến rũ; của Hội An nơi phố cổ bình yên, cổ kính; của đất Huế kinh thành lộng lẫy chốn hoàng cung… tất cả tạo ấn tượng cho du khách tham quan. ', 'Ngày 1: Bưu điện TPHCM - Thác Prenn - Thiền viện Trúc Lâm - Khách sạn (Ăn trưa, Ăn tối).\r\nNgày 2 : Khách sạn - Thũng lũng vàng - Dinh Bảo Đại - Làng Hoa Vạn Thành - Showroom hoa nghệ thuật  - Khách sạn. (Ăn sáng, trưa, tối).\r\nNgày 3: Khách sạn - Nhà thờ Con Gà - Ga xe lửa - Chùa Linh Phước - Langbiang - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 4: Khách sạn (Đà Lạt) - Khách sạn (Đà Nẵng) - Bảo tàng 3D TrickEye - Ký Ức Hội An Show - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 5: Khách sạn - Bà Nà Hills - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 6: Khách sạn(Đà Nẵng) -  Bưu điện TPHCM (Ăn sáng, trưa, tối).', 'TpHCM_DL_DN_featured_image.png', 'Nếu Quý khách hủy tour từ 7 ngày trở lên so với ngày khởi hành, chịu phí: 10%\r\nNếu Quý khách hủy sau 3 ngày đến trước ngày đi 2 ngày: 50%.\r\nNếu Quý khách hủy trong vòng 2 ngày: chịu phí 100 %.\r\n', 13000000),
+(6, 'Nam - Bắc', 'Thưởng ngoạn các danh lam thắng cảnh miền Trung, miền Bắc. Xin chân trọng giới thiệu tới Du khách chương trình \"\"những di sản văn hóa và di sản thiên nhiên thế giới\"\" bao gồm: Phố cổ Hội An, Quần thể di tích Huế, vịnh Hạ Long. Chuyến du lịch hành hương với danh thắng chùa Hương và đệ nhất Thiền Viện Việt Nam – Trúc Lâm Yên Tử. Chinh phục con đường Trường Sơn huyền thoại. Cùng nhiều loại hình du lịch vui tươi phong phú khác... Hứa hẹn các bạn sẽ có một chuyến du ', 'Ngày 1: TPHCM - Phan Thiết - Vịnh Cam Ranh - Nha Trang  (Ăn sáng, trưa, tối).\r\nNgày 2: Nha Trang. (Ăn sáng, chiều , tối).\r\nNgày 3: Nha Trang - Đà Nẵng. (Ăn sáng, chiều , tối).\r\nNgày 4: Ngũ Hành Sơn - Phố cổ Hội An - Đà Nẵng. (Ăn sáng, chiều , tối).\r\nNgày 5: Đà Nẵng - Bà Nà Hill - Cố Đô Huế. (Ăn sáng, chiều , tối).\r\nNgày 6: Động Phong Nha - Cố Đô Huế. (Ăn sáng, chiều , tối).\r\nNgày 7: Huế - Hà Nội. (Ăn sáng, chiều , tối).\r\nNgày 8: Hà Nội - Hoa Lư - Tam Cốc - Hà Nội. (Ăn sáng, chiều , tối).\r\nNgày 9 : Hà Nội - Vịnh Hạ Long. (Ăn sáng, chiều , tối).\r\nNgày 10: Hạ Long - Yên Tử - Hà Nội. (Ăn sáng, chiều , tối).\r\nNgày 11: Hà Nội - Chùa Hương - Hà Nội - Lào Cai. (Ăn sáng, chiều , tối).\r\nNgày 12: Lào Cai - Sapa - Bản Cát Cát . (Ăn sáng, chiều , tối).\r\nNgày 13: Sapa - Hàm rồng - Hà Nội. (Ăn sáng, chiều , tối).\r\nNgày 14 : Hà Nội - TPHCM. (Ăn sáng, trưa).', 'N_B_featured_image.png', 'Báo giá không bao gồm\r\n- Ăn uống ngòai chương trình, và các chi phí tắm biển, vui chơi giải trí cá nhân.\r\nGiá vé dành cho trẻ em\r\n-Trẻ em dưới 02 tuổi: 25% giá tour (ngủ chung với người lớn).\r\n-Trẻ em từ trên 2 tuổi đến dưới 12 tuổi: 75% giá tour (ngủ chung với người lớn), 85% giá tour (bé ngủ giường riêng).\r\n-Trẻ em từ 12 tuổi trở lên: 100% giá tour như người lớn.\r\nĐiều kiện hủy tour\r\nSau khi đăng ký tour, nếu quý khách thông báo hủy tour:\r\n- Trước ngày khởi hành 30 ngày: phí hoàn vé là 10% giá tour.\r\n- Từ sau 30 ngày đến trước 15 ngày: phí hoàn vé là 40% giá tour.\r\n- Từ sau 15 ngày đến trước 05 ngày: phí hoàn vé là 60% giá tour.\r\n- Từ 05 ngày trước ngày khởi hành: phí hoàn vé là 100% giá tour.', 20000000);
 
 -- --------------------------------------------------------
 
@@ -315,7 +358,59 @@ CREATE TABLE IF NOT EXISTS `tour_images` (
   `fk_tour` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `tour_images`
+--
+
+INSERT INTO `tour_images` (`id`, `name`, `fk_tour`) VALUES
+(1, 'SG_1.png', 1),
+(2, 'SG_2.png', 1),
+(3, 'SG_3.png', 1),
+(4, 'SG_4.png', 1),
+(5, 'SG_5.png', 1),
+(6, 'SG_6.png', 1),
+(7, 'SG_7.png', 1),
+(8, 'SG_8.png', 1),
+(9, 'SG_9.png', 1),
+(10, 'SG_10.png', 1),
+(11, 'SG_11.png', 1),
+(12, 'SG_12.png', 1),
+(13, 'SG_13.png', 1),
+(14, 'SG_TPHCM_1.png', 2),
+(15, 'SG_TPHCM_2.png', 2),
+(16, 'SG_TPHCM_3.png', 2),
+(17, 'SG_TPHCM_4.png', 2),
+(18, 'SG_TPHCM_5.png', 2),
+(19, 'SG_TPHCM_6.png', 2),
+(20, 'SG_TPHCM_7.png', 2),
+(21, 'SG_TPHCM_8.png', 2),
+(22, 'SG_TPHCM_9.png', 2),
+(23, 'SG_TPHCM_10.png', 2),
+(24, 'SG_TPHCM_11.png', 2),
+(25, 'SG_TPHCM_12.png', 2),
+(26, 'SG_TPHCM_13.png', 2),
+(27, 'SG_TPHCM_14.png', 2),
+(28, 'SG_TPHCM_15.png', 2),
+(29, 'SG_TPHCM_16.png', 2),
+(30, 'SG_TPHCM_17.png', 2),
+(31, 'TpHCM_DL_DN_1.png', 5),
+(32, 'TpHCM_DL_DN_2.png', 5),
+(33, 'TpHCM_DL_DN_3.png', 5),
+(34, 'TpHCM_DL_DN_4.png', 5),
+(35, 'TpHCM_DL_DN_5.png', 5),
+(36, 'TpHCM_DL_DN_6.png', 5),
+(37, 'TPHCM_4.png', 4),
+(38, 'TPHCM_3.png', 4),
+(39, 'TPHCM_2.png', 4),
+(40, 'TPHCM_1.png', 4),
+(41, 'VT_DL_6.png', 3),
+(42, 'VT_DL_5.png', 3),
+(43, 'VT_DL_4.png', 3),
+(44, 'VT_DL_3.png', 3),
+(45, 'VT_DL_2.png', 3),
+(46, 'VT_DL_1.png', 3);
 
 -- --------------------------------------------------------
 
@@ -332,7 +427,7 @@ CREATE TABLE IF NOT EXISTS `tour_turns` (
   `fk_tour` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tour_turns`
@@ -345,7 +440,9 @@ INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, 
 (4, '2019-03-09', '2019-03-09', 0, 20, 2),
 (5, '2019-03-04', '2019-03-06', 0, 60, 3),
 (6, '2019-03-08', '2019-03-08', 0, 30, 4),
-(7, '2019-03-10', '2019-03-15', 0, 50, 5);
+(7, '2019-03-10', '2019-03-15', 0, 50, 5),
+(8, '2019-03-04', '2019-03-06', 0, 60, 6),
+(10, '2019-03-14', '2019-03-27', 0, 60, 6);
 
 -- --------------------------------------------------------
 
@@ -413,9 +510,9 @@ INSERT INTO `users` (`id`, `username`, `fullname`, `password`, `sex`, `birthdate
 (1, 'tblong', 'Thái Bá Long', '$2a$10$FBxM.3qOWiBOChTtQUNuju26KiU/aQicH5IGnqFwhchXcD4o.xbnK', 'male', NULL, '0123456789', NULL, NULL, 'local'),
 (3, 'thaibalong', 'Thái Bá Long 2', '$2a$10$8SBPUyrj4QpJ8sHJbP1oAelXSTnNUDZX6YyvG3b0adczBWoeEDD9y', 'male', NULL, NULL, 'tblong@gmail.com', NULL, 'local'),
 (4, 'nguoila', 'Người Lạ Ơi', '$2a$10$e4s.xPY2iZZ6nvD9wnZZcOHCC3kjycEQhkkZ79qieZ4PkvpAK/Zi.', 'male', NULL, '0702524116', 'la@gmail.com', NULL, 'local'),
-(5, 'nguoila', 'Người Lạ Ơi 02', '$2a$10$k3u4SQeoH1k..vxPcbbIkuTtcopvtqoWJykbYQzah0yQ5InD452Sm', 'female', NULL, '0802524116', 'la02@gmail.com', NULL, 'local'),
+(5, 'nguoila', 'Người Lạ Ơi 02', '$2a$10$k3u4SQeoH1k..vxPcbbIkuTtcopvtqoWJykbYQzah0yQ5InD452Sm', 'other', '1997-11-24', '0802524116', 'la02@gmail.com', '5-1552032846893.jpg', 'local'),
 (7, 'nnlinh97', 'Người Lạ', '$2a$10$o48sRtWBKq/t5xuBrXCcM.klfGp8d7LrEW7HEXnk.XBD1Ck5rQeuG', 'male', '1997-10-14', '0102524119', 'la0003@gmail.com', '7-anh avatar dep 2.jpg', 'local'),
-(9, '', 'new usser', '$2a$10$wtLa/mR.hZ1Oq/lFaebywelUSTyo8MxtQ7jEU56nGyDKJbCztMBWG', 'female', '1997-04-24', '0102521548', 'newuser@gmail.com', '9-anh avatar dep 2.jpg', 'local'),
+(9, '', 'new usser', '$2a$10$wtLa/mR.hZ1Oq/lFaebywelUSTyo8MxtQ7jEU56nGyDKJbCztMBWG', 'other', '1997-11-24', '0102521548', 'newuser@gmail.com', '9-1552032615094.jpg', 'local'),
 (10, '', 'Thái Bá Long', '$2a$10$R7Mqj0M77zkhYwZJY8U71.nMthj2iTjwexvro2PURyjqwFUfAYI.e', NULL, NULL, NULL, 'thaibalong7@gmail.com', 'https://graph.facebook.com/15465484654864521000/picture?width=100', 'facebook'),
 (11, '', 'Thái Bá Long', '$2a$10$v530GHSlF3cw1BgKITihduKVKz/RtaHjkhEFmQCJMJ0IfCd04PdlC', NULL, NULL, NULL, 'thaibalong9@gmail.com', 'https://graph.facebook.com/154654846548641500000/picture?width=100', 'facebook');
 
@@ -442,6 +539,12 @@ ALTER TABLE `comments`
 --
 ALTER TABLE `locations`
   ADD CONSTRAINT `locations_ibfk_1` FOREIGN KEY (`fk_type`) REFERENCES `types` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `passengers`
+--
+ALTER TABLE `passengers`
+  ADD CONSTRAINT `passengers_ibfk_1` FOREIGN KEY (`fk_book_tour`) REFERENCES `book_tour_history` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `ratings`

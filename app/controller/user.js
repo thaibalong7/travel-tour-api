@@ -277,6 +277,15 @@ exports.update = async (req, res) => {
             if (err) {
                 return res.status(400).json({ msg: err })
             }
+            if (_user.avatar !== null) {
+                //đã có avatar rồi
+                //xóa avt cũ
+                fs.unlink('public/assets/avatar/' + _user.avatar, (err) => {
+                    if (err) {
+                        console.error(err)
+                    }
+                });
+            }
             _user.avatar = _user.id + '-' + timestamp + '.jpg';
             let avatar;
             if (process.env.NODE_ENV === 'development')
