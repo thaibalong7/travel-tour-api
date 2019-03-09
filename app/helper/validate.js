@@ -4,30 +4,45 @@ const check_time = async (arrive, leave) => {
 }
 
 const check_2_routes = async (i, routes1, routes2) => {
-    if (i !== 1 && (routes1.arriveTime === null || routes1.leaveTime === null)) //k phải route đầu tiên và có thời gian là null
-    {
+    if (typeof routes1.id === undefined || typeof routes1.day === undefined
+        || typeof routes2.id === undefined || typeof routes2.day === undefined
+        || typeof routes1.arriveTime === undefined || typeof routes1.leaveTime === undefined
+        || typeof routes2.arriveTime === undefined || typeof routes2.leaveTime === undefined
+        || isNaN(routes1.id) || isNaN(routes2.id)
+        || isNaN(routes1.day) || isNaN(routes2.day)) {
         return false;
     }
     else {
-        if (((await check_time(routes1.arriveTime, routes1.leaveTime)) === false) && (parseInt(routes2.day) <= parseInt(routes1.day) || check_time(routes1.leaveTime, routes2.arriveTime))) //thời gian rời khỏi là ngày hôm sau nhưng route tiếp theo lại có ngày trùng hoặc nhỏ hơn, hoặc thời gian rời route1 lớn hơn thời gian tới routes2
-        {
+        if (i === 1 && parseInt(routes1.day) !== 1) {
             return false;
         }
         else {
-            if (parseInt(routes1.day) === parseInt(routes2.day)) //hai route kề có day như nhau
+            if (i !== 1 && (routes1.arriveTime === null || routes1.leaveTime === null)) //k phải route đầu tiên và có thời gian là null
             {
-                if (!await check_time(routes1.leaveTime, routes2.arriveTime)) //thời gian rời đi route trước là lớn hơn thời gian tới của routes sau
-                {
-                    return false;
-                } else {
-                    return true;
-                }
+                return false;
             }
             else {
-                if (parseInt(routes1.day) > parseInt(routes2.day)) {
+                if (((await check_time(routes1.arriveTime, routes1.leaveTime)) === false) && (parseInt(routes2.day) <= parseInt(routes1.day) || check_time(routes1.leaveTime, routes2.arriveTime))) //thời gian rời khỏi là ngày hôm sau nhưng route tiếp theo lại có ngày trùng hoặc nhỏ hơn, hoặc thời gian rời route1 lớn hơn thời gian tới routes2
+                {
                     return false;
-                } else {
-                    return true;
+                }
+                else {
+                    if (parseInt(routes1.day) === parseInt(routes2.day)) //hai route kề có day như nhau
+                    {
+                        if (!await check_time(routes1.leaveTime, routes2.arriveTime)) //thời gian rời đi route trước là lớn hơn thời gian tới của routes sau
+                        {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                    else {
+                        if (parseInt(routes1.day) > parseInt(routes2.day)) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
                 }
             }
         }
