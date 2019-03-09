@@ -51,7 +51,7 @@ const check_2_routes = async (i, routes1, routes2) => {
 }
 
 const asyncFor = async (routes, cb) => {
-    for (var i = 0; i < routes.length - 2; i++) {
+    for (var i = 0; i < routes.length - 1; i++) {
         if (!(await check_2_routes(i, routes[i], routes[i + 1]))) {
             cb(false);
             break;
