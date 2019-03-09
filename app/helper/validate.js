@@ -22,7 +22,8 @@ const check_2_routes = async (i, routes1, routes2) => {
                 return false;
             }
             else {
-                if (((await check_time(routes1.arriveTime, routes1.leaveTime)) === false) && (parseInt(routes2.day) <= parseInt(routes1.day) || check_time(routes1.leaveTime, routes2.arriveTime))) //thời gian rời khỏi là ngày hôm sau nhưng route tiếp theo lại có ngày trùng hoặc nhỏ hơn, hoặc thời gian rời route1 lớn hơn thời gian tới routes2
+                if (((await check_time(routes1.arriveTime, routes1.leaveTime)) === false)
+                    && (parseInt(routes2.day) <= parseInt(routes1.day) || !await check_time(routes1.leaveTime, routes2.arriveTime))) //thời gian rời khỏi là ngày hôm sau nhưng route tiếp theo lại có ngày trùng hoặc nhỏ hơn, hoặc thời gian rời route1 lớn hơn thời gian tới routes2
                 {
                     return false;
                 }
