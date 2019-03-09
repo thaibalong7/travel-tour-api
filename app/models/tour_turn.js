@@ -15,10 +15,15 @@ module.exports = function (sequelize, Sequelize) {
     },
     num_current_people: {
       type: Sequelize.INTEGER,
+      defaultValue: 0
     },
     num_max_people: {
       type: Sequelize.INTEGER,
       allowNull: false,
+    },
+    discount: {
+      type: Sequelize.FLOAT,
+      allowNull: true,
     }
   },
     {
