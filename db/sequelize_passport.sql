@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 09, 2019 lúc 09:18 AM
+-- Thời gian đã tạo: Th3 09, 2019 lúc 10:26 AM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -265,7 +265,7 @@ CREATE TABLE IF NOT EXISTS `routes` (
   PRIMARY KEY (`id`),
   KEY `fk_location` (`fk_location`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `routes`
@@ -377,9 +377,8 @@ CREATE TABLE IF NOT EXISTS `tours` (
   `featured_img` text COLLATE utf8_unicode_ci,
   `policy` text COLLATE utf8_unicode_ci,
   `price` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tours`

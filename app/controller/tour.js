@@ -3,13 +3,46 @@ const tours = db.tours;
 var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const helper_add_link = require('../helper/add_full_link');
+const helper_validate = require('../helper/validate');
 
-exports.create = (req, res) => {
-    tours.create(req.body).then(_tour => {
-        res.status(200).json(_tour)
-    }).catch(err => {
-        res.status(400).json({ msg: err })
-    })
+const asyncForEach = async (arr, cb) => {
+    arr.forEach(cb);
+}
+
+exports.create = async (req, res) => {
+    try {
+        if (isNaN(req.body.price)) {
+            return res.status(400).json({ msg: 'Params are invalid' })
+        }
+        if (!(await helper_validate.check_list_routes(req.body.routes))) {
+            return res.status(400).json({ msg: 'List routes is invalid' })
+        }
+        const new_tour = {
+            name: req.body.name,
+            price: parseInt(req.body.price),
+            policy: req.body.policy,
+            description: req.body.description,
+            detail: req.body.detail,
+        }
+        const list_routes = req.body.routes;
+        tours.create(new_tour).then(async _tour => {
+            await asyncForEach(list_routes, async (route) => {
+                await db.routes.create({
+                    arrive_time: route.arriveTime,
+                    leave_time: route.leaveTime,
+                    day: route.day,
+                    fk_location: route.id,
+                    fk_tour: _tour.id
+                })
+            })
+            return res.status(200).json(_tour)
+        }).catch(err => {
+            return res.status(400).json({ msg: err })
+        })
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err })
+    }
 }
 
 exports.getAllTour = (req, res) => {

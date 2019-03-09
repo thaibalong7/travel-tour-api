@@ -7,11 +7,9 @@ module.exports = function (sequelize, Sequelize) {
     },
     arrive_time: {
       type: Sequelize.TIME,
-      allowNull: false
     },
     leave_time: {
       type: Sequelize.TIME,
-      allowNull: false
     },
     day: {
       type: Sequelize.INTEGER,
