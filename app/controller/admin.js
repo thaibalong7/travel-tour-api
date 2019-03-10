@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt-nodejs');
 
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
+var upload_image = require('../helper/upload_image');
 
 // use 'utf8' to get string instead of byte array  (512 bit key)
 var privateKEY = fs.readFileSync('./app/middleware/private.key', 'utf8');
@@ -60,3 +61,16 @@ exports.me = (req, res) => {
         profile: _admin
     })
 }
+
+exports.uploadImage = (req, res) => {
+    upload_image(req, function (err, data) {
+
+        if (err) {
+            console.log(err)
+            return res.status(404).end(JSON.stringify(err));
+        }
+
+        res.send(data);
+    });
+}
+

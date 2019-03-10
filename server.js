@@ -5,6 +5,7 @@ var session = require('express-session')
 var bodyParser = require('body-parser')
 var env = require('dotenv');
 var cronjob = require('./app/cronjob');
+var FroalaEditor = require('wysiwyg-editor-node-sdk/lib/froalaEditor.js');
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const configFileMapping = {
     'development': './env/.env.development',
