@@ -31,14 +31,63 @@ exports.create = (req, res) => {
 
 exports.getByTour = (req, res) => {
     const idTour = req.params.idTour;
+    if (typeof idTour === 'undefined' || isNaN(id)) {
+        return res.status(400).json({ msg: 'Param is invalid' })
+    }
     const query = {
         where: {
             fk_tour: idTour
         },
-        order: [['start_date', 'ASC']]
+        order: [['start_date', 'DESC']]
     }
     tour_turns.findAll(query).then(_tour_turns => {
         res.status(200).json({ data: _tour_turns })
+    }).catch(err => {
+        res.status(400).json({ msg: err })
+    })
+}
+
+exports.getById = (req, res) => {
+    const id = req.params.id;
+    if (typeof id === 'undefined' || isNaN(id)) {
+        return res.status(400).json({ msg: 'Param is invalid' })
+    }
+    const query = {
+        where: {
+            id: id
+        },
+        include: [{
+            model: db.tours
+        }]
+    }
+    tour_turns.findOne(query).then(_tour_turns => {
+        if (_tour_turns !== null) {
+            if (_tour_turns.tour.featured_img !== null) {
+                if (process.env.NODE_ENV === 'development')
+                    _tour_turns.tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour_turns.tour.featured_img
+                else
+                    _tour_turns.tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour_turns.tour.featured_img
+            }
+        }
+        res.status(200).json({ data: _tour_turns })
+    }).catch(err => {
+        res.status(400).json({ msg: err })
+    })
+}
+
+exports.getAllWithoutPagination = (req, res) => {
+    const query = {
+        include: [{
+            attributes: ['id', 'name', 'price'],
+            model: db.tours
+        }],
+        order: [['start_date', 'DESC']]
+    }
+    tour_turns.findAll(query).then(_tour_turns => {
+        res.status(200).json({
+            itemCount: _tour_turns.length, //số lượng record được trả về
+            data: _tour_turns
+        })
     }).catch(err => {
         res.status(400).json({ msg: err })
     })

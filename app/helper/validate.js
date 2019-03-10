@@ -4,10 +4,10 @@ const check_time = async (arrive, leave) => {
 }
 
 const check_2_routes = async (i, routes1, routes2, length) => {
-    if (typeof routes1.id === undefined || typeof routes1.day === undefined
-        || typeof routes2.id === undefined || typeof routes2.day === undefined
-        || typeof routes1.arriveTime === undefined || typeof routes1.leaveTime === undefined
-        || typeof routes2.arriveTime === undefined || typeof routes2.leaveTime === undefined
+    if (typeof routes1.id === 'undefined' || typeof routes1.day === 'undefined'
+        || typeof routes2.id === 'undefined' || typeof routes2.day === 'undefined'
+        || typeof routes1.arriveTime === 'undefined' || typeof routes1.leaveTime === 'undefined'
+        || typeof routes2.arriveTime === 'undefined' || typeof routes2.leaveTime === 'undefined'
         || isNaN(routes1.id) || isNaN(routes2.id)
         || isNaN(routes1.day) || isNaN(routes2.day)) { //check dữ liệu truyền vào có đúng
         return false;

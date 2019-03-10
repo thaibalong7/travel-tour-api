@@ -88,6 +88,26 @@ exports.getAllTour = (req, res) => {
     }
 }
 
+exports.getAllWithoutPagination = (req, res) => {
+    try {
+        const query = {
+            include: [{
+                model: db.tour_turns,
+                order: [[db.tour_turns, 'start_date', 'DESC']]
+            }],
+        }
+        tours.findAll(query).then(async _tours => {
+            await helper_add_link.addLinkToursFeaturedImgOfListTours(_tours, req.headers.host)
+            res.status(200).json({
+                itemCount: _tours.length, //số lượng record được trả về
+                data: _tours,
+            })
+        })
+    }
+    catch (err) {
+        res.status(400).json({ msg: err })
+    }
+}
 
 exports.getById = (req, res) => {
     const idTour = req.params.id;
