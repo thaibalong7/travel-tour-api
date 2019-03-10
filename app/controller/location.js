@@ -221,11 +221,13 @@ exports.getById = (req, res) => {
         }]
     }
     locations.findOne(query).then(_location => {
-        if (_location.featured_img !== null) {
-            if (process.env.NODE_ENV === 'development')
-                _location.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
-            else
-                _location.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+        if (_location !== null) {
+            if (_location.featured_img !== null) {
+                if (process.env.NODE_ENV === 'development')
+                    _location.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+                else
+                    _location.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+            }
         }
         res.status(200).json({ data: _location })
     }).catch(err => {

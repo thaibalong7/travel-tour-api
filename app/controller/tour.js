@@ -91,10 +91,12 @@ exports.getAllTour = (req, res) => {
 exports.getAllWithoutPagination = (req, res) => {
     try {
         const query = {
+            attributes:['id', 'name'],
             include: [{
                 model: db.tour_turns,
-                order: [[db.tour_turns, 'start_date', 'DESC']]
+
             }],
+            // order: [[db.tour_turns, 'start_date', 'DESC']]
         }
         tours.findAll(query).then(async _tours => {
             await helper_add_link.addLinkToursFeaturedImgOfListTours(_tours, req.headers.host)
@@ -115,11 +117,10 @@ exports.getById = (req, res) => {
         where: { id: idTour },
         include: [{
             model: db.tour_turns,
-            order: [['start_date', 'DESC']]
+
         },
         {
             model: db.routes,
-            order: [['day', 'ASC'], ['arrive_time', 'ASC']],
             include: [{
                 model: db.locations,
                 include: [{
@@ -129,17 +130,20 @@ exports.getById = (req, res) => {
         },
         {
             model: db.tour_images
-        }]
+        }],
+        order: [[db.tour_turns, 'start_date', 'DESC'], [db.routes, 'day', 'ASC'], [db.routes, 'arrive_time', 'ASC']]
     }
     tours.findOne(query).then(async _tour => {
-        if (_tour.featured_img !== null) {
-            if (process.env.NODE_ENV === 'development')
-                _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img
-            else
-                _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img
+        if (_tour !== null) {
+            if (_tour.featured_img !== null) {
+                if (process.env.NODE_ENV === 'development')
+                    _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img
+                else
+                    _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img
+            }
+            await helper_add_link.addLinkLocationFeaturedImgOfListRoutes(_tour.routes, req.headers.host);
+            await helper_add_link.addLinkTourImgOfListToursImg(_tour.tour_images, req.headers.host);
         }
-        await helper_add_link.addLinkLocationFeaturedImgOfListRoutes(_tour.routes, req.headers.host);
-        await helper_add_link.addLinkTourImgOfListToursImg(_tour.tour_images, req.headers.host);
         res.status(200).json({ data: _tour })
     })
         .catch(err => {
@@ -177,8 +181,7 @@ exports.getByLocation = (req, res) => {
                         start_date: {
                             [Op.gt]: new Date()
                         }
-                    },
-                    order: [['start_date', 'ASC']]
+                    }
                 },
                 {
                     attributes: [],
@@ -187,6 +190,7 @@ exports.getByLocation = (req, res) => {
                         fk_location: idLocation
                     }
                 }],
+                order: [[db.tour_turns, 'start_date', 'DESC']],
                 limit: per_page,
                 offset: (page - 1) * per_page
             }
