@@ -41,12 +41,16 @@ exports.create = (req, res) => {
 exports.getByTour = (req, res) => {
     const idTour = req.params.idTour;
     const query = {
+        attributes: ['id', 'arrive_time', 'leave_time', 'day', 'detail', 'fk_location'],
         where: { fk_tour: idTour },
         include: [{
             model: db.locations,
             include: [{
                 model: db.types
             }]
+        },
+        {
+            model: db.transports
         }],
         order: [['day', 'ASC'], ['arrive_time', 'ASC']]
     }

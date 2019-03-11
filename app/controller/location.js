@@ -184,9 +184,7 @@ exports.getLocationNearMe = async (req, res) => {
                 '<=',
                 distance,
             ) : null,
-        ),
-        limit: 20,
-        offset: 0
+        )
     }
     locations.findAll(query).then(async _items => {
         // const result = await filterListLocationByDistance(lat, lng, distance, _items)

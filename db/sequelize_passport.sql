@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 09, 2019 lúc 10:26 AM
+-- Thời gian đã tạo: Th3 11, 2019 lúc 08:50 AM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `blacklist_tokens` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `token` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -262,106 +262,108 @@ CREATE TABLE IF NOT EXISTS `routes` (
   `detail` text COLLATE utf8_unicode_ci,
   `fk_location` int(11) DEFAULT NULL,
   `fk_tour` int(11) DEFAULT NULL,
+  `fk_transport` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_location` (`fk_location`),
-  KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `fk_tour` (`fk_tour`),
+  KEY `fk_transport` (`fk_transport`)
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `routes`
 --
 
-INSERT INTO `routes` (`id`, `arrive_time`, `leave_time`, `day`, `detail`, `fk_location`, `fk_tour`) VALUES
-(1, '07:00:00', '07:30:00', 1, 'Tập trung chuẩn bị xuất phát', 27, 1),
-(2, '09:15:00', '10:15:00', 1, 'Di chuyển đến Dinh Độc Lập.', 22, 1),
-(3, '11:05:00', '11:35:00', 1, 'Tham quan Bưu điện Thành phố.', 26, 1),
-(4, '10:20:00', '11:00:00', 1, 'Dạo chơi ở Nhà thờ Đức Bà.', 25, 1),
-(5, '08:10:00', '09:00:00', 1, 'Tham quan Bảo tàng chứng tích chiến tranh trên đường Võ Văn Tần.', 16, 1),
-(6, '12:00:00', NULL, 1, 'Đoàn về lại điểm đón ban đầu, kết thúc hành trình.', 27, 1),
-(7, '08:00:00', '08:30:00', 1, 'Khởi hành từ văn phòng Viet Fun Travel bắt đầu Tour Du Lịch Tham Quan Sài Gòn 1 Ngày', 30, 2),
-(8, '09:10:00', '10:00:00', 1, 'Quý khách đến tham quan Bảo tàng chiến tích chiến tranh', 16, 2),
-(9, '10:20:00', '12:00:00', 1, 'Tham quan chùa Bà Thiên Hậu. \r\n11h20 sẽ di chuyển sang chợ Bình Tây để tham quan và ăn trưa, mua quà lưu niệm', 28, 2),
-(10, '13:00:00', '14:00:00', 1, 'Buổi chiều, tham quan Dinh Thống Nhất, nơi trước đây là tổng hành dinh của Mỹ đặt tại miền Nam Việt Nam.', 22, 2),
-(11, '14:15:00', '14:45:00', 1, 'Tham quan nhà thờ Đức Bà', 25, 2),
-(12, '15:00:00', '16:00:00', 1, 'Tham quan bưu điện thành phố', 26, 2),
-(13, '17:00:00', NULL, 1, 'Quý khách kết thúc Tour Du Lịch Tham Quan Sài Gòn 1 Ngày tại văn phòng. Chia tay quý khách và hẹn gặp lại.\r\n', 30, 2),
-(14, NULL, '10:00:00', 1, NULL, 51, 3),
-(15, '18:00:00', '06:00:00', 1, NULL, 40, 3),
-(16, '07:30:00', '09:00:00', 2, NULL, 31, 3),
-(17, '09:30:00', '11:30:00', 2, NULL, 33, 3),
-(18, '13:30:00', '15:30:00', 2, NULL, 32, 3),
-(19, '16:00:00', '18:00:00', 2, NULL, 34, 3),
-(20, '19:00:00', '06:00:00', 2, NULL, 40, 3),
-(21, '07:00:00', '08:30:00', 3, NULL, 38, 3),
-(22, '09:00:00', '11:00:00', 3, NULL, 35, 3),
-(23, '12:00:00', '14:00:00', 3, NULL, 40, 3),
-(24, '21:00:00', NULL, 3, NULL, 51, 3),
-(25, NULL, '07:30:00', 1, NULL, 57, 4),
-(26, '08:00:00', '09:30:00', 1, NULL, 25, 4),
-(27, '09:30:00', '11:30:00', 1, NULL, 26, 4),
-(28, '13:30:00', '15:00:00', 1, NULL, 56, 4),
-(29, '15:00:00', NULL, 1, NULL, 57, 4),
-(30, '06:30:00', '07:00:00', 1, NULL, 26, 5),
-(31, '14:00:00', '15:00:00', 1, NULL, 41, 5),
-(32, '16:00:00', '17:30:00', 1, NULL, 33, 5),
-(33, '18:00:00', '06:00:00', 1, NULL, 40, 5),
-(34, '07:30:00', '09:30:00', 2, NULL, 36, 5),
-(35, '10:00:00', '11:35:00', 2, NULL, 32, 5),
-(36, '14:00:00', '16:00:00', 2, NULL, 35, 5),
-(37, '16:30:00', '18:30:00', 2, NULL, 34, 5),
-(38, '19:00:00', '06:30:00', 2, NULL, 40, 5),
-(39, '08:00:00', '09:00:00', 3, NULL, 31, 5),
-(40, '09:30:00', '11:30:00', 3, NULL, 38, 5),
-(41, '14:00:00', '15:30:00', 3, NULL, 39, 5),
-(42, '16:30:00', '18:30:00', 3, NULL, 37, 5),
-(43, '19:30:00', '05:00:00', 3, NULL, 40, 5),
-(44, '10:00:00', '13:00:00', 4, NULL, 58, 5),
-(45, '13:30:00', '14:30:00', 4, NULL, 49, 5),
-(46, '16:00:00', '19:00:00', 4, NULL, 50, 5),
-(47, '20:30:00', '08:00:00', 4, NULL, 58, 5),
-(48, '09:00:00', '17:00:00', 5, NULL, 48, 5),
-(49, '16:00:00', '07:30:00', 5, NULL, 58, 5),
-(50, '19:00:00', NULL, 6, NULL, 26, 5),
-(51, NULL, '04:00:00', 1, 'di chuyển bằng đường bộ', 25, 6),
-(52, '09:00:00', '11:00:00', 1, 'di chuyển bằng đường bộ', 61, 6),
-(53, '12:00:00', '15:00:00', 1, NULL, 60, 6),
-(54, '18:00:00', '07:00:00', 1, NULL, 62, 6),
-(56, '09:00:00', '14:00:00', 2, NULL, 80, 6),
-(57, '15:00:00', '17:00:00', 2, NULL, 81, 6),
-(58, '19:00:00', '06:00:00', 2, NULL, 62, 6),
-(59, '09:00:00', '10:00:00', 3, NULL, 82, 6),
-(60, '11:00:00', '11:30:00', 3, NULL, 83, 6),
-(61, '12:00:00', '14:00:00', 3, NULL, 63, 6),
-(62, '15:00:00', '18:00:00', 3, NULL, 84, 6),
-(63, '19:00:00', '07:00:00', 3, NULL, 63, 6),
-(64, '08:30:00', '11:00:00', 4, NULL, 64, 6),
-(65, '12:30:00', '14:00:00', 4, NULL, 63, 6),
-(66, '16:00:00', '19:00:00', 4, NULL, 65, 6),
-(67, '21:00:00', '08:00:00', 4, NULL, 63, 6),
-(68, '09:00:00', '17:00:00', 5, NULL, 48, 6),
-(69, '19:00:00', '07:00:00', 5, NULL, 66, 6),
-(70, '09:00:00', '11:00:00', 6, NULL, 85, 6),
-(71, '13:00:00', '18:00:00', 6, NULL, 67, 6),
-(72, '20:00:00', '08:00:00', 6, NULL, 66, 6),
-(73, '09:00:00', '11:30:00', 7, NULL, 86, 6),
-(74, '14:00:00', '15:00:00', 7, NULL, 87, 6),
-(75, '15:30:00', '16:30:00', 7, NULL, 88, 6),
-(76, '18:30:00', '08:00:00', 7, NULL, 68, 6),
-(77, '10:30:00', '16:00:00', 8, NULL, 69, 6),
-(78, '18:00:00', '08:00:00', 8, NULL, 68, 6),
-(79, '10:00:00', '15:00:00', 9, NULL, 70, 6),
-(80, '16:30:00', '08:00:00', 9, NULL, 89, 6),
-(81, '09:00:00', '14:00:00', 10, NULL, 71, 6),
-(82, '19:00:00', '07:00:00', 10, NULL, 68, 6),
-(83, '08:00:00', '15:00:00', 11, NULL, 72, 6),
-(84, '19:00:00', '20:30:00', 11, NULL, 68, 6),
-(85, '06:00:00', '07:00:00', 12, NULL, 73, 6),
-(86, '10:00:00', '18:00:00', 12, NULL, 76, 6),
-(87, '20:00:00', '08:00:00', 12, NULL, 73, 6),
-(88, '10:30:00', '14:00:00', 13, NULL, 74, 6),
-(89, '21:00:00', '09:00:00', 13, NULL, 68, 6),
-(90, '10:00:00', '12:00:00', 14, NULL, 90, 6),
-(91, '14:00:00', '15:00:00', 14, NULL, 88, 6);
+INSERT INTO `routes` (`id`, `arrive_time`, `leave_time`, `day`, `detail`, `fk_location`, `fk_tour`, `fk_transport`) VALUES
+(1, '07:00:00', '07:30:00', 1, 'Tập trung chuẩn bị xuất phát', 27, 1, 1),
+(2, '09:15:00', '10:15:00', 1, 'Di chuyển đến Dinh Độc Lập.', 22, 1, 1),
+(3, '11:05:00', '11:35:00', 1, 'Tham quan Bưu điện Thành phố.', 26, 1, 1),
+(4, '10:20:00', '11:00:00', 1, 'Dạo chơi ở Nhà thờ Đức Bà.', 25, 1, 1),
+(5, '08:10:00', '09:00:00', 1, 'Tham quan Bảo tàng chứng tích chiến tranh trên đường Võ Văn Tần.', 16, 1, 1),
+(6, '12:00:00', NULL, 1, 'Đoàn về lại điểm đón ban đầu, kết thúc hành trình.', 27, 1, 1),
+(7, '08:00:00', '08:30:00', 1, 'Khởi hành từ văn phòng Viet Fun Travel bắt đầu Tour Du Lịch Tham Quan Sài Gòn 1 Ngày', 30, 2, 1),
+(8, '09:10:00', '10:00:00', 1, 'Quý khách đến tham quan Bảo tàng chiến tích chiến tranh', 16, 2, 1),
+(9, '10:20:00', '12:00:00', 1, 'Tham quan chùa Bà Thiên Hậu. \r\n11h20 sẽ di chuyển sang chợ Bình Tây để tham quan và ăn trưa, mua quà lưu niệm', 28, 2, 1),
+(10, '13:00:00', '14:00:00', 1, 'Buổi chiều, tham quan Dinh Thống Nhất, nơi trước đây là tổng hành dinh của Mỹ đặt tại miền Nam Việt Nam.', 22, 2, 1),
+(11, '14:15:00', '14:45:00', 1, 'Tham quan nhà thờ Đức Bà', 25, 2, 1),
+(12, '15:00:00', '16:00:00', 1, 'Tham quan bưu điện thành phố', 26, 2, 1),
+(13, '17:00:00', NULL, 1, 'Quý khách kết thúc Tour Du Lịch Tham Quan Sài Gòn 1 Ngày tại văn phòng. Chia tay quý khách và hẹn gặp lại.\r\n', 30, 2, 1),
+(14, NULL, '10:00:00', 1, NULL, 51, 3, 1),
+(15, '18:00:00', '06:00:00', 1, NULL, 40, 3, 1),
+(16, '07:30:00', '09:00:00', 2, NULL, 31, 3, 1),
+(17, '09:30:00', '11:30:00', 2, NULL, 33, 3, 1),
+(18, '13:30:00', '15:30:00', 2, NULL, 32, 3, 1),
+(19, '16:00:00', '18:00:00', 2, NULL, 34, 3, 1),
+(20, '19:00:00', '06:00:00', 2, NULL, 40, 3, 1),
+(21, '07:00:00', '08:30:00', 3, NULL, 38, 3, 1),
+(22, '09:00:00', '11:00:00', 3, NULL, 35, 3, 1),
+(23, '12:00:00', '14:00:00', 3, NULL, 40, 3, 1),
+(24, '21:00:00', NULL, 3, NULL, 51, 3, 1),
+(25, NULL, '07:30:00', 1, NULL, 57, 4, 1),
+(26, '08:00:00', '09:30:00', 1, NULL, 25, 4, 1),
+(27, '09:30:00', '11:30:00', 1, NULL, 26, 4, 1),
+(28, '13:30:00', '15:00:00', 1, NULL, 56, 4, 1),
+(29, '15:00:00', NULL, 1, NULL, 57, 4, 1),
+(30, '06:30:00', '07:00:00', 1, NULL, 26, 5, 1),
+(31, '14:00:00', '15:00:00', 1, NULL, 41, 5, 1),
+(32, '16:00:00', '17:30:00', 1, NULL, 33, 5, 1),
+(33, '18:00:00', '06:00:00', 1, NULL, 40, 5, 1),
+(34, '07:30:00', '09:30:00', 2, NULL, 36, 5, 1),
+(35, '10:00:00', '11:35:00', 2, NULL, 32, 5, 1),
+(36, '14:00:00', '16:00:00', 2, NULL, 35, 5, 1),
+(37, '16:30:00', '18:30:00', 2, NULL, 34, 5, 1),
+(38, '19:00:00', '06:30:00', 2, NULL, 40, 5, 1),
+(39, '08:00:00', '09:00:00', 3, NULL, 31, 5, 1),
+(40, '09:30:00', '11:30:00', 3, NULL, 38, 5, 1),
+(41, '14:00:00', '15:30:00', 3, NULL, 39, 5, 1),
+(42, '16:30:00', '18:30:00', 3, NULL, 37, 5, 1),
+(43, '19:30:00', '05:00:00', 3, NULL, 40, 5, 1),
+(44, '10:00:00', '13:00:00', 4, NULL, 58, 5, 1),
+(45, '13:30:00', '14:30:00', 4, NULL, 49, 5, 1),
+(46, '16:00:00', '19:00:00', 4, NULL, 50, 5, 1),
+(47, '20:30:00', '08:00:00', 4, NULL, 58, 5, 1),
+(48, '09:00:00', '17:00:00', 5, NULL, 48, 5, 1),
+(49, '16:00:00', '07:30:00', 5, NULL, 58, 5, 1),
+(50, '19:00:00', NULL, 6, NULL, 26, 5, 1),
+(51, NULL, '04:00:00', 1, 'di chuyển bằng đường bộ', 25, 6, 1),
+(52, '09:00:00', '11:00:00', 1, 'di chuyển bằng đường bộ', 61, 6, 1),
+(53, '12:00:00', '15:00:00', 1, NULL, 60, 6, 1),
+(54, '18:00:00', '07:00:00', 1, NULL, 62, 6, 1),
+(56, '09:00:00', '14:00:00', 2, NULL, 80, 6, 1),
+(57, '15:00:00', '17:00:00', 2, NULL, 81, 6, 1),
+(58, '19:00:00', '06:00:00', 2, NULL, 62, 6, 1),
+(59, '09:00:00', '10:00:00', 3, NULL, 82, 6, 3),
+(60, '11:00:00', '11:30:00', 3, NULL, 83, 6, 1),
+(61, '12:00:00', '14:00:00', 3, NULL, 63, 6, 1),
+(62, '15:00:00', '18:00:00', 3, NULL, 84, 6, 1),
+(63, '19:00:00', '07:00:00', 3, NULL, 63, 6, 1),
+(64, '08:30:00', '11:00:00', 4, NULL, 64, 6, 1),
+(65, '12:30:00', '14:00:00', 4, NULL, 63, 6, 1),
+(66, '16:00:00', '19:00:00', 4, NULL, 65, 6, 1),
+(67, '21:00:00', '08:00:00', 4, NULL, 63, 6, 1),
+(68, '09:00:00', '17:00:00', 5, NULL, 48, 6, 1),
+(69, '19:00:00', '07:00:00', 5, NULL, 66, 6, 1),
+(70, '09:00:00', '11:00:00', 6, NULL, 85, 6, 1),
+(71, '13:00:00', '18:00:00', 6, NULL, 67, 6, 1),
+(72, '20:00:00', '08:00:00', 6, NULL, 66, 6, 1),
+(73, '09:00:00', '11:30:00', 7, NULL, 86, 6, 1),
+(74, '14:00:00', '15:00:00', 7, NULL, 87, 6, 3),
+(75, '15:30:00', '16:30:00', 7, NULL, 88, 6, 1),
+(76, '18:30:00', '08:00:00', 7, NULL, 68, 6, 1),
+(77, '10:30:00', '16:00:00', 8, NULL, 69, 6, 1),
+(78, '18:00:00', '08:00:00', 8, NULL, 68, 6, 1),
+(79, '10:00:00', '15:00:00', 9, NULL, 70, 6, 1),
+(80, '16:30:00', '08:00:00', 9, NULL, 89, 6, 1),
+(81, '09:00:00', '14:00:00', 10, NULL, 71, 6, 1),
+(82, '19:00:00', '07:00:00', 10, NULL, 68, 6, 1),
+(83, '08:00:00', '15:00:00', 11, NULL, 72, 6, 1),
+(84, '19:00:00', '20:30:00', 11, NULL, 68, 6, 1),
+(85, '06:00:00', '07:00:00', 12, NULL, 73, 6, 1),
+(86, '10:00:00', '18:00:00', 12, NULL, 76, 6, 1),
+(87, '20:00:00', '08:00:00', 12, NULL, 73, 6, 1),
+(88, '10:30:00', '14:00:00', 13, NULL, 74, 6, 1),
+(89, '21:00:00', '09:00:00', 13, NULL, 68, 6, 1),
+(90, '10:00:00', '12:00:00', 14, NULL, 90, 6, 1),
+(91, '14:00:00', '15:00:00', 14, NULL, 88, 6, 3);
 
 -- --------------------------------------------------------
 
@@ -378,7 +380,7 @@ CREATE TABLE IF NOT EXISTS `tours` (
   `policy` text COLLATE utf8_unicode_ci,
   `price` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tours`
@@ -390,7 +392,8 @@ INSERT INTO `tours` (`id`, `name`, `description`, `detail`, `featured_img`, `pol
 (3, 'Vũng Tàu - Đà Lạt', 'Tour Đà Lạt - Vũng tàu giá rẻ của công ty, với các địa điểm du lịch hàng đầu Việt Nam sẽ khiến bạn và gia đình có những giây phút đáng nhớ trong cuộc đời.', 'Ngày 1: Vũng Tàu - Đà Lạt - Khách sạn. (Ăn sáng, trưa chiều).\r\nNgày 2: Khách sạn - Nhà thờ Con Gà - Thiền viện Trúc Lâm - Dinh Bảo Đại - Showroom hoa nghệ thuật  - Khách sạn. (Ăn sáng, trưa).\r\nNgày 3: Khách sạn - Ga xe lửa cổ - Làng hoa Vạn Thành - Khách sạn (Đà lạt) - Vũng Tàu (Ăn sáng, trưa ,chiều).', 'VT_DL_featured_image.png', 'Nếu Quý khách hủy tour từ 5 ngày trở lên so với ngày khởi hành, chịu phí: 10%\r\nNếu Quý khách hủy sau 2 ngày đến trước ngày đi 24 tiếng: 50%.\r\nNếu Quý khách hủy trong vòng 24 giờ: chịu phí 100 %.', 5000000),
 (4, 'Thành phố Hồ Chí Minh 1 ngày', 'Hành trình du lịch Sài Gòn 1 ngày đưa du khách đến với thành phố mang tên Bác, từ lâu đã là trung tâm văn hóa, kinh tế của Việt Nam, thành phố này còn có có tên gọi khác là Hòn Ngọc Viễn Đông. Đến thành phố Hồ Chí Minh, thành phố có hơn 300 tuổi đời, bạn sẽ thấy những tòa nhà cao tầng, khu vui chơi giải trí, trung tâm mua sắm. Bên cạnh đó những phồn hoa chốn đô thị thì bạn cũng có thể thấy những biệt thự cổ kính, chợ truyền thống lâu đời…\r\n', 'Đại học Khoa Học Tự Nhiên - Nhà thờ Chánh Tòa Đức Bà Sài Gòn - Bưu điện TPHCM - Nhà hát TPHCM - Đại học Khoa học Tự Nhiên (Ăn trưa)', 'TPHCM_featured_image.png', 'Nếu Quý khách hủy tour: chịu phí 100 %.\r\n', 100000),
 (5, 'TPHCM - Đà Lạt - Đà Nẵng', 'Tour TPHCM - Đà Lạt - Đà Nẵng sẽ dừng chân tại một thành phố du lịch nổi tiếng được mệnh danh là Thành phố ngàn thông, Thành phố hoa anh đào, Thành phố mù sương... Cho dù với tên gọi nào thì Đà Lạt vẫn luôn có sức quyến rũ đặc biệt đối với du khách bốn phương bởi khí hậu mát mẻ, không khí trong lành, khung cảnh nên thơ và những truyền thuyết tình yêu lãng mạn. Và  đến với dải đất miền Trung với nhiều nắng gió lại là nơi lưu giữ những giá trị văn hóa con người tạo dựng. Trên dải đất hẹp từ Quảng Bình tới Quảng Nam hình thành nên con đường du lịch di sản miền Trung đã trở thành điểm đến thu hút đông đảo du khách trong và ngoài nước. Hành trình khám phá bức tranh miền Trung xinh đẹp, của Đà Nẵng nổi tiếng với bờ biển dài, quyến rũ; của Hội An nơi phố cổ bình yên, cổ kính; của đất Huế kinh thành lộng lẫy chốn hoàng cung… tất cả tạo ấn tượng cho du khách tham quan. ', 'Ngày 1: Bưu điện TPHCM - Thác Prenn - Thiền viện Trúc Lâm - Khách sạn (Ăn trưa, Ăn tối).\r\nNgày 2 : Khách sạn - Thũng lũng vàng - Dinh Bảo Đại - Làng Hoa Vạn Thành - Showroom hoa nghệ thuật  - Khách sạn. (Ăn sáng, trưa, tối).\r\nNgày 3: Khách sạn - Nhà thờ Con Gà - Ga xe lửa - Chùa Linh Phước - Langbiang - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 4: Khách sạn (Đà Lạt) - Khách sạn (Đà Nẵng) - Bảo tàng 3D TrickEye - Ký Ức Hội An Show - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 5: Khách sạn - Bà Nà Hills - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 6: Khách sạn(Đà Nẵng) -  Bưu điện TPHCM (Ăn sáng, trưa, tối).', 'TpHCM_DL_DN_featured_image.png', 'Nếu Quý khách hủy tour từ 7 ngày trở lên so với ngày khởi hành, chịu phí: 10%\r\nNếu Quý khách hủy sau 3 ngày đến trước ngày đi 2 ngày: 50%.\r\nNếu Quý khách hủy trong vòng 2 ngày: chịu phí 100 %.\r\n', 13000000),
-(6, 'Nam - Bắc', 'Thưởng ngoạn các danh lam thắng cảnh miền Trung, miền Bắc. Xin chân trọng giới thiệu tới Du khách chương trình \"\"những di sản văn hóa và di sản thiên nhiên thế giới\"\" bao gồm: Phố cổ Hội An, Quần thể di tích Huế, vịnh Hạ Long. Chuyến du lịch hành hương với danh thắng chùa Hương và đệ nhất Thiền Viện Việt Nam – Trúc Lâm Yên Tử. Chinh phục con đường Trường Sơn huyền thoại. Cùng nhiều loại hình du lịch vui tươi phong phú khác... Hứa hẹn các bạn sẽ có một chuyến du ', 'Ngày 1: TPHCM - Phan Thiết - Vịnh Cam Ranh - Nha Trang  (Ăn sáng, trưa, tối).\r\nNgày 2: Nha Trang. (Ăn sáng, chiều , tối).\r\nNgày 3: Nha Trang - Đà Nẵng. (Ăn sáng, chiều , tối).\r\nNgày 4: Ngũ Hành Sơn - Phố cổ Hội An - Đà Nẵng. (Ăn sáng, chiều , tối).\r\nNgày 5: Đà Nẵng - Bà Nà Hill - Cố Đô Huế. (Ăn sáng, chiều , tối).\r\nNgày 6: Động Phong Nha - Cố Đô Huế. (Ăn sáng, chiều , tối).\r\nNgày 7: Huế - Hà Nội. (Ăn sáng, chiều , tối).\r\nNgày 8: Hà Nội - Hoa Lư - Tam Cốc - Hà Nội. (Ăn sáng, chiều , tối).\r\nNgày 9 : Hà Nội - Vịnh Hạ Long. (Ăn sáng, chiều , tối).\r\nNgày 10: Hạ Long - Yên Tử - Hà Nội. (Ăn sáng, chiều , tối).\r\nNgày 11: Hà Nội - Chùa Hương - Hà Nội - Lào Cai. (Ăn sáng, chiều , tối).\r\nNgày 12: Lào Cai - Sapa - Bản Cát Cát . (Ăn sáng, chiều , tối).\r\nNgày 13: Sapa - Hàm rồng - Hà Nội. (Ăn sáng, chiều , tối).\r\nNgày 14 : Hà Nội - TPHCM. (Ăn sáng, trưa).', 'N_B_featured_image.png', 'Báo giá không bao gồm\r\n- Ăn uống ngòai chương trình, và các chi phí tắm biển, vui chơi giải trí cá nhân.\r\nGiá vé dành cho trẻ em\r\n-Trẻ em dưới 02 tuổi: 25% giá tour (ngủ chung với người lớn).\r\n-Trẻ em từ trên 2 tuổi đến dưới 12 tuổi: 75% giá tour (ngủ chung với người lớn), 85% giá tour (bé ngủ giường riêng).\r\n-Trẻ em từ 12 tuổi trở lên: 100% giá tour như người lớn.\r\nĐiều kiện hủy tour\r\nSau khi đăng ký tour, nếu quý khách thông báo hủy tour:\r\n- Trước ngày khởi hành 30 ngày: phí hoàn vé là 10% giá tour.\r\n- Từ sau 30 ngày đến trước 15 ngày: phí hoàn vé là 40% giá tour.\r\n- Từ sau 15 ngày đến trước 05 ngày: phí hoàn vé là 60% giá tour.\r\n- Từ 05 ngày trước ngày khởi hành: phí hoàn vé là 100% giá tour.', 20000000);
+(6, 'Nam - Bắc', 'Thưởng ngoạn các danh lam thắng cảnh miền Trung, miền Bắc. Xin chân trọng giới thiệu tới Du khách chương trình \"\"những di sản văn hóa và di sản thiên nhiên thế giới\"\" bao gồm: Phố cổ Hội An, Quần thể di tích Huế, vịnh Hạ Long. Chuyến du lịch hành hương với danh thắng chùa Hương và đệ nhất Thiền Viện Việt Nam – Trúc Lâm Yên Tử. Chinh phục con đường Trường Sơn huyền thoại. Cùng nhiều loại hình du lịch vui tươi phong phú khác... Hứa hẹn các bạn sẽ có một chuyến du ', 'Ngày 1: TPHCM - Phan Thiết - Vịnh Cam Ranh - Nha Trang  (Ăn sáng, trưa, tối).\r\nNgày 2: Nha Trang. (Ăn sáng, chiều , tối).\r\nNgày 3: Nha Trang - Đà Nẵng. (Ăn sáng, chiều , tối).\r\nNgày 4: Ngũ Hành Sơn - Phố cổ Hội An - Đà Nẵng. (Ăn sáng, chiều , tối).\r\nNgày 5: Đà Nẵng - Bà Nà Hill - Cố Đô Huế. (Ăn sáng, chiều , tối).\r\nNgày 6: Động Phong Nha - Cố Đô Huế. (Ăn sáng, chiều , tối).\r\nNgày 7: Huế - Hà Nội. (Ăn sáng, chiều , tối).\r\nNgày 8: Hà Nội - Hoa Lư - Tam Cốc - Hà Nội. (Ăn sáng, chiều , tối).\r\nNgày 9 : Hà Nội - Vịnh Hạ Long. (Ăn sáng, chiều , tối).\r\nNgày 10: Hạ Long - Yên Tử - Hà Nội. (Ăn sáng, chiều , tối).\r\nNgày 11: Hà Nội - Chùa Hương - Hà Nội - Lào Cai. (Ăn sáng, chiều , tối).\r\nNgày 12: Lào Cai - Sapa - Bản Cát Cát . (Ăn sáng, chiều , tối).\r\nNgày 13: Sapa - Hàm rồng - Hà Nội. (Ăn sáng, chiều , tối).\r\nNgày 14 : Hà Nội - TPHCM. (Ăn sáng, trưa).', 'N_B_featured_image.png', 'Báo giá không bao gồm\r\n- Ăn uống ngòai chương trình, và các chi phí tắm biển, vui chơi giải trí cá nhân.\r\nGiá vé dành cho trẻ em\r\n-Trẻ em dưới 02 tuổi: 25% giá tour (ngủ chung với người lớn).\r\n-Trẻ em từ trên 2 tuổi đến dưới 12 tuổi: 75% giá tour (ngủ chung với người lớn), 85% giá tour (bé ngủ giường riêng).\r\n-Trẻ em từ 12 tuổi trở lên: 100% giá tour như người lớn.\r\nĐiều kiện hủy tour\r\nSau khi đăng ký tour, nếu quý khách thông báo hủy tour:\r\n- Trước ngày khởi hành 30 ngày: phí hoàn vé là 10% giá tour.\r\n- Từ sau 30 ngày đến trước 15 ngày: phí hoàn vé là 40% giá tour.\r\n- Từ sau 15 ngày đến trước 05 ngày: phí hoàn vé là 60% giá tour.\r\n- Từ 05 ngày trước ngày khởi hành: phí hoàn vé là 100% giá tour.', 20000000),
+(25, 'req.body.namfe', 'req.body.description', 'req.body.detail', NULL, 'req.body.policy', 400000);
 
 -- --------------------------------------------------------
 
@@ -485,7 +488,7 @@ CREATE TABLE IF NOT EXISTS `tour_turns` (
   `fk_tour` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tour_turns`
@@ -500,7 +503,30 @@ INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, 
 (6, '2019-03-08', '2019-03-08', 0, 30, 0, 4),
 (7, '2019-03-10', '2019-03-15', 0, 50, 0, 5),
 (8, '2019-03-04', '2019-03-06', 0, 60, 0, 6),
-(10, '2019-03-14', '2019-03-27', 0, 60, 0, 6);
+(10, '2019-04-24', '2019-05-07', 0, 60, 0.5, 6);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `transports`
+--
+
+CREATE TABLE IF NOT EXISTS `transports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name_vn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `name_en` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `transports`
+--
+
+INSERT INTO `transports` (`id`, `name_vn`, `name_en`) VALUES
+(1, 'Đường bộ', 'roadway'),
+(2, 'Đường thủy', 'waterway'),
+(3, 'Đường hàng không', 'airway'),
+(4, 'Đường sắt', 'railway');
 
 -- --------------------------------------------------------
 
@@ -557,6 +583,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `phone` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `avatar` text COLLATE utf8_unicode_ci,
+  `isActive` tinyint(1) NOT NULL DEFAULT '0',
   `type` enum('facebook','local') COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -565,15 +592,15 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Đang đổ dữ liệu cho bảng `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `fullname`, `password`, `sex`, `birthdate`, `phone`, `email`, `avatar`, `type`) VALUES
-(1, 'tblong', 'Thái Bá Long', '$2a$10$FBxM.3qOWiBOChTtQUNuju26KiU/aQicH5IGnqFwhchXcD4o.xbnK', 'male', NULL, '0123456789', NULL, NULL, 'local'),
-(3, 'thaibalong', 'Thái Bá Long 2', '$2a$10$8SBPUyrj4QpJ8sHJbP1oAelXSTnNUDZX6YyvG3b0adczBWoeEDD9y', 'male', NULL, NULL, 'tblong@gmail.com', NULL, 'local'),
-(4, 'nguoila', 'Người Lạ Ơi', '$2a$10$e4s.xPY2iZZ6nvD9wnZZcOHCC3kjycEQhkkZ79qieZ4PkvpAK/Zi.', 'male', NULL, '0702524116', 'la@gmail.com', NULL, 'local'),
-(5, 'nguoila', 'Người Lạ Ơi 02', '$2a$10$k3u4SQeoH1k..vxPcbbIkuTtcopvtqoWJykbYQzah0yQ5InD452Sm', 'other', '1997-11-24', '0802524116', 'la02@gmail.com', '5-1552032846893.jpg', 'local'),
-(7, 'nnlinh97', 'Người Lạ', '$2a$10$o48sRtWBKq/t5xuBrXCcM.klfGp8d7LrEW7HEXnk.XBD1Ck5rQeuG', 'male', '1997-10-14', '0102524119', 'la0003@gmail.com', '7-anh avatar dep 2.jpg', 'local'),
-(9, '', 'new usser', '$2a$10$wtLa/mR.hZ1Oq/lFaebywelUSTyo8MxtQ7jEU56nGyDKJbCztMBWG', 'other', '1997-11-24', '0102521548', 'newuser@gmail.com', '9-1552032615094.jpg', 'local'),
-(10, '', 'Thái Bá Long', '$2a$10$R7Mqj0M77zkhYwZJY8U71.nMthj2iTjwexvro2PURyjqwFUfAYI.e', NULL, NULL, NULL, 'thaibalong7@gmail.com', 'https://graph.facebook.com/15465484654864521000/picture?width=100', 'facebook'),
-(11, '', 'Thái Bá Long', '$2a$10$v530GHSlF3cw1BgKITihduKVKz/RtaHjkhEFmQCJMJ0IfCd04PdlC', NULL, NULL, NULL, 'thaibalong9@gmail.com', 'https://graph.facebook.com/154654846548641500000/picture?width=100', 'facebook');
+INSERT INTO `users` (`id`, `username`, `fullname`, `password`, `sex`, `birthdate`, `phone`, `email`, `avatar`, `isActive`, `type`) VALUES
+(1, 'tblong', 'Thái Bá Long', '$2a$10$FBxM.3qOWiBOChTtQUNuju26KiU/aQicH5IGnqFwhchXcD4o.xbnK', 'male', NULL, '0123456789', NULL, NULL, 0, 'local'),
+(3, 'thaibalong', 'Thái Bá Long 2', '$2a$10$8SBPUyrj4QpJ8sHJbP1oAelXSTnNUDZX6YyvG3b0adczBWoeEDD9y', 'male', NULL, NULL, 'tblong@gmail.com', NULL, 0, 'local'),
+(4, 'nguoila', 'Người Lạ Ơi', '$2a$10$e4s.xPY2iZZ6nvD9wnZZcOHCC3kjycEQhkkZ79qieZ4PkvpAK/Zi.', 'male', NULL, '0702524116', 'la@gmail.com', NULL, 0, 'local'),
+(5, 'nguoila', 'Người Lạ Ơi 02', '$2a$10$k3u4SQeoH1k..vxPcbbIkuTtcopvtqoWJykbYQzah0yQ5InD452Sm', 'other', '1997-11-24', '0802524116', 'la02@gmail.com', '5-1552032846893.jpg', 0, 'local'),
+(7, 'nnlinh97', 'Người Lạ', '$2a$10$o48sRtWBKq/t5xuBrXCcM.klfGp8d7LrEW7HEXnk.XBD1Ck5rQeuG', 'male', '1997-10-14', '0102524119', 'la0003@gmail.com', '7-anh avatar dep 2.jpg', 0, 'local'),
+(9, '', 'new usser', '$2a$10$wtLa/mR.hZ1Oq/lFaebywelUSTyo8MxtQ7jEU56nGyDKJbCztMBWG', 'other', '1997-11-24', '0102521548', 'newuser@gmail.com', '9-1552032615094.jpg', 0, 'local'),
+(10, '', 'Thái Bá Long', '$2a$10$R7Mqj0M77zkhYwZJY8U71.nMthj2iTjwexvro2PURyjqwFUfAYI.e', NULL, NULL, NULL, 'thaibalong7@gmail.com', 'https://graph.facebook.com/15465484654864521000/picture?width=100', 0, 'facebook'),
+(11, '', 'Thái Bá Long', '$2a$10$v530GHSlF3cw1BgKITihduKVKz/RtaHjkhEFmQCJMJ0IfCd04PdlC', NULL, NULL, NULL, 'thaibalong9@gmail.com', 'https://graph.facebook.com/154654846548641500000/picture?width=100', 0, 'facebook');
 
 --
 -- Các ràng buộc cho các bảng đã đổ
@@ -617,7 +644,8 @@ ALTER TABLE `ratings`
 --
 ALTER TABLE `routes`
   ADD CONSTRAINT `routes_ibfk_1` FOREIGN KEY (`fk_location`) REFERENCES `locations` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `routes_ibfk_2` FOREIGN KEY (`fk_tour`) REFERENCES `tours` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `routes_ibfk_2` FOREIGN KEY (`fk_tour`) REFERENCES `tours` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `routes_ibfk_3` FOREIGN KEY (`fk_transport`) REFERENCES `transports` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `tour_images`

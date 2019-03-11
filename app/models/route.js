@@ -30,6 +30,7 @@ module.exports = function (sequelize, Sequelize) {
   Route.associate = (models) => {
     Route.belongsTo(models.tours, { foreignKey: 'fk_tour' })
     Route.belongsTo(models.locations, { foreignKey: 'fk_location' })
+    Route.belongsTo(models.transports, { foreignKey: 'fk_transport' })
   }
   return Route;
 }
