@@ -17,6 +17,10 @@ exports.create = async (req, res) => {
             if (isNaN(req.body.num_max_people) || isNaN(req.body.discount) || isNaN(req.body.price)) {
                 return res.status(400).json({ msg: 'Params is invalid' })
             }
+            if (parseFloat(req.body.discount) < 0 || parseFloat(req.body.discount) > 100)
+                return res.status(400).json({ msg: 'Wrong discount' })
+            if (parseInt(req.body.price) <= 0)
+                return res.status(400).json({ msg: 'Wrong price' })
             const new_tour_turn = {
                 fk_tour: req.body.idTour,
                 start_date: new Date(req.body.start_date),
@@ -124,7 +128,8 @@ exports.update = async (req, res) => {
     //     end_date,
     //     num_max_people,
     //     discount,
-    //     price
+    //     price,
+    //     idTour 
     // }
     try {
         if (typeof req.body.id === 'undefined' || isNaN(req.body.id)) {
@@ -141,7 +146,7 @@ exports.update = async (req, res) => {
                 return res.status(400).json({ msg: 'Can not update this turn' })
             }
             if (typeof req.body.num_max_people !== 'undefined' || !isNaN(req.body.num_max_people)) { //num_max_people là hợp lệ
-                if (parseInt(req.body.num_max_people) < parseInt(_tour_turn.num_current_people)) { //num_max_people phải lớn hơn num_current_people
+                if (parseInt(req.body.num_max_people) < parseInt(_tour_turn.num_current_people) || parseInt(_tour_turn.num_current_people) < 0) { //num_max_people phải lớn hơn num_current_people
                     return res.status(400).json({ msg: 'Wrong max people' })
                 }
                 else {
@@ -149,10 +154,14 @@ exports.update = async (req, res) => {
                 }
             }
             if (typeof req.body.discount !== 'undefined' || !isNaN(req.body.discount)) {
-                _tour_turn.discount = parseFloat(req.body.discount);
+                if (parseFloat(req.body.discount) >= 0 && parseFloat(req.body.discount) <= 100)
+                    _tour_turn.discount = parseFloat(req.body.discount);
+                else return res.status(400).json({ msg: 'Wrong discount' })
             }
             if (typeof req.body.price !== 'undefined' || !isNaN(req.body.price)) {
-                _tour_turn.price = parseFloat(req.body.price);
+                if (parseInt(req.body.price) > 0)
+                    _tour_turn.price = parseInt(req.body.price);
+                else return res.status(400).json({ msg: 'Wrong price' })
             }
             if (typeof req.body.start_date !== 'undefined') { //có start_date
                 if (typeof req.body.end_date !== 'undefined') // có end_date
@@ -187,6 +196,11 @@ exports.update = async (req, res) => {
                         return res.status(400).json({ msg: 'Wrong date' })
                     }
                 }
+            }
+            if (typeof req.body.idTour !== 'undefined' || !isNaN(req.body.idTour)) {
+                if (await db.tours.findByPk(req.body.idTour))
+                    _tour_turn.fk_tour = req.body.idTour
+                else return res.status(400).json({ msg: 'Wrong id tour' })
             }
             await _tour_turn.save();
             return res.status(200).json({
