@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 11, 2019 lúc 02:26 PM
+-- Thời gian đã tạo: Th3 11, 2019 lúc 03:54 PM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -485,6 +485,7 @@ CREATE TABLE IF NOT EXISTS `tour_turns` (
   `end_date` date NOT NULL,
   `num_current_people` int(11) DEFAULT '0',
   `num_max_people` int(11) NOT NULL,
+  `price` int(11) NOT NULL DEFAULT '0',
   `discount` float NOT NULL DEFAULT '0',
   `fk_tour` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -495,16 +496,16 @@ CREATE TABLE IF NOT EXISTS `tour_turns` (
 -- Đang đổ dữ liệu cho bảng `tour_turns`
 --
 
-INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, `num_max_people`, `discount`, `fk_tour`) VALUES
-(1, '2019-02-24', '2019-02-24', 1, 15, 0, 1),
-(2, '2019-03-02', '2019-03-02', 0, 15, 0, 1),
-(3, '2019-03-02', '2019-03-02', 0, 20, 0, 2),
-(4, '2019-03-09', '2019-03-09', 0, 20, 0, 2),
-(5, '2019-03-04', '2019-03-06', 0, 60, 0, 3),
-(6, '2019-03-08', '2019-03-08', 0, 30, 0, 4),
-(7, '2019-03-10', '2019-03-15', 0, 50, 0, 5),
-(8, '2019-03-04', '2019-03-06', 0, 60, 0, 6),
-(10, '2019-04-24', '2019-05-07', 0, 60, 0.5, 6);
+INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, `num_max_people`, `price`, `discount`, `fk_tour`) VALUES
+(1, '2019-02-24', '2019-02-24', 1, 15, 100000, 0, 1),
+(2, '2019-03-02', '2019-03-02', 0, 15, 100000, 0, 1),
+(3, '2019-03-02', '2019-03-02', 0, 20, 200000, 0, 2),
+(4, '2019-03-09', '2019-03-09', 0, 20, 215000, 0, 2),
+(5, '2019-03-04', '2019-03-06', 0, 60, 500000, 0, 3),
+(6, '2019-03-08', '2019-03-08', 0, 30, 1500000, 0, 4),
+(7, '2019-03-10', '2019-03-15', 0, 50, 1500000, 0, 5),
+(8, '2019-03-04', '2019-03-06', 0, 60, 7500000, 0, 6),
+(10, '2019-04-24', '2019-05-07', 0, 60, 8000000, 0.5, 6);
 
 -- --------------------------------------------------------
 

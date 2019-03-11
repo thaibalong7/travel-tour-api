@@ -7,13 +7,14 @@ exports.create = async (req, res) => {
     //     end_date,
     //     num_max_people,
     //     discount,
-    //     idTour
+    //     idTour,
+    //     price
     // }
     try {
-        if (typeof req.body.num_max_people !== undefined || typeof req.body.discount !== undefined
-            || typeof req.body.start_date !== undefined || typeof req.body.end_date !== undefined
-            || typeof req.body.idTour !== undefined) {
-            if (isNaN(req.body.num_max_people) || isNaN(req.body.discount)) {
+        if (typeof req.body.num_max_people !== 'undefined' || typeof req.body.discount !== 'undefined'
+            || typeof req.body.start_date !== 'undefined' || typeof req.body.end_date !== 'undefined'
+            || typeof req.body.idTour !== 'undefined' || typeof req.body.price !== 'undefined') {
+            if (isNaN(req.body.num_max_people) || isNaN(req.body.discount) || isNaN(req.body.price)) {
                 return res.status(400).json({ msg: 'Params is invalid' })
             }
             const new_tour_turn = {
@@ -21,7 +22,8 @@ exports.create = async (req, res) => {
                 start_date: new Date(req.body.start_date),
                 end_date: new Date(req.body.end_date),
                 num_max_people: parseInt(req.body.num_max_people),
-                discount: parseFloat(req.body.discount)
+                discount: parseFloat(req.body.discount),
+                price: parseInt(req.body.price)
             }
             if (new_tour_turn.start_date > new_tour_turn.end_date) {
                 return res.status(400).json({ msg: 'Start time must be less than the end time' })
@@ -121,7 +123,8 @@ exports.update = async (req, res) => {
     //     start_date,
     //     end_date,
     //     num_max_people,
-    //     discount
+    //     discount,
+    //     price
     // }
     try {
         if (typeof req.body.id === 'undefined' || isNaN(req.body.id)) {
@@ -147,6 +150,9 @@ exports.update = async (req, res) => {
             }
             if (typeof req.body.discount !== 'undefined' || !isNaN(req.body.discount)) {
                 _tour_turn.discount = parseFloat(req.body.discount);
+            }
+            if (typeof req.body.price !== 'undefined' || !isNaN(req.body.price)) {
+                _tour_turn.price = parseFloat(req.body.price);
             }
             if (typeof req.body.start_date !== 'undefined') { //có start_date
                 if (typeof req.body.end_date !== 'undefined') // có end_date
