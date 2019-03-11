@@ -23,11 +23,11 @@ module.exports = function (sequelize, Sequelize) {
     },
     price: {
       type: Sequelize.INTEGER,
-      allowNull: false
+      defaultValue: 0
     },
     discount: {
       type: Sequelize.FLOAT,
-      allowNull: true,
+      defaultValue: 0
     }
   },
     {

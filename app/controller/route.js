@@ -40,9 +40,9 @@ exports.create = async (req, res) => {
     //     idTransport
     // }
     try {
-        if (typeof req.body.arrive_time !== 'undefined' || typeof req.body.leave_time !== 'undefined'
-            || typeof req.body.day !== 'undefined' || typeof req.body.idLocation !== 'undefined'
-            || typeof req.body.idTour !== 'undefined' || typeof req.body.idTransport !== 'undefined') {
+        if (typeof req.body.arrive_time !== 'undefined' && typeof req.body.leave_time !== 'undefined'
+            && typeof req.body.day !== 'undefined' && typeof req.body.idLocation !== 'undefined'
+            && typeof req.body.idTour !== 'undefined' && typeof req.body.idTransport !== 'undefined') {
 
             if (isNaN(req.body.day) || isNaN(req.body.idLocation) || isNaN(req.body.idTour) || isNaN(req.body.idTransport)) {
                 return res.status(400).json({ msg: 'Param is invalid' })

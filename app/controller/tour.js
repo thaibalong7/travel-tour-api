@@ -9,17 +9,13 @@ const asyncForEach = async (arr, cb) => {
     arr.forEach(cb);
 }
 
-exports.create = async (req, res) => {
+exports.createWithRoutes = async (req, res) => {
     try {
-        if (isNaN(req.body.price)) {
-            return res.status(400).json({ msg: 'Params are invalid' })
-        }
         if (!(await helper_validate.check_list_routes(req.body.routes))) {
             return res.status(400).json({ msg: 'List routes is invalid' })
         }
         const new_tour = {
             name: req.body.name,
-            price: parseInt(req.body.price),
             policy: req.body.policy,
             description: req.body.description,
             detail: req.body.detail,
@@ -39,6 +35,31 @@ exports.create = async (req, res) => {
         }).catch(err => {
             return res.status(400).json({ msg: err })
         })
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err })
+    }
+}
+
+exports.create = async (req, res) => {
+    try {
+        if (typeof req.body.name !== 'undefined' && typeof req.body.policy !== 'undefined'
+            && typeof req.body.description !== 'undefined' && typeof req.body.detail !== 'undefined') {
+            const new_tour = {
+                name: req.body.name,
+                policy: req.body.policy,
+                description: req.body.description,
+                detail: req.body.detail,
+            }
+            tours.create(new_tour).then(async _tour => {
+                return res.status(200).json(_tour)
+            }).catch(err => {
+                return res.status(400).json({ msg: err })
+            })
+        }
+        else {
+            return res.status(400).json({ msg: 'Param is invalid' })
+        }
     }
     catch (err) {
         return res.status(400).json({ msg: err })
