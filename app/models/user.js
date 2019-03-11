@@ -33,6 +33,10 @@ module.exports = (sequelize, Sequelize) => {
         avatar: {
             type: Sequelize.STRING
         },
+        isActive: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
+        },
         type: {
             type: Sequelize.ENUM('facebook', 'local')
         }

@@ -11,4 +11,6 @@ router.get('/getById/:id', tour_turns.getById)
 //example call api: http://localhost:5000/tour_turn/getAllWithoutPagination
 router.get('/getAllWithoutPagination', tour_turns.getAllWithoutPagination);
 
+router.post('/update', tour_turns.update);
+
 module.exports = router

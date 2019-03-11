@@ -18,6 +18,10 @@ module.exports = function (sequelize, Sequelize) {
     detail: {
       type: Sequelize.TEXT,
       allowNull: true
+    },
+    title: {
+      type: Sequelize.TEXT,
+      allowNull: true
     }
   },
     {

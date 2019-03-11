@@ -59,6 +59,7 @@ exports.updateWithoutFeaturedImg = (req, res) => {
 exports.getAllWithoutPagination = (req, res) => {
     try {
         locations.findAll({
+            attributes: { exclude: ['fk_type'] },
             include: [{
                 model: db.types
             }]
@@ -91,6 +92,7 @@ exports.getAllLocation = (req, res) => {
         page = parseInt(page);
         per_page = parseInt(per_page);
         const query = {
+            attributes: { exclude: ['fk_type'] },
             include: [{
                 model: db.types
             }],
@@ -175,6 +177,7 @@ exports.getLocationNearMe = async (req, res) => {
     lng = parseFloat(lng);
     distance = parseInt(distance);
     var query = {
+        attributes: { exclude: ['fk_type'] },
         include: [{
             model: db.types
         }],
@@ -213,6 +216,7 @@ exports.getLocationNearMe = async (req, res) => {
 
 exports.getById = (req, res) => {
     const query = {
+        attributes: { exclude: ['fk_type'] },
         where: { id: req.params.id },
         include: [{
             model: db.types
@@ -239,6 +243,7 @@ exports.getLocationByType = async (req, res) => {
         return res.status(405).json({ msg: 'Params is invalid' });
     const query = {
         where: { fk_type: type },
+        attributes: { exclude: ['fk_type'] },
         include: [{
             model: db.types
         }],
@@ -275,6 +280,7 @@ exports.getByTypeNearMe = async (req, res) => {
     lng = parseFloat(lng);
     distance = parseInt(distance);
     var query = {
+        attributes: { exclude: ['fk_type'] },
         where: db.sequelize.and(
             lat && lng && distance ? db.sequelize.where(
                 db.sequelize.literal(`6371 * acos(cos(radians(${lat})) * cos(radians(locations.latitude)) * cos(radians(${lng}) - radians(locations.longitude)) + sin(radians(${lat})) * sin(radians(locations.latitude)))`),

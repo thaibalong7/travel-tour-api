@@ -61,6 +61,7 @@ exports.getAllTour = (req, res) => {
         per_page = parseInt(per_page);
         const query = {
             include: [{
+                attributes: { exclude: ['fk_tour'] },
                 model: db.tour_turns
             }],
             limit: per_page,
@@ -91,7 +92,7 @@ exports.getAllTour = (req, res) => {
 exports.getAllWithoutPagination = (req, res) => {
     try {
         const query = {
-            attributes:['id', 'name'],
+            attributes: ['id', 'name'],
             include: [{
                 model: db.tour_turns,
 
@@ -116,19 +117,25 @@ exports.getById = (req, res) => {
     const query = {
         where: { id: idTour },
         include: [{
+            attributes: { exclude: ['fk_tour'] },
             model: db.tour_turns,
-
         },
         {
             model: db.routes,
+            attributes: { exclude: ['fk_tour', 'fk_location', 'fk_transport'] },
             include: [{
                 model: db.locations,
+                attributes: { exclude: ['fk_type'] },
                 include: [{
                     model: db.types
                 }]
+            },
+            {
+                model: db.transports
             }]
         },
         {
+            attributes: { exclude: ['fk_tour'] },
             model: db.tour_images
         }],
         order: [[db.tour_turns, 'start_date', 'DESC'], [db.routes, 'day', 'ASC'], [db.routes, 'arrive_time', 'ASC']]
@@ -176,6 +183,7 @@ exports.getByLocation = (req, res) => {
             per_page = parseInt(per_page);
             const query = {
                 include: [{
+                    attributes: { exclude: ['fk_tour'] },
                     model: db.tour_turns,
                     where: {
                         start_date: {
@@ -195,6 +203,7 @@ exports.getByLocation = (req, res) => {
                 offset: (page - 1) * per_page
             }
             tours.findAndCountAll(query).then(async _tours => {
+                console.log(_tours)
                 var next_page = page + 1;
                 //Kiểm tra còn dữ liệu không
                 if ((parseInt(_tours.rows.length) + (next_page - 2) * per_page) === parseInt(_tours.count))
@@ -283,6 +292,7 @@ exports.searchByName = (req, res) => {
                     }
                 },
                 include: [{
+                    attributes: { exclude: ['fk_tour'] },
                     model: db.tour_turns
                 }],
             }
@@ -334,6 +344,7 @@ exports.searchByPrice = (req, res) => {
                     }
                 },
                 include: [{
+                    attributes: { exclude: ['fk_tour'] },
                     model: db.tour_turns
                 }],
             }
