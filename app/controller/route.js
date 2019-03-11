@@ -166,3 +166,30 @@ exports.getByTour = (req, res) => {
         res.status(400).json({ msg: err })
     })
 }
+
+exports.getAll = (req, res) => {
+    const query = {
+        attributes: { exclude: ['fk_transport', 'fk_location'] },
+        include: [{
+            model: db.locations,
+            // attributes: { exclude: ['fk_type'] },
+            // include: [{
+            //     model: db.types
+            // }]
+        },
+        {
+            model: db.transports
+        }],
+        order: [['day', 'ASC'], ['arrive_time', 'ASC']]
+    }
+    routes.findAll(query).then(async _routes => {
+        const result = await addLinkLocationFeaturedImgOfListRoutesAndAddTour(_routes, req.headers.host)
+        Promise.all(result).then(completed => {
+            res.status(200).json({
+                data: completed,
+            })
+        })
+    }).catch(err => {
+        res.status(400).json({ msg: err })
+    })
+}

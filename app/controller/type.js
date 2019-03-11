@@ -26,7 +26,7 @@ exports.update = (req, res) => {
 
 exports.getAllType = (req, res) => {
     types.findAll().then(_types => {
-        res.status(200).json({ result: _types })
+        res.status(200).json({ data: _types })
     }).catch(err => {
         res.status(400).json({ msg: err })
     })
