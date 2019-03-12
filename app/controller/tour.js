@@ -9,11 +9,27 @@ const asyncForEach = async (arr, cb) => {
     arr.forEach(cb);
 }
 
+const sort_route = async (routes) => {
+    //true nếu arrive nhỏ hơn leave
+    const sync_check_time = (arrive, leave) => {
+        return Date.parse('01/01/2011 ' + arrive) < Date.parse('01/01/2011 ' + leave)
+    }
+    const compare2Route = (route1, route2) => {
+        if (parseInt(route1.day) === parseInt(route2.day)) {
+            if (sync_check_time(route1.arriveTime, route2.arriveTime)) {
+                //route1 nhỏ hơn route2
+                return -1;
+            }
+            else
+                return 1
+        }
+        return (parseInt(route1.day) > parseInt(route2.day) ? 1 : -1)
+    }
+    routes.sort(compare2Route);
+}
+
 exports.createWithRoutes = async (req, res) => {
     try {
-        if (!(await helper_validate.check_list_routes(req.body.routes))) {
-            return res.status(400).json({ msg: 'List routes is invalid' })
-        }
         const new_tour = {
             name: req.body.name,
             policy: req.body.policy,
@@ -21,6 +37,10 @@ exports.createWithRoutes = async (req, res) => {
             detail: req.body.detail,
         }
         const list_routes = req.body.routes;
+        await sort_route(list_routes);
+        if (!(await helper_validate.check_list_routes(list_routes))) {
+            return res.status(400).json({ msg: 'List routes is invalid' })
+        }
         tours.create(new_tour).then(async _tour => {
             await asyncForEach(list_routes, async (route) => {
                 await db.routes.create({
@@ -28,7 +48,8 @@ exports.createWithRoutes = async (req, res) => {
                     leave_time: route.leaveTime,
                     day: route.day,
                     fk_location: route.id,
-                    fk_tour: _tour.id
+                    fk_tour: _tour.id,
+                    fk_transport: route.idTransport
                 })
             })
             return res.status(200).json(_tour)
@@ -59,6 +80,60 @@ exports.create = async (req, res) => {
         }
         else {
             return res.status(400).json({ msg: 'Param is invalid' })
+        }
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err })
+    }
+}
+
+exports.updateWithRoutes = async (req, res) => {
+    try {
+        if (typeof req.body.id === 'undefined' || isNaN(req.body.id)) {
+            return res.status(400).json({ msg: 'Param is invalid' })
+        }
+        else {
+            const _tour = await tours.findByPk(req.body.id);
+            if (!_tour) {
+                //k tồn tại tour này
+                return res.status(400).json({ msg: 'Wrong id' })
+            }
+            else {
+                if (typeof req.body.name !== 'undefined')
+                    _tour.name = req.body.name;
+                if (typeof req.body.policy !== 'undefined')
+                    _tour.policy = req.body.policy;
+                if (typeof req.body.description !== 'undefined')
+                    _tour.description = req.body.description;
+                if (typeof req.body.detail !== 'undefined')
+                    _tour.detail = req.body.detail;
+
+                if (typeof req.body.routes !== 'undefined') {
+                    const list_routes = req.body.routes;
+                    await sort_route(list_routes);
+                    if (!(await helper_validate.check_list_routes(list_routes))) {
+                        return res.status(400).json({ msg: 'List routes is invalid' })
+                    }
+                    else {
+                        await db.routes.destroy({ where: { fk_tour: _tour.id } });
+                        await asyncForEach(list_routes, async (route) => {
+                            await db.routes.create({
+                                arrive_time: route.arriveTime,
+                                leave_time: route.leaveTime,
+                                day: route.day,
+                                fk_location: route.id,
+                                fk_tour: _tour.id,
+                                fk_transport: route.idTransport
+                            })
+                        })
+                    }
+                }
+                await _tour.save();
+                return res.status(200).json({
+                    msg: 'Update successful',
+                    data: _tour
+                });
+            }
         }
     }
     catch (err) {

@@ -8,6 +8,8 @@ router.post('/createWithRoutes', tours.createWithRoutes);
 
 router.post('/create', tours.create);
 
+router.post('/updateWithRoutes', tours.updateWithRoutes);
+
 router.get('/getById/:id', tours.getById);
 
 // Gởi lên id location, trả về những tour đi ngang qua điểm đó (những tour phải có tour_turns còn nhận book)

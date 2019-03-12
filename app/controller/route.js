@@ -140,6 +140,8 @@ exports.update = async (req, res) => {
 
 exports.getByTour = (req, res) => {
     const idTour = req.params.idTour;
+    if (typeof idTour === 'undefined' || isNaN(idTour))
+        return res.status(400).json({ msg: 'Param is invalid' })
     const query = {
         attributes: { exclude: ['fk_tour', 'fk_transport', 'fk_location'] },
         where: { fk_tour: idTour },
@@ -169,25 +171,58 @@ exports.getByTour = (req, res) => {
 
 exports.getAll = (req, res) => {
     const query = {
-        attributes: { exclude: ['fk_transport', 'fk_location'] },
+        attributes: { exclude: ['fk_location'] },
         include: [{
             model: db.locations,
             // attributes: { exclude: ['fk_type'] },
             // include: [{
             //     model: db.types
             // }]
-        },
-        {
-            model: db.transports
         }],
-        order: [['day', 'ASC'], ['arrive_time', 'ASC']]
+        order: [['fk_tour', 'ASC'], ['day', 'ASC'], ['arrive_time', 'ASC']]
     }
     routes.findAll(query).then(async _routes => {
-        const result = await addLinkLocationFeaturedImgOfListRoutesAndAddTour(_routes, req.headers.host)
-        Promise.all(result).then(completed => {
-            res.status(200).json({
-                data: completed,
-            })
+        await helper_add_link.addLinkLocationFeaturedImgOfListRoutes(_routes, req.headers.host);
+        res.status(200).json({
+            data: _routes,
+        })
+    }).catch(err => {
+        res.status(400).json({ msg: err })
+    })
+}
+
+exports.getById = (req, res) => {
+    const id = req.params.id;
+    if (typeof id === 'undefined' || isNaN(id))
+        return res.status(400).json({ msg: 'Param is invalid' })
+
+    const query = {
+        where: {
+            id: id
+        },
+        attributes: { exclude: ['fk_location'] },
+        include: [{
+            model: db.locations,
+            // attributes: { exclude: ['fk_type'] },
+            // include: [{
+            //     model: db.types
+            // }]
+        }]
+    }
+    routes.findOne(query).then(async _route => {
+        if (_route !== null) {
+            if (_route.dataValues.location.dataValues.featured_img === null) {
+
+            }
+            else {
+                if (process.env.NODE_ENV === 'development')
+                    _route.dataValues.location.dataValues.featured_img = 'http://' + req.headers.host + link_img.link_location_featured + _route.dataValues.location.dataValues.featured_img;
+                else
+                    _route.dataValues.location.dataValues.featured_img = 'https://' + req.headers.host + link_img.link_location_featured + _route.dataValues.location.dataValues.featured_img;
+            }
+        }
+        res.status(200).json({
+            data: _route,
         })
     }).catch(err => {
         res.status(400).json({ msg: err })

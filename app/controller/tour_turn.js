@@ -141,10 +141,6 @@ exports.update = async (req, res) => {
                 //k tồn tại id này
                 return res.status(400).json({ msg: 'Wrong id' })
             }
-            if (new Date() >= new Date(_tour_turn.start_date)) //ngày hiện tại lớn hơn ngày đi - tức tour đang hoặc đã đi
-            {
-                return res.status(400).json({ msg: 'Can not update this turn' })
-            }
             if (typeof req.body.num_max_people !== 'undefined' || !isNaN(req.body.num_max_people)) { //num_max_people là hợp lệ
                 if (parseInt(req.body.num_max_people) < parseInt(_tour_turn.num_current_people) || parseInt(_tour_turn.num_current_people) < 0) { //num_max_people phải lớn hơn num_current_people
                     return res.status(400).json({ msg: 'Wrong max people' })
@@ -164,6 +160,10 @@ exports.update = async (req, res) => {
                 else return res.status(400).json({ msg: 'Wrong price' })
             }
             if (typeof req.body.start_date !== 'undefined') { //có start_date
+                if (new Date() >= new Date(_tour_turn.start_date)) //ngày hiện tại lớn hơn ngày đi - tức tour đang hoặc đã đi
+                {
+                    return res.status(400).json({ msg: 'Can not update this turn' })
+                }
                 if (typeof req.body.end_date !== 'undefined') // có end_date
                     if (new Date(req.body.start_date) < new Date(req.body.end_date) && new Date(req.body.start_date) > new Date()) {
                         //thỏa mọi điều kiện
