@@ -171,13 +171,16 @@ exports.getByTour = (req, res) => {
 
 exports.getAll = (req, res) => {
     const query = {
-        attributes: { exclude: ['fk_location'] },
+        attributes: { exclude: ['fk_location', 'fk_transport'] },
         include: [{
             model: db.locations,
             // attributes: { exclude: ['fk_type'] },
             // include: [{
             //     model: db.types
             // }]
+        },
+        {
+            model: db.transports
         }],
         order: [['fk_tour', 'ASC'], ['day', 'ASC'], ['arrive_time', 'ASC']]
     }

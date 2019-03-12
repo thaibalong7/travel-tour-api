@@ -7,7 +7,7 @@ router.post('/create', routes.create);
 
 router.post('/update', routes.update);
 
-router.get('/getALl', routes.getAll);
+router.get('/getAll', routes.getAll);
 
 router.get('/getById/:id', routes.getById);
 
