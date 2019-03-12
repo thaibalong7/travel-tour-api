@@ -36,15 +36,15 @@ exports.create = async (req, res) => {
     //     leave_time,
     //     day,
     //     idLocation,
-    //     idTour,
-    //     idTransport
+    //     idTransport,
+    //     title
     // }
     try {
         if (typeof req.body.arrive_time !== 'undefined' && typeof req.body.leave_time !== 'undefined'
             && typeof req.body.day !== 'undefined' && typeof req.body.idLocation !== 'undefined'
-            && typeof req.body.idTour !== 'undefined' && typeof req.body.idTransport !== 'undefined') {
+            && typeof req.body.idTransport !== 'undefined' && typeof req.body.title !== 'undefined') {
 
-            if (isNaN(req.body.day) || isNaN(req.body.idLocation) || isNaN(req.body.idTour) || isNaN(req.body.idTransport)) {
+            if (isNaN(req.body.day) || isNaN(req.body.idLocation) || isNaN(req.body.idTransport)) {
                 return res.status(400).json({ msg: 'Param is invalid' })
             }
             else {
@@ -53,16 +53,13 @@ exports.create = async (req, res) => {
                     leave_time: req.body.leave_time,
                     day: req.body.day,
                     fk_location: req.body.idLocation,
-                    fk_tour: req.body.idTour,
-                    fk_transport: req.body.idTransport
+                    fk_transport: req.body.idTransport,
+                    title: req.body.title
                 }
                 const location = await db.locations.findByPk(new_routes.idLocation);
-                const tour = await db.locations.findByPk(new_routes.idTour);
                 const transport = await db.locations.findByPk(new_routes.idTransport);
                 if (location === null)
                     return res.status(400).json({ msg: 'Wrong location' })
-                if (tour === null)
-                    return res.status(400).json({ msg: 'Wrong tour' })
                 if (transport === null)
                     return res.status(400).json({ msg: 'Wrong transport' })
                 routes.create(new_routes).then(_route => {
@@ -203,13 +200,16 @@ exports.getById = (req, res) => {
         where: {
             id: id
         },
-        attributes: { exclude: ['fk_location'] },
+        attributes: { exclude: ['fk_location', 'fk_transport'] },
         include: [{
             model: db.locations,
             // attributes: { exclude: ['fk_type'] },
             // include: [{
             //     model: db.types
             // }]
+        },
+        {
+            model: db.transports
         }]
     }
     routes.findOne(query).then(async _route => {
