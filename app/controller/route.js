@@ -56,8 +56,8 @@ exports.create = async (req, res) => {
                     fk_transport: req.body.idTransport,
                     title: req.body.title
                 }
-                const location = await db.locations.findByPk(new_routes.idLocation);
-                const transport = await db.locations.findByPk(new_routes.idTransport);
+                const location = await db.locations.findByPk(new_routes.fk_location);
+                const transport = await db.locations.findByPk(new_routes.fk_transport);
                 if (location === null)
                     return res.status(400).json({ msg: 'Wrong location' })
                 if (transport === null)
