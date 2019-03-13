@@ -4,6 +4,15 @@ var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const add_link = require('../helper/add_full_link');
 
+const asyncForEach = async (arr, cb) => {
+    arr.forEach(cb);
+}
+
+async function paginate(array, page_size, page_number) {
+    --page_number; // because pages logically start with 1, but technically with 0
+    return array.slice(page_number * page_size, (page_number + 1) * page_size);
+}
+
 exports.create = async (req, res) => {
     // {
     //     start_date,
@@ -125,6 +134,7 @@ exports.getAllWithoutPagination = (req, res) => {
 }
 
 exports.getAll = (req, res) => {
+    var isUniqueTour = (req.query.isUniqueTour == 'true');
     const page_default = 1;
     const per_page_default = 10;
     var page, per_page;
@@ -148,26 +158,60 @@ exports.getAll = (req, res) => {
                     [Op.gt]: new Date()
                 }
             },
-            order: [['start_date', 'ASC']],
-            limit: per_page,
-            offset: (page - 1) * per_page
+            order: [db.sequelize.literal('start_date ASC')]
         }
         tour_turns.findAndCountAll(query).then(async _tour_turns => {
-            var next_page = page + 1;
-            //Kiểm tra còn dữ liệu không
-            if ((parseInt(_tour_turns.rows.length) + (next_page - 2) * per_page) === parseInt(_tour_turns.count))
-                next_page = -1;
-            //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
-            if ((parseInt(_tour_turns.rows.length) < per_page))
-                next_page = -1;
-            if (parseInt(_tour_turns.rows.length) === 0)
-                next_page = -1;
-            const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns.rows, req.headers.host);
-            res.status(200).json({
-                itemCount: result.length, //số lượng record được trả về
-                data: result,
-                next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
-            })
+            if (isUniqueTour) { //lấy unique
+                var next_page = page + 1;
+                var unique = {};
+                var distinct = [];
+                await asyncForEach(_tour_turns.rows, function (item) {
+                    if (!unique[item.tour.id]) {
+                        distinct.push(item);
+                        unique[item.tour.id] = true;
+                    }
+                });
+
+                //phân trang
+                const result_paginate = await paginate(distinct, per_page, page)
+
+                //Kiểm tra còn dữ liệu không
+                if ((parseInt(result_paginate.length) + (next_page - 2) * per_page) === parseInt(distinct.length))
+                    next_page = -1
+                //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
+                if ((parseInt(result_paginate.length) < per_page))
+                    next_page = -1;
+                if (parseInt(result_paginate.length) === 0)
+                    next_page = -1;
+
+                const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
+                res.status(200).json({
+                    itemCount: result.length, //số lượng record được trả về
+                    data: result,
+                    next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+                })
+            }
+            else {
+                var next_page = page + 1;
+                //phân trang
+                const result_paginate = await paginate(_tour_turns.rows, per_page, page)
+
+                //Kiểm tra còn dữ liệu không
+                if ((parseInt(result_paginate.length) + (next_page - 2) * per_page) === parseInt(_tour_turns.rows.length))
+                    next_page = -1
+                //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
+                if ((parseInt(result_paginate.length) < per_page))
+                    next_page = -1;
+                if (parseInt(result_paginate.length) === 0)
+                    next_page = -1;
+
+                const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
+                res.status(200).json({
+                    itemCount: result.length, //số lượng record được trả về
+                    data: result,
+                    next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+                })
+            }
         })
     }
 }
