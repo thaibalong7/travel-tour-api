@@ -8,6 +8,20 @@ const addLinkToursFeaturedImgOfListTours = async (tours, host) => {
             else
                 item.featured_img = 'https://' + host + link_img.link_tour_featured + item.featured_img
         }
+        return item;
+    })
+}
+
+const addLinkToursFeaturedImgOfListTourTurns = async (tour_turns, host) => {
+    return tour_turns.map(item => {
+        if (item.tour.featured_img !== null) {
+            if (process.env.NODE_ENV === 'development')
+                item.tour.featured_img = 'http://' + host + link_img.link_tour_featured + item.tour.featured_img
+            else
+                item.tour.featured_img = 'https://' + host + link_img.link_tour_featured + item.tour.featured_img
+            return item;
+        }
+        return item;
     })
 }
 
@@ -38,6 +52,7 @@ const addLinkTourImgOfListToursImg = async (_tour_image, host) => {
     })
 }
 
+
 const addLinkLocationFeaturedImgOfListLocations = async (_locations, host) => {
     return _locations.map(item => {
         if (item.featured_img === null) {
@@ -59,5 +74,6 @@ module.exports = {
     addLinkLocationFeaturedImgOfListLocations,
     addLinkLocationFeaturedImgOfListRoutes,
     addLinkTourImgOfListToursImg,
-    addLinkToursFeaturedImgOfListTours
+    addLinkToursFeaturedImgOfListTours,
+    addLinkToursFeaturedImgOfListTourTurns
 }

@@ -1,5 +1,8 @@
 const db = require('../models');
 const tour_turns = db.tour_turns;
+var Sequelize = require("sequelize");
+const Op = Sequelize.Op;
+const add_link = require('../helper/add_full_link');
 
 exports.create = async (req, res) => {
     // {
@@ -106,7 +109,7 @@ exports.getAllWithoutPagination = (req, res) => {
     const query = {
         attributes: { exclude: ['fk_tour'] },
         include: [{
-            attributes: ['id', 'name', 'price'],
+            attributes: ['id', 'name'],
             model: db.tours
         }],
         order: [['start_date', 'DESC']]
@@ -119,6 +122,54 @@ exports.getAllWithoutPagination = (req, res) => {
     }).catch(err => {
         res.status(400).json({ msg: err })
     })
+}
+
+exports.getAll = (req, res) => {
+    const page_default = 1;
+    const per_page_default = 10;
+    var page, per_page;
+    if (typeof req.query.page === 'undefined') page = page_default;
+    else page = req.query.page
+    if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
+    else per_page = req.query.per_page
+    if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
+        res.status(405).json({ msg: 'Params is invalid' })
+    }
+    else {
+        page = parseInt(page);
+        per_page = parseInt(per_page);
+        const query = {
+            attributes: { exclude: ['fk_tour'] },
+            include: [{
+                model: db.tours
+            }],
+            where: {
+                start_date: {
+                    [Op.gt]: new Date()
+                }
+            },
+            order: [['start_date', 'ASC']],
+            limit: per_page,
+            offset: (page - 1) * per_page
+        }
+        tour_turns.findAndCountAll(query).then(async _tour_turns => {
+            var next_page = page + 1;
+            //Kiểm tra còn dữ liệu không
+            if ((parseInt(_tour_turns.rows.length) + (next_page - 2) * per_page) === parseInt(_tour_turns.count))
+                next_page = -1;
+            //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
+            if ((parseInt(_tour_turns.rows.length) < per_page))
+                next_page = -1;
+            if (parseInt(_tour_turns.rows.length) === 0)
+                next_page = -1;
+            const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns.rows, req.headers.host);
+            res.status(200).json({
+                itemCount: result.length, //số lượng record được trả về
+                data: result,
+                next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+            })
+        })
+    }
 }
 
 exports.update = async (req, res) => {
@@ -205,7 +256,7 @@ exports.update = async (req, res) => {
             await _tour_turn.save();
             return res.status(200).json({
                 msg: 'Update successful',
-                profile: _tour_turn
+                data: _tour_turn
             })
         }
     }

@@ -149,8 +149,8 @@ exports.getAllTour = (req, res) => {
     else page = req.query.page
     if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
     else per_page = req.query.per_page
-    if (isNaN(page) || isNaN(per_page)) {
-        res.status(405).json({ msg: 'Params is invalid' })
+    if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
+        return res.status(405).json({ msg: 'Params is invalid' })
     }
     else {
         page = parseInt(page);
@@ -271,7 +271,7 @@ exports.getByLocation = (req, res) => {
         else page = req.query.page
         if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
         else per_page = req.query.per_page
-        if (isNaN(page) || isNaN(per_page)) {
+        if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
             return res.status(405).json({ msg: 'Params is invalid' })
         }
         else {
@@ -375,8 +375,8 @@ exports.searchByName = (req, res) => {
         else page = req.query.page
         if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
         else per_page = req.query.per_page
-        if (isNaN(page) || isNaN(per_page)) {
-            res.status(405).json({ msg: 'Params is invalid' })
+        if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
+            return res.status(405).json({ msg: 'Params is invalid' })
         }
         else {
             page = parseInt(page);
@@ -427,8 +427,8 @@ exports.searchByPrice = (req, res) => {
         else page = req.query.page
         if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
         else per_page = req.query.per_page
-        if (isNaN(page) || isNaN(per_page)) {
-            res.status(405).json({ msg: 'Params is invalid' })
+        if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
+            return res.status(405).json({ msg: 'Params is invalid' })
         }
         else {
             page = parseInt(page);

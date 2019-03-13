@@ -114,7 +114,8 @@ exports.update = async (req, res) => {
                     }
                     await _route.save();
                     return res.status(200).json({
-                        msg: 'Update successful'
+                        msg: 'Update successful',
+                        data: _route
                     })
                 }
                 else {
