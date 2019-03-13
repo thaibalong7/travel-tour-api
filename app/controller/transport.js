@@ -21,7 +21,7 @@ exports.create = (req, res) => {
                 name_vn: req.body.name_vn
             }
             transports.create(new_transport).then(_transport => {
-                return res.status(200).json(_transports);
+                return res.status(200).json(_transport);
             }).catch(e => {
                 return res.status(400).json({ msg: e })
             })
