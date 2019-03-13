@@ -10,6 +10,7 @@ router.use('/route', require('./route'))
 router.use('/tour_turn', require('./tour_turn'));
 router.use('/comment', require('./comment'));
 router.use('/transport', require('./transport'));
+router.use('/request', require('./request'));
 
 router.get('/getNumOfTourAndLocation', async (req, res) => {
     const all_tours = await db.tours.findAll();
