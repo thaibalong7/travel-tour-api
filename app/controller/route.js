@@ -103,12 +103,12 @@ exports.update = async (req, res) => {
                     if (typeof req.body.day !== 'undefined' && !isNaN(req.body.day))
                         _route.day = req.body.day
                     if (typeof req.body.idLocation !== 'undefined' && !isNaN(req.body.idLocation)) {
-                        const check_location = db.locations.findByPk(req.body.idLocation)
+                        const check_location = await db.locations.findByPk(req.body.idLocation)
                         if (check_location)
                             _route.fk_location = req.body.idLocation;
                     }
                     if (typeof req.body.idTransport !== 'undefined' && !isNaN(req.body.idTransport)) {
-                        const check_transport = db.locations.findByPk(req.body.idTransport)
+                        const check_transport = await db.transports.findByPk(req.body.idTransport)
                         if (check_transport)
                             _route.fk_transport = req.body.idTransport;
                     }
