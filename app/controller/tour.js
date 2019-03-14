@@ -34,8 +34,7 @@ exports.createWithRoutes = async (req, res) => {
         if (typeof req.body.name !== 'undefined' && typeof req.body.policy !== 'undefined'
             && typeof req.body.description !== 'undefined' && typeof req.body.detail !== 'undefined'
             && typeof req.body.routes !== 'undefined') {
-            console.log(req.body.routes)
-            if (Array.isArray(req.body.routes)) {
+            if (Array.isArray(JSON.parse(req.body.routes))) {
                 if (typeof req.file !== 'undefined') {
                     fs.writeFile('public/assets/images/tourFeatured/' + req.file.originalname, req.file.buffer, async (err) => {
                         if (err) {
@@ -48,11 +47,7 @@ exports.createWithRoutes = async (req, res) => {
                             detail: req.body.detail,
                             featured_img: req.file.originalname
                         }
-                        if (process.env.NODE_ENV === 'development')
-                            new_tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + new_tour.featured_img;
-                        else
-                            new_tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + new_tour.featured_img;
-                        const list_routes = req.body.routes;
+                        const list_routes = JSON.parse(req.body.routes);
                         await sort_route(list_routes);
                         if (!(await helper_validate.check_list_routes(list_routes))) {
                             return res.status(400).json({ msg: 'List routes is invalid' })
@@ -70,8 +65,11 @@ exports.createWithRoutes = async (req, res) => {
                                 var _route = await db.routes.findByPk(route.id);
                                 _route.fk_tour = _tour.id;
                                 await _route.save();
-
                             })
+                            if (process.env.NODE_ENV === 'development')
+                                _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                            else
+                                _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
                             return res.status(200).json(_tour)
                         }).catch(err => {
                             return res.status(400).json({ msg: err })
@@ -91,7 +89,6 @@ exports.createWithRoutes = async (req, res) => {
         }
     }
     catch (err) {
-        console.log('mom catch ...')
         return res.status(400).json({ msg: err })
     }
 }
