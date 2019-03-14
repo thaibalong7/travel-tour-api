@@ -266,8 +266,6 @@ exports.update = async (req, res) => {
         _user.sex = req.body.sex
     if (typeof req.body.phone !== 'undefined')
         _user.phone = req.body.phone
-    if (typeof req.body.email !== 'undefined')
-        _user.email = req.body.email
     if (typeof req.body.fullname !== 'undefined')
         _user.fullname = req.body.fullname
     if (typeof req.file !== 'undefined') {
