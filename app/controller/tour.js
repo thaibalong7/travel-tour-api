@@ -229,10 +229,6 @@ exports.getById = (req, res) => {
             {
                 model: db.transports
             }]
-        },
-        {
-            attributes: { exclude: ['fk_tour'] },
-            model: db.tour_images
         }],
         order: [[db.tour_turns, 'start_date', 'DESC'], [db.routes, 'day', 'ASC'], [db.routes, 'arrive_time', 'ASC']]
     }
@@ -245,7 +241,6 @@ exports.getById = (req, res) => {
                     _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img
             }
             await helper_add_link.addLinkLocationFeaturedImgOfListRoutes(_tour.routes, req.headers.host);
-            await helper_add_link.addLinkTourImgOfListToursImg(_tour.tour_images, req.headers.host);
         }
         res.status(200).json({ data: _tour })
     })
