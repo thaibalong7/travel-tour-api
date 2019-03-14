@@ -1,10 +1,12 @@
 var router = require('express').Router();
 const tours = require('../controller/tour');
+let multer = require('multer');
+let upload = multer(); //setting the default folder for multer
 
 // example call api: http://localhost:5000/tour/getAll?per_page=10&page=2
 router.get('/getAll', tours.getAllTour);
 
-router.post('/createWithRoutes', tours.createWithRoutes);
+router.post('/createWithRoutes', upload.single('image'), tours.createWithRoutes);
 
 router.post('/create', tours.create);
 

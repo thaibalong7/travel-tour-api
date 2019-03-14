@@ -4,32 +4,32 @@ const check_time = async (arrive, leave) => {
 }
 
 const check_2_routes = async (i, routes1, routes2, length) => {
-    console.log('check ', i)
+    // console.log('check ', i)
     if (typeof routes1.id === 'undefined' || typeof routes1.day === 'undefined'
         || typeof routes2.id === 'undefined' || typeof routes2.day === 'undefined'
         || typeof routes1.arriveTime === 'undefined' || typeof routes1.leaveTime === 'undefined'
         || typeof routes2.arriveTime === 'undefined' || typeof routes2.leaveTime === 'undefined'
         || isNaN(routes1.id) || isNaN(routes2.id)
         || isNaN(routes1.day) || isNaN(routes2.day)) { //check dữ liệu truyền vào có đúng
-        console.log('false 1');
+        // console.log('false 1');
         return false;
     }
     else {
         if (i === 0 && ((parseInt(routes1.day) !== 1) || routes1.leaveTime === null)) { //routes đầu tiên và có day khác 1 hoặc leaveTime là null
-            console.log('false 2');
+            // console.log('false 2');
             return false;
         }
         else {
             if (i !== 0 && (routes1.arriveTime === null || routes1.leaveTime === null)) //k phải route đầu tiên và có thời gian là null
             {            
-                console.log('false 3');
+                // console.log('false 3');
                 return false;
             }
             else {
                 if (((await check_time(routes1.arriveTime, routes1.leaveTime)) === false)
                     && (parseInt(routes2.day) <= parseInt(routes1.day) || !await check_time(routes1.leaveTime, routes2.arriveTime))) //thời gian rời khỏi là ngày hôm sau nhưng route tiếp theo lại có ngày trùng hoặc nhỏ hơn, hoặc thời gian rời route1 lớn hơn thời gian tới routes2
                 {
-                    console.log('false 4');
+                    // console.log('false 4');
                     return false;
                 }
                 else {
@@ -37,7 +37,7 @@ const check_2_routes = async (i, routes1, routes2, length) => {
                     {
                         if (!await check_time(routes1.leaveTime, routes2.arriveTime)) //thời gian rời đi route trước là lớn hơn thời gian tới của routes sau
                         {
-                            console.log('false 5');
+                            // console.log('false 5');
                             return false;
                         } else {
                             return true;
@@ -45,16 +45,16 @@ const check_2_routes = async (i, routes1, routes2, length) => {
                     }
                     else {
                         if (parseInt(routes1.day) > parseInt(routes2.day)) { //routes trước có day lớn hơn routes sau
-                            console.log('false 6');
+                            // console.log('false 6');
                             return false;
                         } else {
                             if (parseInt(routes1.id) === parseInt(routes2.id)) { //hai routes kề nhau có cùng điểm đến
-                                console.log('false 7');
+                                // console.log('false 7');
                                 return false
                             }
                             else {
                                 if (i == length - 2 && routes2.arriveTime === null) { //routes2 là route cuối, có leaveTime là null
-                                    console.log('false 8');
+                                    // console.log('false 8');
                                     return false;
                                 }
                                 else {

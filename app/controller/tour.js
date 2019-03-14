@@ -4,6 +4,7 @@ var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const helper_add_link = require('../helper/add_full_link');
 const helper_validate = require('../helper/validate');
+const fs = require('fs');
 
 const asyncForEach = async (arr, cb) => {
     arr.forEach(cb);
@@ -30,34 +31,67 @@ const sort_route = async (routes) => {
 
 exports.createWithRoutes = async (req, res) => {
     try {
-        const new_tour = {
-            name: req.body.name,
-            policy: req.body.policy,
-            description: req.body.description,
-            detail: req.body.detail,
+        if (typeof req.body.name !== 'undefined' && typeof req.body.policy !== 'undefined'
+            && typeof req.body.description !== 'undefined' && typeof req.body.detail !== 'undefined'
+            && typeof req.body.routes !== 'undefined') {
+            console.log(req.body.routes)
+            if (Array.isArray(req.body.routes)) {
+                if (typeof req.file !== 'undefined') {
+                    fs.writeFile('public/assets/images/tourFeatured/' + req.file.originalname, req.file.buffer, async (err) => {
+                        if (err) {
+                            return res.status(400).json({ msg: err })
+                        }
+                        const new_tour = {
+                            name: req.body.name,
+                            policy: req.body.policy,
+                            description: req.body.description,
+                            detail: req.body.detail,
+                            featured_img: req.file.originalname
+                        }
+                        if (process.env.NODE_ENV === 'development')
+                            new_tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + new_tour.featured_img;
+                        else
+                            new_tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + new_tour.featured_img;
+                        const list_routes = req.body.routes;
+                        await sort_route(list_routes);
+                        if (!(await helper_validate.check_list_routes(list_routes))) {
+                            return res.status(400).json({ msg: 'List routes is invalid' })
+                        }
+                        tours.create(new_tour).then(async _tour => {
+                            await asyncForEach(list_routes, async (route) => {
+                                // await db.routes.create({
+                                //     arrive_time: route.arriveTime,
+                                //     leave_time: route.leaveTime,
+                                //     day: route.day,
+                                //     fk_location: route.id,
+                                //     fk_tour: _tour.id,
+                                //     fk_transport: route.idTransport
+                                // })
+                                var _route = await db.routes.findByPk(route.id);
+                                _route.fk_tour = _tour.id;
+                                await _route.save();
+
+                            })
+                            return res.status(200).json(_tour)
+                        }).catch(err => {
+                            return res.status(400).json({ msg: err })
+                        })
+                    })
+                }
+                else {
+                    return res.status(400).json({ msg: 'Missing featured image of tour' })
+                }
+            }
+            else {
+                return res.status(400).json({ msg: 'Param is invalid' })
+            }
         }
-        const list_routes = req.body.routes;
-        await sort_route(list_routes);
-        if (!(await helper_validate.check_list_routes(list_routes))) {
-            return res.status(400).json({ msg: 'List routes is invalid' })
+        else {
+            return res.status(400).json({ msg: 'Param is invalid' })
         }
-        tours.create(new_tour).then(async _tour => {
-            await asyncForEach(list_routes, async (route) => {
-                await db.routes.create({
-                    arrive_time: route.arriveTime,
-                    leave_time: route.leaveTime,
-                    day: route.day,
-                    fk_location: route.id,
-                    fk_tour: _tour.id,
-                    fk_transport: route.idTransport
-                })
-            })
-            return res.status(200).json(_tour)
-        }).catch(err => {
-            return res.status(400).json({ msg: err })
-        })
     }
     catch (err) {
+        console.log('mom catch ...')
         return res.status(400).json({ msg: err })
     }
 }

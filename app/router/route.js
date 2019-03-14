@@ -11,4 +11,6 @@ router.get('/getAll', routes.getAll);
 
 router.get('/getById/:id', routes.getById);
 
+router.get('/getAllNotHaveTour', routes.getAllNotHaveTour)
+
 module.exports = router

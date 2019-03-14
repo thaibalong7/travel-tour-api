@@ -192,6 +192,34 @@ exports.getAll = (req, res) => {
     })
 }
 
+exports.getAllNotHaveTour = (req, res) => {
+    const query = {
+        where: {
+            fk_tour: null
+        },
+        attributes: { exclude: ['fk_location', 'fk_transport'] },
+        include: [{
+            model: db.locations,
+            // attributes: { exclude: ['fk_type'] },
+            // include: [{
+            //     model: db.types
+            // }]
+        },
+        {
+            model: db.transports
+        }],
+        order: [['fk_tour', 'ASC'], ['day', 'ASC'], ['arrive_time', 'ASC']]
+    }
+    routes.findAll(query).then(async _routes => {
+        await helper_add_link.addLinkLocationFeaturedImgOfListRoutes(_routes, req.headers.host);
+        res.status(200).json({
+            data: _routes,
+        })
+    }).catch(err => {
+        res.status(400).json({ msg: err })
+    })
+}
+
 exports.getById = (req, res) => {
     const id = req.params.id;
     if (typeof id === 'undefined' || isNaN(id))
