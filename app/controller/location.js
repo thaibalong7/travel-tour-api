@@ -16,9 +16,21 @@ const addLinkLocationFeaturedImgOfListLocationsAndAddTour = async (_locations, h
                     where: {
                         fk_location: item.id
                     }
+                },
+                {
+                    attributes: ['id', 'start_date'],
+                    model: db.tour_turns,
+                    where: {
+                        start_date: {
+                            [Op.gt]: new Date()
+                        }
+                    }
                 }]
         }
         item.dataValues.tours = await db.tours.findAll(query);
+        for (let i = 0; i < item.dataValues.tours.length; i++) {
+            item.dataValues.tours[i].dataValues.tour_turns = item.dataValues.tours[i].dataValues.tour_turns[0];
+        }
         await helper_add_link.addLinkToursFeaturedImgOfListTours(item.dataValues.tours, host);
         if (item.featured_img === null) {
             // location.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';

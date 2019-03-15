@@ -10,7 +10,7 @@ router.post('/createWithRoutes', upload.single('image'), tours.createWithRoutes)
 
 router.post('/create', tours.create);
 
-router.post('/updateWithRoutes', tours.updateWithRoutes);
+router.post('/updateWithRoutes', upload.single('image'), tours.updateWithRoutes);
 
 router.get('/getById/:id', tours.getById);
 

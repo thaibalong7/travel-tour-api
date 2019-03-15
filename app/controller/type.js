@@ -2,11 +2,15 @@ const db = require('../models');
 const types = db.types;
 
 exports.create = (req, res) => {
-    types.create(req.body).then(_type => {
-        res.status(200).json(_type)
-    }).catch(err => {
-        res.status(400).json({ msg: err })
-    })
+    if (typeof req.body.name !== 'undefined' && typeof req.body.marker !== 'undefined') {
+        types.create(req.body).then(_type => {
+            res.status(200).json(_type)
+        }).catch(err => {
+            res.status(400).json({ msg: err })
+        })
+    } else {
+        res.status(400).json({ msg: 'Param is invalid' })
+    }
 }
 
 exports.update = (req, res) => {

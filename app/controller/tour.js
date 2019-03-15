@@ -17,7 +17,7 @@ const sort_route = async (routes) => {
     }
     const compare2Route = (route1, route2) => {
         if (parseInt(route1.day) === parseInt(route2.day)) {
-            if (sync_check_time(route1.arriveTime, route2.arriveTime)) {
+            if (sync_check_time(route1.arrive_time, route2.arrive_time)) {
                 //route1 nhỏ hơn route2
                 return -1;
             }
@@ -36,7 +36,9 @@ exports.createWithRoutes = async (req, res) => {
             && typeof req.body.routes !== 'undefined') {
             if (Array.isArray(JSON.parse(req.body.routes))) {
                 if (typeof req.file !== 'undefined') {
-                    fs.writeFile('public/assets/images/tourFeatured/' + req.file.originalname, req.file.buffer, async (err) => {
+                    var date = new Date();
+                    var timestamp = date.getTime();
+                    fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', req.file.buffer, async (err) => {
                         if (err) {
                             return res.status(400).json({ msg: err })
                         }
@@ -45,7 +47,7 @@ exports.createWithRoutes = async (req, res) => {
                             policy: req.body.policy,
                             description: req.body.description,
                             detail: req.body.detail,
-                            featured_img: req.file.originalname
+                            featured_img: timestamp + '.jpg'
                         }
                         const list_routes = JSON.parse(req.body.routes);
                         await sort_route(list_routes);
@@ -138,32 +140,63 @@ exports.updateWithRoutes = async (req, res) => {
                     _tour.description = req.body.description;
                 if (typeof req.body.detail !== 'undefined')
                     _tour.detail = req.body.detail;
-
                 if (typeof req.body.routes !== 'undefined') {
-                    const list_routes = req.body.routes;
+                    const list_routes = JSON.parse(req.body.routes);
                     await sort_route(list_routes);
                     if (!(await helper_validate.check_list_routes(list_routes))) {
                         return res.status(400).json({ msg: 'List routes is invalid' })
                     }
                     else {
-                        await db.routes.destroy({ where: { fk_tour: _tour.id } });
+                        //thay đổi routes
+                        await db.routes.update(
+                            { fk_tour: null },
+                            { where: { fk_tour: _tour.id } }
+                        )
                         await asyncForEach(list_routes, async (route) => {
-                            await db.routes.create({
-                                arrive_time: route.arriveTime,
-                                leave_time: route.leaveTime,
-                                day: route.day,
-                                fk_location: route.id,
-                                fk_tour: _tour.id,
-                                fk_transport: route.idTransport
-                            })
+                            var _route = await db.routes.findByPk(route.id);
+                            _route.fk_tour = _tour.id;
+                            await _route.save();
                         })
                     }
                 }
-                await _tour.save();
-                return res.status(200).json({
-                    msg: 'Update successful',
-                    data: _tour
-                });
+                if (typeof req.file !== 'undefined') {
+                    var date = new Date();
+                    var timestamp = date.getTime();
+                    fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', req.file.buffer, async (err) => {
+                        if (err) {
+                            return res.status(400).json({ msg: err })
+                        }
+                        if (_tour.featured_img !== null) {
+                            //xóa file cũ đi
+                            fs.unlink('public/assets/images/tourFeatured/' + _tour.featured_img, (err) => {
+                                if (err) {
+                                    console.error(err)
+                                }
+                            });
+                        }
+                        _tour.featured_img = timestamp + '.jpg';
+                        await _tour.save();
+                        if (process.env.NODE_ENV === 'development')
+                            _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                        else
+                            _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                        return res.status(200).json({
+                            msg: 'Update successful',
+                            data: _tour
+                        });
+                    })
+                }
+                else {
+                    await _tour.save();
+                    if (process.env.NODE_ENV === 'development')
+                        _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                    else
+                        _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                    return res.status(200).json({
+                        msg: 'Update successful',
+                        data: _tour
+                    });
+                }
             }
         }
     }
