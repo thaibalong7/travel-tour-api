@@ -95,7 +95,6 @@ exports.getById = (req, res) => {
             id: id
         },
         include: [{
-            attributes: ['id', 'name'],
             model: db.tours
         }]
     }
