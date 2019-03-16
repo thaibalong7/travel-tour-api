@@ -1,6 +1,13 @@
 const db = require('../models');
 const tour_images = db.tour_images;
 const helper_add_link = require('../helper/add_full_link');
+const fs = require('fs');
+
+const asyncFor = async (arr, cb) => {
+    for (let i = 0; i < arr.length; i++) {
+        await cb(arr[i], i);
+    }
+}
 
 exports.getByTour = async (req, res) => {
     try {
@@ -33,4 +40,48 @@ exports.getByTour = async (req, res) => {
     catch (err) {
         return res.status(400).json({ msg: err });
     }
+}
+
+exports.createByTour = async (req, res) => {
+    try {
+        const idTour = req.body.idTour
+        if (!isNaN(idTour)) {
+            const check_tour = await db.tours.findByPk(idTour);
+            if (check_tour) {
+                if (typeof req.files !== 'undefined') {
+                    //write file and add in db here
+                    var date = new Date();
+                    var timestamp = date.getTime();
+                    await asyncFor(req.files, async (file, i) => {
+                        const name_image = idTour + '_' + timestamp + '_' + i + '.jpg';
+                        fs.writeFile('public/assets/images/tourImage/' + name_image, file.buffer, async (err) => {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                await tour_images.create({
+                                    name: name_image,
+                                    fk_tour: idTour
+                                })
+                            }
+                        })
+                    })
+                    return res.status(200).json({ msg: 'Create successful' });
+                }
+                else {
+                    return res.status(400).json({ msg: 'Param is invalid' });
+                }
+            }
+            else {
+                return res.status(400).json({ msg: 'Wrong id tour' });
+            }
+        }
+        else {
+            return res.status(400).json({ msg: 'Wrong id tour' });
+        }
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err });
+    }
+
 }

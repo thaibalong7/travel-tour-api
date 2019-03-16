@@ -8,9 +8,9 @@ var config = {
     smtpConfig: {
         host: 'smtp.gmail.com',
         port: 587,
-        secure: false, // use SSL
+        secure: false, // use SSL / true for 465, false for other ports
         auth: {
-            user: "tour.travel.k15@gmail.com",
+            user: "travel.tour.k15@gmail.com",
             pass: "traveltour123456789"
         },
         tls: {
