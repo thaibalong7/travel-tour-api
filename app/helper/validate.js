@@ -53,7 +53,7 @@ const check_2_routes = async (i, routes1, routes2, length) => {
                             // console.log('false 6');
                             return false;
                         } else {
-                            if (parseInt(routes1.id) === parseInt(routes2.id)) { //hai routes kề nhau có cùng điểm đến
+                            if (parseInt(routes1.fk_location) === parseInt(routes2.fk_location)) { //hai routes kề nhau có cùng điểm đến
                                 // console.log('false 7');
                                 return false
                             }
