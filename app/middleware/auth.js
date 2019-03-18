@@ -5,7 +5,7 @@ const users = db.users
 const admins = db.admins
 var publicKEY = fs.readFileSync('./app/middleware/public.key', 'utf8');
 var verifyOptions = {
-    expiresIn: '1d',
+    expiresIn: '30d',
     algorithm: "RS256"
 }
 

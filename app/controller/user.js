@@ -4,12 +4,13 @@ const bcrypt = require('bcrypt-nodejs');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
-const validate_helper = require('../helper/validate')
+const validate_helper = require('../helper/validate');
+// const { sendVerifyEmail, sendForgetPasswordEmail } = require('../helper/send_email');
 // var fs = require('fs');
 // use 'utf8' to get string instead of byte array  (512 bit key)
 var privateKEY = fs.readFileSync('./app/middleware/private.key', 'utf8');
 const signOptions = {
-    expiresIn: '1d',
+    expiresIn: '30d',
     algorithm: "RS256"
 }
 
@@ -346,3 +347,12 @@ exports.updatePassword = async (req, res) => {
         return res.status(400).json({ msg: err })
     }
 }
+
+// exports.testSendEmail = (req, res) => {
+//     const verificationEmail_data = {
+//         token: 'asdasdasdasdasd',
+//         email: 'thaibalong7@gmail.com',
+//         new_password: 'asdasdasdasd'
+//     }
+//     sendForgetPasswordEmail(verificationEmail_data, req, res)
+// }

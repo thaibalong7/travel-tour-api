@@ -39,6 +39,7 @@ module.exports = function (sequelize, Sequelize) {
 
   Tour_Turn.associate = (models) => {
     Tour_Turn.belongsTo(models.tours, { foreignKey: 'fk_tour' })
+    Tour_Turn.hasMany(models.price_passenger, { foreignKey: 'fk_tourturn' })
   }
   return Tour_Turn;
 }

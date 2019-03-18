@@ -29,10 +29,6 @@ module.exports = (sequelize, Sequelize) => {
         passport: {
             type: Sequelize.STRING,
             allowNull: true
-        },
-        type: {
-            type: Sequelize.ENUM('child', 'adult'),
-            defaultValue: 'adult'
         }
     },
         {
@@ -43,6 +39,7 @@ module.exports = (sequelize, Sequelize) => {
         });
         Passenger.associate = (models) => {
             Passenger.belongsTo(models.book_tour_history, {foreignKey: 'fk_book_tour'})
+            Passenger.belongsTo(models.type_passenger, {foreignKey: 'fk_type_passenger'})
           }
     return Passenger;
 }

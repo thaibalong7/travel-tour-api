@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 13, 2019 lúc 02:51 PM
+-- Thời gian đã tạo: Th3 18, 2019 lúc 09:11 AM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -67,20 +67,15 @@ CREATE TABLE IF NOT EXISTS `blacklist_tokens` (
 CREATE TABLE IF NOT EXISTS `book_tour_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `book_time` datetime NOT NULL,
-  `status` enum('booked','paid','cancelled') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'booked',
+  `status` enum('booked','paid','cancelled') COLLATE utf8_unicode_ci DEFAULT 'booked',
   `fk_tour_turn` int(11) DEFAULT NULL,
   `fk_user` int(11) DEFAULT NULL,
+  `fk_payment` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tour_turn` (`fk_tour_turn`),
-  KEY `fk_user` (`fk_user`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Đang đổ dữ liệu cho bảng `book_tour_history`
---
-
-INSERT INTO `book_tour_history` (`id`, `book_time`, `status`, `fk_tour_turn`, `fk_user`) VALUES
-(1, '2019-02-25 11:20:00', 'booked', 1, 1);
+  KEY `fk_user` (`fk_user`),
+  KEY `fk_payment` (`fk_payment`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -98,7 +93,16 @@ CREATE TABLE IF NOT EXISTS `comments` (
   PRIMARY KEY (`id`),
   KEY `fk_tour` (`fk_tour`),
   KEY `fk_user` (`fk_user`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `comments`
+--
+
+INSERT INTO `comments` (`id`, `content`, `createdAt`, `updatedAt`, `fk_tour`, `fk_user`) VALUES
+(1, 'tốt lắm', '2019-03-13 15:48:23', '2019-03-13 15:48:23', 1, 5),
+(2, 'tốt cực tốt lắm', '2019-03-13 15:48:59', '2019-03-13 15:48:59', 1, 5),
+(3, 'tốt cực tốt lắm', '2019-03-13 15:49:54', '2019-03-13 15:49:54', 1, 5);
 
 -- --------------------------------------------------------
 
@@ -226,10 +230,39 @@ CREATE TABLE IF NOT EXISTS `passengers` (
   `sex` enum('male','female','other') COLLATE utf8_unicode_ci DEFAULT NULL,
   `address` text COLLATE utf8_unicode_ci,
   `passport` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `type` enum('child','adult') COLLATE utf8_unicode_ci DEFAULT 'adult',
   `fk_book_tour` int(11) DEFAULT NULL,
+  `fk_type_passenger` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_book_tour` (`fk_book_tour`)
+  KEY `fk_book_tour` (`fk_book_tour`),
+  KEY `fk_type_passenger` (`fk_type_passenger`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `payment_method`
+--
+
+CREATE TABLE IF NOT EXISTS `payment_method` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `price_passenger`
+--
+
+CREATE TABLE IF NOT EXISTS `price_passenger` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `percent` int(11) DEFAULT '100',
+  `fk_tourturn` int(11) DEFAULT NULL,
+  `fk_type_passenger` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tourturn` (`fk_tourturn`),
+  KEY `fk_type_passenger` (`fk_type_passenger`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -289,7 +322,7 @@ CREATE TABLE IF NOT EXISTS `routes` (
   KEY `fk_location` (`fk_location`),
   KEY `fk_tour` (`fk_tour`),
   KEY `fk_transport` (`fk_transport`)
-) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `routes`
@@ -374,7 +407,23 @@ INSERT INTO `routes` (`id`, `arrive_time`, `leave_time`, `day`, `detail`, `title
 (77, '10:00:00', '07:00:00', 9, NULL, NULL, 76, 6, 1),
 (78, '09:00:00', '11:30:00', 10, NULL, NULL, 74, 6, 1),
 (79, '15:00:00', '17:00:00', 10, NULL, NULL, 90, 6, 1),
-(80, '18:00:00', '19:00:00', 10, NULL, NULL, 88, 6, 3);
+(80, '18:00:00', '19:00:00', 10, NULL, NULL, 88, 6, 3),
+(81, '07:00:00', '08:30:00', 1, NULL, NULL, 4, NULL, NULL),
+(82, '09:00:00', '12:00:00', 1, NULL, NULL, 2, NULL, NULL),
+(83, '14:00:00', '01:00:00', 1, NULL, NULL, 14, NULL, NULL),
+(84, '02:00:00', '14:00:00', 2, NULL, NULL, 12, NULL, NULL),
+(85, '05:00:00', '06:00:00', 3, NULL, NULL, 17, NULL, NULL),
+(86, '07:00:00', '21:00:00', 3, NULL, NULL, 14, NULL, NULL),
+(87, '06:00:00', '19:00:00', 4, NULL, NULL, 13, NULL, NULL),
+(88, '08:00:00', NULL, 5, NULL, NULL, 3, NULL, NULL),
+(89, '07:00:00', '08:30:00', 1, NULL, NULL, 4, NULL, NULL),
+(90, '09:00:00', '12:00:00', 1, NULL, NULL, 2, NULL, NULL),
+(91, '14:00:00', '01:00:00', 1, NULL, NULL, 14, NULL, NULL),
+(92, '02:00:00', '14:00:00', 2, NULL, NULL, 12, NULL, NULL),
+(93, '05:00:00', '06:00:00', 3, NULL, NULL, 17, NULL, NULL),
+(94, '07:00:00', '21:00:00', 3, NULL, NULL, 14, NULL, NULL),
+(95, '06:00:00', '19:00:00', 4, NULL, NULL, 13, NULL, NULL),
+(96, '08:00:00', NULL, 5, NULL, NULL, 3, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -390,7 +439,7 @@ CREATE TABLE IF NOT EXISTS `tours` (
   `featured_img` text COLLATE utf8_unicode_ci,
   `policy` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tours`
@@ -498,7 +547,7 @@ CREATE TABLE IF NOT EXISTS `tour_turns` (
   `fk_tour` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tour_turns`
@@ -507,15 +556,17 @@ CREATE TABLE IF NOT EXISTS `tour_turns` (
 INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, `num_max_people`, `price`, `discount`, `fk_tour`) VALUES
 (1, '2019-02-24', '2019-02-24', 1, 15, 100000, 0, 1),
 (2, '2019-03-02', '2019-03-02', 0, 15, 100000, 0, 1),
-(3, '2019-03-02', '2019-03-02', 0, 20, 200000, 0, 2),
+(3, '2019-04-18', '2019-03-18', 0, 20, 200000, 0, 2),
 (4, '2019-03-09', '2019-03-09', 0, 20, 215000, 0, 2),
-(5, '2019-03-04', '2019-03-06', 0, 60, 500000, 0, 3),
+(5, '2019-04-11', '2019-04-11', 0, 60, 500000, 0, 3),
 (6, '2019-03-08', '2019-03-08', 0, 30, 1500000, 0, 4),
 (7, '2019-03-10', '2019-03-15', 0, 50, 1500000, 0, 5),
 (8, '2019-03-04', '2019-03-06', 0, 60, 7500000, 0, 6),
 (13, '2019-04-19', '2019-04-24', 0, 60, 550000, 0, 1),
 (14, '2019-04-24', '2019-05-07', 0, 60, 500000, 0, 2),
-(15, '2019-04-09', '2019-04-09', 0, 62, 600000, 100, 1);
+(15, '2019-04-09', '2019-04-09', 0, 62, 600000, 100, 1),
+(16, '2019-04-01', '2019-04-01', 0, 20, 500000, 5, 4),
+(17, '2019-03-19', '2019-03-19', 0, 20, 500000, 5, 4);
 
 -- --------------------------------------------------------
 
@@ -582,6 +633,18 @@ INSERT INTO `types` (`id`, `name`, `marker`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `type_passenger`
+--
+
+CREATE TABLE IF NOT EXISTS `type_passenger` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `users`
 --
 
@@ -623,7 +686,8 @@ INSERT INTO `users` (`id`, `username`, `fullname`, `password`, `sex`, `birthdate
 --
 ALTER TABLE `book_tour_history`
   ADD CONSTRAINT `book_tour_history_ibfk_1` FOREIGN KEY (`fk_tour_turn`) REFERENCES `tour_turns` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `book_tour_history_ibfk_2` FOREIGN KEY (`fk_user`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `book_tour_history_ibfk_2` FOREIGN KEY (`fk_user`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `book_tour_history_ibfk_3` FOREIGN KEY (`fk_payment`) REFERENCES `payment_method` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `comments`
@@ -642,7 +706,15 @@ ALTER TABLE `locations`
 -- Các ràng buộc cho bảng `passengers`
 --
 ALTER TABLE `passengers`
-  ADD CONSTRAINT `passengers_ibfk_1` FOREIGN KEY (`fk_book_tour`) REFERENCES `book_tour_history` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `passengers_ibfk_1` FOREIGN KEY (`fk_book_tour`) REFERENCES `book_tour_history` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `passengers_ibfk_2` FOREIGN KEY (`fk_type_passenger`) REFERENCES `type_passenger` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `price_passenger`
+--
+ALTER TABLE `price_passenger`
+  ADD CONSTRAINT `price_passenger_ibfk_1` FOREIGN KEY (`fk_tourturn`) REFERENCES `tour_turns` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `price_passenger_ibfk_2` FOREIGN KEY (`fk_type_passenger`) REFERENCES `type_passenger` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `ratings`
