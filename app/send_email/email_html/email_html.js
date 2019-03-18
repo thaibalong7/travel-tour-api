@@ -1,7 +1,7 @@
 
 
 
-const html_verify_email = (verificationMail_data) => {
+const html_verify_email = (linkVerify, linkTeam) => {
     return `<!doctype html>
     <html>
     
@@ -377,7 +377,7 @@ const html_verify_email = (verificationMail_data) => {
                                   <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                     <tbody>
                                       <tr>
-                                        <td> <a href="${verificationMail_data.linkVerify}" target="_blank">Verify</a> </td>
+                                        <td> <a href="${linkVerify}" target="_blank">Verify</a> </td>
                                       </tr>
                                     </tbody>
                                   </table>
@@ -402,7 +402,7 @@ const html_verify_email = (verificationMail_data) => {
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                   <tr>
                     <td class="content-block powered-by">
-                      Powered by <a href="${verificationMail_data.linkTeam}">TourTravelTeam</a>.
+                      Powered by <a href="${linkTeam}">TourTravelTeam</a>.
                     </td>
                   </tr>
                 </table>
@@ -418,7 +418,7 @@ const html_verify_email = (verificationMail_data) => {
     </html>`
 }
 
-const html_forgetPassword_email = (forgetPasswordEmail) => {
+const html_forgetPassword_email = (new_password, linkTeam) => {
     return `<!doctype html>
     <html>
     
@@ -787,7 +787,7 @@ const html_forgetPassword_email = (forgetPasswordEmail) => {
                         <td>
                           <p>Hi there,</p>
                           <p>It seems that you have just sent a request to reset your password.</p>                      
-                          <p>This is your new password: ${forgetPasswordEmail.new_password}</p>
+                          <p>This is your new password: <b>${new_password}</b></p>
                         </td>
                       </tr>
                     </table>
@@ -803,7 +803,7 @@ const html_forgetPassword_email = (forgetPasswordEmail) => {
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                   <tr>
                     <td class="content-block powered-by">
-                      Powered by <a href="${forgetPasswordEmail.linkTeam}">TourTravelTeam</a>.
+                      Powered by <a href="${linkTeam}">TourTravelTeam</a>.
                     </td>
                   </tr>
                 </table>

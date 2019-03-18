@@ -5,8 +5,8 @@ const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const validate_helper = require('../helper/validate');
-// const { sendVerifyEmail, sendForgetPasswordEmail } = require('../helper/send_email');
-// var fs = require('fs');
+const { sendVerifyEmail, sendForgetPasswordEmail } = require('../helper/send_email');
+const crypto = require('crypto');
 // use 'utf8' to get string instead of byte array  (512 bit key)
 var privateKEY = fs.readFileSync('./app/middleware/private.key', 'utf8');
 const signOptions = {
@@ -24,29 +24,45 @@ exports.register = async (req, res) => {
                     where: db.sequelize.literal(`email='${req.body.email}' OR phone='${req.body.phone}'`)
                 })
                 if (!checkUser) {
+                    //user chưa tồn tại
                     req.body.password = bcrypt.hashSync(req.body.password, null, null).toString();
                     req.body.type = 'local';
+                    req.body.isActive = false;
                     users.create(req.body).then(async _user => {
-                        const token = jwt.sign(
-                            {
-                                fullname: _user.fullname,
-                                id: _user.id,
-                                phone: _user.phone,
-                                email: _user.email
-                            },
-                            privateKEY,
-                            signOptions
-                        )
-                        _user = await users.findByPk(_user.id);
-                        const user = _.omit(_user.dataValues, 'password');
-                        return res.status(200).json({
-                            msg: 'Register successful',
-                            token: token,
-                            profile: user
+                        // const token = jwt.sign(
+                        //     {
+                        //         fullname: _user.fullname,
+                        //         id: _user.id,
+                        //         phone: _user.phone,
+                        //         email: _user.email
+                        //     },
+                        //     privateKEY,
+                        //     signOptions
+                        // )
+                        // _user = await users.findByPk(_user.id);
+                        // const user = _.omit(_user.dataValues, 'password');
+                        // return res.status(200).json({
+                        //     msg: 'Register successful',
+                        //     token: token,
+                        //     profile: user
+                        // })
+                        const token_validate = crypto.randomBytes(20).toString('hex');
+                        db.verification_token.create({
+                            user_id: _user.id,
+                            token: token_validate
+                        }).then((_verification_token) => {
+                            sendVerifyEmail(token_validate, _user.email, req, res)
+                        }).catch(err => {
+                            return res.status(400).json({ msg: err })
                         })
+                    }).catch(err => {
+                        return res.status(400).json({ msg: err })
                     })
                 }
                 else {
+                    if (checkUser.isActive === false) {
+                        return res.status(400).json({ msg: 'Email or phone number already exists but not verify' })
+                    }
                     return res.status(400).json({ msg: 'Email or phone number already exists' })
                 }
             }
@@ -60,6 +76,51 @@ exports.register = async (req, res) => {
     }
     catch (err) {
         return res.status(400).json({ msg: err })
+    }
+}
+
+exports.verify = (req, res) => {
+    try {
+        const token = req.query.sign;
+        if (typeof token === 'undefined') {
+            return res.status(400).json({ msg: err })
+        }
+        else {
+            db.verification_token.findOne({ where: { token: token } }).then(async _verification_token => {
+                if (_verification_token) {
+                    _user = await users.findByPk(_verification_token.user_id);
+                    if (_user) {
+                        _user.isActive = true;
+                        await _user.save();
+                        await _verification_token.destroy();
+                        if (process.env.NODE_ENV === 'development') {
+                            res.redirect('http://localhost:3000/login')
+                        }
+                        else {
+                            res.redirect('https://localhost:3000/login')
+                        }
+                        // return res.status(200).json({ msg: 'Verification successful' })
+                    }
+                    else {
+                        //user_id k đúng
+                        // res.render('alert', { msg: 'Verification failed' });
+                        return res.status(400).json({ msg: 'Verification failed' })
+                    }
+                }
+                else {
+                    //token k còn trong db
+                    // res.render('alert', { msg: 'Token expired' });
+                    return res.status(400).json({ msg: 'Token expired' })
+                }
+            }).catch(err => {
+                // res.render('alert', { msg: 'Verification failed' });
+                return res.status(400).json({ msg: err })
+            })
+        }
+    }
+    catch (err) {
+        res.render('alert', { msg: 'Verification failed' });
+        // return res.status(400).json({ msg: err })
     }
 }
 
@@ -92,32 +153,37 @@ exports.login = async (req, res) => {
         users.findOne(query).then(async _user => {
             if (!_user)
                 return res.status(400).json({ msg: 'Username is not exists' })
-            if (bcrypt.compareSync(req.body.password, _user.password)) {
-                const token = jwt.sign(
-                    {
-                        fullname: _user.fullname,
-                        id: _user.id,
-                        phone: _user.phone,
-                        email: _user.email
-                    },
-                    privateKEY,
-                    signOptions
-                )
-                const user = _.omit(_user.dataValues, 'password');
-                if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1) {
-                    if (process.env.NODE_ENV === 'development')
-                        user.avatar = 'http://' + req.headers.host + '/assets/avatar/' + user.avatar;
-                    else
-                        user.avatar = 'https://' + req.headers.host + '/assets/avatar/' + user.avatar;
+            if (_user.isActive === true) {
+                if (bcrypt.compareSync(req.body.password, _user.password)) {
+                    const token = jwt.sign(
+                        {
+                            fullname: _user.fullname,
+                            id: _user.id,
+                            phone: _user.phone,
+                            email: _user.email
+                        },
+                        privateKEY,
+                        signOptions
+                    )
+                    const user = _.omit(_user.dataValues, 'password');
+                    if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1) {
+                        if (process.env.NODE_ENV === 'development')
+                            user.avatar = 'http://' + req.headers.host + '/assets/avatar/' + user.avatar;
+                        else
+                            user.avatar = 'https://' + req.headers.host + '/assets/avatar/' + user.avatar;
+                    }
+                    return res.status(200).json({
+                        msg: 'Auth successful',
+                        token: token,
+                        profile: user
+                    })
                 }
-                return res.status(200).json({
-                    msg: 'Auth successful',
-                    token: token,
-                    profile: user
-                })
+                else
+                    return res.status(400).json({ msg: 'Password is not corect' })
             }
-            else
-                return res.status(400).json({ msg: 'Password is not corect' })
+            else {
+                return res.status(400).json({ msg: 'This email does not verify' })
+            }
         }).catch(err => {
             return res.status(400).json({ msg: err })
         })
@@ -348,6 +414,25 @@ exports.updatePassword = async (req, res) => {
     catch (err) {
         return res.status(400).json({ msg: err })
     }
+}
+
+exports.forgetPassword = async (req, res) => {
+    try {
+        const password = Math.floor((Math.random() * 1000000000) + 10000000);
+        const hashPassword = bcrypt.hashSync(password, null, null).toString();
+        const _user = await users.findOne({ where: { email: req.body.email } });
+        if (_user) {
+            _user.password = hashPassword;
+            sendForgetPasswordEmail(password, _user, req, res);
+        }
+        else {
+            return res.status(400).json({ msg: "Email is not exists" })
+        }
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err })
+    }
+
 }
 
 exports.testSendEmail = (req, res) => {
