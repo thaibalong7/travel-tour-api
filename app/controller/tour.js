@@ -10,6 +10,12 @@ const asyncForEach = async (arr, cb) => {
     arr.forEach(cb);
 }
 
+const asyncFor = async (arr, cb) => {
+    for (let i = 0; i < arr.length; i++) {
+        if (await cb(arr[i], i) === true) { break }
+    }
+}
+
 const sort_route = async (routes) => {
     //true nếu arrive nhỏ hơn leave
     const sync_check_time = (arrive, leave) => {
@@ -27,6 +33,100 @@ const sort_route = async (routes) => {
         return (parseInt(route1.day) > parseInt(route2.day) ? 1 : -1)
     }
     routes.sort(compare2Route);
+}
+
+exports.createWithRoutesAndListImage = async (req, res) => {
+    try {
+        if (typeof req.body.name !== 'undefined' && typeof req.body.policy !== 'undefined'
+            && typeof req.body.description !== 'undefined' && typeof req.body.detail !== 'undefined'
+            && typeof req.body.routes !== 'undefined') {
+            if (Array.isArray(JSON.parse(req.body.routes))) {
+                if (typeof req.files !== 'undefined') {
+                    var date = new Date();
+                    var timestamp = date.getTime();
+                    let featured_image = null;
+                    let list_image = req.files;
+                    await asyncFor(list_image, async (element, i) => {
+                        if (element.fieldname === 'feature_image') {
+                            featured_image = element;
+                            list_image.splice(i, 1);
+                            return true;
+                        }
+                        return false;
+                    })
+                    if (featured_image) {
+                        fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', featured_image.buffer, async (err) => {
+                            if (err) {
+                                return res.status(400).json({ msg: err })
+                            }
+                            const new_tour = {
+                                name: req.body.name,
+                                policy: req.body.policy,
+                                description: req.body.description,
+                                detail: req.body.detail,
+                                featured_img: timestamp + '.jpg'
+                            }
+                            const list_routes = JSON.parse(req.body.routes);
+                            await sort_route(list_routes);
+                            if (!(await helper_validate.check_list_routes(list_routes))) {
+                                return res.status(400).json({ msg: 'List routes is invalid' })
+                            }
+                            tours.create(new_tour).then(async _tour => {
+                                //change routes
+                                await asyncForEach(list_routes, async (route) => {
+                                    var _route = await db.routes.findByPk(route.id);
+                                    _route.fk_tour = _tour.id;
+                                    await _route.save();
+                                })
+
+                                //write file list image
+                                await asyncFor(list_image, async (file, i) => {
+                                    if (file.fieldname === 'list_image') {
+                                        const name_image = _tour.id + '_' + timestamp + '_' + i + '.jpg';
+                                        fs.writeFile('public/assets/images/tourImage/' + name_image, file.buffer, async (err) => {
+                                            if (err) {
+                                                console.log(err);
+                                            }
+                                            else {
+                                                await db.tour_images.create({
+                                                    name: name_image,
+                                                    fk_tour: _tour.id
+                                                })
+                                            }
+                                            return false;
+                                        })
+                                    }
+                                })
+
+                                if (process.env.NODE_ENV === 'development')
+                                    _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                                else
+                                    _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                                return res.status(200).json(_tour)
+                            }).catch(err => {
+                                return res.status(400).json({ msg: err })
+                            })
+                        })
+                    }
+                    else {
+                        return res.status(400).json({ msg: 'Missing featured image of tour' })
+                    }
+                }
+                else {
+                    return res.status(400).json({ msg: 'Missing image of tour' })
+                }
+            }
+            else {
+                return res.status(400).json({ msg: 'Param is invalid' })
+            }
+        }
+        else {
+            return res.status(400).json({ msg: 'Param is invalid' })
+        }
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err })
+    }
 }
 
 exports.createWithRoutes = async (req, res) => {

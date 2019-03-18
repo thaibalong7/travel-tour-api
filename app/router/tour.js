@@ -8,6 +8,8 @@ router.get('/getAll', tours.getAllTour);
 
 router.post('/createWithRoutes', upload.single('image'), tours.createWithRoutes);
 
+router.post('/createWithRoutesAndListImage', upload.any('feature_image', 'list_image'), tours.createWithRoutesAndListImage)
+
 router.post('/create', tours.create);
 
 router.post('/updateWithRoutes', upload.single('image'), tours.updateWithRoutes);
