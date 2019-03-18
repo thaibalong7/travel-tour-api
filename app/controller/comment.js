@@ -39,7 +39,7 @@ exports.getByTour = (req, res) => {
     if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
     else per_page = req.query.per_page
     if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
-        res.status(405).json({ msg: 'Params is invalid' })
+        res.status(400).json({ msg: 'Params is invalid' })
     }
     else {
         page = parseInt(page);

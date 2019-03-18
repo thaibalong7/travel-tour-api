@@ -86,12 +86,12 @@ exports.login = async (req, res) => {
             }
             else {
                 //err params
-                return res.status(405).json({ msg: 'Params is invalid' })
+                return res.status(400).json({ msg: 'Params is invalid' })
             }
         }
         users.findOne(query).then(async _user => {
             if (!_user)
-                return res.status(404).json({ msg: 'Username is not exists' })
+                return res.status(400).json({ msg: 'Username is not exists' })
             if (bcrypt.compareSync(req.body.password, _user.password)) {
                 const token = jwt.sign(
                     {
@@ -117,7 +117,7 @@ exports.login = async (req, res) => {
                 })
             }
             else
-                return res.status(402).json({ msg: 'Password is not corect' })
+                return res.status(400).json({ msg: 'Password is not corect' })
         }).catch(err => {
             return res.status(400).json({ msg: err })
         })
@@ -217,7 +217,7 @@ exports.updateSex = async (req, res) => {
     const _user = req.userData;
     if (typeof req.body.sex === 'undefined') {
         //err params
-        return res.status(405).json({ msg: 'Params is invalid' })
+        return res.status(400).json({ msg: 'Params is invalid' })
     }
     else {
         _user.sex = req.body.sex;
@@ -240,7 +240,7 @@ exports.updateBirthdate = async (req, res) => {
     const _user = req.userData;
     if (typeof req.body.birthdate === 'undefined') {
         //err params
-        return res.status(405).json({ msg: 'Params is invalid' })
+        return res.status(400).json({ msg: 'Params is invalid' })
     }
     else {
         _user.birthdate = req.body.birthdate;
@@ -269,6 +269,8 @@ exports.update = async (req, res) => {
         _user.phone = req.body.phone
     if (typeof req.body.fullname !== 'undefined')
         _user.fullname = req.body.fullname
+    if (typeof req.body.address !== 'undefined')
+        _user.address = req.body.address
     if (typeof req.file !== 'undefined') {
         var date = new Date();
         var timestamp = date.getTime();
@@ -348,11 +350,11 @@ exports.updatePassword = async (req, res) => {
     }
 }
 
-// exports.testSendEmail = (req, res) => {
-//     const verificationEmail_data = {
-//         token: 'asdasdasdasdasd',
-//         email: 'thaibalong7@gmail.com',
-//         new_password: 'asdasdasdasd'
-//     }
-//     sendForgetPasswordEmail(verificationEmail_data, req, res)
-// }
+exports.testSendEmail = (req, res) => {
+    const verificationEmail_data = {
+        token: 'asdasdasdasdasd',
+        email: 'thaibalong7@gmail.com',
+        new_password: 'asdasdasdasd'
+    }
+    sendForgetPasswordEmail(verificationEmail_data, req, res)
+}

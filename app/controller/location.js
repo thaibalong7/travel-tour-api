@@ -98,7 +98,7 @@ exports.getAllLocation = (req, res) => {
     if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
     else per_page = req.query.per_page
     if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
-        res.status(405).json({ msg: 'Params is invalid' })
+        res.status(400).json({ msg: 'Params is invalid' })
     }
     else {
         page = parseInt(page);
@@ -182,7 +182,7 @@ exports.getLocationNearMe = async (req, res) => {
         typeof lng === 'undefined' ||
         isNaN(lat) || isNaN(lng) ||
         (typeof distance !== 'undefined' && isNaN(distance))) {
-        return res.status(405).json({ msg: "Params is invalid" })
+        return res.status(400).json({ msg: "Params is invalid" })
     }
     if (typeof distance === 'undefined') distance = distance_default;
     lat = parseFloat(lat);
@@ -252,7 +252,7 @@ exports.getById = (req, res) => {
 exports.getLocationByType = async (req, res) => {
     const type = req.params.typeId;
     if (typeof type === 'undefined' || isNaN(type))
-        return res.status(405).json({ msg: 'Params is invalid' });
+        return res.status(400).json({ msg: 'Params is invalid' });
     const query = {
         where: { fk_type: type },
         attributes: { exclude: ['fk_type'] },
@@ -284,7 +284,7 @@ exports.getByTypeNearMe = async (req, res) => {
         typeof lng === 'undefined' ||
         isNaN(lat) || isNaN(lng) ||
         (typeof distance !== 'undefined' && isNaN(distance))) {
-        return res.status(405).json({ msg: "Params is invalid" })
+        return res.status(400).json({ msg: "Params is invalid" })
     }
     if (typeof distance === 'undefined') distance = distance_default;
     if (typeof type === 'undefined') type = type_default
