@@ -435,6 +435,18 @@ exports.forgetPassword = async (req, res) => {
 
 }
 
+exports.getAllUser = async (req, res) => {
+    try {
+        const _users = await users.findAll();
+        return res.status(200).json({
+            data: _users
+        })
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err })
+    }
+}
+
 exports.testSendEmail = (req, res) => {
     const verificationEmail_data = {
         token: 'asdasdasdasdasd',

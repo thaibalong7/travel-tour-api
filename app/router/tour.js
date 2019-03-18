@@ -2,17 +2,18 @@ var router = require('express').Router();
 const tours = require('../controller/tour');
 let multer = require('multer');
 let upload = multer(); //setting the default folder for multer
+const { middlewareAuthUser, middlewareAuthAdmin } = require('../middleware/auth')
 
 // example call api: http://localhost:5000/tour/getAll?per_page=10&page=2
 router.get('/getAll', tours.getAllTour);
 
-router.post('/createWithRoutes', upload.single('image'), tours.createWithRoutes);
+router.post('/createWithRoutes', upload.single('image'), tours.createWithRoutes); //middlewareAuthAdmin
 
-router.post('/createWithRoutesAndListImage', upload.any('feature_image', 'list_image'), tours.createWithRoutesAndListImage)
+router.post('/createWithRoutesAndListImage', upload.any('feature_image', 'list_image'), tours.createWithRoutesAndListImage) //middlewareAuthAdmin
 
-router.post('/create', tours.create);
+router.post('/create', tours.create); //middlewareAuthAdmin
 
-router.post('/updateWithRoutes', upload.single('image'), tours.updateWithRoutes);
+router.post('/updateWithRoutes', upload.single('image'), tours.updateWithRoutes); //middlewareAuthAdmin
 
 router.get('/getById/:id', tours.getById);
 
