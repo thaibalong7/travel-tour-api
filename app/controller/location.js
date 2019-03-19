@@ -4,6 +4,7 @@ var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const helper_add_link = require('../helper/add_full_link');
 const link_img = require('../config/config').link_img
+const fs = require('fs');
 
 const addLinkLocationFeaturedImgOfListLocationsAndAddTour = async (_locations, host) => {
     return _locations.map(async item => {
@@ -45,12 +46,69 @@ const addLinkLocationFeaturedImgOfListLocationsAndAddTour = async (_locations, h
     })
 }
 
-exports.create = (req, res) => {
-    locations.create(req.body).then(_location => {
-        res.status(200).json(_location)
-    }).catch(err => {
-        res.status(400).json({ msg: err })
-    })
+const arr_status = ['active', 'inactive']
+
+exports.create = async (req, res) => {
+    try {
+        if (typeof req.body.latitude !== 'undefined' && typeof req.body.longitude !== 'undefined'
+            && typeof req.body.name !== 'undefined' && typeof req.body.address !== 'undefined'
+            && typeof req.body.description !== 'undefined' && typeof req.body.fk_type !== 'undefined') {
+            if (typeof req.file !== 'undefined') {
+                if (!isNaN(req.body.latitude) && !isNaN(req.body.longitude)) {
+                    if (!isNaN(req.body.fk_type)) {
+                        const check_type = await db.types.findByPk(parseInt(req.body.fk_type));
+                        if (check_type) {
+                            var date = new Date();
+                            var timestamp = date.getTime();
+                            fs.writeFile('public/assets/images/locationFeatured/' + timestamp + '.jpg', req.file.buffer, async (err) => {
+                                if (err) {
+                                    return res.status(400).json({ msg: err })
+                                }
+                                var new_location = {
+                                    latitude: req.body.latitude,
+                                    longitude: req.body.longitude,
+                                    name: req.body.name,
+                                    address: req.body.address,
+                                    description: req.body.description,
+                                    featured_img: timestamp + '.jpg',
+                                    fk_type: req.body.fk_type
+                                }
+                                locations.create(new_location).then(_location => {
+                                    if (_location.featured_img !== null) {
+                                        if (process.env.NODE_ENV === 'development')
+                                            _location.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+                                        else
+                                            _location.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+                                    }
+                                    res.status(200).json(_location)
+                                }).catch(err => {
+                                    return res.status(400).json({ msg: err });
+                                })
+                            })
+                        }
+                        else {
+                            return res.status(400).json({ msg: 'Wrong location type' })
+                        }
+                    }
+                    else {
+                        return res.status(400).json({ msg: 'Wrong location type' })
+                    }
+                }
+                else {
+                    return res.status(400).json({ msg: 'Wrong lat lng' })
+                }
+            }
+            else {
+                return res.status(400).json({ msg: 'Missing featured image' })
+            }
+        }
+        else {
+            return res.status(400).json({ msg: 'Param is invalid' })
+        }
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err })
+    }
 }
 
 exports.updateWithoutFeaturedImg = (req, res) => {
@@ -65,6 +123,99 @@ exports.updateWithoutFeaturedImg = (req, res) => {
     }
     catch (err) {
         res.status(400).json({ msg: err })
+    }
+}
+
+exports.update = async (req, res) => {
+    try {
+        const idLocation = req.body.id;
+        if (typeof idLocation !== 'undefined') {
+            const _location = await locations.findByPk(idLocation);
+            if (_location) {
+                if (typeof req.body.name !== 'undefined')
+                    _location.name = req.body.name;
+                if (typeof req.body.latitude !== 'undefined') {
+                    if (!isNaN(req.body.latitude))
+                        _location.latitude = req.body.latitude;
+                    else
+                        return res.status(400).json({ msg: 'Wrong latitude' })
+                }
+                if (typeof req.body.longitude !== 'undefined') {
+                    if (!isNaN(req.body.longitude))
+                        _location.longitude = req.body.longitude;
+                    else
+                        return res.status(400).json({ msg: 'Wrong longitude' })
+                }
+                if (typeof req.body.address !== 'undefined')
+                    _location.address = req.body.address;
+                if (typeof req.body.fk_type !== 'undefined') {
+                    if (!isNaN(req.body.fk_type)) {
+                        const check_type = await db.types.findByPk(parseInt(req.body.fk_type));
+                        if (check_type)
+                            _location.fk_type = req.body.fk_type;
+                        else return res.status(400).json({ msg: 'Wrong location type' })
+                    }
+                    else return res.status(400).json({ msg: 'Wrong location type' })
+                }
+                if (typeof req.body.description !== 'undefined')
+                    _location.description = req.body.description;
+                if (typeof req.body.status !== 'undefined') {
+                    if (arr_status.indexOf(req.body.status) !== -1)
+                        _location.status = req.body.status;
+                    else
+                        return res.status(400).json({ msg: 'Wrong status' })
+                }
+
+                if (typeof req.file !== 'undefined') {
+                    var date = new Date();
+                    var timestamp = date.getTime();
+                    fs.writeFile('public/assets/images/locationFeatured/' + timestamp + '.jpg', req.file.buffer, async (err) => {
+                        if (err) {
+                            return res.status(400).json({ msg: err })
+                        }
+                        if (_location.featured_img !== null) {
+                            fs.unlink('public/assets/images/locationFeatured/' + _location.featured_img, (err) => {
+                                if (err) {
+                                    console.error(err)
+                                }
+                            });
+                        }
+                        _location.featured_img = timestamp + '.jpg';
+                        await _location.save();
+                        if (process.env.NODE_ENV === 'development')
+                            _location.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+                        else
+                            _location.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+                        return res.status(200).json({
+                            msg: 'Update successful',
+                            data: _location
+                        })
+                    })
+                }
+                else {
+                    await _location.save();
+                    if (_location.featured_img !== null) {
+                        if (process.env.NODE_ENV === 'development')
+                            _location.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+                        else
+                            _location.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+                    }
+                    return res.status(200).json({
+                        msg: 'Update successful',
+                        data: _location
+                    })
+                }
+            }
+            else {
+                return res.status(400).json({ msg: 'Wrong id location' })
+            }
+        }
+        else {
+            return res.status(400).json({ msg: 'Wrong id location' })
+        }
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err })
     }
 }
 
