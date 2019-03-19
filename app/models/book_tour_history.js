@@ -12,6 +12,16 @@ module.exports = function (sequelize, Sequelize) {
         status: {
             type: Sequelize.ENUM('booked', 'paid', 'cancelled'),
             defaultValue: 'booked'
+        },
+        num_passenger: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
+        total_pay: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            defaultValue: 0
         }
     },
         {
@@ -22,9 +32,9 @@ module.exports = function (sequelize, Sequelize) {
         });
     Book_Tour_History.associate = (models) => {
         Book_Tour_History.belongsTo(models.tour_turns, { foreignKey: 'fk_tour_turn' })
-        Book_Tour_History.belongsTo(models.users, { foreignKey: 'fk_user' })
+        Book_Tour_History.belongsTo(models.book_tour_contact_info, { foreignKey: 'fk_contact_info' })
         Book_Tour_History.belongsTo(models.payment_method, { foreignKey: 'fk_payment' })
-        Book_Tour_History.hasMany(models.passengers, {foreignKey: 'fk_book_tour'})
+        Book_Tour_History.hasMany(models.passengers, { foreignKey: 'fk_book_tour' })
     }
     return Book_Tour_History;
 }

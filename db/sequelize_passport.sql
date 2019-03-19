@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 19, 2019 lúc 04:44 PM
+-- Thời gian đã tạo: Th3 19, 2019 lúc 06:01 PM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -61,6 +61,23 @@ CREATE TABLE IF NOT EXISTS `blacklist_tokens` (
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `book_tour_contact_info`
+--
+
+CREATE TABLE IF NOT EXISTS `book_tour_contact_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `fullname` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address` text COLLATE utf8_unicode_ci,
+  `fk_user` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_user` (`fk_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `book_tour_history`
 --
 
@@ -68,12 +85,14 @@ CREATE TABLE IF NOT EXISTS `book_tour_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `book_time` datetime NOT NULL,
   `status` enum('booked','paid','cancelled') COLLATE utf8_unicode_ci DEFAULT 'booked',
+  `num_passenger` int(11) NOT NULL DEFAULT '0',
+  `total_pay` int(11) NOT NULL DEFAULT '0',
+  `fk_contact_info` int(11) DEFAULT NULL,
   `fk_tour_turn` int(11) DEFAULT NULL,
-  `fk_user` int(11) DEFAULT NULL,
   `fk_payment` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `fk_contact_info` (`fk_contact_info`),
   KEY `fk_tour_turn` (`fk_tour_turn`),
-  KEY `fk_user` (`fk_user`),
   KEY `fk_payment` (`fk_payment`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -255,7 +274,7 @@ CREATE TABLE IF NOT EXISTS `payment_method` (
 --
 
 INSERT INTO `payment_method` (`id`, `name`) VALUES
-(1, 'COD'),
+(1, 'Incash'),
 (2, 'Bank');
 
 -- --------------------------------------------------------
@@ -272,7 +291,43 @@ CREATE TABLE IF NOT EXISTS `price_passenger` (
   PRIMARY KEY (`id`),
   KEY `fk_tourturn` (`fk_tourturn`),
   KEY `fk_type_passenger` (`fk_type_passenger`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `price_passenger`
+--
+
+INSERT INTO `price_passenger` (`id`, `percent`, `fk_tourturn`, `fk_type_passenger`) VALUES
+(1, 100, 1, 1),
+(2, 50, 1, 2),
+(3, 99, 2, 1),
+(4, 60, 2, 2),
+(5, 100, 3, 1),
+(6, 55, 3, 2),
+(7, 100, 4, 1),
+(8, 45, 4, 2),
+(9, 99, 5, 1),
+(10, 50, 5, 2),
+(11, 100, 6, 1),
+(12, 30, 6, 2),
+(13, 97, 7, 1),
+(14, 45, 7, 2),
+(15, 100, 8, 1),
+(16, 45, 8, 2),
+(17, 100, 13, 1),
+(18, 50, 13, 2),
+(19, 100, 14, 1),
+(20, 53, 14, 2),
+(21, 100, 15, 1),
+(22, 50, 15, 2),
+(23, 100, 16, 1),
+(24, 40, 16, 2),
+(25, 100, 19, 1),
+(26, 40, 19, 2),
+(27, 99, 17, 1),
+(28, 50, 17, 2),
+(29, 100, 18, 1),
+(30, 50, 18, 2);
 
 -- --------------------------------------------------------
 
@@ -655,7 +710,15 @@ CREATE TABLE IF NOT EXISTS `type_passenger` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `type_passenger`
+--
+
+INSERT INTO `type_passenger` (`id`, `name`) VALUES
+(1, 'adults'),
+(2, 'children');
 
 -- --------------------------------------------------------
 
@@ -716,11 +779,17 @@ CREATE TABLE IF NOT EXISTS `verification_token` (
 --
 
 --
+-- Các ràng buộc cho bảng `book_tour_contact_info`
+--
+ALTER TABLE `book_tour_contact_info`
+  ADD CONSTRAINT `book_tour_contact_info_ibfk_1` FOREIGN KEY (`fk_user`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
 -- Các ràng buộc cho bảng `book_tour_history`
 --
 ALTER TABLE `book_tour_history`
-  ADD CONSTRAINT `book_tour_history_ibfk_1` FOREIGN KEY (`fk_tour_turn`) REFERENCES `tour_turns` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `book_tour_history_ibfk_2` FOREIGN KEY (`fk_user`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `book_tour_history_ibfk_1` FOREIGN KEY (`fk_contact_info`) REFERENCES `book_tour_contact_info` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `book_tour_history_ibfk_2` FOREIGN KEY (`fk_tour_turn`) REFERENCES `tour_turns` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `book_tour_history_ibfk_3` FOREIGN KEY (`fk_payment`) REFERENCES `payment_method` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
