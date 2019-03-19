@@ -322,7 +322,10 @@ exports.getAllTour = (req, res) => {
         const query = {
             include: [{
                 attributes: { exclude: ['fk_tour'] },
-                model: db.tour_turns
+                model: db.tour_turns,
+                where: {
+                    status: 'public',
+                }
             }],
             limit: per_page,
             offset: (page - 1) * per_page
@@ -355,7 +358,7 @@ exports.getAllWithoutPagination = (req, res) => {
             attributes: ['id', 'name'],
             include: [{
                 model: db.tour_turns,
-
+                //admin dùng nên k cần fillter status
             }],
             // order: [[db.tour_turns, 'start_date', 'DESC']]
         }
@@ -446,6 +449,7 @@ exports.getByLocation = (req, res) => {
                     attributes: { exclude: ['fk_tour'] },
                     model: db.tour_turns,
                     where: {
+                        status: 'public',
                         start_date: {
                             [Op.gt]: new Date()
                         }
@@ -553,7 +557,10 @@ exports.searchByName = (req, res) => {
                 },
                 include: [{
                     attributes: { exclude: ['fk_tour'] },
-                    model: db.tour_turns
+                    model: db.tour_turns,
+                    where: {
+                        status: 'public',
+                    }
                 }],
             }
             tours.findAndCountAll(query).then(async _tours => {
@@ -605,7 +612,10 @@ exports.searchByPrice = (req, res) => {
                 },
                 include: [{
                     attributes: { exclude: ['fk_tour'] },
-                    model: db.tour_turns
+                    model: db.tour_turns,
+                    where: {
+                        status: 'public',
+                    }
                 }],
             }
             tours.findAndCountAll(query).then(async _tours => {

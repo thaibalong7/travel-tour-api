@@ -22,6 +22,7 @@ const addLinkLocationFeaturedImgOfListLocationsAndAddTour = async (_locations, h
                     attributes: ['id', 'start_date'],
                     model: db.tour_turns,
                     where: {
+                        status: 'public',
                         start_date: {
                             [Op.gt]: new Date()
                         }

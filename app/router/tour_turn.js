@@ -10,7 +10,7 @@ router.post('/create', tour_turns.create); //middlewareAuthAdmin
 router.get('/getById/:id', tour_turns.getById)
 
 //example call api: http://localhost:5000/tour_turn/getAllWithoutPagination
-router.get('/getAllWithoutPagination', tour_turns.getAllWithoutPagination);
+router.get('/getAllWithoutPagination', tour_turns.getAllWithoutPagination); //middlewareAuthAdmin
 
 //example call api: http://localhost:5000/tour_turn/getAll?page=1&per_page=4&isUniqueTour=true
 router.get('/getAll', tour_turns.getAll);

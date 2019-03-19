@@ -13,6 +13,8 @@ async function paginate(array, page_size, page_number) {
     return array.slice(page_number * page_size, (page_number + 1) * page_size);
 }
 
+const arr_status = ['private', 'public'];
+
 exports.create = async (req, res) => {
     // {
     //     start_date,
@@ -20,12 +22,14 @@ exports.create = async (req, res) => {
     //     num_max_people,
     //     discount,
     //     idTour,
-    //     price
+    //     price,
+    //     status
     // }
     try {
         if (typeof req.body.num_max_people !== 'undefined' || typeof req.body.discount !== 'undefined'
             || typeof req.body.start_date !== 'undefined' || typeof req.body.end_date !== 'undefined'
-            || typeof req.body.idTour !== 'undefined' || typeof req.body.price !== 'undefined') {
+            || typeof req.body.idTour !== 'undefined' || typeof req.body.price !== 'undefined'
+            || typeof req.body.status !== 'undefined') {
             if (isNaN(req.body.num_max_people) || isNaN(req.body.discount) || isNaN(req.body.price)) {
                 return res.status(400).json({ msg: 'Params is invalid' })
             }
@@ -33,13 +37,16 @@ exports.create = async (req, res) => {
                 return res.status(400).json({ msg: 'Wrong discount' })
             if (parseInt(req.body.price) <= 0)
                 return res.status(400).json({ msg: 'Wrong price' })
+            if (arr_status.indexOf(req.body.status) === -1)
+                return res.status(400).json({ msg: 'Wrong status' })
             const new_tour_turn = {
                 fk_tour: req.body.idTour,
                 start_date: new Date(req.body.start_date),
                 end_date: new Date(req.body.end_date),
                 num_max_people: parseInt(req.body.num_max_people),
                 discount: parseFloat(req.body.discount),
-                price: parseInt(req.body.price)
+                price: parseInt(req.body.price),
+                status: req.body.status
             }
             if (new_tour_turn.start_date > new_tour_turn.end_date) {
                 return res.status(400).json({ msg: 'Start time must be less than the end time' })
@@ -73,7 +80,8 @@ exports.getByTour = (req, res) => {
     }
     const query = {
         where: {
-            fk_tour: idTour
+            fk_tour: idTour,
+            status: 'public'
         },
         order: [['start_date', 'DESC']]
     }
@@ -223,7 +231,8 @@ exports.update = async (req, res) => {
     //     num_max_people,
     //     discount,
     //     price,
-    //     idTour 
+    //     idTour,
+    //     status 
     // }
     try {
         if (typeof req.body.id === 'undefined' || isNaN(req.body.id)) {
@@ -252,6 +261,11 @@ exports.update = async (req, res) => {
                 if (parseInt(req.body.price) > 0)
                     _tour_turn.price = parseInt(req.body.price);
                 else return res.status(400).json({ msg: 'Wrong price' })
+            }
+            if (typeof req.body.status !== 'undefined') {
+                if (arr_status.indexOf(req.body.status) !== -1)
+                    _tour_turn.status = req.body.status
+                else return res.status(400).json({ msg: 'Wrong status' })
             }
             if (typeof req.body.start_date !== 'undefined') { //có start_date
                 if (new Date() >= new Date(_tour_turn.start_date)) //ngày hiện tại lớn hơn ngày đi - tức tour đang hoặc đã đi

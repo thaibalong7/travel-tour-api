@@ -28,6 +28,9 @@ module.exports = function (sequelize, Sequelize) {
     discount: {
       type: Sequelize.INTEGER,
       defaultValue: 0
+    },
+    status: {
+      type: Sequelize.ENUM('public', 'private')
     }
   },
     {

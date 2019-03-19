@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 18, 2019 lúc 04:51 PM
+-- Thời gian đã tạo: Th3 19, 2019 lúc 04:44 PM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `locations` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `fk_type` (`fk_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `locations`
@@ -214,7 +214,8 @@ INSERT INTO `locations` (`id`, `latitude`, `longitude`, `name`, `address`, `desc
 (87, 16.397741, 107.700752, 'Sân bay quốc tế Phú Bài', 'Khu 8, Hương Thủy, Thừa Thiên Huế, Việt Nam', 'Sân bay quốc tế Phú Bài là sân bay phục vụ thành phố Huế tỉnh Thừa Thiên Huế, Việt Nam. Mã của sân bay Phú Bài trong hệ thống du lịch IATA là HUI. Năm 2011, sân bay này đã phục vụ 5800 lượt chuyến bay hạ và cất cánh với tổng số 780.000 lượt khách. Năm 2015, sân bay này phục vụ 1,3 triệu lượt khách', '57.png', 'active', 20),
 (88, 21.218639, 105.804001, 'Sân bay quốc tế Nội Bài', 'Phú Minh, Sóc Sơn, Hà Nội, Việt Nam', 'Sân bay quốc tế Nội Bài, tên giao dịch chính thức: Cảng hàng không quốc tế Nội Bài, tiếng Anh: Noi Bai International Airport là cảng hàng không quốc tế phục vụ chính cho Thủ đô Hà Nội và vùng lân cận, thay thế cho sân bay Gia Lâm cũ.', '58.png', 'active', 20),
 (89, 20.950932, 107.035912, 'Royal HaLong Hotel', 'Bãi Cháy, Thành phố Hạ Long, Quảng Ninh, Việt Nam', 'Royal Hạ Long Hotel là khách sạn hướng biển đầu tiên, cũng như duy nhất tại khu vực đường bao biển Hòn Gai, trung tâm văn hóa, tài chính, chính trị và mua sắm của thành phố Hạ Long. \r\nRoyal Hạ Long Hotel là khách sạn hướng biển đầu tiên, cũng như duy nhất tại khu vực đường bao biển Hòn Gai, trung tâm văn hóa, tài chính, chính trị và mua sắm của thành phố Hạ Long. ', '59.png', 'active', 14),
-(90, 21.036758, 105.834656, 'Lăng Chủ Tịch Hồ Chí Minh', '2 Hùng Vương, Điện Bàn, Ba Đình, Hà Nội 100000, Việt Nam', 'Thi hài của Chủ tịch Hồ Chí Minh, lãnh tụ nước Việt Nam, được đặt tại lăng mộ và khu di tích lịch sử này.', '60.png', 'active', 15);
+(90, 21.036758, 105.834656, 'Lăng Chủ Tịch Hồ Chí Minh', '2 Hùng Vương, Điện Bàn, Ba Đình, Hà Nội 100000, Việt Nam', 'Thi hài của Chủ tịch Hồ Chí Minh, lãnh tụ nước Việt Nam, được đặt tại lăng mộ và khu di tích lịch sử này.', '60.png', 'active', 15),
+(96, 10.807045, 106.697914, 'Một nơi nào đó ', 'Quên mẹ rồi iiii', 'Một nơi đầy nắng và mưa iii', '1552984253141.jpg', 'active', 15);
 
 -- --------------------------------------------------------
 
@@ -555,29 +556,32 @@ CREATE TABLE IF NOT EXISTS `tour_turns` (
   `num_max_people` int(11) NOT NULL,
   `price` int(11) NOT NULL DEFAULT '0',
   `discount` int(11) NOT NULL DEFAULT '0',
+  `status` enum('public','private') COLLATE utf8_unicode_ci NOT NULL,
   `fk_tour` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tour_turns`
 --
 
-INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, `num_max_people`, `price`, `discount`, `fk_tour`) VALUES
-(1, '2019-02-24', '2019-02-24', 1, 15, 100000, 0, 1),
-(2, '2019-03-02', '2019-03-02', 0, 15, 100000, 0, 1),
-(3, '2019-04-18', '2019-03-18', 0, 20, 200000, 0, 2),
-(4, '2019-03-09', '2019-03-09', 0, 20, 215000, 0, 2),
-(5, '2019-04-11', '2019-04-11', 0, 60, 500000, 0, 3),
-(6, '2019-03-08', '2019-03-08', 0, 30, 1500000, 0, 4),
-(7, '2019-03-10', '2019-03-15', 0, 50, 1500000, 0, 5),
-(8, '2019-03-04', '2019-03-06', 0, 60, 7500000, 0, 6),
-(13, '2019-04-19', '2019-04-24', 0, 60, 550000, 0, 1),
-(14, '2019-04-24', '2019-05-07', 0, 60, 500000, 0, 2),
-(15, '2019-04-09', '2019-04-09', 0, 62, 600000, 100, 1),
-(16, '2019-04-01', '2019-04-01', 0, 20, 500000, 5, 4),
-(17, '2019-03-19', '2019-03-19', 0, 20, 500000, 5, 4);
+INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, `num_max_people`, `price`, `discount`, `status`, `fk_tour`) VALUES
+(1, '2019-02-24', '2019-02-24', 1, 15, 100000, 0, 'public', 1),
+(2, '2019-03-02', '2019-03-02', 0, 15, 100000, 0, 'public', 1),
+(3, '2019-04-18', '2019-03-18', 0, 20, 200000, 0, 'public', 2),
+(4, '2019-03-09', '2019-03-09', 0, 20, 215000, 0, 'public', 2),
+(5, '2019-04-11', '2019-04-11', 0, 60, 500000, 0, 'public', 3),
+(6, '2019-03-08', '2019-03-08', 0, 30, 1500000, 0, 'public', 4),
+(7, '2019-03-10', '2019-03-15', 0, 50, 1500000, 0, 'public', 5),
+(8, '2019-03-04', '2019-03-06', 0, 60, 7500000, 0, 'public', 6),
+(13, '2019-04-19', '2019-04-24', 0, 60, 550000, 0, 'public', 1),
+(14, '2019-04-24', '2019-05-07', 0, 60, 500000, 0, 'public', 2),
+(15, '2019-04-09', '2019-04-09', 0, 62, 600000, 100, 'public', 1),
+(16, '2019-04-01', '2019-04-01', 0, 20, 500000, 5, 'public', 4),
+(17, '2019-03-19', '2019-03-19', 0, 20, 500000, 5, 'public', 4),
+(18, '2019-04-06', '2019-04-06', 0, 25, 300000, 0, 'public', 2),
+(19, '2019-04-06', '2019-04-08', 0, 30, 300000, 5, 'private', 4);
 
 -- --------------------------------------------------------
 
