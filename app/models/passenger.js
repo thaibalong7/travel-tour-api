@@ -22,10 +22,6 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.ENUM('male', 'female', 'other'),
             allowNull: true
         },
-        address: {
-            type: Sequelize.TEXT,
-            allowNull: true
-        },
         passport: {
             type: Sequelize.STRING,
             allowNull: true

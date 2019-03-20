@@ -1,4 +1,13 @@
 
+const validateEmail = async (email) => {
+    var Regex = /(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/
+    return Regex.test(email);
+}
+const validatePhoneNumber = async (phone_number) => {
+    var Regex = /^\d{10}$/
+    return Regex.test(phone_number);
+}
+
 const check_time = async (arrive, leave) => {
     return Date.parse('01/01/2011 ' + arrive) < Date.parse('01/01/2011 ' + leave)
 }
@@ -16,8 +25,7 @@ const check_2_routes = async (i, routes1, routes2, length) => {
         return false;
     }
     else {
-        if (routes1.fk_tour !== null || routes2.fk_tour !== null)
-        {
+        if (routes1.fk_tour !== null || routes2.fk_tour !== null) {
             return false;
         }
         if (i === 0 && ((parseInt(routes1.day) !== 1) || routes1.leave_time === null)) { //routes đầu tiên và có day khác 1 hoặc leave_time là null
@@ -91,16 +99,48 @@ const check_list_routes = async (routes) => {
     return result;
 }
 
+const asyncFor_checkPassenger = async (list_passengers, arr_sex, arr_type, cb) => {
+    for (let i = 0; i < list_passengers.length; i++) {
+        if (typeof list_passengers[i].fullname === 'undefined' || typeof list_passengers[i].birthdate === 'undefined'
+            || typeof list_passengers[i].sex === 'undefined' || typeof list_passengers[i].type === 'undefined') {
+            //thiếu dữ liệu cần thiết
+            cb(false);
+            break;
+        }
+        if (typeof list_passengers[i].phone !== 'undefined') { //phone là không bắc buộc
+            if (!await validatePhoneNumber(list_passengers[i].phone)) {
+                //phone k hợp lệ
+                cb(false);
+                break;
+            }
+        }
+        if (arr_sex.indexOf(list_passengers[i].sex) === -1) {
+            //sex không hợp lệ
+            cb(false);
+            break;
+        }
+        if (arr_type.indexOf(list_passengers[i].type) === -1) {
+            //type của passenger không tồn tại trong db
+            cb(false);
+            break;
+        }
+    }
+}
+
+const check_list_passengers = async (list_passengers, arr_sex, arr_type) => {
+    if (list_passengers.length === 0) return false;
+    var check = true;
+    await asyncFor_checkPassenger(list_passengers, arr_sex, arr_type, (result_in_for) => {
+        check = result_in_for;
+    })
+    return check;
+}
+
 module.exports = {
-    validateEmail: async function (email) {
-        var Regex = /(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/
-        return Regex.test(email);
-    },
-    validatePhoneNumber: async function (phone_number) {
-        var Regex = /^\d{10}$/
-        return Regex.test(phone_number);
-    },
+    validateEmail: validateEmail,
+    validatePhoneNumber: validatePhoneNumber,
     check_time: check_time,
     check_2_routes: check_2_routes,
-    check_list_routes: check_list_routes
+    check_list_routes: check_list_routes,
+    check_list_passengers: check_list_passengers
 }
