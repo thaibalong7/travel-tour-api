@@ -92,6 +92,17 @@ exports.getByTour = (req, res) => {
     })
 }
 
+const addPriceOfListPricePassengers = async (_price_passengers, price, discount) => {
+    return _price_passengers.map(price_passenger => {
+        var new_obj = {};
+        new_obj.type = price_passenger.type_passenger.name;
+        new_obj.percent = price_passenger.percent;
+        new_obj.price = parseFloat(parseInt(price_passenger.percent) / 100) * parseInt(price)
+        new_obj.price = new_obj.price - parseInt(new_obj.price * discount);
+        return new_obj
+    })
+}
+
 exports.getById = (req, res) => {
     const id = req.params.id;
     if (typeof id === 'undefined' || isNaN(id)) {
@@ -104,18 +115,29 @@ exports.getById = (req, res) => {
         },
         include: [{
             model: db.tours
-        }]
+        },
+        {
+            attributes: { exclude: ['fk_tourturn', 'fk_type_passenger'] },
+            model: db.price_passenger,
+            include: [{
+                model: db.type_passenger
+            }]
+        }],
     }
-    tour_turns.findOne(query).then(_tour_turns => {
-        if (_tour_turns !== null) {
-            if (_tour_turns.tour.featured_img !== null) {
+    tour_turns.findOne(query).then(async _tour_turns => {
+        const tour_turn = _tour_turns.dataValues;
+        if (tour_turn !== null) {
+            if (tour_turn.tour.featured_img !== null) {
                 if (process.env.NODE_ENV === 'development')
-                    _tour_turns.tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour_turns.tour.featured_img
+                    tour_turn.tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
                 else
-                    _tour_turns.tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour_turns.tour.featured_img
+                    tour_turn.tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
             }
         }
-        res.status(200).json({ data: _tour_turns })
+        tour_turn.discount = parseFloat(tour_turn.discount / 100);
+        const list_price = await addPriceOfListPricePassengers(tour_turn.price_passengers, tour_turn.price, tour_turn.discount);
+        tour_turn.price_passengers = list_price;
+        res.status(200).json({ data: tour_turn })
     }).catch(err => {
         res.status(400).json({ msg: err })
     })
