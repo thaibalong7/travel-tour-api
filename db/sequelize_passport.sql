@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 19, 2019 lúc 06:01 PM
+-- Thời gian đã tạo: Th3 21, 2019 lúc 03:05 PM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -73,7 +73,17 @@ CREATE TABLE IF NOT EXISTS `book_tour_contact_info` (
   `fk_user` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_user` (`fk_user`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `book_tour_contact_info`
+--
+
+INSERT INTO `book_tour_contact_info` (`id`, `email`, `fullname`, `phone`, `address`, `fk_user`) VALUES
+(3, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12),
+(4, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', NULL),
+(5, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', NULL),
+(6, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', NULL);
 
 -- --------------------------------------------------------
 
@@ -94,7 +104,17 @@ CREATE TABLE IF NOT EXISTS `book_tour_history` (
   KEY `fk_contact_info` (`fk_contact_info`),
   KEY `fk_tour_turn` (`fk_tour_turn`),
   KEY `fk_payment` (`fk_payment`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `book_tour_history`
+--
+
+INSERT INTO `book_tour_history` (`id`, `book_time`, `status`, `num_passenger`, `total_pay`, `fk_contact_info`, `fk_tour_turn`, `fk_payment`) VALUES
+(3, '2019-03-20 09:25:08', 'booked', 1, 1000000, 3, 14, 1),
+(4, '2019-03-20 09:25:19', 'booked', 1, 1000000, 4, 14, 1),
+(5, '2019-03-20 09:27:03', 'booked', 2, 1000000, 5, 14, 1),
+(6, '2019-03-20 13:42:47', 'booked', 2, 1000000, 6, 14, 1);
 
 -- --------------------------------------------------------
 
@@ -255,7 +275,19 @@ CREATE TABLE IF NOT EXISTS `passengers` (
   PRIMARY KEY (`id`),
   KEY `fk_book_tour` (`fk_book_tour`),
   KEY `fk_type_passenger` (`fk_type_passenger`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `passengers`
+--
+
+INSERT INTO `passengers` (`id`, `fullname`, `phone`, `birthdate`, `sex`, `address`, `passport`, `fk_book_tour`, `fk_type_passenger`) VALUES
+(3, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', NULL, NULL, 3, 1),
+(4, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', NULL, NULL, 4, 1),
+(5, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', NULL, NULL, 5, 1),
+(6, 'Ngọc Trinh', '0123451489', '1997-04-10', 'female', NULL, NULL, 5, 1),
+(7, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', NULL, '206120720', 6, 1),
+(8, 'Sawa', '0123451489', '1997-09-12', 'female', NULL, NULL, 6, 1);
 
 -- --------------------------------------------------------
 
@@ -274,8 +306,8 @@ CREATE TABLE IF NOT EXISTS `payment_method` (
 --
 
 INSERT INTO `payment_method` (`id`, `name`) VALUES
-(1, 'Incash'),
-(2, 'Bank');
+(1, 'incash'),
+(2, 'bank');
 
 -- --------------------------------------------------------
 
@@ -627,13 +659,13 @@ INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, 
 (3, '2019-04-18', '2019-03-18', 0, 20, 200000, 0, 'public', 2),
 (4, '2019-03-09', '2019-03-09', 0, 20, 215000, 0, 'public', 2),
 (5, '2019-04-11', '2019-04-11', 0, 60, 500000, 0, 'public', 3),
-(6, '2019-03-08', '2019-03-08', 0, 30, 1500000, 0, 'public', 4),
+(6, '2019-03-08', '2019-03-08', 2, 30, 1500000, 0, 'private', 4),
 (7, '2019-03-10', '2019-03-15', 0, 50, 1500000, 0, 'public', 5),
 (8, '2019-03-04', '2019-03-06', 0, 60, 7500000, 0, 'public', 6),
 (13, '2019-04-19', '2019-04-24', 0, 60, 550000, 0, 'public', 1),
-(14, '2019-04-24', '2019-05-07', 0, 60, 500000, 0, 'public', 2),
+(14, '2019-04-24', '2019-05-07', 6, 60, 500000, 0, 'public', 2),
 (15, '2019-04-09', '2019-04-09', 0, 62, 600000, 100, 'public', 1),
-(16, '2019-04-01', '2019-04-01', 0, 20, 500000, 5, 'public', 4),
+(16, '2019-04-01', '2019-04-01', 0, 20, 500000, 3, 'public', 4),
 (17, '2019-03-19', '2019-03-19', 0, 20, 500000, 5, 'public', 4),
 (18, '2019-04-06', '2019-04-06', 0, 25, 300000, 0, 'public', 2),
 (19, '2019-04-06', '2019-04-08', 0, 30, 300000, 5, 'private', 4);

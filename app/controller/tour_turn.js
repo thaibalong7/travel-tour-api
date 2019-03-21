@@ -75,7 +75,7 @@ exports.create = async (req, res) => {
 
 exports.getByTour = (req, res) => {
     const idTour = req.params.idTour;
-    if (typeof idTour === 'undefined' || isNaN(id)) {
+    if (typeof idTour === 'undefined' || isNaN(idTour)) {
         return res.status(400).json({ msg: 'Param is invalid' })
     }
     const query = {
@@ -135,6 +135,46 @@ exports.getById = (req, res) => {
             }
         }
         tour_turn.discount = parseFloat(tour_turn.discount / 100);
+        const list_price = await addPriceOfListPricePassengers(tour_turn.price_passengers, tour_turn.price, tour_turn.discount);
+        tour_turn.price_passengers = list_price;
+        res.status(200).json({ data: tour_turn })
+    }).catch(err => {
+        res.status(400).json({ msg: err })
+    })
+}
+
+
+exports.getById_admin = (req, res) => {
+    const id = req.params.id;
+    if (typeof id === 'undefined' || isNaN(id)) {
+        return res.status(400).json({ msg: 'Param is invalid' })
+    }
+    const query = {
+        attributes: { exclude: ['fk_tour'] },
+        where: {
+            id: id
+        },
+        include: [{
+            model: db.tours
+        },
+        {
+            attributes: { exclude: ['fk_tourturn', 'fk_type_passenger'] },
+            model: db.price_passenger,
+            include: [{
+                model: db.type_passenger
+            }]
+        }],
+    }
+    tour_turns.findOne(query).then(async _tour_turns => {
+        const tour_turn = _tour_turns.dataValues;
+        if (tour_turn !== null) {
+            if (tour_turn.tour.featured_img !== null) {
+                if (process.env.NODE_ENV === 'development')
+                    tour_turn.tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
+                else
+                    tour_turn.tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
+            }
+        }
         const list_price = await addPriceOfListPricePassengers(tour_turn.price_passengers, tour_turn.price, tour_turn.discount);
         tour_turn.price_passengers = list_price;
         res.status(200).json({ data: tour_turn })
