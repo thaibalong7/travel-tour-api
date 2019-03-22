@@ -35,6 +35,51 @@ const sort_route = async (routes) => {
     routes.sort(compare2Route);
 }
 
+const delete_list_image = async (deleted_images, idTour) => {
+    await asyncForEach(deleted_images, async (image) => {
+        const _tour_image = await db.tour_images.findOne({
+            where: {
+                id: image.id,
+                fk_tour: idTour
+            }
+        });
+        if (_tour_image) {
+            //ảnh này khớp điều kiện, xóa đi
+            fs.unlink('public/assets/images/tourImage/' + _tour_image.name, (err) => {
+                if (err) {
+                    console.error(err)
+                }
+            });
+            console.log('delete tour image: ', _tour_image.name)
+            _tour_image.destroy();
+        }
+    })
+}
+
+const add_new_images_tour = async (new_images, idTour, timestamp) => {
+    await asyncForEach(new_images, (image, index) => {
+        if (image.fieldname === 'new_images') {
+            const name_image = idTour + '_' + timestamp + '_' + index + '.jpg';
+            fs.writeFile('public/assets/images/tourImage/' + name_image, image.buffer, async (err) => {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    console.log('add new tour image: ', name_image)
+                    await db.tour_images.create({
+                        name: name_image,
+                        fk_tour: idTour
+                    })
+                }
+            })
+        }
+    })
+}
+
+const asyncWriteFile = async (path, buffer, cb) => {
+    fs.writeFile(path, buffer, cb)
+}
+
 exports.createWithRoutesAndListImage = async (req, res) => {
     try {
         if (typeof req.body.name !== 'undefined' && typeof req.body.policy !== 'undefined'
@@ -57,7 +102,7 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                     if (featured_image) {
                         fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', featured_image.buffer, async (err) => {
                             if (err) {
-                                return res.status(400).json({ msg: err })
+                                return res.status(400).json({ msg: err.toString() })
                             }
                             const new_tour = {
                                 name: req.body.name,
@@ -104,7 +149,7 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                                     _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
                                 return res.status(200).json(_tour)
                             }).catch(err => {
-                                return res.status(400).json({ msg: err })
+                                return res.status(400).json({ msg: err.toString() })
                             })
                         })
                     }
@@ -125,7 +170,7 @@ exports.createWithRoutesAndListImage = async (req, res) => {
         }
     }
     catch (err) {
-        return res.status(400).json({ msg: err })
+        return res.status(400).json({ msg: err.toString() })
     }
 }
 
@@ -140,7 +185,7 @@ exports.createWithRoutes = async (req, res) => {
                     var timestamp = date.getTime();
                     fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', req.file.buffer, async (err) => {
                         if (err) {
-                            return res.status(400).json({ msg: err })
+                            return res.status(400).json({ msg: err.toString() })
                         }
                         const new_tour = {
                             name: req.body.name,
@@ -174,7 +219,7 @@ exports.createWithRoutes = async (req, res) => {
                                 _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
                             return res.status(200).json(_tour)
                         }).catch(err => {
-                            return res.status(400).json({ msg: err })
+                            return res.status(400).json({ msg: err.toString() })
                         })
                     })
                 }
@@ -191,7 +236,7 @@ exports.createWithRoutes = async (req, res) => {
         }
     }
     catch (err) {
-        return res.status(400).json({ msg: err })
+        return res.status(400).json({ msg: err.toString() })
     }
 }
 
@@ -208,7 +253,7 @@ exports.create = async (req, res) => {
             tours.create(new_tour).then(async _tour => {
                 return res.status(200).json(_tour)
             }).catch(err => {
-                return res.status(400).json({ msg: err })
+                return res.status(400).json({ msg: err.toString() })
             })
         }
         else {
@@ -216,7 +261,7 @@ exports.create = async (req, res) => {
         }
     }
     catch (err) {
-        return res.status(400).json({ msg: err })
+        return res.status(400).json({ msg: err.toString() })
     }
 }
 
@@ -264,7 +309,7 @@ exports.updateWithRoutes = async (req, res) => {
                     var timestamp = date.getTime();
                     fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', req.file.buffer, async (err) => {
                         if (err) {
-                            return res.status(400).json({ msg: err })
+                            return res.status(400).json({ msg: err.toString() })
                         }
                         if (_tour.featured_img !== null) {
                             //xóa file cũ đi
@@ -301,7 +346,134 @@ exports.updateWithRoutes = async (req, res) => {
         }
     }
     catch (err) {
-        return res.status(400).json({ msg: err })
+        return res.status(400).json({ msg: err.toString() })
+    }
+}
+
+exports.updateWithRoutesAndListImage = async (req, res) => {
+    try {
+        if (typeof req.body.id === 'undefined' || isNaN(req.body.id)) {
+            return res.status(400).json({ msg: 'Param is invalid' })
+        }
+        else {
+            const _tour = await tours.findByPk(req.body.id);
+            if (!_tour) {
+                //k tồn tại tour này
+                return res.status(400).json({ msg: 'Wrong id' })
+            }
+            else {
+                if (typeof req.body.name !== 'undefined')
+                    _tour.name = req.body.name;
+                if (typeof req.body.policy !== 'undefined')
+                    _tour.policy = req.body.policy;
+                if (typeof req.body.description !== 'undefined')
+                    _tour.description = req.body.description;
+                if (typeof req.body.detail !== 'undefined')
+                    _tour.detail = req.body.detail;
+                if (typeof req.body.routes !== 'undefined') {
+                    const list_routes = JSON.parse(req.body.routes);
+                    await sort_route(list_routes);
+                    if (!(await helper_validate.check_list_routes(list_routes))) {
+                        return res.status(400).json({ msg: 'List routes is invalid' })
+                    }
+                    else {
+                        //thay đổi routes
+                        await db.routes.update(
+                            { fk_tour: null },
+                            { where: { fk_tour: _tour.id } }
+                        )
+                        await asyncForEach(list_routes, async (route) => {
+                            var _route = await db.routes.findByPk(route.id);
+                            _route.fk_tour = _tour.id;
+                            await _route.save();
+                        })
+                    }
+                }
+                if (typeof req.body.deleted_images !== 'undefined') {
+                    //xóa file image cũ in here
+                    // [
+                    //     {
+                    //         id: 64
+                    //     }
+                    // ]
+                    const list_delete_images = JSON.parse(req.body.deleted_images)
+                    if (Array.isArray(list_delete_images)) {
+                        //thỏa là array
+                        // await delete_list_image(list_delete_images, _tour.id) //deleted_images là arr id, mỗi id check có phải của tour này k (query trong db ra rồi check), nếu phải thì xóa file đó đi
+                        await delete_list_image(list_delete_images, _tour.id)
+                    }
+                    else {
+                        return res.status(400).json({ msg: 'Wrong list deleted image' })
+                    }
+                }
+                if (typeof req.files !== 'undefined') { //nếu có gởi file lên
+                    var date = new Date();
+                    var timestamp = date.getTime();
+
+                    let featured_image = null;
+                    let list_image = req.files;
+
+                    await asyncFor(list_image, async (element, i) => {
+                        if (element.fieldname === 'featured_image') {
+                            featured_image = element;
+                            list_image.splice(i, 1); //tách file có fieldname là feature_image ra
+                            return true;
+                        }
+                        return false;
+                    }) //list_image chỉ còn lại file có fieldname khác feature_image (new_images)
+                    if (featured_image) { //nếu có featured_image
+                        await asyncWriteFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', featured_image.buffer, async (err) => {
+                            if (err) {
+                                console.log(err)
+                                throw err;
+                            }
+                            if (_tour.featured_img !== null) {
+                                //xóa file cũ đi
+                                if (fs.existsSync('public/assets/images/tourFeatured/' + _tour.featured_img)) {
+                                    //file exists
+                                    fs.unlink('public/assets/images/tourFeatured/' + _tour.featured_img, (err) => {
+                                        if (err) {
+                                            console.error(err)
+                                        }
+                                    });
+                                }
+                                else {
+                                    console.log('update tour: featured image file ' + _tour.featured_img + ' not exists')
+                                }
+                            }
+                        })
+                    }
+                    //thêm new image in here
+                    _tour.featured_img = timestamp + '.jpg';
+                    await add_new_images_tour(list_image, _tour.id, timestamp);
+                    await _tour.save();
+                    const result_tour = await tours.findByPk(req.body.id);
+                    if (process.env.NODE_ENV === 'development')
+                        result_tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + result_tour.featured_img;
+                    else
+                        result_tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _toresult_tourur.featured_img;
+                    return res.status(200).json({
+                        msg: 'Update successful',
+                        data: result_tour
+                    });
+                }
+                else {
+                    await _tour.save();
+                    if (process.env.NODE_ENV === 'development')
+                        _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                    else
+                        _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                    return res.status(200).json({
+                        msg: 'Update successful',
+                        data: _tour
+                    });
+                }
+            }
+        }
+    }
+    catch (err) {
+        console.log('end err', err)
+        return res.status(400).json({ msg: err.toString() })
     }
 }
 
@@ -528,7 +700,7 @@ exports.getByLocation = (req, res) => {
         }
     }
     catch (err) {
-        return res.status(400).json({ msg: err })
+        return res.status(400).json({ msg: err.toString() })
     }
 }
 
@@ -584,7 +756,7 @@ exports.searchByName = (req, res) => {
         }
     }
     catch (err) {
-        return res.status(400).json({ msg: err })
+        return res.status(400).json({ msg: err.toString() })
     }
 }
 
@@ -639,6 +811,6 @@ exports.searchByPrice = (req, res) => {
         }
     }
     catch (err) {
-        return res.status(400).json({ msg: err })
+        return res.status(400).json({ msg: err.toString() })
     }
 }
