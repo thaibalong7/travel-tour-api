@@ -15,7 +15,7 @@ const asyncMap = async (arr, cb) => {
 
 const asyncFor = async (arr, cb) => {
     for (let i = 0; i < arr.length; i++) {
-        await cb(arr[i]);
+        await cb(arr[i], i);
     }
 }
 
@@ -68,14 +68,6 @@ const book_tour = async (req, res, _user) => {
             if (isNaN(req.body.idTour_Turn)) { //id tour turn mà đếch phải số
                 return res.status(400).json({ msg: 'Wrong id tour turn' });
             }
-            const _tour_turn = await db.tour_turns.findByPk(req.body.idTour_Turn);
-            if (_tour_turn) {
-                if (_tour_turn.status === 'private' || new Date(_tour_turn.start_date) <= new Date()) //tour turn là private hoặc đã đi rồi
-                    return res.status(400).json({ msg: 'Wrong tour turn' });
-            }
-            else { //id tour turn truyền vào không có trong db
-                return res.status(400).json({ msg: 'Wrong tour turn' });
-            }
             if (!Array.isArray(req.body.passengers)) //list passengers k phải là mảng
             {
                 return res.status(400).json({ msg: 'Wrong list passenger' });
@@ -89,9 +81,21 @@ const book_tour = async (req, res, _user) => {
             if (!await validate_helper.check_list_passengers(req.body.passengers, arr_sex, arr_type)) { //list passenger k vượt qua được hàm test tính hợp lệ
                 return res.status(400).json({ msg: 'Wrong list passenger' });
             }
+            const _tour_turn = await db.tour_turns.findByPk(req.body.idTour_Turn);
+            if (_tour_turn) {
+                if (_tour_turn.status === 'private' || new Date(_tour_turn.start_date) <= new Date()) //tour turn là private hoặc đã đi rồi
+                    return res.status(400).json({ msg: 'Wrong tour turn' });
+
+                //check thêm có còn chỗ để book hay không
+                if (parseInt(_tour_turn.num_current_people) + req.body.passengers.length > parseInt(_tour_turn.num_max_people))
+                    return res.status(400).json({ msg: "This tour is full" });
+            }
+            else { //id tour turn truyền vào không có trong db
+                return res.status(400).json({ msg: 'Wrong tour turn' });
+            }
 
             //pass hết các kiểm tra hợp lệ
-            if (req.body.payment === 'Incash') {
+            if (req.body.payment === 'incash') {
 
                 var new_contact_info = {
                     email: req.body.email,
@@ -150,7 +154,7 @@ const book_tour = async (req, res, _user) => {
                 })
             }
             else {
-                //phương thức thanh toán khác ngoài Incash
+                //phương thức thanh toán khác ngoài incash
                 return res.status(400).json({ msg: 'This payment method has not been applied' });
             }
         }
@@ -167,7 +171,7 @@ const book_tour = async (req, res, _user) => {
 exports.book_tour = async (req, res) => {
     try {
         //book new tour
-        if (typeof req.headers.authorization !== 'undefined') {
+        if (req.headers.authorization !== 'undefined') {
             const token = req.headers.authorization;
             var decode;
             try {
@@ -193,6 +197,146 @@ exports.book_tour = async (req, res) => {
         else {
             //k có user
             book_tour(req, res, null);
+        }
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err.toString() });
+    }
+}
+
+exports.getHistoryBookTourByUser = (req, res) => {
+    try {
+        const _user = req.userData;
+        const page_default = 1;
+        const per_page_default = 10;
+        var page, per_page;
+        if (typeof req.query.page === 'undefined') page = page_default;
+        else page = req.query.page
+        if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
+        else per_page = req.query.per_page
+        if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
+            return res.status(400).json({ msg: 'Params is invalid' })
+        }
+        else {
+            page = parseInt(page);
+            per_page = parseInt(per_page);
+            const query = {
+                attributes: { exclude: ['fk_contact_info'] },
+                include: [{
+                    model: db.book_tour_contact_info,
+                    where: {
+                        fk_user: _user.id
+                    }
+                }],
+                limit: per_page,
+                offset: (page - 1) * per_page
+            }
+            db.book_tour_history.findAndCountAll(query).then(_book_tour_history => {
+                var next_page = page + 1;
+                //Kiểm tra còn dữ liệu không
+                if ((parseInt(_book_tour_history.rows.length) + (next_page - 2) * per_page) === parseInt(_book_tour_history.count))
+                    next_page = -1;
+                //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
+                if ((parseInt(_book_tour_history.rows.length) < per_page))
+                    next_page = -1;
+                if (parseInt(_book_tour_history.rows.length) === 0)
+                    next_page = -1;
+                return res.status(200).json({
+                    itemCount: _book_tour_history.rows.length, //số lượng record được trả về
+                    data: _book_tour_history.rows,
+                    next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+                })
+            })
+        }
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err.toString() });
+    }
+}
+
+exports.getHistoryBookTourById = (req, res) => {
+    try {
+        const idBook_tour = req.params.id;
+        var is_info_tour = (req.query.tour == 'true');
+        if (!isNaN(idBook_tour)) {
+            var query = {
+                attributes: { exclude: ['fk_contact_info', 'fk_payment'] },
+                where: {
+                    id: idBook_tour
+                },
+                include: [{
+                    model: db.book_tour_contact_info
+                },
+                {
+                    attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                    model: db.passengers,
+                    include: [{
+                        model: db.type_passenger
+                    }]
+                },
+                {
+                    model: db.payment_method
+                }
+                ]
+            }
+            db.book_tour_history.findOne(query).then(async _book_tour_history => {
+                if (_book_tour_history) {
+                    const tour_turn = await db.tour_turns.findOne({
+                        where: {
+                            id: _book_tour_history.fk_tour_turn
+                        },
+                        attributes: { exclude: ['fk_tour'] },
+                        include: [{
+                            model: db.tours
+                        }]
+                    })
+                    const _types = await db.type_passenger.findAll({
+                        include: [{
+                            attributes: { exclude: ['fk_tour_turn'] },
+                            model: db.price_passenger,
+                            where: {
+                                fk_tourturn: _book_tour_history.fk_tour_turn
+                            }
+                        }]
+                    });
+                    const type_passenger_detail = [];
+                    await asyncFor(_types, async (type, i) => {
+                        const list_passenger = await db.passengers.findAll({ //get num of type passenger
+                            where: {
+                                fk_book_tour: idBook_tour,
+                                fk_type_passenger: type.id
+                            }
+                        })
+                        var price_of_type = parseFloat(parseInt(type.price_passengers[0].percent) / 100) * parseInt(tour_turn.price)
+                        price_of_type = price_of_type - parseInt(price_of_type * parseFloat(tour_turn.discount / 100))
+                        type_passenger_detail[i] = {
+                            type: type.name,
+                            num_passenger: list_passenger.length,
+                            price: price_of_type
+                        }
+                    })
+                    if (is_info_tour) { //nếu lấy thêm thông tin tour turn nữa
+                        if (tour_turn.tour.featured_img !== null) {
+                            if (process.env.NODE_ENV === 'development')
+                                tour_turn.tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
+                            else
+                                tour_turn.tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
+                        }
+                        _book_tour_history.dataValues.tour_turn = tour_turn
+                    }
+                    _book_tour_history.dataValues.type_passenger_detail = type_passenger_detail
+                    return res.status(200).json({
+                        data: _book_tour_history
+                    })
+                }
+                else {
+                    return res.status(400).json({ msg: 'Wrong id' })
+                }
+            })
+
+        }
+        else {
+            return res.status(400).json({ msg: 'Wrong id' })
         }
     }
     catch (err) {

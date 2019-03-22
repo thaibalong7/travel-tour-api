@@ -107,7 +107,7 @@ const asyncFor_checkPassenger = async (list_passengers, arr_sex, arr_type, cb) =
             cb(false);
             break;
         }
-        if (typeof list_passengers[i].phone !== 'undefined') { //phone là không bắc buộc
+        if (list_passengers[i].phone) { //phone là không bắc buộc
             if (!await validatePhoneNumber(list_passengers[i].phone)) {
                 //phone k hợp lệ
                 cb(false);
