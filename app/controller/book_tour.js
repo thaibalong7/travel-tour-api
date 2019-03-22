@@ -130,9 +130,9 @@ const book_tour = async (req, res, _user) => {
                                 fk_book_tour: _book_tour.id,
                                 fk_type_passenger: type.id
                             }
-                            if (typeof passenger.phone !== 'undefined') //k bắt buộc
+                            if (passenger.phone) //k bắt buộc
                                 new_passenger.phone = passenger.phone
-                            if (typeof passenger.passport !== 'undefined') //k bắt buộc
+                            if (passenger.passport) //k bắt buộc
                                 new_passenger.passport = passenger.passport
                             await db.passengers.create(new_passenger);
                         })
@@ -267,13 +267,13 @@ exports.getHistoryBookTourById = (req, res) => {
                 include: [{
                     model: db.book_tour_contact_info
                 },
-                {
-                    attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
-                    model: db.passengers,
-                    include: [{
-                        model: db.type_passenger
-                    }]
-                },
+                // {
+                //     attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                //     model: db.passengers,
+                //     include: [{
+                //         model: db.type_passenger
+                //     }]
+                // },
                 {
                     model: db.payment_method
                 }
@@ -315,6 +315,7 @@ exports.getHistoryBookTourById = (req, res) => {
                             price: price_of_type
                         }
                     })
+                    tour_turn.discount = parseFloat(tour_turn.discount / 100);
                     if (is_info_tour) { //nếu lấy thêm thông tin tour turn nữa
                         if (tour_turn.tour.featured_img !== null) {
                             if (process.env.NODE_ENV === 'development')
@@ -341,5 +342,60 @@ exports.getHistoryBookTourById = (req, res) => {
     }
     catch (err) {
         return res.status(400).json({ msg: err.toString() });
+    }
+}
+
+
+exports.getPassengerInBookTourHistory = (req, res) => {
+    try {
+        const idBook_tour = req.params.id;
+        const page_default = 1;
+        const per_page_default = 10;
+        var page, per_page;
+        if (typeof req.query.page === 'undefined') page = page_default;
+        else page = req.query.page
+        if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
+        else per_page = req.query.per_page
+        if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
+            return res.status(400).json({ msg: 'Params is invalid' })
+        }
+        else {
+            if (!isNaN(idBook_tour)) {
+                page = parseInt(page);
+                per_page = parseInt(per_page);
+                var query = {
+                    attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                    where: {
+                        fk_book_tour: idBook_tour
+                    },
+                    include: [{
+                        model: db.type_passenger
+                    }],
+                    limit: per_page,
+                    offset: (page - 1) * per_page
+                }
+                db.passengers.findAndCountAll(query).then(_passengers => {
+                    var next_page = page + 1;
+                    //Kiểm tra còn dữ liệu không
+                    if ((parseInt(_passengers.rows.length) + (next_page - 2) * per_page) === parseInt(_passengers.count))
+                        next_page = -1;
+                    //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
+                    if ((parseInt(_passengers.rows.length) < per_page))
+                        next_page = -1;
+                    if (parseInt(_passengers.rows.length) === 0)
+                        next_page = -1;
+                    return res.status(200).json({
+                        itemCount: _passengers.rows.length, //số lượng record được trả về
+                        data: _passengers.rows,
+                        next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+                    })
+                })
+            }
+            else {
+                return res.status(400).json({ msg: 'Wrong id' })
+            }
+        }
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() });
     }
 }

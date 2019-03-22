@@ -8,4 +8,6 @@ router.get('/getHistoryBookTourByUser', middlewareAuthUser, book_tour.getHistory
 //example call api: http://localhost:5000/book_tour/getHistoryBookTourById/7?tour=true
 router.get('/getHistoryBookTourById/:id', book_tour.getHistoryBookTourById);
 
+router.get('/getPassengerInBookTourHistory/:id', book_tour.getPassengerInBookTourHistory)
+
 module.exports = router;
