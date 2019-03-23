@@ -12,7 +12,7 @@ const check_time = async (arrive, leave) => {
     return Date.parse('01/01/2011 ' + arrive) < Date.parse('01/01/2011 ' + leave)
 }
 
-const check_2_routes = async (i, routes1, routes2, length) => {
+const check_2_routes = async (i, routes1, routes2, length, isUpdate) => {
     // console.log('check ', i)
     if (typeof routes1.id === 'undefined' || typeof routes1.day === 'undefined'
         || typeof routes2.id === 'undefined' || typeof routes2.day === 'undefined'
@@ -25,7 +25,7 @@ const check_2_routes = async (i, routes1, routes2, length) => {
         return false;
     }
     else {
-        if (routes1.fk_tour !== null || routes2.fk_tour !== null) {
+        if ((routes1.fk_tour !== null || routes2.fk_tour !== null) && isUpdate === false) { //isUpdate === false, api create nên phải check fk_tour
             return false;
         }
         if (i === 0 && ((parseInt(routes1.day) !== 1) || routes1.leave_time === null)) { //routes đầu tiên và có day khác 1 hoặc leave_time là null
@@ -82,18 +82,18 @@ const check_2_routes = async (i, routes1, routes2, length) => {
     }
 }
 
-const asyncFor = async (routes, cb) => {
+const asyncFor = async (routes, isUpdate, cb) => {
     for (var i = 0; i < routes.length - 1; i++) {
-        if (!(await check_2_routes(i, routes[i], routes[i + 1], routes.length))) {
+        if (!(await check_2_routes(i, routes[i], routes[i + 1], routes.length, isUpdate))) {
             cb(false);
             break;
         };
     }
 }
 
-const check_list_routes = async (routes) => {
+const check_list_routes = async (routes, isUpdate) => { //isUpdate === true api update, không cần check fk_tour
     var result = true;
-    await asyncFor(routes, (result_in_for) => {
+    await asyncFor(routes, isUpdate, (result_in_for) => {
         result = result_in_for;
     });
     return result;

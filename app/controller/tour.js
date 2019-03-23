@@ -76,8 +76,8 @@ const add_new_images_tour = async (new_images, idTour, timestamp) => {
     })
 }
 
-const asyncWriteFile = async (path, buffer, cb) => {
-    fs.writeFile(path, buffer, cb)
+const writeFeaturedImage = async () => {
+    await cb();
 }
 
 exports.createWithRoutesAndListImage = async (req, res) => {
@@ -113,7 +113,7 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                             }
                             const list_routes = JSON.parse(req.body.routes);
                             await sort_route(list_routes);
-                            if (!(await helper_validate.check_list_routes(list_routes))) {
+                            if (!(await helper_validate.check_list_routes(list_routes, false))) {
                                 return res.status(400).json({ msg: 'List routes is invalid' })
                             }
                             tours.create(new_tour).then(async _tour => {
@@ -196,7 +196,7 @@ exports.createWithRoutes = async (req, res) => {
                         }
                         const list_routes = JSON.parse(req.body.routes);
                         await sort_route(list_routes);
-                        if (!(await helper_validate.check_list_routes(list_routes))) {
+                        if (!(await helper_validate.check_list_routes(list_routes, false))) {
                             return res.status(400).json({ msg: 'List routes is invalid' })
                         }
                         tours.create(new_tour).then(async _tour => {
@@ -288,7 +288,7 @@ exports.updateWithRoutes = async (req, res) => {
                 if (typeof req.body.routes !== 'undefined') {
                     const list_routes = JSON.parse(req.body.routes);
                     await sort_route(list_routes);
-                    if (!(await helper_validate.check_list_routes(list_routes))) {
+                    if (!(await helper_validate.check_list_routes(list_routes, true))) {
                         return res.status(400).json({ msg: 'List routes is invalid' })
                     }
                     else {
@@ -373,7 +373,7 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                 if (typeof req.body.routes !== 'undefined') {
                     const list_routes = JSON.parse(req.body.routes);
                     await sort_route(list_routes);
-                    if (!(await helper_validate.check_list_routes(list_routes))) {
+                    if (!(await helper_validate.check_list_routes(list_routes, true))) {
                         return res.status(400).json({ msg: 'List routes is invalid' })
                     }
                     else {
@@ -422,40 +422,49 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                         return false;
                     }) //list_image chỉ còn lại file có fieldname khác feature_image (new_images)
                     if (featured_image) { //nếu có featured_image
-                        await asyncWriteFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', featured_image.buffer, async (err) => {
+                        fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', featured_image.buffer, async (err) => {
                             if (err) {
                                 console.log(err)
                                 throw err;
                             }
                             if (_tour.featured_img !== null) {
                                 //xóa file cũ đi
-                                if (fs.existsSync('public/assets/images/tourFeatured/' + _tour.featured_img)) {
-                                    //file exists
-                                    fs.unlink('public/assets/images/tourFeatured/' + _tour.featured_img, (err) => {
-                                        if (err) {
-                                            console.error(err)
-                                        }
-                                    });
-                                }
-                                else {
-                                    console.log('update tour: featured image file ' + _tour.featured_img + ' not exists')
-                                }
+                                fs.unlink('public/assets/images/tourFeatured/' + _tour.featured_img, (err) => {
+                                    if (err) {
+                                        console.error(err)
+                                    }
+                                });
                             }
+                            _tour.featured_img = timestamp + '.jpg';
+                            await _tour.save();
                         })
+                        //thêm new image in here
+                        await add_new_images_tour(list_image, _tour.id, timestamp);
+                        await _tour.save();
+                        const result_tour = await tours.findByPk(req.body.id);
+                        if (process.env.NODE_ENV === 'development')
+                            result_tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + result_tour.featured_img;
+                        else
+                            result_tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _toresult_tourur.featured_img;
+                        return res.status(200).json({
+                            msg: 'Update successful',
+                            data: result_tour
+                        });
                     }
-                    //thêm new image in here
-                    _tour.featured_img = timestamp + '.jpg';
-                    await add_new_images_tour(list_image, _tour.id, timestamp);
-                    await _tour.save();
-                    const result_tour = await tours.findByPk(req.body.id);
-                    if (process.env.NODE_ENV === 'development')
-                        result_tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + result_tour.featured_img;
-                    else
-                        result_tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _toresult_tourur.featured_img;
-                    return res.status(200).json({
-                        msg: 'Update successful',
-                        data: result_tour
-                    });
+                    else {
+                        await add_new_images_tour(list_image, _tour.id, timestamp);
+                        await _tour.save();
+                        const result_tour = await tours.findByPk(req.body.id);
+                        if (process.env.NODE_ENV === 'development')
+                            result_tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + result_tour.featured_img;
+                        else
+                            result_tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _toresult_tourur.featured_img;
+                        return res.status(200).json({
+                            msg: 'Update successful',
+                            data: result_tour
+                        });
+                    }
+
                 }
                 else {
                     await _tour.save();
