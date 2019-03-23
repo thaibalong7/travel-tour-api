@@ -591,11 +591,22 @@ exports.updateWithPricePassenger = async (req, res) => {
                         if (!await validate_helper.check_list_price_passenger(list_price_passenger)) {
                             return res.status(400).json({ msg: 'Wrong list price passenger' })
                         }
-                        //xóa cái cũ và thêm cái mới
-                        db.price_passenger.destroy({
-
+                        //xóa cái cũ
+                        await db.price_passenger.destroy({
+                            where: {
+                                fk_tourturn: _tour_turn.id
+                            }
                         })
 
+                        //thêm cái mới
+                        await asyncFor(list_price_passenger, async (price_passenger, i) => {
+                            const new_price_passenger = {
+                                percent: price_passenger.percent,
+                                fk_tourturn: _tour_turn.id,
+                                fk_type_passenger: price_passenger.id
+                            }
+                            await db.price_passenger.create(new_price_passenger);
+                        })
                     }
                 }
             }
