@@ -82,7 +82,7 @@ const check_2_routes = async (i, routes1, routes2, length, isUpdate) => {
     }
 }
 
-const asyncFor = async (routes, isUpdate, cb) => {
+const asyncFor_checkRoutes = async (routes, isUpdate, cb) => {
     for (var i = 0; i < routes.length - 1; i++) {
         if (!(await check_2_routes(i, routes[i], routes[i + 1], routes.length, isUpdate))) {
             cb(false);
@@ -93,7 +93,7 @@ const asyncFor = async (routes, isUpdate, cb) => {
 
 const check_list_routes = async (routes, isUpdate) => { //isUpdate === true api update, không cần check fk_tour
     var result = true;
-    await asyncFor(routes, isUpdate, (result_in_for) => {
+    await asyncFor_checkRoutes(routes, isUpdate, (result_in_for) => {
         result = result_in_for;
     });
     return result;
@@ -136,11 +136,41 @@ const check_list_passengers = async (list_passengers, arr_sex, arr_type) => {
     return check;
 }
 
+const asyncFor_checkPricePassenger = async (list_price_passenger, cb) => {
+    for (var i = 0; i < list_price_passenger.length; i++) {
+        const price_passenger = list_price_passenger[i];
+        if (isNaN(price_passenger.percent)) //percent k phải là số
+        {
+            cb(false);
+            break;
+        }
+        else {
+            if (parseInt(price_passenger.percent) > 100 || parseInt(price_passenger.percent) < 0 || price_passenger.percent === null) //percent k nằm trong khoảng 0 -> 100
+            {
+                cb(false);
+                break;
+            }
+        }
+    }
+}
+
+const check_list_price_passenger = async (list_price_passenger) => { //false là sai
+    var check = true;
+    await asyncFor_checkPricePassenger(list_price_passenger, (result_in_for) => {
+        check = result_in_for;
+    })
+    if (list_price_passenger.length === 0) {
+        return false
+    }
+    return check;
+}
+
 module.exports = {
     validateEmail: validateEmail,
     validatePhoneNumber: validatePhoneNumber,
     check_time: check_time,
     check_2_routes: check_2_routes,
     check_list_routes: check_list_routes,
-    check_list_passengers: check_list_passengers
+    check_list_passengers: check_list_passengers,
+    check_list_price_passenger: check_list_price_passenger
 }
