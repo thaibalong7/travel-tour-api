@@ -92,7 +92,7 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                     let featured_image = null;
                     let list_image = req.files;
                     await asyncFor(list_image, async (element, i) => {
-                        if (element.fieldname === 'feature_image') {
+                        if (element.fieldname === 'featured_image') {
                             featured_image = element;
                             list_image.splice(i, 1);
                             return true;
@@ -416,11 +416,11 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                     await asyncFor(list_image, async (element, i) => {
                         if (element.fieldname === 'featured_image') {
                             featured_image = element;
-                            list_image.splice(i, 1); //tách file có fieldname là feature_image ra
+                            list_image.splice(i, 1); //tách file có fieldname là featured_image ra
                             return true;
                         }
                         return false;
-                    }) //list_image chỉ còn lại file có fieldname khác feature_image (new_images)
+                    }) //list_image chỉ còn lại file có fieldname khác featured_image (new_images)
                     if (featured_image) { //nếu có featured_image
                         fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', featured_image.buffer, async (err) => {
                             if (err) {
