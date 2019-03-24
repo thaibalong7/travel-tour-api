@@ -7,7 +7,8 @@ let upload = multer(); //setting the default folder for multer
 // example call api: http://localhost:5000/location/getAll?per_page=10&page=2&tour=false
 router.get('/getAll', locations.getAllLocation);
 
-router.get('/getAllWithoutPagination', locations.getAllWithoutPagination);
+//example call api: http://localhost:5000/book_tour/getAllWithoutPagination?status=inactive
+router.get('/getAllWithoutPagination', locations.getAllWithoutPagination); //middlewareAuthAdmin
 
 router.post('/create', upload.single('image'), locations.create); //middlewareAuthAdmin
 

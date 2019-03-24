@@ -222,12 +222,16 @@ exports.update = async (req, res) => {
 
 exports.getAllWithoutPagination = (req, res) => {
     try {
-        locations.findAll({
+        const status = req.query.status;
+        var query = {
             attributes: { exclude: ['fk_type'] },
             include: [{
                 model: db.types
             }]
-        }).then(async rs => {
+        }
+        if (status === 'active') query.where = { status: 'active' }
+        if (status === 'inactive') query.where = { status: 'inactive' }
+        locations.findAll(query).then(async rs => {
             const result = await helper_add_link.addLinkLocationFeaturedImgOfListLocations(rs, req.headers.host)
             res.status(200).json({
                 itemCount: rs.length, //số lượng record được trả về
@@ -256,6 +260,9 @@ exports.getAllLocation = (req, res) => {
         page = parseInt(page);
         per_page = parseInt(per_page);
         const query = {
+            where: {
+                status: 'active'
+            },
             attributes: { exclude: ['fk_type'] },
             include: [{
                 model: db.types
@@ -351,6 +358,9 @@ exports.getLocationNearMe = async (req, res) => {
                 '<=',
                 distance,
             ) : null,
+            {
+                status: 'active'
+            }
         )
     }
     locations.findAll(query).then(async _items => {
@@ -406,7 +416,10 @@ exports.getLocationByType = async (req, res) => {
     if (typeof type === 'undefined' || isNaN(type))
         return res.status(400).json({ msg: 'Params is invalid' });
     const query = {
-        where: { fk_type: type },
+        where: {
+            fk_type: type,
+            status: 'active'
+        },
         attributes: { exclude: ['fk_type'] },
         include: [{
             model: db.types
@@ -451,7 +464,10 @@ exports.getByTypeNearMe = async (req, res) => {
                 '<=',
                 distance,
             ) : null,
-            { fk_type: type }
+            {
+                fk_type: type,
+                status: 'active'
+            }
         )
         ,
         include: [{
