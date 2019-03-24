@@ -2,6 +2,8 @@ const db = require('../models');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const validate_helper = require('../helper/validate');
+var Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 var publicKEY = fs.readFileSync('./app/middleware/public.key', 'utf8');
 var verifyOptions = {
@@ -395,6 +397,64 @@ exports.getPassengerInBookTourHistory = (req, res) => {
                 return res.status(400).json({ msg: 'Wrong id' })
             }
         }
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() });
+    }
+}
+
+exports.getAllBookTourHistoryWithoutPagination = (req, res) => {
+    try {
+        const status = req.query.status;
+        const include_tour_turn = {
+            attributes: { exclude: ['fk_tour'] },
+            model: db.tour_turns,
+            include: [{
+                model: db.tours
+            }]
+        }
+        const has_departed = { //đang đi
+            start_date: {
+                [Op.lte]: new Date(), // start_date <= cur_date
+            },
+            end_date: {
+                [Op.gte]: new Date() //end_date >= cur_date
+            }
+        };
+        const finished = { //đã đi
+            end_date: {
+                [Op.lt]: new Date() //end_date < cur_date
+            }
+        }
+        const not_yet_started = { //chưa đi
+            start_date: {
+                [Op.gt]: new Date(), // start_date > cur_date
+            }
+        }
+        // const not_finished = { // chưa đi và đang đi
+        //     end_date: {
+        //         [Op.gte]: new Date() //end_date >= cur_date
+        //     }
+        // }
+        if (status === 'finished') //đã đi //đã kết thúc
+            include_tour_turn.where = finished
+        if (status === 'not_yet_started') //chưa đi //chưa khởi hành
+            include_tour_turn.where = not_yet_started
+        if (status === 'has_departed') //đang đi //đã khởi hành
+            include_tour_turn.where = has_departed
+
+        const query = {
+            attributes: { exclude: ['fk_contact_info', 'fk_tour_turn', 'fk_payment'] },
+            include: [{
+                model: db.book_tour_contact_info,
+            },
+                include_tour_turn
+                , {
+                model: db.payment_method
+            }]
+        };
+        db.book_tour_history.findAll(query).then((_book_tours) => {
+            return res.status(200).json({ data: _book_tours })
+        })
     } catch (error) {
         return res.status(400).json({ msg: error.toString() });
     }

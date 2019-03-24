@@ -10,4 +10,8 @@ router.get('/getHistoryBookTourById/:id', book_tour.getHistoryBookTourById);
 
 router.get('/getPassengerInBookTourHistory/:id', book_tour.getPassengerInBookTourHistory)
 
+//example call api: http://localhost:5000/book_tour/getAllBookTourHistoryWithoutPagination?status=has_departed
+//có 03 loại status: not_yet_started (chưa đi), has_departed (đang đi), finished (đã đi)
+router.get('/getAllBookTourHistoryWithoutPagination', book_tour.getAllBookTourHistoryWithoutPagination)
+
 module.exports = router;
