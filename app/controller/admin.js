@@ -74,3 +74,27 @@ exports.uploadImage = (req, res) => {
     });
 }
 
+exports.updatePassword = async (req, res) => {
+    try {
+        const _admin = req.userData;
+        if (typeof req.body.old_password !== 'undefined' && typeof req.body.new_password !== 'undefined') {
+            const old_password = req.body.old_password;
+            const new_password = req.body.new_password;
+            if (bcrypt.compareSync(old_password, _admin.password)) {
+                _admin.password = bcrypt.hashSync(new_password, null, null).toString();
+                await _admin.save();
+                return res.status(200).json({ msg: 'Update successful' })
+            }
+            else {
+                return res.status(400).json({ msg: 'Old password is not corect' })
+            }
+        }
+        else {
+            return res.status(400).json({ msg: 'Param is invalid' })
+        }
+    }
+    catch (err) {
+        return res.status(400).json({ msg: err })
+    }
+}
+

@@ -7,4 +7,6 @@ router.post('/login', admins.login);
 router.post('/upload_image', admins.uploadImage);
 router.get('/me', middlewareAuthAdmin, admins.me);
 
+router.post('/updatePassword', middlewareAuthAdmin, admins.updatePassword);
+
 module.exports = router
