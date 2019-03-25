@@ -5,12 +5,16 @@ var session = require('express-session')
 var bodyParser = require('body-parser')
 var env = require('dotenv');
 var cronjob = require('./app/cronjob');
+var logger = require('morgan');
 var FroalaEditor = require('wysiwyg-editor-node-sdk/lib/froalaEditor.js');
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const configFileMapping = {
     'development': './env/.env.development',
     'production': './env/.env.production'
 }
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+
 env.config({ path: configFileMapping[process.env.NODE_ENV] })
 // var cors = require('cors');
 //CORS middleware
@@ -31,6 +35,8 @@ app.use(function (req, res, next) {
 //For BodyParser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(logger('dev'));
 
 // For Passport
 

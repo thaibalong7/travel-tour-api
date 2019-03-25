@@ -24,6 +24,13 @@ const asyncFor = async (arr, cb) => {
     }
 }
 
+const convertDiscountOfListTourTurn = async (tour_turns) =>{
+    for (var i = 0;i< tour_turns.length;i++)
+    {
+        tour_turns[i].discount = parseFloat(tour_turns[i].discount / 100);
+    }
+}
+
 const arr_status = ['private', 'public'];
 
 exports.create = async (req, res) => {
@@ -190,7 +197,8 @@ exports.getByTour = (req, res) => {
         },
         order: [['start_date', 'DESC']]
     }
-    tour_turns.findAll(query).then(_tour_turns => {
+    tour_turns.findAll(query).then(async _tour_turns => {
+        await convertDiscountOfListTourTurn(_tour_turns);
         res.status(200).json({ data: _tour_turns })
     }).catch(err => {
         res.status(400).json({ msg: err })
@@ -357,6 +365,7 @@ exports.getAll = (req, res) => {
                     next_page = -1;
 
                 const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
+                await convertDiscountOfListTourTurn(result);
                 res.status(200).json({
                     itemCount: result.length, //số lượng record được trả về
                     data: result,
@@ -378,6 +387,7 @@ exports.getAll = (req, res) => {
                     next_page = -1;
 
                 const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
+                await convertDiscountOfListTourTurn(result);
                 res.status(200).json({
                     itemCount: result.length, //số lượng record được trả về
                     data: result,
