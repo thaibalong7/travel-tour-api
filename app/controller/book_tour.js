@@ -210,13 +210,16 @@ exports.book_tour = async (req, res) => {
 
 const check_policy_cancel_booking = async (booking) => {
     //check theo tour turn của booking này
-    if (booking.request_cancel_bookings.length !== 0) return false; //đã gởi request thì k đc gởi lại
+    if (booking.request_cancel_bookings.length !== 0) { //đã gởi request thì k đc gởi lại
+        return false;
+    }
     return true; //tạm thời
 }
 
 const add_is_cancel_booking = async (list_booking) => { //thêm 1 record là dựa vào policy thì hiện giờ có thể hủy đặt tour hay k
     for (var i = 0; i < list_booking.length; i++) {
         list_booking[i].dataValues.isCancelBooking = await check_policy_cancel_booking(list_booking[i]);
+        list_booking[i].dataValues.request_cancel_bookings = list_booking[i].dataValues.request_cancel_bookings[0]
     }
 }
 
@@ -245,7 +248,7 @@ exports.getHistoryBookTourByUser = (req, res) => {
                     }
                 },
                 {
-                    attributes: { exclude: ['fk_user'] },
+                    attributes: ['id', 'status'],
                     model: db.request_cancel_booking
                 }],
                 limit: per_page,
@@ -297,8 +300,11 @@ exports.getHistoryBookTourById = (req, res) => {
                 // },
                 {
                     model: db.payment_method
-                }
-                ]
+                },
+                {
+                    attributes: { exclude: ['fk_book_tour'] },
+                    model: db.request_cancel_booking
+                }]
             }
             db.book_tour_history.findOne(query).then(async _book_tour_history => {
                 if (_book_tour_history) {
