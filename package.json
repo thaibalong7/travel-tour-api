@@ -31,6 +31,7 @@
     "path": "^0.12.7",
     "sequelize": "^4.42.0",
     "sha1": "^1.1.1",
+    "uuid": "^3.3.2",
     "wysiwyg-editor-node-sdk": "^2.3.4"
   },
   "devDependencies": {
