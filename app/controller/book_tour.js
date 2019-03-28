@@ -96,9 +96,8 @@ const book_tour = async (req, res, _user) => {
             else { //id tour turn truyền vào không có trong db
                 return res.status(400).json({ msg: 'Wrong tour turn' });
             }
-
             //pass hết các kiểm tra hợp lệ
-            if (req.body.payment === 'incash') {
+            if (req.body.payment === 'incash' || req.body.payment === 'transfer') { //thanh toán tiền mặt hoặc chuyển khoảng ngân hàng
 
                 var new_contact_info = {
                     email: req.body.email,
@@ -150,7 +149,7 @@ const book_tour = async (req, res, _user) => {
 
                         //xong //trả response cho client
                         return res.status(200).json({
-                            msg: 'Book tour successfull',
+                            msg: 'Book tour successful',
                             book_tour: _book_tour,
                             contact_info: _contact_info
                         });
@@ -209,6 +208,18 @@ exports.book_tour = async (req, res) => {
     }
 }
 
+const check_policy_cancel_booking = async (booking) => {
+    //check theo tour turn của booking này
+    if (booking.request_cancel_bookings.length !== 0) return false; //đã gởi request thì k đc gởi lại
+    return true; //tạm thời
+}
+
+const add_is_cancel_booking = async (list_booking) => { //thêm 1 record là dựa vào policy thì hiện giờ có thể hủy đặt tour hay k
+    for (var i = 0; i < list_booking.length; i++) {
+        list_booking[i].dataValues.isCancelBooking = await check_policy_cancel_booking(list_booking[i]);
+    }
+}
+
 exports.getHistoryBookTourByUser = (req, res) => {
     try {
         const _user = req.userData;
@@ -232,11 +243,15 @@ exports.getHistoryBookTourByUser = (req, res) => {
                     where: {
                         fk_user: _user.id
                     }
+                },
+                {
+                    attributes: { exclude: ['fk_user'] },
+                    model: db.request_cancel_booking
                 }],
                 limit: per_page,
                 offset: (page - 1) * per_page
             }
-            db.book_tour_history.findAndCountAll(query).then(_book_tour_history => {
+            db.book_tour_history.findAndCountAll(query).then(async _book_tour_history => {
                 var next_page = page + 1;
                 //Kiểm tra còn dữ liệu không
                 if ((parseInt(_book_tour_history.rows.length) + (next_page - 2) * per_page) === parseInt(_book_tour_history.count))
@@ -246,6 +261,7 @@ exports.getHistoryBookTourByUser = (req, res) => {
                     next_page = -1;
                 if (parseInt(_book_tour_history.rows.length) === 0)
                     next_page = -1;
+                await add_is_cancel_booking(_book_tour_history.rows);
                 return res.status(200).json({
                     itemCount: _book_tour_history.rows.length, //số lượng record được trả về
                     data: _book_tour_history.rows,
@@ -546,4 +562,56 @@ exports.getHistoryBookTourByCode = (req, res) => {
     catch (err) {
         return res.status(400).json({ msg: err.toString() });
     }
+}
+
+exports.getAllBookTourHistoryGroupByTourTurn = async (req, res) => {
+    try {
+        const status = req.query.status;
+        const query = {
+            attributes: { exclude: ['fk_tour'], include: [] },
+            include: [{
+                attributes: { exclude: ['fk_tour_turn', 'fk_contact_info'] },
+                model: db.book_tour_history,
+                include: [{
+                    model: db.book_tour_contact_info,
+                }]
+            },
+            {
+                attributes: ['name', 'id'],
+                model: db.tours
+            }
+            ]
+        }
+        const has_departed = { //đang đi
+            start_date: {
+                [Op.lte]: new Date(), // start_date <= cur_date
+            },
+            end_date: {
+                [Op.gte]: new Date() //end_date >= cur_date
+            }
+        };
+        const finished = { //đã đi
+            end_date: {
+                [Op.lt]: new Date() //end_date < cur_date
+            }
+        }
+        const not_yet_started = { //chưa đi
+            start_date: {
+                [Op.gt]: new Date(), // start_date > cur_date
+            }
+        }
+        if (status === 'finished') //đã đi //đã kết thúc
+            query.where = finished
+        if (status === 'not_yet_started') //chưa đi //chưa khởi hành
+            query.where = not_yet_started
+        if (status === 'has_departed') //đang đi //đã khởi hành
+            query.where = has_departed
+        db.tour_turns.findAll(query).then(async (_tour_turn) => {
+            return res.status(200).json({ data: _tour_turn })
+        })
+    } catch (error) {
+        console.error(error);
+        return res.status(400).json({ msg: error.toString() });
+    }
+
 }

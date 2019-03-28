@@ -19,4 +19,9 @@ router.get('/getPassengerInBookTourHistory/:id', book_tour.getPassengerInBookTou
 //sai hoặc k có status thì trả về all
 router.get('/getAllBookTourHistoryWithoutPagination', book_tour.getAllBookTourHistoryWithoutPagination) //middlewareAuthAdmin
 
+//example call api: http://localhost:5000/book_tour/getAllBookTourHistoryGroupByTourTurn?status=has_departed
+//có 03 loại status: not_yet_started (chưa đi), has_departed (đang đi), finished (đã đi)
+//sai hoặc k có status thì trả về all // tour turn mà k có book tour vẫn được xuất hiện
+router.get('/getAllBookTourHistoryGroupByTourTurn', book_tour.getAllBookTourHistoryGroupByTourTurn) //middlewareAuthAdmin //k phân trang
+
 module.exports = router;
