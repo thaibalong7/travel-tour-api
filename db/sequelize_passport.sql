@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 28, 2019 lúc 07:59 AM
+-- Thời gian đã tạo: Th3 28, 2019 lúc 11:04 AM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -81,9 +81,9 @@ CREATE TABLE IF NOT EXISTS `book_tour_contact_info` (
 
 INSERT INTO `book_tour_contact_info` (`id`, `email`, `fullname`, `phone`, `address`, `fk_user`) VALUES
 (3, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12),
-(4, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', NULL),
-(5, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', NULL),
-(6, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', NULL),
+(4, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12),
+(5, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12),
+(6, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12),
 (7, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL),
 (8, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL);
 
@@ -318,7 +318,7 @@ CREATE TABLE IF NOT EXISTS `payment_method` (
 
 INSERT INTO `payment_method` (`id`, `name`) VALUES
 (1, 'incash'),
-(2, 'bank');
+(2, 'transfer');
 
 -- --------------------------------------------------------
 
@@ -426,7 +426,14 @@ CREATE TABLE IF NOT EXISTS `request_cancel_booking` (
   PRIMARY KEY (`id`),
   KEY `fk_book_tour` (`fk_book_tour`),
   KEY `fk_user` (`fk_user`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `request_cancel_booking`
+--
+
+INSERT INTO `request_cancel_booking` (`id`, `status`, `message`, `fk_book_tour`, `fk_user`) VALUES
+(1, 'pending', 'Bị đau k đi được', 3, 12);
 
 -- --------------------------------------------------------
 
@@ -672,6 +679,7 @@ CREATE TABLE IF NOT EXISTS `tour_turns` (
   `num_max_people` int(11) NOT NULL,
   `price` int(11) NOT NULL DEFAULT '0',
   `discount` int(11) NOT NULL DEFAULT '0',
+  `view` int(11) NOT NULL DEFAULT '0',
   `status` enum('public','private') COLLATE utf8_unicode_ci NOT NULL,
   `fk_tour` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -682,23 +690,23 @@ CREATE TABLE IF NOT EXISTS `tour_turns` (
 -- Đang đổ dữ liệu cho bảng `tour_turns`
 --
 
-INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, `num_max_people`, `price`, `discount`, `status`, `fk_tour`) VALUES
-(1, '2019-02-24', '2019-02-24', 1, 15, 100000, 0, 'public', 1),
-(2, '2019-03-02', '2019-03-02', 0, 15, 100000, 0, 'public', 1),
-(3, '2019-03-24', '2019-03-24', 1, 20, 200000, 0, 'public', 2),
-(4, '2019-01-25', '2019-01-25', 2, 20, 215000, 0, 'public', 2),
-(5, '2019-04-11', '2019-04-11', 0, 60, 500000, 0, 'public', 3),
-(6, '2019-03-08', '2019-03-08', 2, 30, 1500000, 0, 'private', 4),
-(7, '2019-03-10', '2019-03-15', 0, 50, 1500000, 0, 'public', 5),
-(8, '2019-03-04', '2019-03-06', 0, 60, 7500000, 0, 'public', 6),
-(13, '2019-04-19', '2019-04-24', 0, 60, 550000, 0, 'public', 1),
-(14, '2019-04-24', '2019-05-07', 9, 60, 500000, 5, 'public', 2),
-(15, '2019-04-09', '2019-04-09', 0, 62, 600000, 100, 'public', 1),
-(16, '2019-04-01', '2019-04-01', 0, 20, 450000, 3, 'public', 4),
-(17, '2019-03-19', '2019-03-19', 0, 20, 500000, 5, 'public', 4),
-(18, '2019-04-06', '2019-04-06', 0, 25, 300000, 0, 'public', 2),
-(19, '2019-04-06', '2019-04-08', 0, 30, 300000, 5, 'private', 4),
-(33, '2019-04-06', '2019-04-08', 0, 30, 300000, 6, 'private', 4);
+INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, `num_max_people`, `price`, `discount`, `view`, `status`, `fk_tour`) VALUES
+(1, '2019-02-24', '2019-02-24', 1, 15, 100000, 0, 0, 'public', 1),
+(2, '2019-03-02', '2019-03-02', 0, 15, 100000, 0, 0, 'public', 1),
+(3, '2019-03-24', '2019-03-24', 1, 20, 200000, 0, 3, 'public', 2),
+(4, '2019-01-25', '2019-01-25', 2, 20, 215000, 0, 0, 'public', 2),
+(5, '2019-04-11', '2019-04-11', 0, 60, 500000, 0, 0, 'public', 3),
+(6, '2019-03-08', '2019-03-08', 2, 30, 1500000, 0, 0, 'private', 4),
+(7, '2019-03-10', '2019-03-15', 0, 50, 1500000, 0, 2, 'public', 5),
+(8, '2019-03-04', '2019-03-06', 0, 60, 7500000, 0, 10, 'public', 6),
+(13, '2019-04-19', '2019-04-24', 0, 60, 550000, 0, 0, 'public', 1),
+(14, '2019-04-24', '2019-05-07', 9, 60, 500000, 5, 9, 'public', 2),
+(15, '2019-04-09', '2019-04-09', 0, 62, 600000, 100, 0, 'public', 1),
+(16, '2019-04-01', '2019-04-01', 0, 20, 450000, 3, 7, 'public', 4),
+(17, '2019-03-19', '2019-03-19', 0, 20, 500000, 5, 0, 'public', 4),
+(18, '2019-04-06', '2019-04-06', 0, 25, 300000, 0, 0, 'public', 2),
+(19, '2019-04-06', '2019-04-08', 0, 30, 300000, 5, 0, 'private', 4),
+(33, '2019-04-06', '2019-04-08', 0, 30, 300000, 6, 0, 'private', 4);
 
 -- --------------------------------------------------------
 
