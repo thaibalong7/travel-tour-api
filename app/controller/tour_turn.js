@@ -24,9 +24,8 @@ const asyncFor = async (arr, cb) => {
     }
 }
 
-const convertDiscountOfListTourTurn = async (tour_turns) =>{
-    for (var i = 0;i< tour_turns.length;i++)
-    {
+const convertDiscountOfListTourTurn = async (tour_turns) => {
+    for (var i = 0; i < tour_turns.length; i++) {
         tour_turns[i].discount = parseFloat(tour_turns[i].discount / 100);
     }
 }
@@ -182,6 +181,30 @@ exports.createWithPricePassenger = async (req, res) => {
     }
     catch (e) {
         return res.status(400).json({ msg: 'Error' })
+    }
+}
+
+exports.increaseView = async (req, res) => {
+    try {
+        const idTourTurn = req.params.id;
+        if (typeof idTourTurn === 'undefined') {
+            return res.status(400).json({ msg: 'Wrong id tour turn' })
+
+        }
+        else {
+            const tour_turn = await tour_turns.findByPk(idTourTurn);
+            if (tour_turn) {
+                const view = parseInt(tour_turn.view);
+                tour_turn.view = view + 1;
+                tour_turn.save();
+                return res.status(200).json({ msg: 'Update view successful' })
+            }
+            else {
+                return res.status(400).json({ msg: 'Wrong id tour turn' })
+            }
+        }
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() })
     }
 }
 
@@ -630,4 +653,98 @@ exports.updateWithPricePassenger = async (req, res) => {
     catch (e) {
         return res.status(400).json({ msg: e })
     }
+}
+
+exports.search = async (req, res) => {
+    const arr_sortBy = ['price', 'date', 'rating'];
+    const arr_sortType = ['ASC', 'DESC'] //ascending (tăng dần) //descending  (giảm dần)
+    try {
+        const name_search = req.query.name;
+        const price_search = req.query.price;
+        var sortBy = req.query.sortBy;
+        var sortType = req.query.sortType;
+        if (typeof sortBy !== 'undefined') {
+            sortBy = sortBy.toLowerCase();
+            if (arr_sortBy.indexOf(sortBy) === -1) sortBy = arr_sortBy[0]; //mặc định sort theo price
+        }
+        else sortBy = arr_sortBy[0];
+        if (typeof sortType !== 'undefined') {
+            sortType = sortType.toUpperCase();
+            if (arr_sortType.indexOf(sortType) === -1) sortType = arr_sortType[0] //mặc định sort tăng dần
+        }
+        else sortType = arr_sortType[0]
+        if (typeof price_search !== 'undefined' && isNaN(price_search))
+            return res.status(400).json({ msg: 'Wrong price to search' })
+        const page_default = 1;
+        const per_page_default = 10;
+        var page, per_page;
+        if (typeof req.query.page === 'undefined') page = page_default;
+        else page = req.query.page
+        if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
+        else per_page = req.query.per_page
+        if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
+            return res.status(400).json({ msg: 'Params is invalid' })
+        }
+        else {
+            page = parseInt(page);
+            per_page = parseInt(per_page);
+            const query = {
+                attributes: { exclude: ['fk_tour'] },
+                include: [{
+                    model: db.tours
+                }],
+                where: {
+                    status: 'public',
+                    start_date: {
+                        [Op.gt]: new Date()
+                    }
+                },
+                limit: per_page,
+                offset: (page - 1) * per_page
+            }
+            if (typeof price_search !== 'undefined') {
+                query.where.price = {
+                    [Op.lte]: parseInt(price_search)
+                }
+            }
+            if (typeof name_search !== 'undefined') {
+                query.include[0].where = {
+                    name: {
+                        [Op.like]: '%' + name_search + '%'
+                    }
+                }
+            }
+            if (sortBy === arr_sortBy[0]) //price
+            {
+                query.order = [['price', sortType]];
+            }
+            if (sortBy === arr_sortBy[1]) //date
+            {
+                query.order = [['start_date', sortType]];
+            }
+            tour_turns.findAndCountAll(query).then(async _tour_turns => {
+                var next_page = page + 1;
+                //Kiểm tra còn dữ liệu không
+                if ((parseInt(_tour_turns.rows.length) + (next_page - 2) * per_page) === parseInt(_tour_turns.count))
+                    next_page = -1;
+                //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
+                if ((parseInt(_tour_turns.rows.length) < per_page))
+                    next_page = -1;
+                if (parseInt(_tour_turns.rows.length) === 0)
+                    next_page = -1;
+                await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns.rows, req.headers.host)
+                await convertDiscountOfListTourTurn(_tour_turns.rows)
+                res.status(200).json({
+                    itemCount: _tour_turns.rows.length, //số lượng record được trả về
+                    data: _tour_turns.rows,
+                    next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+                })
+            }).catch(error => {
+                return res.status(400).json({ msg: error.toString() })
+            })
+        }
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() })
+    }
+
 }

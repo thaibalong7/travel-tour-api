@@ -24,4 +24,12 @@ router.post('/update', tour_turns.update); //middlewareAuthAdmin
 
 router.post('/updateWithPricePassenger', tour_turns.updateWithPricePassenger); //middlewareAuthAdmin
 
+// example call api http://localhost:5000/tour_turn/search?name=saigon&price=500000&sortBy=Price&sortType=ASc
+// trong đó sortBy gồm price(mặc định nếu params sai), date, rating(chưa có) (chỉ sort được theo 1 tiêu chí) (không phân biệt hoa thường). 
+// sortType gồm ASC(mặc định nếu params sai), DESC (không phân biệt hoa thường)
+// name và price nếu k có thì trả về tất cả
+router.get('/search', tour_turns.search);
+
+router.get('/increaseView/:id', tour_turns.increaseView);
+
 module.exports = router
