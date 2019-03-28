@@ -336,7 +336,7 @@ exports.getAllWithoutPagination = (req, res) => {
     })
 }
 
-exports.getAll = (req, res) => {
+exports.getAll = (req, res) => { //update here
     var isUniqueTour = (req.query.isUniqueTour == 'true');
     const page_default = 1;
     const per_page_default = 10;
@@ -359,7 +359,8 @@ exports.getAll = (req, res) => {
             where: {
                 start_date: {
                     [Op.gt]: new Date()
-                }
+                },
+                status: 'public',
             },
             order: [db.sequelize.literal('start_date ASC')]
         }
@@ -656,25 +657,19 @@ exports.updateWithPricePassenger = async (req, res) => {
 }
 
 exports.search = async (req, res) => {
-    const arr_sortBy = ['price', 'date', 'rating'];
+    const arr_sortBy = ['price', 'date', 'lasting', 'rating'];
     const arr_sortType = ['ASC', 'DESC'] //ascending (tăng dần) //descending  (giảm dần)
     try {
         const name_search = req.query.name;
+        const date_search = req.query.date;
         const price_search = req.query.price;
+        const lasting_search = req.query.lasting;
         var sortBy = req.query.sortBy;
         var sortType = req.query.sortType;
-        if (typeof sortBy !== 'undefined') {
-            sortBy = sortBy.toLowerCase();
-            if (arr_sortBy.indexOf(sortBy) === -1) sortBy = arr_sortBy[0]; //mặc định sort theo price
-        }
-        else sortBy = arr_sortBy[0];
-        if (typeof sortType !== 'undefined') {
-            sortType = sortType.toUpperCase();
-            if (arr_sortType.indexOf(sortType) === -1) sortType = arr_sortType[0] //mặc định sort tăng dần
-        }
-        else sortType = arr_sortType[0]
-        if (typeof price_search !== 'undefined' && isNaN(price_search))
+        if (typeof price_search !== 'undefined' && isNaN(parseInt(price_search)))
             return res.status(400).json({ msg: 'Wrong price to search' })
+        if (typeof lasting_search !== 'undefined' && isNaN(parseInt(lasting_search)))
+            return res.status(400).json({ msg: 'Wrong lasting to search' })
         const page_default = 1;
         const per_page_default = 10;
         var page, per_page;
@@ -689,7 +684,14 @@ exports.search = async (req, res) => {
             page = parseInt(page);
             per_page = parseInt(per_page);
             const query = {
-                attributes: { exclude: ['fk_tour'] },
+                attributes: {
+                    exclude: ['fk_tour', 'price'],
+                    include: [
+                        [Sequelize.literal('DATEDIFF(end_date, start_date) + 1'), 'lasting'],
+                        [Sequelize.literal('CAST(price - (discount * price) / 100 AS UNSIGNED)'), 'end_price'],
+                        [Sequelize.literal('price'), 'original_price'],
+                    ]
+                },
                 include: [{
                     model: db.tours
                 }],
@@ -714,13 +716,38 @@ exports.search = async (req, res) => {
                     }
                 }
             }
-            if (sortBy === arr_sortBy[0]) //price
-            {
-                query.order = [['price', sortType]];
+            if (typeof date_search !== 'undefined') { //search theo start_date
+                query.where.start_date = {
+                    [Op.eq]: new Date((date_search)), // format: yyyy-mm-dd
+                    // [Op.eq]: new Date(parseInt(date_search)), // format: timestamp
+                }
             }
-            if (sortBy === arr_sortBy[1]) //date
-            {
-                query.order = [['start_date', sortType]];
+            if (typeof lasting_search !== 'undefined') { //nếu có search bằng lasting //cái này để cuối vì có dùng lại những thay đổi ở trên
+                query.where = db.sequelize.and(
+                    db.sequelize.literal('DATEDIFF(end_date, start_date) + 1 <= ' + parseInt(lasting_search)),
+                    query.where,
+                )
+            }
+            if (typeof sortBy !== 'undefined' && typeof sortType !== 'undefined') { //2 params cùng được nhận
+                sortBy = sortBy.toLowerCase();
+                sortType = sortType.toUpperCase();
+                if (arr_sortBy.indexOf(sortBy) === -1 || arr_sortType.indexOf(sortType) === -1) {
+                    //một trong hai không đúng quy định -> k sort gì hết
+                }
+                else { //sort by ...
+                    if (sortBy === arr_sortBy[0]) //price
+                    {
+                        query.order = [db.sequelize.literal('end_price ' + sortType)];
+                    }
+                    if (sortBy === arr_sortBy[1]) //date
+                    {
+                        query.order = [['start_date', sortType]];
+                    }
+                    if (sortBy === arr_sortBy[2]) //lasting
+                    {
+                        query.order = [db.sequelize.literal('lasting ' + sortType)];
+                    }
+                }
             }
             tour_turns.findAndCountAll(query).then(async _tour_turns => {
                 var next_page = page + 1;
