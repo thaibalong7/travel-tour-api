@@ -1,6 +1,7 @@
 var router = require('express').Router();
 const book_tour = require('../controller/book_tour');
 const { middlewareAuthUser } = require('../middleware/auth')
+
 router.post('/book_new_tour', book_tour.book_tour);
 
 router.get('/getHistoryBookTourByUser', middlewareAuthUser, book_tour.getHistoryBookTourByUser);
@@ -15,6 +16,7 @@ router.get('/getPassengerInBookTourHistory/:id', book_tour.getPassengerInBookTou
 
 //example call api: http://localhost:5000/book_tour/getAllBookTourHistoryWithoutPagination?status=has_departed
 //có 03 loại status: not_yet_started (chưa đi), has_departed (đang đi), finished (đã đi)
-router.get('/getAllBookTourHistoryWithoutPagination', book_tour.getAllBookTourHistoryWithoutPagination)
+//sai hoặc k có status thì trả về all
+router.get('/getAllBookTourHistoryWithoutPagination', book_tour.getAllBookTourHistoryWithoutPagination) //middlewareAuthAdmin
 
 module.exports = router;
