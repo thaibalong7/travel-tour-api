@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 22, 2019 lúc 11:04 AM
+-- Thời gian đã tạo: Th3 28, 2019 lúc 07:59 AM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `admins` (
 --
 
 INSERT INTO `admins` (`id`, `username`, `name`, `password`) VALUES
-(1, 'admin', 'ADMIN', '$2a$10$YhVl2OqbcNyQKarX8pb6..XsXpOgNZmXslgtZnKrcIOZ45rxVSkJm'),
+(1, 'admin', 'ADMIN', '$2a$10$PqMsU1cjeWI4djNgKQXl6.6fkPWRqvPcNVpg47x1r1tooBEq.IJFK'),
 (2, 'nnlinh97', 'nnlinh', '$2a$10$JyHUnzm6z5/l1NdQR0IJjOrpMnGbm456hRqMa2a2CN26vrTLThrZe');
 
 -- --------------------------------------------------------
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `book_tour_contact_info` (
   `fk_user` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_user` (`fk_user`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `book_tour_contact_info`
@@ -84,7 +84,8 @@ INSERT INTO `book_tour_contact_info` (`id`, `email`, `fullname`, `phone`, `addre
 (4, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', NULL),
 (5, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', NULL),
 (6, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', NULL),
-(7, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL);
+(7, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL),
+(8, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL);
 
 -- --------------------------------------------------------
 
@@ -94,6 +95,7 @@ INSERT INTO `book_tour_contact_info` (`id`, `email`, `fullname`, `phone`, `addre
 
 CREATE TABLE IF NOT EXISTS `book_tour_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` text COLLATE utf8_unicode_ci NOT NULL,
   `book_time` datetime NOT NULL,
   `status` enum('booked','paid','cancelled') COLLATE utf8_unicode_ci DEFAULT 'booked',
   `num_passenger` int(11) NOT NULL DEFAULT '0',
@@ -105,18 +107,19 @@ CREATE TABLE IF NOT EXISTS `book_tour_history` (
   KEY `fk_contact_info` (`fk_contact_info`),
   KEY `fk_tour_turn` (`fk_tour_turn`),
   KEY `fk_payment` (`fk_payment`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `book_tour_history`
 --
 
-INSERT INTO `book_tour_history` (`id`, `book_time`, `status`, `num_passenger`, `total_pay`, `fk_contact_info`, `fk_tour_turn`, `fk_payment`) VALUES
-(3, '2019-03-20 09:25:08', 'booked', 1, 1000000, 3, 14, 1),
-(4, '2019-03-20 09:25:19', 'booked', 1, 1000000, 4, 14, 1),
-(5, '2019-03-20 09:27:03', 'booked', 2, 1000000, 5, 14, 1),
-(6, '2019-03-20 13:42:47', 'booked', 2, 1000000, 6, 14, 1),
-(7, '2019-03-21 14:32:24', 'booked', 3, 1500000, 7, 14, 1);
+INSERT INTO `book_tour_history` (`id`, `code`, `book_time`, `status`, `num_passenger`, `total_pay`, `fk_contact_info`, `fk_tour_turn`, `fk_payment`) VALUES
+(3, '78acc210-5059-11e9-aa13-03259040952a', '2019-03-20 09:25:08', 'booked', 1, 1000000, 3, 14, 1),
+(4, '814d77c0-5059-11e9-989c-a5f26e5408ec', '2019-03-20 09:25:19', 'booked', 1, 1000000, 4, 3, 1),
+(5, '870ae3a0-5059-11e9-8684-5d74946d80db', '2019-03-20 09:27:03', 'booked', 2, 1000000, 5, 4, 1),
+(6, '89216790-5059-11e9-8c7e-c3f82d1fa1ef', '2019-03-20 13:42:47', 'booked', 2, 1000000, 6, 14, 1),
+(7, '8fae3160-5059-11e9-98a6-11c33d1f98b4', '2019-03-21 14:32:24', 'booked', 3, 1500000, 7, 14, 1),
+(8, 'a294e850-5059-11e9-8e50-6d47d5b38a8f', '2019-03-27 06:29:12', 'booked', 3, 1500000, 8, 14, 1);
 
 -- --------------------------------------------------------
 
@@ -277,7 +280,7 @@ CREATE TABLE IF NOT EXISTS `passengers` (
   PRIMARY KEY (`id`),
   KEY `fk_book_tour` (`fk_book_tour`),
   KEY `fk_type_passenger` (`fk_type_passenger`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `passengers`
@@ -292,7 +295,10 @@ INSERT INTO `passengers` (`id`, `fullname`, `phone`, `birthdate`, `sex`, `addres
 (8, 'Sawa', '0123451489', '1997-09-12', 'female', NULL, NULL, 6, 1),
 (9, 'Phạm Hưng Tuấn Anh', '0125466454', '1997-08-21', 'male', NULL, '206124151', 7, 1),
 (10, 'Nguyễn Ngọc Minh', '0164651846', '1997-04-05', 'female', NULL, NULL, 7, 1),
-(11, 'Phạm Hưng Ngọc Minh', '0125466454', '2012-04-05', 'female', NULL, NULL, 7, 2);
+(11, 'Phạm Hưng Ngọc Minh', '0125466454', '2012-04-05', 'female', NULL, NULL, 7, 2),
+(12, 'Phạm Hưng Tuấn Anh', '0125466454', '1997-08-21', 'male', NULL, '206124151', 8, 1),
+(13, 'Nguyễn Ngọc Minh', '0164651846', '1997-04-05', 'female', NULL, NULL, 8, 1),
+(14, 'Phạm Hưng Ngọc Minh', '0125466454', '2012-04-05', 'female', NULL, NULL, 8, 2);
 
 -- --------------------------------------------------------
 
@@ -328,7 +334,7 @@ CREATE TABLE IF NOT EXISTS `price_passenger` (
   PRIMARY KEY (`id`),
   KEY `fk_tourturn` (`fk_tourturn`),
   KEY `fk_type_passenger` (`fk_type_passenger`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `price_passenger`
@@ -364,7 +370,9 @@ INSERT INTO `price_passenger` (`id`, `percent`, `fk_tourturn`, `fk_type_passenge
 (28, 50, 17, 2),
 (29, 100, 18, 1),
 (30, 50, 18, 2),
-(31, 48, 14, 2);
+(31, 48, 14, 2),
+(39, 49, 33, 2),
+(40, 99, 33, 1);
 
 -- --------------------------------------------------------
 
@@ -402,6 +410,23 @@ CREATE TABLE IF NOT EXISTS `requests` (
 
 INSERT INTO `requests` (`id`, `name`, `email`, `message`) VALUES
 (1, 'long', 'long@long.long', 'long\'s mess');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `request_cancel_booking`
+--
+
+CREATE TABLE IF NOT EXISTS `request_cancel_booking` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` enum('pending','solved') COLLATE utf8_unicode_ci DEFAULT 'pending',
+  `message` text COLLATE utf8_unicode_ci,
+  `fk_book_tour` int(11) DEFAULT NULL,
+  `fk_user` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_book_tour` (`fk_book_tour`),
+  KEY `fk_user` (`fk_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -553,7 +578,7 @@ INSERT INTO `tours` (`id`, `name`, `description`, `detail`, `featured_img`, `pol
 (4, 'Thành phố Hồ Chí Minh 1 ngày', 'Hành trình du lịch Sài Gòn 1 ngày đưa du khách đến với thành phố mang tên Bác, từ lâu đã là trung tâm văn hóa, kinh tế của Việt Nam, thành phố này còn có có tên gọi khác là Hòn Ngọc Viễn Đông. Đến thành phố Hồ Chí Minh, thành phố có hơn 300 tuổi đời, bạn sẽ thấy những tòa nhà cao tầng, khu vui chơi giải trí, trung tâm mua sắm. Bên cạnh đó những phồn hoa chốn đô thị thì bạn cũng có thể thấy những biệt thự cổ kính, chợ truyền thống lâu đời…\r\n', 'Đại học Khoa Học Tự Nhiên - Nhà thờ Chánh Tòa Đức Bà Sài Gòn - Bưu điện TPHCM - Nhà hát TPHCM - Đại học Khoa học Tự Nhiên (Ăn trưa)', 'TPHCM_featured_image.png', 'Nếu Quý khách hủy tour: chịu phí 100 %.\r\n'),
 (5, 'TPHCM - Đà Lạt - Đà Nẵng', 'Tour TPHCM - Đà Lạt - Đà Nẵng sẽ dừng chân tại một thành phố du lịch nổi tiếng được mệnh danh là Thành phố ngàn thông, Thành phố hoa anh đào, Thành phố mù sương... Cho dù với tên gọi nào thì Đà Lạt vẫn luôn có sức quyến rũ đặc biệt đối với du khách bốn phương bởi khí hậu mát mẻ, không khí trong lành, khung cảnh nên thơ và những truyền thuyết tình yêu lãng mạn. Và  đến với dải đất miền Trung với nhiều nắng gió lại là nơi lưu giữ những giá trị văn hóa con người tạo dựng. Trên dải đất hẹp từ Quảng Bình tới Quảng Nam hình thành nên con đường du lịch di sản miền Trung đã trở thành điểm đến thu hút đông đảo du khách trong và ngoài nước. Hành trình khám phá bức tranh miền Trung xinh đẹp, của Đà Nẵng nổi tiếng với bờ biển dài, quyến rũ; của Hội An nơi phố cổ bình yên, cổ kính; của đất Huế kinh thành lộng lẫy chốn hoàng cung… tất cả tạo ấn tượng cho du khách tham quan. ', 'Ngày 1: Bưu điện TPHCM - Thác Prenn - Thiền viện Trúc Lâm - Khách sạn (Ăn trưa, Ăn tối).\r\nNgày 2 : Khách sạn - Thũng lũng vàng - Dinh Bảo Đại - Làng Hoa Vạn Thành - Showroom hoa nghệ thuật  - Khách sạn. (Ăn sáng, trưa, tối).\r\nNgày 3: Khách sạn - Nhà thờ Con Gà - Ga xe lửa - Chùa Linh Phước - Langbiang - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 4: Khách sạn (Đà Lạt) - Khách sạn (Đà Nẵng) - Bảo tàng 3D TrickEye - Ký Ức Hội An Show - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 5: Khách sạn - Bà Nà Hills - Khách sạn (Ăn sáng, trưa, tối).\r\nNgày 6: Khách sạn(Đà Nẵng) -  Bưu điện TPHCM (Ăn sáng, trưa, tối).', 'TpHCM_DL_DN_featured_image.png', 'Nếu Quý khách hủy tour từ 7 ngày trở lên so với ngày khởi hành, chịu phí: 10%\r\nNếu Quý khách hủy sau 3 ngày đến trước ngày đi 2 ngày: 50%.\r\nNếu Quý khách hủy trong vòng 2 ngày: chịu phí 100 %.\r\n'),
 (6, 'Nam - Bắc', 'Thưởng ngoạn các danh lam thắng cảnh miền Trung, miền Bắc. Xin chân trọng giới thiệu tới Du khách chương trình \"những di sản văn hóa và di sản thiên nhiên thế giới\" bao gồm: Phố cổ Hội An, Quần thể di tích Huế, vịnh Hạ Long. Chuyến du lịch hành hương với danh thắng chùa Hương và đệ nhất Thiền Viện Việt Nam – Trúc Lâm Yên Tử. Chinh phục con đường Trường Sơn huyền thoại. Cùng nhiều loại hình du lịch vui tươi phong phú khác... Hứa hẹn các bạn sẽ có một chuyến du ', 'Ngày 1: Đoàn khởi hành rời TP.Hồ Chí Minh đi Nha Trang. Trên đường ghé Phan Thiết, du khách dừng chân nghỉ ngơi và ngắm biển Đồi Dương. Ghé tham quan bãi biển Cà Ná – nơi giao hoà tuyệt đẹp giữa núi và biển. Đoàn đi theo đường mới ven biển Sông Lô – Hòn Rớm ngắm cảnh biển tuyệt vời trên Vịnh Cam Ranh. Đoàn vào Nha Trang theo con đường mới ven biển Sông Lô – Hòn Rớ, qua đèo Cù Huân ngắmcảnh biển chiều trên vịnh Nha Trang. Đến Nha Trang (tỉnh Khánh Hòa) đoàn thưởng thức tiệc Buffet tối đặc biệt, sau đó về khách sạn. Buổi tối, xe đưa Quý khách đi dạo phố biển về đêm, qua chợ đêm Nha Trang, công viên Phù Đổng, Cà phê Bốn Mùa, khu hải sản Tháp Bà…Nghỉ đêm tại Nha Trang. (Ăn sáng trưa, chiều, tối).\r\n\r\nNgày 2: Xe đưa đoàn khởi hành đi Dốc Lết, trên đường Quý khách  thưởng ngoạn các thắng cảnh nổi tiếng Nha Trang như: cầu Xóm Bóng, núi Cô Tiên, Hòn Chồng... Đến với bãi biển White Sand - Dốc Lết, một trong những bãi biển đẹp nổi tiếng của Khánh Hòa với bãi cát trắng thoai thoải trãi dài cùng làn nước trong xanh và hàng dừa nghiêng mình soi bóng,  Quý khách tắm biển và thưởng thức các món hải sản của ngư dân địa phương đánh bắt. Đoàn đi tham quan Trung tâm Ngọc Trai Long Beach Pearl Nha Trang, là một trong hai trung tâm Ngọc Trai lớn nhất khu vực miền trung do tập đoàn Long Beach Pearl đầu tư. Đến đây Quý khách được nghe giới thiệu về qui trình nuôi cấy - khai thác - chế tác ngọc trai, được tham quan khu trưng bày với hơn 3.000 mẫu ngọc trai thiết kế tinh tế - đẹp mắt và sang trọng. Tối khuya Đoàn ra sân bay Cam Ranh làm thủ tục bay Đà Nẵng. (Ăn sáng, trưa, tối).\r\n\r\nNgày 3: Lên Bán Đảo Sơn Trà mục kích phố biển Đà Nẵng trên cao, viếng Linh Ứng Tự - nơi có tượng Phật Bà 67m cao nhất Việt Nam và tắm biển Mỹ Khê Đà Nẵng. Ăn tối nhà hàng. Trãi nghiệm cảm giác với Vòng quay Mặt trời SUN WHEEL – Top 10 vòng quay cao nhất Thế Giới, chiêm ngưởng vẻ đẹp Đà Thành về đêm rực rỡ ánh đèn. (Vé Sun Wheel tự túc). Nghỉ đêm tại Bán Đảo Sơn Trà. (Ăn sáng, trưa, tối).\r\n\r\nNgày 4: Tham quan Bảo Tàng Đà Nẵng - Nơi trưng bày các kỷ vật phản ảnh đời sống văn hóa, lịch sử và con người Xứ Quảng. Chụp hình lưu niệm Trung tâm hành chính – Biểu tượng vươn lên mạnh mẽ của thành phố Đà Nẵng.Tiếp tục tham quan Ngũ Hành Sơn - Khám phá các hang động, vãn cảnh đẹp non nước trời mây. Khởi hành vào Hội An bách bộ tham quan và mua sắm Phố Cổ với: Chùa Cầu Nhật Bản, Nhà Cổ hàng trăm năm tuổi, Hội Quán Phước Kiến & Xưởng thủ công mỹ nghệ.  Ăn tối Đặc sản Hội An: Cao lầu, bánh bao bánh vạc, hoành thánh, .. Nghỉ đêm tại Phố Cổ. (Ăn sáng, trưa, tối).\r\n\r\nNgày 5: Khởi hành lên Bà Nà 9h00 sáng: Đến ga cáp treo Suối Mơ, lên tuyến cáp treo đạt 4 kỷ lục thế giới. 9h30 sáng: Tham quan Cầu vàng - Cây cầu độc đáo nằm trong vườn Thiên Thai ở Bà Nà Hill. Tham quan Khu Le Jardin, tham quan Hầm Rượu Debay của Pháp. Viếng Chùa Linh Ứng Bà Nà, chiêm ngưỡng tượng Phật Thích Ca cao 27m, Vườn Lộc Uyển, Quan Âm Các. Tiếp tục đến Gare Debay đi tuyến cáp thứ 2 lên đỉnh Bà Nà. Hướng dẫn đưa đoàn vào tham quan khu vui chơi Fantasy Park tham gia các trò chơi phiêu lưu mới lạ, ngộ nghĩnh, hấp dẫn, hiện đại như vòng quay tình yêu, Phi công Skiver, Đường đua lửa, Xe điện đụng Ngôi nhà ma. Khởi hành đi Cố Đô Huế - Di sản văn hoá Thế Giới, xuyên hầm đường bộ đèo Hải Vân, dừng chân tại làng chài Lăng Cô chụp hình lưu niệm.Tham quan Lăng Khải Định - công trình mang nhiều trường phái kiến trúc khác nhau, kết hợp Đông - Tây, Âu - Á, Cổ Kim độc đáo so với các công trình kiến trúc truyền thống Việt Nam. Nhận phòng khách sạn nghỉ ngơi. (Ăn sáng, trưa, tối).\r\n\r\nNgày 6: Khởi hành đi Cố Đô Huế - Di sản văn hoá Thế Giới, xuyên hầm đường bộ đèo Hải Vân, dừng chân tại làng chài Lăng Cô chụp hình lưu niệm.Tham quan Lăng Khải Định - công trình mang nhiều trường phái kiến trúc khác nhau, kết hợp Đông - Tây, Âu - Á, Cổ Kim độc đáo so với các công trình kiến trúc truyền thống Việt Nam. Nhận phòng khách sạn nghỉ ngơi. Ngồi thuyền ngược sông Son chinh phục Động Phong Nha: Cô Tiên & Cung Đình dưới sâu lòng núi nơi có con sông ngầm từ Lào chảy sang, chiêm ngưỡng các khối thạch nhũ tuyệt đẹp được kiến tạo bởi thiên nhiên qua hàng ngàn thiên niên kỷ. Khởi hành về Huế để chiêm ngưỡng vẻ đẹp của Kinh Thành Huế. Xe đến đón quý khách ra sân bay khởi hành đi Hà Nội. (Ăn sáng, chiều, tối).\r\n\r\nNgày 7: Xe khởi hành đi Ninh Bình, ngắm cảnh vùng nông thôn Việt Nam. Đến Ninh Bình, Quý khách ghé thăm Cố đô Hoa Lư - Kinh đô của nước ta vào thế kỷ X - nơi có hai ngôi đền thờ vua Đinh và vua Lê.  Đoàn khởi hành đi Hạ long – Di sản thế giới được UNESCO công nhận năm 1994, thăm quan động Thiên Cung và hang Dấu Gỗ, đi qua Hòn Lư Hương, Hòn Gà Chọi, Hòn Chó Đá, (Dùng cơm trưa trên tàu trước khi thăm quan hang động). Tự do hoặc vui chơi tại công viên Hoàng Gia – Nghỉ đêm tại khách sạn Hạ Long. (Ăn sáng, trưa, tối).\r\n\r\nNgày 8: Hướng dẫn viên đón đoàn khởi hành đi Yên Tử. Đến Yên Tử, Quý khách leo núi khám phá vẻ đẹp tự nhiên của núi Yên Tử – còn được gọi là Bạch Vân Sơn (núi giữa mây trắng) cao hơn 1000m. Nghỉ ngơi, ăn trưa, lễ chùa tại khu vực chùa Hoa Yên. Quý khách tiếp tục leo núi, chinh phục chặng đường khó khăn nhất của núi rừng Yên Tử mà đỉnh cao nhất là chùa Đồng (nằm ở độ cao 1068m so với mặt nước biển), lễ Phật và thưởng ngoạn cảnh đại ngàn Yên Tử từ trên đỉnh núi. Quý khách leo núi trở xuống chùa Hoa Yên. Đi cáp treo (vé tự túc) ngắm nhìn cảnh đẹp của Yên Tử từ trên cao với những chặng đường đã đi qua. Xe đón quý khách lên tàu đi Lào Cai.  (Ăn sáng, chiều , tối).\r\n\r\nNgày 9 : Tàu tới ga Lào Cai, xe ôtô đón quý khách lên Bản Cát Cát (Sapa),tìm hiểu về lối sống và phong tục của người H’Mông (đi bằng xe ôtô riêng) thăm nhà máy thuỷ điện từ thời Pháp thuộc, thăm trường học và nhà ở của đồng bào dân tộc thiểu số, kỹ thuật nhuộm chàm của người H’Mông, tự do dạo chơi. Quý khách nghỉ đêm tại Bản Cát Cát. (Ắn sáng, trưa, chiều).. (Ăn sáng, chiều , tối).\r\n\r\nNgày 10: Quý khách đi thăm Hàm Rồng (đi bộ) để ngắm cảnh thị trấn Sapa và khám phá hàng trăm loại phong lan, cây cảnh mà chỉ ở nơi đây mới có. Quý khách tự do dạo chơi, đi chợ Sapa tham quan và mua quà lưu niệm. Lên tàu đêm về Hà Nội. Đoàn đi viếng Lăng Bác: phủ Chủ Tịch, vườn cây ao cá, nhà sàn Bác Hồ, chùa Một Cột. Xe đưa du khách ra sân bay chia tay. Kết thúc Tour Du Lich Xuyên Việt Miền Nam - Miền Bắc 10 Ngày và hẹn tái ngộ.  (Ăn sáng, chiều , tối).', 'N_B_featured_image.png', 'Báo giá không bao gồm\r\n- Ăn uống ngòai chương trình, và các chi phí tắm biển, vui chơi giải trí cá nhân.\r\nGiá vé dành cho trẻ em\r\n-Trẻ em dưới 02 tuổi: 25% giá tour (ngủ chung với người lớn).\r\n-Trẻ em từ trên 2 tuổi đến dưới 12 tuổi: 75% giá tour (ngủ chung với người lớn), 85% giá tour (bé ngủ giường riêng).\r\n-Trẻ em từ 12 tuổi trở lên: 100% giá tour như người lớn.\r\nĐiều kiện hủy tour\r\nSau khi đăng ký tour, nếu quý khách thông báo hủy tour:\r\n- Trước ngày khởi hành 30 ngày: phí hoàn vé là 10% giá tour.\r\n- Từ sau 30 ngày đến trước 15 ngày: phí hoàn vé là 40% giá tour.\r\n- Từ sau 15 ngày đến trước 05 ngày: phí hoàn vé là 60% giá tour.\r\n- Từ 05 ngày trước ngày khởi hành: phí hoàn vé là 100% giá tour.'),
-(20, 'tesst update tour', 'đây chỉ là mô tả thôi mà à à à', 'chi tiết ngày 1 -  2 - 3 làm cm gì', '1553247964965.jpg', 'đừng đụng vào');
+(20, 'tesst update tour rrrrr', 'đây chỉ là mô tả thôi mà à à à', 'chi tiết ngày 1 -  2 - 3 làm cm gì', '1553324343389.jpg', 'đừng đụng vào');
 
 -- --------------------------------------------------------
 
@@ -567,7 +592,7 @@ CREATE TABLE IF NOT EXISTS `tour_images` (
   `fk_tour` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tour_images`
@@ -631,11 +656,7 @@ INSERT INTO `tour_images` (`id`, `name`, `fk_tour`) VALUES
 (55, 'N_B_9.png', 6),
 (56, 'N_B_10.png', 6),
 (57, 'N_B_11.png', 6),
-(63, '20_1552903197455_0.jpg', 20),
-(71, '20_1553246953734_0.jpg', 20),
-(72, '20_1553247092309_0.jpg', 20),
-(73, '20_1553247223083_0.jpg', 20),
-(74, '20_1553247964965_0.jpg', 20);
+(63, '20_1552903197455_0.jpg', 20);
 
 -- --------------------------------------------------------
 
@@ -655,7 +676,7 @@ CREATE TABLE IF NOT EXISTS `tour_turns` (
   `fk_tour` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tour` (`fk_tour`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tour_turns`
@@ -664,8 +685,8 @@ CREATE TABLE IF NOT EXISTS `tour_turns` (
 INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, `num_max_people`, `price`, `discount`, `status`, `fk_tour`) VALUES
 (1, '2019-02-24', '2019-02-24', 1, 15, 100000, 0, 'public', 1),
 (2, '2019-03-02', '2019-03-02', 0, 15, 100000, 0, 'public', 1),
-(3, '2019-04-18', '2019-03-18', 0, 20, 200000, 0, 'public', 2),
-(4, '2019-03-09', '2019-03-09', 0, 20, 215000, 0, 'public', 2),
+(3, '2019-03-24', '2019-03-24', 1, 20, 200000, 0, 'public', 2),
+(4, '2019-01-25', '2019-01-25', 2, 20, 215000, 0, 'public', 2),
 (5, '2019-04-11', '2019-04-11', 0, 60, 500000, 0, 'public', 3),
 (6, '2019-03-08', '2019-03-08', 2, 30, 1500000, 0, 'private', 4),
 (7, '2019-03-10', '2019-03-15', 0, 50, 1500000, 0, 'public', 5),
@@ -673,10 +694,11 @@ INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, 
 (13, '2019-04-19', '2019-04-24', 0, 60, 550000, 0, 'public', 1),
 (14, '2019-04-24', '2019-05-07', 9, 60, 500000, 5, 'public', 2),
 (15, '2019-04-09', '2019-04-09', 0, 62, 600000, 100, 'public', 1),
-(16, '2019-04-01', '2019-04-01', 0, 20, 500000, 3, 'public', 4),
+(16, '2019-04-01', '2019-04-01', 0, 20, 450000, 3, 'public', 4),
 (17, '2019-03-19', '2019-03-19', 0, 20, 500000, 5, 'public', 4),
 (18, '2019-04-06', '2019-04-06', 0, 25, 300000, 0, 'public', 2),
-(19, '2019-04-06', '2019-04-08', 0, 30, 300000, 5, 'private', 4);
+(19, '2019-04-06', '2019-04-08', 0, 30, 300000, 5, 'private', 4),
+(33, '2019-04-06', '2019-04-08', 0, 30, 300000, 6, 'private', 4);
 
 -- --------------------------------------------------------
 
@@ -865,6 +887,13 @@ ALTER TABLE `price_passenger`
 ALTER TABLE `ratings`
   ADD CONSTRAINT `ratings_ibfk_1` FOREIGN KEY (`fk_tour`) REFERENCES `tours` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `ratings_ibfk_2` FOREIGN KEY (`fk_user`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `request_cancel_booking`
+--
+ALTER TABLE `request_cancel_booking`
+  ADD CONSTRAINT `request_cancel_booking_ibfk_1` FOREIGN KEY (`fk_book_tour`) REFERENCES `book_tour_history` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `request_cancel_booking_ibfk_2` FOREIGN KEY (`fk_user`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `routes`
