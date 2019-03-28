@@ -27,6 +27,12 @@ router.get('/searchByName', tours.searchByName);
 
 router.get('/searchByPrice', tours.searchByPrice);
 
-router.get('/getAllWithoutPagination', tours.getAllWithoutPagination);
+// example call api http://localhost:5000/tour/search?name=saigon&price=500000&sortBy=Price&sortType=ASc
+// trong đó sortBy gồm price (mặc định nếu params sai), date, rating(chưa có) (chỉ sort được theo 1 tiêu chí) (không phân biệt hoa thường). 
+// sortType gồm ASC (mặc định nếu params sai), DESC (không phân biệt hoa thường)
+// name và price nếu k có thì trả về tất cả
+router.get('/search', tours.search);
+
+router.get('/getAllWithoutPagination', tours.getAllWithoutPagination); //middlewareAuthAdmin
 
 module.exports = router
