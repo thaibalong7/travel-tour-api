@@ -117,7 +117,7 @@ exports.updateWithoutFeaturedImg = (req, res) => {
         req.body.featured_img = undefined;
         locations.update(req.body, { where: { id: req.body.id } }).then(async location => {
             res.status(200).json({
-                msg: 'Update successfull',
+                msg: 'Update successful',
                 data: await locations.findByPk(req.body.id)
             })
         })

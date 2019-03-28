@@ -279,52 +279,6 @@ exports.me = (req, res) => {
     }
 }
 
-exports.updateSex = async (req, res) => {
-    const _user = req.userData;
-    if (typeof req.body.sex === 'undefined') {
-        //err params
-        return res.status(400).json({ msg: 'Params is invalid' })
-    }
-    else {
-        _user.sex = req.body.sex;
-        await _user.save();
-        const user = _.omit(_user.dataValues, 'password');
-        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1) {
-            if (process.env.NODE_ENV === 'development')
-                user.avatar = 'http://' + req.headers.host + '/assets/avatar/' + user.avatar;
-            else
-                user.avatar = 'https://' + req.headers.host + '/assets/avatar/' + user.avatar;
-        }
-        return res.status(200).json({
-            msg: 'Update successful',
-            profile: user
-        })
-    }
-}
-
-exports.updateBirthdate = async (req, res) => {
-    const _user = req.userData;
-    if (typeof req.body.birthdate === 'undefined') {
-        //err params
-        return res.status(400).json({ msg: 'Params is invalid' })
-    }
-    else {
-        _user.birthdate = req.body.birthdate;
-        await _user.save();
-        const user = _.omit(_user.dataValues, 'password');
-        if (user.avatar !== null && user.avatar.indexOf('graph.facebook.com') === -1) {
-            if (process.env.NODE_ENV === 'development')
-                user.avatar = 'http://' + req.headers.host + '/assets/avatar/' + user.avatar;
-            else
-                user.avatar = 'https://' + req.headers.host + '/assets/avatar/' + user.avatar;
-        }
-        return res.status(200).json({
-            msg: 'Update successful',
-            profile: user
-        })
-    }
-}
-
 exports.update = async (req, res) => {
     var _user = req.userData;
     if (typeof req.body.birthdate !== 'undefined')

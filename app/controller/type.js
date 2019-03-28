@@ -20,7 +20,7 @@ exports.update = (req, res) => {
         }
     }).then(async type => {
         res.status(200).json({
-            msg: 'Update successfull',
+            msg: 'Update successful',
             data: await types.findByPk(req.body.id)
         })
     }).catch(err => {

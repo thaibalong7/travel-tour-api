@@ -20,7 +20,7 @@ exports.update = (req, res) => {
         }
     }).then(async payment => {
         res.status(200).json({
-            msg: 'Update successfull',
+            msg: 'Update successful',
             data: await payment_method.findByPk(req.body.id)
         })
     }).catch(err => {
