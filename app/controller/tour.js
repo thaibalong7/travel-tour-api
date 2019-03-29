@@ -744,13 +744,16 @@ exports.searchByName = (req, res) => {
                         [Op.like]: '%' + key_search + '%'
                     }
                 },
-                include: [{
-                    attributes: { exclude: ['fk_tour'] },
-                    model: db.tour_turns,
-                    where: {
-                        status: 'public',
-                    }
-                }],
+                attributes: ['name'],
+                // include: [{
+                //     attributes: { exclude: ['fk_tour'] },
+                //     model: db.tour_turns,
+                //     where: {
+                //         status: 'public',
+                //     }
+                // }],
+                limit: per_page,
+                offset: (page - 1) * per_page
             }
             tours.findAndCountAll(query).then(async _tours => {
                 var next_page = page + 1;
@@ -762,7 +765,7 @@ exports.searchByName = (req, res) => {
                     next_page = -1;
                 if (parseInt(_tours.rows.length) === 0)
                     next_page = -1;
-                await helper_add_link.addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
+                // await helper_add_link.addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
                 res.status(200).json({
                     itemCount: _tours.count, //số lượng record được trả về
                     data: _tours.rows,
