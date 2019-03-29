@@ -391,7 +391,7 @@ exports.getAll = (req, res) => { //update here
                 const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
                 await convertDiscountOfListTourTurn(result);
                 res.status(200).json({
-                    itemCount: result.length, //số lượng record được trả về
+                    itemCount: result_paginate.length, //số lượng record được trả về
                     data: result,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })
@@ -413,7 +413,7 @@ exports.getAll = (req, res) => { //update here
                 const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
                 await convertDiscountOfListTourTurn(result);
                 res.status(200).json({
-                    itemCount: result.length, //số lượng record được trả về
+                    itemCount: result_paginate.length, //số lượng record được trả về
                     data: result,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })
@@ -657,7 +657,7 @@ exports.updateWithPricePassenger = async (req, res) => {
 }
 
 exports.search = async (req, res) => {
-    const arr_sortBy = ['price', 'date', 'lasting', 'rating'];
+    const arr_sortBy = ['price', 'date', 'rating'];
     const arr_sortType = ['ASC', 'DESC'] //ascending (tăng dần) //descending  (giảm dần)
     try {
         const name_search = req.query.name;
@@ -724,7 +724,7 @@ exports.search = async (req, res) => {
             }
             if (typeof lasting_search !== 'undefined') { //nếu có search bằng lasting //cái này để cuối vì có dùng lại những thay đổi ở trên
                 query.where = db.sequelize.and(
-                    db.sequelize.literal('DATEDIFF(end_date, start_date) + 1 <= ' + parseInt(lasting_search)),
+                    db.sequelize.literal('DATEDIFF(end_date, start_date) + 1 = ' + parseInt(lasting_search)),
                     query.where,
                 )
             }
@@ -743,10 +743,10 @@ exports.search = async (req, res) => {
                     {
                         query.order = [['start_date', sortType]];
                     }
-                    if (sortBy === arr_sortBy[2]) //lasting
-                    {
-                        query.order = [db.sequelize.literal('lasting ' + sortType)];
-                    }
+                    // if (sortBy === arr_sortBy[2]) //lasting
+                    // {
+                    //     query.order = [db.sequelize.literal('lasting ' + sortType)];
+                    // }
                 }
             }
             tour_turns.findAndCountAll(query).then(async _tour_turns => {
@@ -762,7 +762,7 @@ exports.search = async (req, res) => {
                 await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns.rows, req.headers.host)
                 await convertDiscountOfListTourTurn(_tour_turns.rows)
                 res.status(200).json({
-                    itemCount: _tour_turns.rows.length, //số lượng record được trả về
+                    itemCount: _tour_turns.count, //số lượng record được trả về
                     data: _tour_turns.rows,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })

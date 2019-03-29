@@ -531,7 +531,7 @@ exports.getAllTour = (req, res) => {
                 next_page = -1;
             await helper_add_link.addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
             res.status(200).json({
-                itemCount: _tours.rows.length, //số lượng record được trả về
+                itemCount: _tours.count, //số lượng record được trả về
                 data: _tours.rows,
                 next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
             })
@@ -668,7 +668,7 @@ exports.getByLocation = (req, res) => {
                     next_page = -1;
                 await helper_add_link.addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
                 return res.status(200).json({
-                    itemCount: _tours.rows.length, //số lượng record được trả về
+                    itemCount: _tours.count, //số lượng record được trả về
                     data: _tours.rows,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })
@@ -764,7 +764,7 @@ exports.searchByName = (req, res) => {
                     next_page = -1;
                 await helper_add_link.addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
                 res.status(200).json({
-                    itemCount: _tours.rows.length, //số lượng record được trả về
+                    itemCount: _tours.count, //số lượng record được trả về
                     data: _tours.rows,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })
@@ -819,7 +819,7 @@ exports.searchByPrice = (req, res) => {
                     next_page = -1;
                 await helper_add_link.addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
                 res.status(200).json({
-                    itemCount: _tours.rows.length, //số lượng record được trả về
+                    itemCount: _tours.count, //số lượng record được trả về
                     data: _tours.rows,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })
@@ -937,7 +937,7 @@ exports.search = async (req, res) => {
                 await helper_add_link.addLinkToursFeaturedImgOfListTours(_tours.rows, req.headers.host)
                 await convertDiscountOfListTour(_tours.rows)
                 res.status(200).json({
-                    itemCount: _tours.rows.length, //số lượng record được trả về
+                    itemCount: _tours.count, //số lượng record được trả về
                     data: _tours.rows,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })

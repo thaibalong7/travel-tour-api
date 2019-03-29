@@ -266,7 +266,7 @@ exports.getHistoryBookTourByUser = (req, res) => {
                     next_page = -1;
                 await add_is_cancel_booking(_book_tour_history.rows);
                 return res.status(200).json({
-                    itemCount: _book_tour_history.rows.length, //số lượng record được trả về
+                    itemCount: _book_tour_history.count, //số lượng record được trả về
                     data: _book_tour_history.rows,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })
@@ -412,7 +412,7 @@ exports.getPassengerInBookTourHistory = (req, res) => {
                     if (parseInt(_passengers.rows.length) === 0)
                         next_page = -1;
                     return res.status(200).json({
-                        itemCount: _passengers.rows.length, //số lượng record được trả về
+                        itemCount: _passengers.count, //số lượng record được trả về
                         data: _passengers.rows,
                         next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                     })

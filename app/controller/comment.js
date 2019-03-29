@@ -69,7 +69,7 @@ exports.getByTour = (req, res) => {
                 next_page = -1;
             const result = await helper_add_link.addLinkAvatarUserOfListComment(_comments.rows, req.headers.host);
             res.status(200).json({
-                itemCount: result.length, //số lượng record được trả về
+                itemCount: _comments.count, //số lượng record được trả về
                 data: result,
                 next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
             })

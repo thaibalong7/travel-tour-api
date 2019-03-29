@@ -284,7 +284,7 @@ exports.getAllLocation = (req, res) => {
                 const result = await addLinkLocationFeaturedImgOfListLocationsAndAddTour(_locations.rows, req.headers.host)
                 Promise.all(result).then(completed => {
                     res.status(200).json({
-                        itemCount: completed.length, //số lượng record được trả về
+                        itemCount: _locations.count, //số lượng record được trả về
                         data: completed,
                         next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                     })
@@ -293,7 +293,7 @@ exports.getAllLocation = (req, res) => {
             else {
                 const result = await helper_add_link.addLinkLocationFeaturedImgOfListLocations(_locations.rows, req.headers.host)
                 res.status(200).json({
-                    itemCount: _locations.rows.length, //số lượng record được trả về
+                    itemCount: _locations.count, //số lượng record được trả về
                     data: result,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })
