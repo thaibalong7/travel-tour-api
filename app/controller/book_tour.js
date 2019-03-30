@@ -628,6 +628,15 @@ exports.getBookTourHistoryByTourTurn = async (req, res) => {
             return res.status(400).json({ msg: 'Wrong id tour turn' });
         }
         else {
+            const tour_turn = await db.tour_turns.findOne({
+                attributes: { exclude: ['fk_tour'] },
+                where: {
+                    id: idTourTurn
+                },
+                include: [{
+                    model: db.tours
+                }]
+            });
             var query = {
                 attributes: { exclude: ['fk_contact_info', 'fk_payment'] },
                 where: {
@@ -649,7 +658,10 @@ exports.getBookTourHistoryByTourTurn = async (req, res) => {
             }
             db.book_tour_history.findAll(query).then(async _book_tours => {
                 return res.status(200).json({
-                    data: _book_tours
+                    data: {
+                        tour_turn: tour_turn,
+                        book_tour_history: _book_tours
+                    }
                 })
             })
         }
