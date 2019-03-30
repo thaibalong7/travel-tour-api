@@ -17,7 +17,9 @@ router.get('/getById_admin/:id', tour_turns.getById_admin)
 //example call api: http://localhost:5000/tour_turn/getAllWithoutPagination
 router.get('/getAllWithoutPagination', tour_turns.getAllWithoutPagination); //middlewareAuthAdmin
 
-//example call api: http://localhost:5000/tour_turn/getAll?page=1&per_page=4&isUniqueTour=true
+//example call api: http://localhost:5000/tour_turn/getAll?isUniqueTour=true&page=1&per_page=3&sortBy=view&sortType=Desc
+// trong đó sortBy gồm price, date, view, booking, rating(chưa có) (chỉ sort được theo 1 tiêu chí) (không phân biệt hoa thường). 
+// sortType gồm ASC, DESC (không phân biệt hoa thường)
 router.get('/getAll', tour_turns.getAll);
 
 router.post('/update', tour_turns.update); //middlewareAuthAdmin

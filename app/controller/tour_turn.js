@@ -337,88 +337,128 @@ exports.getAllWithoutPagination = (req, res) => {
 }
 
 exports.getAll = (req, res) => { //update here
-    var isUniqueTour = (req.query.isUniqueTour == 'true');
-    const page_default = 1;
-    const per_page_default = 10;
-    var page, per_page;
-    if (typeof req.query.page === 'undefined') page = page_default;
-    else page = req.query.page
-    if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
-    else per_page = req.query.per_page
-    if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
-        res.status(405).json({ msg: 'Params is invalid' })
-    }
-    else {
-        page = parseInt(page);
-        per_page = parseInt(per_page);
-        const query = {
-            attributes: { exclude: ['fk_tour'] },
-            include: [{
-                model: db.tours
-            }],
-            where: {
-                start_date: {
-                    [Op.gt]: new Date()
-                },
-                status: 'public',
-            },
-            order: [db.sequelize.literal('start_date ASC')]
+    //thêm option sortBy vs sortType
+    try {
+        const arr_sortBy = ['price', 'date', 'view', 'booking', 'rating'];
+        const arr_sortType = ['ASC', 'DESC'] //ascending (tăng dần) //descending  (giảm dần)
+        var isUniqueTour = (req.query.isUniqueTour == 'true');
+        const page_default = 1;
+        const per_page_default = 10;
+        var page, per_page;
+        var sortBy = req.query.sortBy;
+        var sortType = req.query.sortType;
+        if (typeof req.query.page === 'undefined') page = page_default;
+        else page = req.query.page
+        if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
+        else per_page = req.query.per_page
+        if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
+            res.status(405).json({ msg: 'Params is invalid' })
         }
-        tour_turns.findAndCountAll(query).then(async _tour_turns => {
-            if (isUniqueTour) { //lấy unique
-                var next_page = page + 1;
-                var unique = {};
-                var distinct = [];
-                await asyncForEach(_tour_turns.rows, function (item) {
-                    if (!unique[item.tour.id]) {
-                        distinct.push(item);
-                        unique[item.tour.id] = true;
+        else {
+            page = parseInt(page);
+            per_page = parseInt(per_page);
+            const query = {
+                attributes: {
+                    exclude: ['fk_tour'],
+                    include: [
+                        [Sequelize.literal('DATEDIFF(end_date, start_date) + 1'), 'lasting'],
+                        [Sequelize.literal('CAST(price - (discount * price) / 100 AS UNSIGNED)'), 'end_price'],
+                        [Sequelize.literal('price'), 'original_price'],
+                    ]
+                },
+                include: [{
+                    model: db.tours
+                }],
+                where: {
+                    start_date: {
+                        [Op.gt]: new Date()
+                    },
+                    status: 'public',
+                },
+            }
+            if (typeof sortBy !== 'undefined' && typeof sortType !== 'undefined') { //2 params cùng được nhận
+                sortBy = sortBy.toLowerCase();
+                sortType = sortType.toUpperCase();
+                if (arr_sortBy.indexOf(sortBy) === -1 || arr_sortType.indexOf(sortType) === -1) {
+                    //một trong hai không đúng quy định -> k sort gì hết
+                }
+                else { //sort by ...
+                    if (sortBy === arr_sortBy[0]) //price
+                    {
+                        query.order = [db.sequelize.literal('end_price ' + sortType)];
                     }
-                });
-
-                //phân trang
-                const result_paginate = await paginate(distinct, per_page, page)
-
-                //Kiểm tra còn dữ liệu không
-                if ((parseInt(result_paginate.length) + (next_page - 2) * per_page) === parseInt(distinct.length))
-                    next_page = -1
-                //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
-                if ((parseInt(result_paginate.length) < per_page))
-                    next_page = -1;
-                if (parseInt(result_paginate.length) === 0)
-                    next_page = -1;
-
-                const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
-                await convertDiscountOfListTourTurn(result);
-                res.status(200).json({
-                    itemCount: result_paginate.length, //số lượng record được trả về
-                    data: result,
-                    next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
-                })
+                    if (sortBy === arr_sortBy[1]) //date
+                    {
+                        query.order = [['start_date', sortType]];
+                    }
+                    if (sortBy === arr_sortBy[2]) //view
+                    {
+                        query.order = [['view', sortType]];
+                    }
+                    if (sortBy === arr_sortBy[3]) //booking
+                    {
+                        query.order = [['num_current_people', sortType]];
+                    }
+                }
             }
-            else {
-                var next_page = page + 1;
-                //phân trang
-                const result_paginate = await paginate(_tour_turns.rows, per_page, page)
+            tour_turns.findAndCountAll(query).then(async _tour_turns => {
+                if (isUniqueTour) { //lấy unique
+                    var next_page = page + 1;
+                    var unique = {};
+                    var distinct = [];
+                    await asyncForEach(_tour_turns.rows, function (item) {
+                        if (!unique[item.tour.id]) {
+                            distinct.push(item);
+                            unique[item.tour.id] = true;
+                        }
+                    });
 
-                //Kiểm tra còn dữ liệu không
-                if ((parseInt(result_paginate.length) + (next_page - 2) * per_page) === parseInt(_tour_turns.rows.length))
-                    next_page = -1
-                //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
-                if ((parseInt(result_paginate.length) < per_page))
-                    next_page = -1;
-                if (parseInt(result_paginate.length) === 0)
-                    next_page = -1;
+                    //phân trang
+                    const result_paginate = await paginate(distinct, per_page, page)
 
-                const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
-                await convertDiscountOfListTourTurn(result);
-                res.status(200).json({
-                    itemCount: result_paginate.length, //số lượng record được trả về
-                    data: result,
-                    next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
-                })
-            }
-        })
+                    //Kiểm tra còn dữ liệu không
+                    if ((parseInt(result_paginate.length) + (next_page - 2) * per_page) === parseInt(distinct.length))
+                        next_page = -1
+                    //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
+                    if ((parseInt(result_paginate.length) < per_page))
+                        next_page = -1;
+                    if (parseInt(result_paginate.length) === 0)
+                        next_page = -1;
+
+                    const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
+                    await convertDiscountOfListTourTurn(result);
+                    res.status(200).json({
+                        itemCount: distinct.length, //số lượng record được trả về
+                        data: result,
+                        next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+                    })
+                }
+                else {
+                    var next_page = page + 1;
+                    //phân trang
+                    const result_paginate = await paginate(_tour_turns.rows, per_page, page)
+
+                    //Kiểm tra còn dữ liệu không
+                    if ((parseInt(result_paginate.length) + (next_page - 2) * per_page) === parseInt(_tour_turns.rows.length))
+                        next_page = -1
+                    //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
+                    if ((parseInt(result_paginate.length) < per_page))
+                        next_page = -1;
+                    if (parseInt(result_paginate.length) === 0)
+                        next_page = -1;
+
+                    const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
+                    await convertDiscountOfListTourTurn(result);
+                    res.status(200).json({
+                        itemCount: _tour_turns.rows.length, //số lượng record được trả về
+                        data: result,
+                        next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+                    })
+                }
+            })
+        }
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() })
     }
 }
 
