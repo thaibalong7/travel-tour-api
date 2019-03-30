@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 30, 2019 lúc 06:05 AM
+-- Thời gian đã tạo: Th3 30, 2019 lúc 07:48 AM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.2
 
@@ -287,8 +287,8 @@ CREATE TABLE IF NOT EXISTS `passengers` (
 --
 
 INSERT INTO `passengers` (`id`, `fullname`, `phone`, `birthdate`, `sex`, `address`, `passport`, `fk_book_tour`, `fk_type_passenger`) VALUES
-(3, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', NULL, NULL, 3, 1),
-(4, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', NULL, NULL, 4, 1),
+(3, 'Nguyển Văn A', '0123456789', '1997-11-24', 'male', NULL, NULL, 3, 1),
+(4, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', NULL, '206120720', 4, 1),
 (5, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', NULL, NULL, 5, 1),
 (6, 'Ngọc Trinh', '0123451489', '1997-04-10', 'female', NULL, NULL, 5, 1),
 (7, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', NULL, '206120720', 6, 1),
@@ -296,9 +296,9 @@ INSERT INTO `passengers` (`id`, `fullname`, `phone`, `birthdate`, `sex`, `addres
 (9, 'Phạm Hưng Tuấn Anh', '0125466454', '1997-08-21', 'male', NULL, '206124151', 7, 1),
 (10, 'Nguyễn Ngọc Minh', '0164651846', '1997-04-05', 'female', NULL, NULL, 7, 1),
 (11, 'Phạm Hưng Ngọc Minh', '0125466454', '2012-04-05', 'female', NULL, NULL, 7, 2),
-(12, 'Phạm Hưng Tuấn Anh', '0125466454', '1997-08-21', 'male', NULL, '206124151', 8, 1),
-(13, 'Nguyễn Ngọc Minh', '0164651846', '1997-04-05', 'female', NULL, NULL, 8, 1),
-(14, 'Phạm Hưng Ngọc Minh', '0125466454', '2012-04-05', 'female', NULL, NULL, 8, 2);
+(12, 'Phạm Hưng Ta', '0125466447', '1997-08-21', 'male', NULL, '206447583', 8, 1),
+(13, 'Nguyễn Thị Minh', '0167551846', '1997-04-05', 'female', NULL, NULL, 8, 1),
+(14, 'Phạm Thị Ngọc', '0125466447', '2012-07-06', 'female', NULL, NULL, 8, 2);
 
 -- --------------------------------------------------------
 

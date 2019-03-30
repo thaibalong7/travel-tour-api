@@ -697,7 +697,7 @@ exports.updateWithPricePassenger = async (req, res) => {
 }
 
 exports.search = async (req, res) => {
-    const arr_sortBy = ['price', 'date', 'rating'];
+    const arr_sortBy = ['price', 'date','view', 'booking', 'rating'];
     const arr_sortType = ['ASC', 'DESC'] //ascending (tăng dần) //descending  (giảm dần)
     try {
         const name_search = req.query.name;
@@ -783,10 +783,14 @@ exports.search = async (req, res) => {
                     {
                         query.order = [['start_date', sortType]];
                     }
-                    // if (sortBy === arr_sortBy[2]) //lasting
-                    // {
-                    //     query.order = [db.sequelize.literal('lasting ' + sortType)];
-                    // }
+                    if (sortBy === arr_sortBy[2]) //view
+                    {
+                        query.order = [['view', sortType]];
+                    }
+                    if (sortBy === arr_sortBy[3]) //booking
+                    {
+                        query.order = [['num_current_people', sortType]];
+                    }
                 }
             }
             tour_turns.findAndCountAll(query).then(async _tour_turns => {
