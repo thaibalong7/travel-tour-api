@@ -26,4 +26,10 @@ router.get('/getAllBookTourHistoryGroupByTourTurn', book_tour.getAllBookTourHist
 
 router.get('/getBookTourHistoryByTourTurn/:id', book_tour.getBookTourHistoryByTourTurn) //middlewareAuthAdmin
 
+router.post('/payBookTour', book_tour.payBookTour) //middlewareAuthAdmin
+
 module.exports = router;
+
+
+
+

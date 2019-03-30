@@ -670,3 +670,37 @@ exports.getBookTourHistoryByTourTurn = async (req, res) => {
         return res.status(400).json({ msg: error.toString() });
     }
 }
+
+exports.payBookTour = async (req, res) => {
+    try {
+        const code = req.body.code;
+        const book_tour = await db.book_tour_history.findOne({
+            where: {
+                code: code
+            }
+        })
+        if (book_tour) {
+            if (book_tour.status === 'booked') {
+                book_tour.status = 'paid' //chuyển thành status đã thanh toán
+                await book_tour.save();
+                return res.status(200).json({
+                    msg: 'Pay successful',
+                    data: book_tour
+                })
+            }
+            if (book_tour.status === 'paid') {
+                return res.status(400).json({ msg: 'This booking has been paid' });
+            }
+            if (book_tour.status === 'cancelled') {
+                return res.status(400).json({ msg: 'This booking has been cancelled' });
+            }
+
+        }
+        else {
+            return res.status(400).json({ msg: 'Wrong code' });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(400).json({ msg: error.toString() });
+    }
+}
