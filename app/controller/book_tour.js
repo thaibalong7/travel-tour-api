@@ -619,5 +619,42 @@ exports.getAllBookTourHistoryGroupByTourTurn = async (req, res) => {
         console.error(error);
         return res.status(400).json({ msg: error.toString() });
     }
+}
 
+exports.getBookTourHistoryByTourTurn = async (req, res) => {
+    try {
+        const idTourTurn = req.params.id;
+        if (isNaN(parseInt(idTourTurn))) {
+            return res.status(400).json({ msg: 'Wrong id tour turn' });
+        }
+        else {
+            var query = {
+                attributes: { exclude: ['fk_contact_info', 'fk_payment'] },
+                where: {
+                    fk_tour_turn: idTourTurn
+                },
+                include: [{
+                    model: db.book_tour_contact_info
+                },
+                // {
+                //     attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                //     model: db.passengers,
+                //     include: [{
+                //         model: db.type_passenger
+                //     }]
+                // },
+                {
+                    model: db.payment_method
+                }]
+            }
+            db.book_tour_history.findAll(query).then(async _book_tours => {
+                return res.status(200).json({
+                    data: _book_tours
+                })
+            })
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(400).json({ msg: error.toString() });
+    }
 }

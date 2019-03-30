@@ -24,4 +24,6 @@ router.get('/getAllBookTourHistoryWithoutPagination', book_tour.getAllBookTourHi
 //sai hoặc k có status thì trả về all // tour turn mà k có book tour vẫn được xuất hiện
 router.get('/getAllBookTourHistoryGroupByTourTurn', book_tour.getAllBookTourHistoryGroupByTourTurn) //middlewareAuthAdmin //k phân trang
 
+router.get('/getBookTourHistoryByTourTurn/:id', book_tour.getBookTourHistoryByTourTurn) //middlewareAuthAdmin
+
 module.exports = router;
