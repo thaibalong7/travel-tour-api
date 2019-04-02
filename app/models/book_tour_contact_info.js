@@ -17,7 +17,6 @@ module.exports = function (sequelize, Sequelize) {
         address: {
             type: Sequelize.TEXT,
             allowNull: true,
-            defaultValue: null
         },
     },
         {

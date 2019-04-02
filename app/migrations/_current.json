@@ -1,0 +1,888 @@
+{
+    "tables": {
+        "admins": {
+            "tableName": "admins",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "username": {
+                    "allowNull": false,
+                    "field": "username",
+                    "seqType": "Sequelize.STRING"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "password": {
+                    "allowNull": false,
+                    "field": "password",
+                    "seqType": "Sequelize.STRING"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "blacklist_tokens": {
+            "tableName": "blacklist_tokens",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "token": {
+                    "field": "token",
+                    "seqType": "Sequelize.TEXT"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "book_tour_contact_info": {
+            "tableName": "book_tour_contact_info",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "email": {
+                    "field": "email",
+                    "seqType": "Sequelize.STRING"
+                },
+                "fullname": {
+                    "field": "fullname",
+                    "seqType": "Sequelize.STRING"
+                },
+                "phone": {
+                    "field": "phone",
+                    "seqType": "Sequelize.STRING"
+                },
+                "address": {
+                    "allowNull": true,
+                    "field": "address",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "fk_user": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_user",
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "book_tour_history": {
+            "tableName": "book_tour_history",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "book_time": {
+                    "allowNull": false,
+                    "field": "book_time",
+                    "seqType": "Sequelize.DATE"
+                },
+                "status": {
+                    "defaultValue": {
+                        "value": "booked"
+                    },
+                    "field": "status",
+                    "seqType": "Sequelize.ENUM('booked', 'paid', 'cancelled')"
+                },
+                "num_passenger": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": 0
+                    },
+                    "field": "num_passenger",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "total_pay": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": 0
+                    },
+                    "field": "total_pay",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "code": {
+                    "field": "code",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "fk_contact_info": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "book_tour_contact_info",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_contact_info",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "fk_tour_turn": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "tour_turns",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_tour_turn",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "fk_payment": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "payment_method",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_payment",
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "comments": {
+            "tableName": "comments",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "content": {
+                    "allowNull": false,
+                    "field": "content",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "fk_tour": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "tours",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_tour",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "fk_user": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_user",
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "locations": {
+            "tableName": "locations",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "latitude": {
+                    "allowNull": false,
+                    "field": "latitude",
+                    "seqType": "Sequelize.FLOAT"
+                },
+                "longitude": {
+                    "allowNull": false,
+                    "field": "longitude",
+                    "seqType": "Sequelize.FLOAT"
+                },
+                "name": {
+                    "allowNull": false,
+                    "unique": true,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "address": {
+                    "allowNull": false,
+                    "field": "address",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "description": {
+                    "allowNull": false,
+                    "field": "description",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "featured_img": {
+                    "allowNull": true,
+                    "field": "featured_img",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "status": {
+                    "defaultValue": {
+                        "value": "active"
+                    },
+                    "field": "status",
+                    "seqType": "Sequelize.ENUM('active', 'inactive')"
+                },
+                "fk_type": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "types",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_type",
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "passengers": {
+            "tableName": "passengers",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "fullname": {
+                    "allowNull": false,
+                    "field": "fullname",
+                    "seqType": "Sequelize.STRING"
+                },
+                "phone": {
+                    "allowNull": true,
+                    "field": "phone",
+                    "seqType": "Sequelize.STRING"
+                },
+                "birthdate": {
+                    "allowNull": true,
+                    "field": "birthdate",
+                    "seqType": "Sequelize.DATEONLY"
+                },
+                "sex": {
+                    "allowNull": true,
+                    "field": "sex",
+                    "seqType": "Sequelize.ENUM('male', 'female', 'other')"
+                },
+                "passport": {
+                    "allowNull": true,
+                    "field": "passport",
+                    "seqType": "Sequelize.STRING"
+                },
+                "fk_book_tour": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "book_tour_history",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_book_tour",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "fk_type_passenger": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "type_passenger",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_type_passenger",
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "payment_method": {
+            "tableName": "payment_method",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "price_passenger": {
+            "tableName": "price_passenger",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "percent": {
+                    "defaultValue": {
+                        "value": 100
+                    },
+                    "field": "percent",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "fk_tourturn": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "tour_turns",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_tourturn",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "fk_type_passenger": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "type_passenger",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_type_passenger",
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "ratings": {
+            "tableName": "ratings",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "rate": {
+                    "allowNull": false,
+                    "field": "rate",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "fk_tour": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "tours",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_tour",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "fk_user": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_user",
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "requests": {
+            "tableName": "requests",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name": {
+                    "field": "name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "email": {
+                    "field": "email",
+                    "seqType": "Sequelize.STRING"
+                },
+                "message": {
+                    "field": "message",
+                    "seqType": "Sequelize.TEXT"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "request_cancel_booking": {
+            "tableName": "request_cancel_booking",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "status": {
+                    "defaultValue": {
+                        "value": "pending"
+                    },
+                    "field": "status",
+                    "seqType": "Sequelize.ENUM('pending', 'solved')"
+                },
+                "message": {
+                    "field": "message",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "fk_book_tour": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "book_tour_history",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_book_tour",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "fk_user": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_user",
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "routes": {
+            "tableName": "routes",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "arrive_time": {
+                    "field": "arrive_time",
+                    "seqType": "Sequelize.TIME"
+                },
+                "leave_time": {
+                    "field": "leave_time",
+                    "seqType": "Sequelize.TIME"
+                },
+                "day": {
+                    "allowNull": false,
+                    "field": "day",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "detail": {
+                    "allowNull": true,
+                    "field": "detail",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "title": {
+                    "allowNull": true,
+                    "field": "title",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "fk_location": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "locations",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_location",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "fk_tour": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "tours",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_tour",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "fk_transport": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "transports",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_transport",
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "verification_token": {
+            "tableName": "verification_token",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "token": {
+                    "allowNull": false,
+                    "field": "token",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "user_id": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "user_id",
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "tours": {
+            "tableName": "tours",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "description": {
+                    "allowNull": true,
+                    "field": "description",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "detail": {
+                    "allowNull": true,
+                    "field": "detail",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "featured_img": {
+                    "allowNull": true,
+                    "field": "featured_img",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "policy": {
+                    "allowNull": true,
+                    "field": "policy",
+                    "seqType": "Sequelize.TEXT"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "tour_images": {
+            "tableName": "tour_images",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "fk_tour": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "tours",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_tour",
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "tour_turns": {
+            "tableName": "tour_turns",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "start_date": {
+                    "allowNull": false,
+                    "field": "start_date",
+                    "seqType": "Sequelize.DATEONLY"
+                },
+                "end_date": {
+                    "allowNull": false,
+                    "field": "end_date",
+                    "seqType": "Sequelize.DATEONLY"
+                },
+                "num_current_people": {
+                    "defaultValue": {
+                        "value": 0
+                    },
+                    "field": "num_current_people",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "num_max_people": {
+                    "allowNull": false,
+                    "field": "num_max_people",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "price": {
+                    "defaultValue": {
+                        "value": 0
+                    },
+                    "field": "price",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "discount": {
+                    "defaultValue": {
+                        "value": 0
+                    },
+                    "field": "discount",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "view": {
+                    "defaultValue": {
+                        "value": 0
+                    },
+                    "field": "view",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "status": {
+                    "field": "status",
+                    "seqType": "Sequelize.ENUM('public', 'private')"
+                },
+                "fk_tour": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "tours",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "fk_tour",
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "transports": {
+            "tableName": "transports",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name_vn": {
+                    "allowNull": false,
+                    "field": "name_vn",
+                    "seqType": "Sequelize.STRING"
+                },
+                "name_en": {
+                    "allowNull": false,
+                    "field": "name_en",
+                    "seqType": "Sequelize.STRING"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "types": {
+            "tableName": "types",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "marker": {
+                    "allowNull": true,
+                    "field": "marker",
+                    "seqType": "Sequelize.TEXT"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "type_passenger": {
+            "tableName": "type_passenger",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        },
+        "users": {
+            "tableName": "users",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "username": {
+                    "field": "username",
+                    "seqType": "Sequelize.STRING"
+                },
+                "fullname": {
+                    "field": "fullname",
+                    "seqType": "Sequelize.STRING"
+                },
+                "password": {
+                    "allowNull": false,
+                    "field": "password",
+                    "seqType": "Sequelize.STRING"
+                },
+                "address": {
+                    "allowNull": true,
+                    "field": "address",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "sex": {
+                    "allowNull": true,
+                    "field": "sex",
+                    "seqType": "Sequelize.ENUM('male', 'female', 'other')"
+                },
+                "birthdate": {
+                    "allowNull": true,
+                    "field": "birthdate",
+                    "seqType": "Sequelize.DATEONLY"
+                },
+                "phone": {
+                    "field": "phone",
+                    "seqType": "Sequelize.STRING"
+                },
+                "email": {
+                    "field": "email",
+                    "seqType": "Sequelize.STRING"
+                },
+                "avatar": {
+                    "field": "avatar",
+                    "seqType": "Sequelize.STRING"
+                },
+                "isActive": {
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "isActive",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "type": {
+                    "field": "type",
+                    "seqType": "Sequelize.ENUM('facebook', 'local')"
+                }
+            },
+            "charset": "utf8",
+            "indexes": []
+        }
+    },
+    "revision": 1
+}
