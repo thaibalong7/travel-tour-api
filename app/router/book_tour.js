@@ -28,6 +28,8 @@ router.get('/getBookTourHistoryByTourTurn/:id', book_tour.getBookTourHistoryByTo
 
 router.post('/payBookTour', book_tour.payBookTour) //middlewareAuthAdmin
 
+router.post('/updatePassenger', book_tour.updatePassenger) //middlewareAuthAdmin
+
 module.exports = router;
 
 

@@ -704,3 +704,74 @@ exports.payBookTour = async (req, res) => {
         return res.status(400).json({ msg: error.toString() });
     }
 }
+
+exports.updatePassenger = async (req, res) => {
+    try {
+        const idPassenger = req.body.id;
+        const _passenger = await db.passengers.findByPk(idPassenger);
+        if (_passenger) {
+            const arr_sex = ['male', 'female', 'other'];
+            if (typeof req.body.fullname !== 'undefined') {
+                _passenger.fullname = req.body.fullname
+            }
+            if (typeof req.body.birthdate !== 'undefined') {
+                _passenger.birthdate = req.body.birthdate
+            }
+            if (typeof req.body.sex !== 'undefined') {
+                if (arr_sex.indexOf(req.body.sex) !== -1)
+                    _passenger.sex = req.body.sex
+            }
+            if (typeof req.body.phone !== 'undefined') //k bắt buộc
+                _passenger.phone = req.body.phone
+            if (typeof req.body.passport !== 'undefined') //k bắt buộc
+                _passenger.passport = req.body.passport
+            if (typeof req.body.fk_type_passenger !== 'undefined') {
+                if (parseInt(req.body.fk_type_passenger) !== parseInt(_passenger.fk_type_passenger)) {
+                    const _book_tour = await db.book_tour_history.findOne({
+                        where: {
+                            id: _passenger.fk_book_tour
+                        },
+                        include: [{
+                            model: db.tour_turns,
+                        }]
+                    })
+                    const tour_turn = _book_tour.tour_turn;
+                    const check_price_passenger = await db.price_passenger.findOne({
+                        where: {
+                            fk_tourturn: tour_turn.id,
+                            fk_type_passenger: req.body.fk_type_passenger
+                        }
+                    })
+                    if (check_price_passenger) {
+                        const old_price_passenger = await db.price_passenger.findOne({
+                            where: {
+                                fk_tourturn: tour_turn.id,
+                                fk_type_passenger: _passenger.fk_type_passenger
+                            }
+                        })
+
+                        //tính old_price và new_price
+                        const old_price = parseInt(old_price_passenger.percent / 100 * (tour_turn.price - tour_turn.price * tour_turn.discount / 100));
+                        const new_price = parseInt(check_price_passenger.percent / 100 * (tour_turn.price - tour_turn.price * tour_turn.discount / 100));
+                        //cập nhật lại giá toàn tour nếu có thay đổi
+                        _book_tour.total_pay = _book_tour.total_pay + new_price - old_price;
+                        await _book_tour.save();
+                    }
+                    else {
+                        return res.status(400).json({ msg: 'Wrong id type passenger' });
+                    }
+                }
+            }
+            await _passenger.save();
+            return res.status(200).json({
+                msg: 'Update successful',
+                data: _passenger
+            })
+        }
+        else {
+            return res.status(400).json({ msg: 'Wrong id passenger' });
+        }
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() });
+    }
+}
