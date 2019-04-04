@@ -1,4 +1,4 @@
-module.exports = function(sequelize, Sequelize) {
+module.exports = function (sequelize, Sequelize) {
   var Tour = sequelize.define('tours', {
     id: {
       autoIncrement: true,
@@ -21,24 +21,27 @@ module.exports = function(sequelize, Sequelize) {
       type: Sequelize.TEXT,
       allowNull: true
     },
-    policy:{
+    policy: {
       type: Sequelize.TEXT,
       allowNull: true
+    },
+    average_rating: {
+      type: Sequelize.FLOAT,
+      defaultValue: 0
     }
   },
-  {
-    charset: 'utf8',
-    collate: 'utf8_unicode_ci',
-    tableName: 'tours',
-    timestamps: false
-  });
+    {
+      charset: 'utf8',
+      collate: 'utf8_unicode_ci',
+      tableName: 'tours',
+      timestamps: false
+    });
 
   Tour.associate = (models) => {
-    Tour.hasMany(models.routes, {foreignKey: 'fk_tour'})
-    Tour.hasMany(models.comments, {foreignKey: 'fk_tour'})
-    Tour.hasMany(models.ratings, {foreignKey: 'fk_tour'})
-    Tour.hasMany(models.tour_turns, {foreignKey: 'fk_tour'})
-    Tour.hasMany(models.tour_images, {foreignKey: 'fk_tour'})
+    Tour.hasMany(models.routes, { foreignKey: 'fk_tour' })
+    Tour.hasMany(models.reviews, { foreignKey: 'fk_tour' })
+    Tour.hasMany(models.tour_turns, { foreignKey: 'fk_tour' })
+    Tour.hasMany(models.tour_images, { foreignKey: 'fk_tour' })
   }
   return Tour;
 }
