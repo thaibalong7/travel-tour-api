@@ -347,6 +347,7 @@ exports.getAll = (req, res) => { //update here
         var page, per_page;
         var sortBy = req.query.sortBy;
         var sortType = req.query.sortType;
+        const isDiscount = (req.query.isDiscount == 'true');
         if (typeof req.query.page === 'undefined') page = page_default;
         else page = req.query.page
         if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
@@ -375,6 +376,11 @@ exports.getAll = (req, res) => { //update here
                     },
                     status: 'public',
                 },
+            }
+            if (isDiscount) {
+                query.where.discount = {
+                    [Op.gt]: 0
+                }
             }
             if (typeof sortBy !== 'undefined' && typeof sortType !== 'undefined') { //2 params cùng được nhận
                 sortBy = sortBy.toLowerCase();
