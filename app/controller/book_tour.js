@@ -705,6 +705,44 @@ exports.payBookTour = async (req, res) => {
     }
 }
 
+exports.cancelBookTour = async (req, res) => {
+    try {
+        const code = req.body.code;
+        const book_tour = await db.book_tour_history.findOne({
+            where: {
+                code: code
+            },
+            include: [{
+                model: db.tour_turns
+            }]
+        })
+        if (book_tour) {
+            if (book_tour.status !== 'cancelled') {
+                book_tour.status = 'cancelled' //chuyển thành status hủy đặt tour
+                //update số lượng người đi ở tour turn nữa ...
+                const tour_turn = book_tour.tour_turn
+                tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger); 
+                await book_tour.save();
+                await tour_turn.save();
+                return res.status(200).json({
+                    msg: 'Cancelled successful',
+                    data: book_tour
+                })
+            }
+            else {
+                return res.status(400).json({ msg: 'This booking has been cancelled' });
+            }
+
+        }
+        else {
+            return res.status(400).json({ msg: 'Wrong code' });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(400).json({ msg: error.toString() });
+    }
+}
+
 exports.updatePassenger = async (req, res) => {
     try {
         const idPassenger = req.body.id;
