@@ -7,9 +7,9 @@ Các bước để migrate data (sử dụng db mới với name là *travel-tou
 
 - Cài đặt sequelize CLI: `npm install -g sequelize-cli`
 
-- Tạo mới database: `sequelize db:create travel-tour-db`
-
 - Vào thư mục app: `cd app`
+
+- Tạo mới database: `sequelize db:create travel-tour-db`
 
 - Run lệnh: `sequelize db:migrate` (lệnh này để migrate phiên bản data mới nhất - tức là tạo các bảng rỗng cho db)
 
@@ -26,4 +26,4 @@ Các bước để migrate data (sử dụng db mới với name là *travel-tou
 
 >- Run `sequelize --help` để tìm hiểu thêm các câu lệnh khác của sequelize-cli
 
->- Doc *sequelize-cli*: [Migration doc](https://sequelize.readthedocs.io/en/latest/docs/migrations/)
+>- Doc *sequelize-cli*: [migrate doc](https://sequelize.readthedocs.io/en/latest/docs/migrations/)
