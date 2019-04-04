@@ -3,7 +3,7 @@ const locations = db.locations;
 var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const helper_add_link = require('../helper/add_full_link');
-const link_img = require('../config/config').link_img
+const link_img = require('../config/setting').link_img
 const fs = require('fs');
 
 const addLinkLocationFeaturedImgOfListLocationsAndAddTour = async (_locations, host) => {

@@ -1,7 +1,7 @@
 const db = require('../models');
 const routes = db.routes;
 const helper_add_link = require('../helper/add_full_link');
-const link_img = require('../config/config').link_img;
+const link_img = require('../config/setting').link_img;
 
 const addLinkLocationFeaturedImgOfListRoutesAndAddTour = async (_routes, host) => {
     return _routes.map(async item => {

@@ -1,4 +1,4 @@
-const link_img = require('../config/config').link_img
+const link_img = require('../config/setting').link_img
 
 const addLinkToursFeaturedImgOfListTours = async (tours, host) => {
     return tours.map(item => {

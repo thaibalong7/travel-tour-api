@@ -1,4 +1,4 @@
-var smtpConfig = require('../config/config').smtpConfig;
+var smtpConfig = require('../config/setting').smtpConfig;
 var nodemailer = require('nodemailer');
 var smtpTransport = nodemailer.createTransport(smtpConfig);
 

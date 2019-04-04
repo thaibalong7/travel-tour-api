@@ -656,7 +656,6 @@ exports.getByLocation = (req, res) => {
                 offset: (page - 1) * per_page
             }
             tours.findAndCountAll(query).then(async _tours => {
-                console.log(_tours)
                 var next_page = page + 1;
                 //Kiểm tra còn dữ liệu không
                 if ((parseInt(_tours.rows.length) + (next_page - 2) * per_page) === parseInt(_tours.count))
