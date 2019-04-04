@@ -8,7 +8,7 @@ router.use('/type', require('./type'));
 router.use('/tour', require('./tour'));
 router.use('/route', require('./route'))
 router.use('/tour_turn', require('./tour_turn'));
-router.use('/comment', require('./comment'));
+router.use('/reviews', require('./reviews'));
 router.use('/transport', require('./transport'));
 router.use('/request', require('./request'));
 router.use('/tour_image', require('./tour_image'));

@@ -2,6 +2,8 @@ const db = require('../models');
 const routes = db.routes;
 const helper_add_link = require('../helper/add_full_link');
 const link_img = require('../config/setting').link_img;
+var Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 const addLinkLocationFeaturedImgOfListRoutesAndAddTour = async (_routes, host) => {
     return _routes.map(async item => {
@@ -13,6 +15,16 @@ const addLinkLocationFeaturedImgOfListRoutesAndAddTour = async (_routes, host) =
                     model: db.routes,
                     where: {
                         fk_location: item.location.id
+                    }
+                },
+                {
+                    attributes: ['id', 'start_date'],
+                    model: db.tour_turns,
+                    where: {
+                        status: 'public',
+                        start_date: {
+                            [Op.gt]: new Date()
+                        }
                     }
                 }]
         }
