@@ -589,6 +589,10 @@ exports.getById = (req, res) => {
         {
             attributes: { exclude: ['fk_tour'] },
             model: db.tour_images
+        },
+        {
+            attributes: { exclude: ['fk_tour'] },
+            model: db.reviews
         }],
         order: [[db.tour_turns, 'start_date', 'DESC'], [db.routes, 'day', 'ASC'], [db.routes, 'arrive_time', 'ASC']]
     }

@@ -30,6 +30,12 @@ const convertDiscountOfListTourTurn = async (tour_turns) => {
     }
 }
 
+const getNumReviewOfListTourTurn = async (tour_turns) => {
+    for (var i = 0; i < tour_turns.length; i++) {
+        tour_turns[i].tour.dataValues.num_review = (await db.reviews.findAll({ where: { fk_tour: tour_turns[i].tour.id } })).length
+    }
+}
+
 const arr_status = ['private', 'public'];
 
 exports.create = async (req, res) => {
@@ -250,7 +256,7 @@ exports.getById = (req, res) => {
             id: id
         },
         include: [{
-            model: db.tours
+            model: db.tours,
         },
         {
             attributes: { exclude: ['fk_tourturn', 'fk_type_passenger'] },
@@ -262,6 +268,7 @@ exports.getById = (req, res) => {
     }
     tour_turns.findOne(query).then(async _tour_turns => {
         const tour_turn = _tour_turns.dataValues;
+        tour_turn.tour.dataValues.num_review = (await db.reviews.findAll({ where: { fk_tour: tour_turn.tour.id } })).length
         if (tour_turn !== null) {
             if (tour_turn.tour.featured_img !== null) {
                 if (process.env.NODE_ENV === 'development')
@@ -433,6 +440,7 @@ exports.getAll = (req, res) => { //update here
 
                     const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
                     await convertDiscountOfListTourTurn(result);
+                    await getNumReviewOfListTourTurn(result);
                     res.status(200).json({
                         itemCount: distinct.length, //số lượng record được trả về
                         data: result,
@@ -455,6 +463,7 @@ exports.getAll = (req, res) => { //update here
 
                     const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
                     await convertDiscountOfListTourTurn(result);
+                    await getNumReviewOfListTourTurn(result);
                     res.status(200).json({
                         itemCount: _tour_turns.rows.length, //số lượng record được trả về
                         data: result,
@@ -703,7 +712,7 @@ exports.updateWithPricePassenger = async (req, res) => {
 }
 
 exports.search = async (req, res) => {
-    const arr_sortBy = ['price', 'date','view', 'booking', 'rating'];
+    const arr_sortBy = ['price', 'date', 'view', 'booking', 'rating'];
     const arr_sortType = ['ASC', 'DESC'] //ascending (tăng dần) //descending  (giảm dần)
     try {
         const name_search = req.query.name;
@@ -811,16 +820,19 @@ exports.search = async (req, res) => {
                     next_page = -1;
                 await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns.rows, req.headers.host)
                 await convertDiscountOfListTourTurn(_tour_turns.rows)
+                await getNumReviewOfListTourTurn(_tour_turns.rows)
                 res.status(200).json({
                     itemCount: _tour_turns.count, //số lượng record được trả về
                     data: _tour_turns.rows,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })
             }).catch(error => {
+                console.log(error)
                 return res.status(400).json({ msg: error.toString() })
             })
         }
     } catch (error) {
+        console.log(error)
         return res.status(400).json({ msg: error.toString() })
     }
 
