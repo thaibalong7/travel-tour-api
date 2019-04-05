@@ -1,5 +1,6 @@
 var router = require('express').Router();
 const db = require('../models');
+const request = require('request');
 
 router.use('/admin', require('./admin'));
 router.use('/user', require('./user'));
@@ -25,5 +26,35 @@ router.get('/getNumOfTourAndLocation', async (req, res) => {
         num_of_locations: all_locations.length
     })
 })
+
+router.post('/verifyCaptcha', (req, res) => {
+    if (
+        req.body.captcha === undefined ||
+        req.body.captcha === '' ||
+        req.body.captcha === null
+    ) {
+        return res.json({ "success": false, "msg": "Please select captcha" });
+    }
+
+    // Secret Key
+    const secretKey = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe';
+
+    // Verify URL
+    const verifyUrl = `https://google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${req.body.captcha}&remoteip=${req.connection.remoteAddress}`;
+
+    // Make Request To VerifyURL
+    request(verifyUrl, (err, response, body) => {
+        body = JSON.parse(body);
+        console.log(body);
+
+        // If Not Successful
+        if (body.success !== undefined && !body.success) {
+            return res.json({ "success": false, "msg": "Failed captcha verification" });
+        }
+
+        //If Successful
+        return res.json({ "success": true, "msg": "Captcha passed" });
+    });
+});
 
 module.exports = router
