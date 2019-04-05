@@ -27,6 +27,7 @@ module.exports = function (sequelize, Sequelize) {
         });
     Review.associate = (models) => {
         Review.belongsTo(models.tours, { foreignKey: 'fk_tour' })
+        Review.belongsTo(models.users, { foreignKey: 'fk_user' })
     }
     return Review;
 }

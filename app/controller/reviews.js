@@ -1,60 +1,117 @@
 const db = require('../models');
 const reviews = db.reviews;
+const helper_add_link = require('../helper/add_full_link');
 const helper_validate = require('../helper/validate');
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
 
-exports.create = async (req, res) => {
+var publicKEY = fs.readFileSync('./app/middleware/public.key', 'utf8');
+var verifyOptions = {
+    expiresIn: '30d',
+    algorithm: "RS256"
+}
+
+const create_review = async (req, res, _user) => {
     try {
         if (typeof req.body.comment !== 'undefined' &&
             typeof req.body.idTour !== 'undefined' && !isNaN(parseInt(req.body.idTour)) &&
-            typeof req.body.name !== 'undefined' && typeof req.body.email !== 'undefined' &&
             typeof req.body.rate !== 'undefined' && !isNaN(req.body.rate)) {
-            if (await helper_validate.validateEmail(req.body.email)) {
-                if (parseFloat(req.body.rate) >= 0 && parseFloat(req.body.rate) <= 5) {
-                    const tour = await db.tours.findByPk(req.body.idTour)
-                    if (tour) {
-                        var new_review = {
-                            comment: req.body.comment,
-                            rate: req.body.rate,
-                            name: req.body.name,
-                            email: req.body.email,
-                            fk_tour: req.body.idTour,
-                        }
-                        reviews.create(new_review).then(async _review => {
-                            const average_rating = await db.reviews.findAll({
-                                attributes: [[db.sequelize.fn('AVG', db.sequelize.col('rate')), 'avg_rating']],
-                                where: {
-                                    fk_tour: tour.id
-                                }
-                            })
-                            tour.average_rating = parseFloat(parseFloat(average_rating[0].dataValues.avg_rating).toFixed(2));
-                            await tour.save();
-                            res.status(200).json({
-                                data: {
-                                    review: _review,
-                                    average_tour: tour.average_rating
-                                }
-                            })
-                        })
+
+            if (parseFloat(req.body.rate) >= 0 && parseFloat(req.body.rate) <= 5) {
+                const tour = await db.tours.findByPk(req.body.idTour)
+                if (tour) {
+                    var new_review = {
+                        comment: req.body.comment,
+                        rate: req.body.rate,
+                        fk_tour: req.body.idTour,
+                    }
+                    if (_user !== null) {
+                        new_review.fk_user = _user.id;
+                        new_review.name = _user.fullname;
+                        new_review.email = _user.email;
                     }
                     else {
-                        res.status(400).json({ msg: 'Wrong tour' })
+                        if (typeof req.body.name !== 'undefined' && typeof req.body.email !== 'undefined') {
+                            if (await helper_validate.validateEmail(req.body.email)) {
+                                new_review.name = req.body.name;
+                                new_review.email = req.body.email;
+                            }
+                            else {
+                                return res.status(400).json({ msg: 'Wrong email format' })
+                            }
+                        }
+                        else {
+                            return res.status(400).json({ msg: 'Param is invalid' })
+                        }
                     }
+                    reviews.create(new_review).then(async _review => {
+                        const average_rating = await db.reviews.findAll({
+                            attributes: [[db.sequelize.fn('AVG', db.sequelize.col('rate')), 'avg_rating']],
+                            where: {
+                                fk_tour: tour.id
+                            }
+                        })
+                        tour.average_rating = parseFloat(parseFloat(average_rating[0].dataValues.avg_rating).toFixed(2));
+                        await tour.save();
+                        res.status(200).json({
+                            data: {
+                                review: _review,
+                                average_tour: tour.average_rating
+                            }
+                        })
+                    })
                 }
                 else {
-                    res.status(400).json({ msg: 'Wrong rate' })
+                    return res.status(400).json({ msg: 'Wrong tour' })
                 }
             }
             else {
-                res.status(400).json({ msg: 'Wrong email format' })
+                return res.status(400).json({ msg: 'Wrong rate' })
             }
         }
         else {
-            res.status(400).json({ msg: 'Param is invalid' })
+            return res.status(400).json({ msg: 'Param is invalid' })
         }
     }
     catch (err) {
         console.log(err)
-        res.status(400).json({ msg: err.toString() })
+        return res.status(400).json({ msg: err.toString() })
+    }
+}
+
+exports.create = async (req, res) => {
+    try {
+        if (req.headers.authorization !== 'undefined') {
+            const token = req.headers.authorization;
+            var decode;
+            try {
+                decode = jwt.verify(token, publicKEY, verifyOptions);
+            } catch (err) {
+                throw new Error('Auth failed')
+            }
+            const check_token = await db.blacklist_tokens.findOne({ where: { token: token } })
+            if (!check_token) {
+                const _user = await db.users.findByPk(decode.id);
+                if (!_user) {
+                    throw new Error('Auth failed')
+                }
+                else {
+                    //thỏa điều kiện có user
+                    create_review(req, res, _user);
+                }
+            }
+            else {
+                throw new Error('Auth failed')
+            }
+        }
+        else {
+            //k có user
+            create_review(req, res, null);
+        }
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(400).json({ msg: err.toString() });
     }
 }
 
@@ -80,7 +137,11 @@ exports.getByTour = (req, res) => {
                 where: {
                     fk_tour: idTour
                 },
-                attributes: { exclude: ['fk_tour'] },
+                include: [{
+                    attributes: ['fullname', 'email', 'avatar'],
+                    model: db.users
+                }],
+                attributes: { exclude: ['fk_tour', 'fk_user'] },
                 limit: per_page,
                 offset: (page - 1) * per_page
             }
@@ -107,9 +168,10 @@ exports.getByTour = (req, res) => {
                     next_page = -1;
                 if (parseInt(_reviews.rows.length) === 0)
                     next_page = -1;
+                const result = await helper_add_link.addLinkAvatarUserOfListReview(_reviews.rows, req.headers.host)
                 res.status(200).json({
                     itemCount: _reviews.count, //số lượng record được trả về
-                    data: _reviews.rows,
+                    data: result,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })
             })

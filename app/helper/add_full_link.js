@@ -69,16 +69,22 @@ const addLinkLocationFeaturedImgOfListLocations = async (_locations, host) => {
     })
 }
 
-const addLinkAvatarUserOfListComment = async (_comments, host) => {
-    return _comments.map(item => {
-        if (!item.user.avatar) {
-            return item;
+const addLinkAvatarUserOfListReview = async (_reviews, host) => {
+    return _reviews.map(item => {
+        if (
+            item.user) {
+            if (!item.user.avatar) {
+                return item;
+            }
+            else {
+                if (process.env.NODE_ENV === 'development')
+                    item.user.avatar = 'http://' + host + link_img.link_avatar_user + item.user.avatar;
+                else
+                    item.user.avatar = 'https://' + host + link_img.link_avatar_user + item.user.avatar;
+                return item;
+            }
         }
         else {
-            if (process.env.NODE_ENV === 'development')
-                item.user.avatar = 'http://' + host + link_img.link_avatar_user + item.user.avatar;
-            else
-                item.user.avatar = 'https://' + host + link_img.link_avatar_user + item.user.avatar;
             return item;
         }
     })
@@ -90,5 +96,5 @@ module.exports = {
     addLinkTourImgOfListToursImg,
     addLinkToursFeaturedImgOfListTours,
     addLinkToursFeaturedImgOfListTourTurns,
-    addLinkAvatarUserOfListComment
+    addLinkAvatarUserOfListReview
 }
