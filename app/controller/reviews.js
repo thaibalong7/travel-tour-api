@@ -29,6 +29,12 @@ const create_review = async (req, res, _user) => {
                         new_review.fk_user = _user.id;
                         new_review.name = _user.fullname;
                         new_review.email = _user.email;
+                        if (_user.avatar !== null && _user.avatar.indexOf('graph.facebook.com') === -1) {
+                            if (process.env.NODE_ENV === 'development')
+                                _user.avatar = 'http://' + req.headers.host + '/assets/avatar/' + _user.avatar;
+                            else
+                                _user.avatar = 'https://' + req.headers.host + '/assets/avatar/' + _user.avatar;
+                        }
                     }
                     else {
                         if (typeof req.body.name !== 'undefined' && typeof req.body.email !== 'undefined') {
@@ -56,7 +62,11 @@ const create_review = async (req, res, _user) => {
                         res.status(200).json({
                             data: {
                                 review: _review,
-                                average_tour: tour.average_rating
+                                average_tour: tour.average_rating,
+                                user: _user !== null ? {
+                                    fullname: _user.fullname,
+                                    avatar: _user.avatar
+                                } : null
                             }
                         })
                     })
