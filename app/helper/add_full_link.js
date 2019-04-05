@@ -72,7 +72,7 @@ const addLinkLocationFeaturedImgOfListLocations = async (_locations, host) => {
 const addLinkAvatarUserOfListReview = async (_reviews, host) => {
     return _reviews.map(item => {
         if (item.user) {
-            if (!item.user.avatar && user.avatar.indexOf('graph.facebook.com') >= 0) {
+            if (item.user.avatar !== null && item.user.avatar.indexOf('graph.facebook.com') >= 0) {
                 return item;
             }
             else {

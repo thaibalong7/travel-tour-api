@@ -133,6 +133,7 @@ exports.getByTour = (req, res) => {
         const page_default = 1;
         const per_page_default = 5;
         var page, per_page;
+        var offset = req.params.offset;
         if (typeof req.query.page === 'undefined') page = page_default;
         else page = req.query.page
         if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
@@ -143,6 +144,12 @@ exports.getByTour = (req, res) => {
         else {
             page = parseInt(page);
             per_page = parseInt(per_page);
+            if (typeof offset !== 'undefined') {
+                offset = parseInt(offset);
+            }
+            else {
+                offset = (page - 1) * per_page
+            }
             const query = {
                 where: {
                     fk_tour: idTour
@@ -153,7 +160,7 @@ exports.getByTour = (req, res) => {
                 }],
                 attributes: { exclude: ['fk_tour', 'fk_user'] },
                 limit: per_page,
-                offset: (page - 1) * per_page
+                offset: offset
             }
             if (typeof sortType !== 'undefined') { //tồn tại sortType
                 sortType = sortType.toUpperCase();
