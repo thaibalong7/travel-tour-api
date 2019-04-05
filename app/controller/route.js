@@ -26,9 +26,13 @@ const addLinkLocationFeaturedImgOfListRoutesAndAddTour = async (_routes, host) =
                             [Op.gt]: new Date()
                         }
                     }
-                }]
+                }],
+            order: [[db.tour_turns, 'start_date', 'ASC']]
         }
         item.location.dataValues.tours = await db.tours.findAll(query);
+        for (let i = 0; i < item.location.dataValues.tours.length; i++) {
+            item.location.dataValues.tours[i].dataValues.tour_turns = item.location.dataValues.tours[i].dataValues.tour_turns[0];
+        }
         if (item.location.featured_img === null) {
             // location.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';
         }

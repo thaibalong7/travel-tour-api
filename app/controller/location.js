@@ -27,7 +27,8 @@ const addLinkLocationFeaturedImgOfListLocationsAndAddTour = async (_locations, h
                             [Op.gt]: new Date()
                         }
                     }
-                }]
+                }],
+            order: [[db.tour_turns, 'start_date', 'ASC']]
         }
         item.dataValues.tours = await db.tours.findAll(query);
         for (let i = 0; i < item.dataValues.tours.length; i++) {
