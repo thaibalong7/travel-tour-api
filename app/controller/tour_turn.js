@@ -412,6 +412,10 @@ exports.getAll = (req, res) => { //update here
                     {
                         query.order = [['num_current_people', sortType]];
                     }
+                    if (sortBy === arr_sortBy[4]) //rating
+                    {
+                        query.order = [[db.tours, 'average_rating', sortType]];
+                    }
                 }
             }
             tour_turns.findAndCountAll(query).then(async _tour_turns => {
@@ -719,12 +723,15 @@ exports.search = async (req, res) => {
         const date_search = req.query.date;
         const price_search = req.query.price;
         const lasting_search = req.query.lasting;
+        const rating_search = req.query.rating;
         var sortBy = req.query.sortBy;
         var sortType = req.query.sortType;
         if (typeof price_search !== 'undefined' && isNaN(parseInt(price_search)))
             return res.status(400).json({ msg: 'Wrong price to search' })
         if (typeof lasting_search !== 'undefined' && isNaN(parseInt(lasting_search)))
             return res.status(400).json({ msg: 'Wrong lasting to search' })
+        if (typeof rating_search !== 'undefined' && isNaN(parseFloat(rating_search)))
+            return res.status(400).json({ msg: 'Wrong rating to search' })
         const page_default = 1;
         const per_page_default = 10;
         var page, per_page;
@@ -748,7 +755,10 @@ exports.search = async (req, res) => {
                     ]
                 },
                 include: [{
-                    model: db.tours
+                    model: db.tours,
+                    where: {
+
+                    }
                 }],
                 where: {
                     status: 'public',
@@ -765,16 +775,19 @@ exports.search = async (req, res) => {
                 }
             }
             if (typeof name_search !== 'undefined') {
-                query.include[0].where = {
-                    name: {
-                        [Op.like]: '%' + name_search + '%'
-                    }
+                query.include[0].where.name = {
+                    [Op.like]: '%' + name_search + '%'
                 }
             }
             if (typeof date_search !== 'undefined') { //search theo start_date
                 query.where.start_date = {
                     [Op.eq]: new Date((date_search)), // format: yyyy-mm-dd
                     // [Op.eq]: new Date(parseInt(date_search)), // format: timestamp
+                }
+            }
+            if (typeof rating_search !== 'undefined') {
+                query.include[0].where.average_rating = {
+                    [Op.gte]: parseFloat(rating_search)
                 }
             }
             if (typeof lasting_search !== 'undefined') { //nếu có search bằng lasting //cái này để cuối vì có dùng lại những thay đổi ở trên
@@ -805,6 +818,10 @@ exports.search = async (req, res) => {
                     if (sortBy === arr_sortBy[3]) //booking
                     {
                         query.order = [['num_current_people', sortType]];
+                    }
+                    if (sortBy === arr_sortBy[4]) //rating
+                    {
+                        query.order = [[db.tours, 'average_rating', sortType]];
                     }
                 }
             }
