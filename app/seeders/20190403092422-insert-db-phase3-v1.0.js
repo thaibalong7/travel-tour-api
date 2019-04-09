@@ -145,20 +145,23 @@ module.exports = {
                 "(5, '870ae3a0-5059-11e9-8684-5d74946d80db', '2019-03-20 09:27:03', 'booked', 2, 1000000, 5, 4, 1)," +
                 "(6, '89216790-5059-11e9-8c7e-c3f82d1fa1ef', '2019-03-20 13:42:47', 'booked', 2, 1000000, 6, 14, 1)," +
                 "(7, '8fae3160-5059-11e9-98a6-11c33d1f98b4', '2019-03-21 14:32:24', 'cancelled', 3, 1500000, 7, 14, 1)," +
-                "(8, 'a294e850-5059-11e9-8e50-6d47d5b38a8f', '2019-03-27 06:29:12', 'booked', 3, 1500000, 8, 14, 1);"),
-            queryInterface.sequelize.query("INSERT INTO `passengers` (`id`, `fullname`, `phone`, `birthdate`, `sex`, `passport`, `fk_book_tour`, `fk_type_passenger`) VALUES" +
-                "(3, 'Nguyển Văn A', '0123456789', '1997-11-24', 'male', NULL, 3, 1)," +
-                "(4, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', '206120720', 4, 1)," +
-                "(5, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', NULL, 5, 1)," +
-                "(6, 'Ngọc Trinh', '0123451489', '1997-04-10', 'female', NULL, 5, 1)," +
-                "(7, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', '206120720', 6, 1)," +
-                "(8, 'Sawa', '0123451489', '1997-09-12', 'female', NULL, 6, 1)," +
-                "(9, 'Phạm Hưng Tuấn Anh', '0125466454', '1997-08-21', 'male', '206124151', 7, 1)," +
-                "(10, 'Nguyễn Ngọc Minh', '0164651846', '1997-04-05', 'female', NULL, 7, 1)," +
-                "(11, 'Phạm Hưng Ngọc Minh', '0125466454', '2012-04-05', 'female', NULL, 7, 2)," +
-                "(12, 'Phạm Hưng Ta', '0125466447', '1997-08-21', 'male', '206447583', 8, 1)," +
-                "(13, 'Nguyễn Thị Minh', '0167551846', '1997-04-05', 'female', NULL, 8, 1)," +
-                "(14, 'Phạm Thị Ngọc', '0125466447', '2012-07-06', 'female', NULL, 8, 2);"),
+                "(8, 'a294e850-5059-11e9-8e50-6d47d5b38a8f', '2019-03-27 06:29:12', 'booked', 3, 1500000, 8, 14, 1);").then(
+                    () => {
+                        return queryInterface.sequelize.query("INSERT INTO `passengers` (`id`, `fullname`, `phone`, `birthdate`, `sex`, `passport`, `fk_book_tour`, `fk_type_passenger`) VALUES" +
+                            "(3, 'Nguyển Văn A', '0123456789', '1997-11-24', 'male', NULL, 3, 1)," +
+                            "(4, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', '206120720', 4, 1)," +
+                            "(5, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', NULL, 5, 1)," +
+                            "(6, 'Ngọc Trinh', '0123451489', '1997-04-10', 'female', NULL, 5, 1)," +
+                            "(7, 'Thái Bá Long', '0123456789', '1997-11-24', 'male', '206120720', 6, 1)," +
+                            "(8, 'Sawa', '0123451489', '1997-09-12', 'female', NULL, 6, 1)," +
+                            "(9, 'Phạm Hưng Tuấn Anh', '0125466454', '1997-08-21', 'male', '206124151', 7, 1)," +
+                            "(10, 'Nguyễn Ngọc Minh', '0164651846', '1997-04-05', 'female', NULL, 7, 1)," +
+                            "(11, 'Phạm Hưng Ngọc Minh', '0125466454', '2012-04-05', 'female', NULL, 7, 2)," +
+                            "(12, 'Phạm Hưng Ta', '0125466447', '1997-08-21', 'male', '206447583', 8, 1)," +
+                            "(13, 'Nguyễn Thị Minh', '0167551846', '1997-04-05', 'female', NULL, 8, 1)," +
+                            "(14, 'Phạm Thị Ngọc', '0125466447', '2012-07-06', 'female', NULL, 8, 2);")
+                    }
+                ),
         ])
     },
     down: (queryInterface, Sequelize) => {

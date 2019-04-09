@@ -133,7 +133,7 @@ exports.getByTour = (req, res) => {
         const page_default = 1;
         const per_page_default = 5;
         var page, per_page;
-        var offset = req.params.offset;
+        var offset = req.query.offset;
         if (typeof req.query.page === 'undefined') page = page_default;
         else page = req.query.page
         if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
