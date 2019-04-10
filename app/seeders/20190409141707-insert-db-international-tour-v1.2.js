@@ -296,6 +296,7 @@ module.exports = {
 						'Ngày 8: ISTANBUL - TP.HCM. Trả phòng. Tiếp tục hành trình khám phá Istanbul: tham quan Vương Cung Thánh Đường Hagia Sophia, Quảng trường Hippodrome. Tham quan Cung điện Topkapi lớn nhất của đế quốc Ottoman. Tự do mua sắm tại Chợ lồng Grand Bazaar. Ra sân bay Istanbul, đáp chuyến bay về lại Tp. HCM. Nghỉ đêm trên máy bay. (Ăn sáng, trưa, tối, ăn nhẹ trên máy bay).' +
 						'Ngày 9:  ISTANBUL - TP.HCM. Đoàn đến sân bay Tân Sơn Nhất lúc 13:10. Kết thúc chương trình tour du lịch Thổ Nhĩ Kỳ. (Ăn sáng, trưa).',
 					featured_img: 'VN_TNK_featured_image.png',
+					fk_type_tour: 2,
 					policy: 'GIÁ TOUR ĐÃ BAO GỒM:' +
 						'- Visa nhập cảnh Thổ Nhĩ Kỳ. ' +
 						'- Vé máy bay khứ hồi Thổ Nhĩ Kỳ và chuyến bay nội địa. ' +
@@ -667,6 +668,7 @@ module.exports = {
 						'Ngày 5: CAPPADOCIA. Khám phá Cappadocia: tham quan Bảo tàng ngoài trời Goreme Open Air Museum. Tiếp tục di chuyển đến Làng cổ Avanos. Thành phố ngầm Kaymakli hoặc Ozkonak. Thưởng thức chương trình biểu diễn ca múa nhạc truyền thống địa phương Turkish Night Dance. Nghỉ đêm tại Cappadocia. (Ăn sáng, trưa, tối).' +
 						'Ngày 6: CAPPADOCIA - ISTANBUL. Quý khách có thể ngắm cảnh bình minh ở Cappadocia trên khinh khí cầu và tận hưởng một quang cảnh vô cùng độc đáo, ấn tượng (chi phí tự túc + nếu điều kiện thời tiết cho phép). Trả phòng. Di chuyển ra sân bay đáp chuyến bay nội địa về Istanbul. Trải nghiệm du ngoạn bằng tàu dọc eo biển Bosphorus, ngắm cây cầu Bosphorus nổi tiếng xuyên biển và nối liền 2 lục địa Á - Âu. Chiêm ngưỡng các kiến trúc đặc trưng và các hoạt động thường ngày của người dân địa phương dọc theo con sông. Tự do mua sắm tại Chợ lồng Grand Bazaar.  Kết thúc tour du lịch. (Ăn sáng, trưa, tối).',
 					featured_img: 'TNK_featured_image.PNG',
+					fk_type_tour: 2,
 					policy: 'GIÁ TOUR ĐÃ BAO GỒM:' +
 						'-  Vé máy bay.' +
 						'- Thuế và các khoản phụ thu của hàng không.' +

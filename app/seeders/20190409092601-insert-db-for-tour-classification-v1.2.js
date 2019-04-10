@@ -15,9 +15,11 @@ module.exports = {
         return Promise.all([
             queryInterface.bulkInsert('type_tour', [
                 {
+                    id: 1,
                     name: 'Trong nước'
                 },
                 {
+                    id: 2,
                     name: 'Quốc tế'
                 }
             ]).then((index) => {
