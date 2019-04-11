@@ -622,32 +622,39 @@ module.exports = {
 					]),
 					queryInterface.bulkInsert('tour_countries', [
 						{
+							id: 7,
 							fk_tour: 7,
 							fk_country: 2,
 						},
 					]),
 					queryInterface.bulkInsert('tour_provinces', [
 						{
+							id: 17,
 							fk_tour: 7,
 							fk_province: 97
 						},
 						{
+							id: 18,
 							fk_tour: 7,
 							fk_province: 98
 						},
 						{
+							id: 19,
 							fk_tour: 7,
 							fk_province: 99
 						},
 						{
+							id: 20,
 							fk_tour: 7,
 							fk_province: 100
 						},
 						{
+							id: 21,
 							fk_tour: 7,
 							fk_province: 102
 						},
 						{
+							id: 22,
 							fk_tour: 7,
 							fk_province: 103
 						},
@@ -923,32 +930,39 @@ module.exports = {
 					]),
 					queryInterface.bulkInsert('tour_countries', [
 						{
+							id: 8,
 							fk_tour: 8,
 							fk_country: 2,
 						},
 					]),
 					queryInterface.bulkInsert('tour_provinces', [
 						{
+							id: 23,
 							fk_tour: 8,
 							fk_province: 97
 						},
 						{
+							id: 24,
 							fk_tour: 8,
 							fk_province: 98
 						},
 						{
+							id: 25,
 							fk_tour: 8,
 							fk_province: 100
 						},
 						{
+							id: 26,
 							fk_tour: 8,
 							fk_province: 101
 						},
 						{
+							id: 27,
 							fk_tour: 8,
 							fk_province: 102
 						},
 						{
+							id: 28,
 							fk_tour: 8,
 							fk_province: 104
 						},

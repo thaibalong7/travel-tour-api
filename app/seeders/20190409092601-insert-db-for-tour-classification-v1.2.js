@@ -24,7 +24,7 @@ module.exports = {
                 }
             ]).then((index) => {
                 return Promise.all([
-                    queryInterface.bulkUpdate('tours', { fk_type_tour: index }, {})
+                    queryInterface.bulkUpdate('tours', { fk_type_tour: 1 }, {})
                 ])
             }),
             queryInterface.bulkInsert('countries', [
@@ -98,96 +98,117 @@ module.exports = {
                     "('95', 'Tỉnh Bạc Liêu', 1)," +
                     "('96', 'Tỉnh Cà Mau', 1);")
                     .then(() => {
-
                         return Promise.all([
                             queryInterface.bulkInsert('tour_provinces', [
                                 {
+                                    id: 1,
                                     fk_tour: 1,
                                     fk_province: 79, //HCM
                                 },
                                 {
+                                    id: 2,
                                     fk_tour: 2,
                                     fk_province: 79, //HCM
                                 },
                                 {
+                                    id: 3,
                                     fk_tour: 3,
                                     fk_province: 77, //Vung Tau
                                 },
                                 {
+                                    id: 4,
                                     fk_tour: 3,
                                     fk_province: 68, //Lam Dong
                                 },
                                 {
+                                    id: 5,
                                     fk_tour: 4,
                                     fk_province: 79,
                                 },
                                 {
+                                    id: 6,
                                     fk_tour: 5,
                                     fk_province: 79,
                                 },
                                 {
+                                    id: 7,
                                     fk_tour: 5,
                                     fk_province: 68,
                                 },
                                 {
+                                    id: 8,
                                     fk_tour: 5,
                                     fk_province: 48, //Da Nang
                                 },
                                 {
+                                    id: 9,
                                     fk_tour: 6,
                                     fk_province: 56, //Khanh Hoa
                                 },
                                 {
+                                    id: 10,
                                     fk_tour: 6,
                                     fk_province: 58, //Ninh Thuan
                                 },
                                 {
+                                    id: 11,
                                     fk_tour: 6,
                                     fk_province: 56, //Da Nang
                                 },
                                 {
+                                    id: 12,
                                     fk_tour: 6,
                                     fk_province: 49, //Quang Nam
                                 },
                                 {
+                                    id: 13,
                                     fk_tour: 6,
                                     fk_province: 46, //Thua Thien - Hue
                                 },
                                 {
+                                    id: 14,
                                     fk_tour: 6,
                                     fk_province: 37, //Ninh Binh
                                 },
                                 {
+                                    id: 15,
                                     fk_tour: 6,
                                     fk_province: 22, //Quang Ninh
                                 },
                                 {
+                                    id: 16,
                                     fk_tour: 6,
                                     fk_province: 10, //Lao Cai
                                 }
                             ]),
                             queryInterface.bulkInsert('tour_countries', [
                                 {
+                                    id: 1,
                                     fk_tour: 1,
                                     fk_country: 1,
                                 },
                                 {
+                                    id: 2,
                                     fk_tour: 2,
                                     fk_country: 1,
                                 },
                                 {
+                                    id: 3,
                                     fk_tour: 3,
                                     fk_country: 1,
                                 },
                                 {
+                                    id: 4,
                                     fk_tour: 4,
                                     fk_country: 1,
                                 },
                                 {
+                                    id: 5,
                                     fk_tour: 5,
                                     fk_country: 1,
                                 },
                                 {
+                                    id: 6,
                                     fk_tour: 6,
                                     fk_country: 1,
                                 }
