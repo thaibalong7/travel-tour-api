@@ -256,7 +256,31 @@ exports.getById = (req, res) => {
             id: id
         },
         include: [{
+            attributes: { exclude: ['fk_type_tour'] },
             model: db.tours,
+            include: [{
+                model: db.type_tour
+            },
+            {
+                attributes: { exclude: ['fk_tour', 'fk_country'] },
+                model: db.tour_countries,
+                include: [{
+                    model: db.countries
+                }],
+            },
+            {
+                attributes: { exclude: ['fk_tour', 'fk_province'] },
+                model: db.tour_provinces,
+                include: [
+                    {
+                        attributes: { exclude: ['fk_country'] },
+                        model: db.provinces,
+                        include: [{
+                            model: db.countries
+                        }],
+                    }
+                ]
+            }]
         },
         {
             attributes: { exclude: ['fk_tourturn', 'fk_type_passenger'] },
@@ -282,7 +306,8 @@ exports.getById = (req, res) => {
         tour_turn.price_passengers = list_price;
         res.status(200).json({ data: tour_turn })
     }).catch(err => {
-        res.status(400).json({ msg: err })
+        console.log(err)
+        res.status(400).json({ msg: err.toString() })
     })
 }
 
@@ -298,7 +323,31 @@ exports.getById_admin = (req, res) => {
             id: id
         },
         include: [{
-            model: db.tours
+            attributes: { exclude: ['fk_type_tour'] },
+            model: db.tours,
+            include: [{
+                model: db.type_tour
+            },
+            {
+                attributes: { exclude: ['fk_tour', 'fk_country'] },
+                model: db.tour_countries,
+                include: [{
+                    model: db.countries
+                }],
+            },
+            {
+                attributes: { exclude: ['fk_tour', 'fk_province'] },
+                model: db.tour_provinces,
+                include: [
+                    {
+                        attributes: { exclude: ['fk_country'] },
+                        model: db.provinces,
+                        include: [{
+                            model: db.countries
+                        }],
+                    }
+                ]
+            }]
         },
         {
             attributes: { exclude: ['fk_tourturn', 'fk_type_passenger'] },
