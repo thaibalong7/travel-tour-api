@@ -16,7 +16,7 @@ const convertDiscountAndGetNumReviewOfListTourTurn = async (tour_turns) => {
     }
 }
 
-exports.getTourTurnByCountry = (req, res) => {
+exports.getTourTurnByCountry = async (req, res) => {
     try {
         const idCountry = parseInt(req.params.id)
         const page_default = 1;
@@ -26,6 +26,7 @@ exports.getTourTurnByCountry = (req, res) => {
         else page = req.query.page
         if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
         else per_page = req.query.per_page
+        const country = await db.countries.findByPk(idCountry);
         if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
             res.status(405).json({ msg: 'Params is invalid' })
         }
@@ -84,7 +85,8 @@ exports.getTourTurnByCountry = (req, res) => {
                     itemCount: result.length,
                     data: result_paginate,
                     next_page: next_page,
-                    type_tour: type_tour
+                    type_tour: type_tour,
+                    country: country,
                 })
             })
         }
@@ -94,7 +96,7 @@ exports.getTourTurnByCountry = (req, res) => {
     }
 }
 
-exports.getTourTurnByProvince = (req, res) => {
+exports.getTourTurnByProvince = async (req, res) => {
     try {
         const idProvince = parseInt(req.params.id)
         const page_default = 1;
@@ -104,6 +106,7 @@ exports.getTourTurnByProvince = (req, res) => {
         else page = req.query.page
         if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
         else per_page = req.query.per_page
+        const province = await db.provinces.findByPk(idProvince);
         if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
             res.status(405).json({ msg: 'Params is invalid' })
         }
@@ -162,7 +165,8 @@ exports.getTourTurnByProvince = (req, res) => {
                     itemCount: result.length,
                     data: result_paginate,
                     next_page: next_page,
-                    type_tour: type_tour
+                    type_tour: type_tour,
+                    province: province
                 })
             })
         }
