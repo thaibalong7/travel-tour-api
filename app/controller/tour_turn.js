@@ -30,8 +30,15 @@ const convertDiscountOfListTourTurn = async (tour_turns) => {
     }
 }
 
-const getNumReviewOfListTourTurn = async (tour_turns) => {
+// const getNumReviewOfListTourTurn = async (tour_turns) => {
+//     for (var i = 0; i < tour_turns.length; i++) {
+//         tour_turns[i].tour.dataValues.num_review = (await db.reviews.findAll({ where: { fk_tour: tour_turns[i].tour.id } })).length
+//     }
+// }
+
+const convertDiscountAndGetNumReviewOfListTourTurn= async (tour_turns) => {
     for (var i = 0; i < tour_turns.length; i++) {
+        tour_turns[i].discount = parseFloat(tour_turns[i].discount / 100);
         tour_turns[i].tour.dataValues.num_review = (await db.reviews.findAll({ where: { fk_tour: tour_turns[i].tour.id } })).length
     }
 }
@@ -492,8 +499,7 @@ exports.getAll = (req, res) => { //update here
                         next_page = -1;
 
                     const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
-                    await convertDiscountOfListTourTurn(result);
-                    await getNumReviewOfListTourTurn(result);
+                    await convertDiscountAndGetNumReviewOfListTourTurn(result);
                     res.status(200).json({
                         itemCount: distinct.length, //số lượng record được trả về
                         data: result,
@@ -515,8 +521,7 @@ exports.getAll = (req, res) => { //update here
                         next_page = -1;
 
                     const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
-                    await convertDiscountOfListTourTurn(result);
-                    await getNumReviewOfListTourTurn(result);
+                    await convertDiscountAndGetNumReviewOfListTourTurn(result);
                     res.status(200).json({
                         itemCount: _tour_turns.rows.length, //số lượng record được trả về
                         data: result,
@@ -885,8 +890,7 @@ exports.search = async (req, res) => {
                 if (parseInt(_tour_turns.rows.length) === 0)
                     next_page = -1;
                 await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns.rows, req.headers.host)
-                await convertDiscountOfListTourTurn(_tour_turns.rows)
-                await getNumReviewOfListTourTurn(_tour_turns.rows)
+                await convertDiscountAndGetNumReviewOfListTourTurn(_tour_turns.rows)
                 res.status(200).json({
                     itemCount: _tour_turns.count, //số lượng record được trả về
                     data: _tour_turns.rows,
