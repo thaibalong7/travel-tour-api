@@ -721,7 +721,7 @@ exports.cancelBookTour = async (req, res) => {
                 book_tour.status = 'cancelled' //chuyển thành status hủy đặt tour
                 //update số lượng người đi ở tour turn nữa ...
                 const tour_turn = book_tour.tour_turn
-                tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger); 
+                tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger);
                 await book_tour.save();
                 await tour_turn.save();
                 return res.status(200).json({
@@ -760,9 +760,11 @@ exports.updatePassenger = async (req, res) => {
                     _passenger.sex = req.body.sex
             }
             if (typeof req.body.phone !== 'undefined') //k bắt buộc
-                _passenger.phone = req.body.phone
+                if (await validate_helper.validatePhoneNumber(req.body.phone))
+                    _passenger.phone = req.body.phone
             if (typeof req.body.passport !== 'undefined') //k bắt buộc
-                _passenger.passport = req.body.passport
+                if (req.body.passport !== '')
+                    _passenger.passport = req.body.passport
             if (typeof req.body.fk_type_passenger !== 'undefined') {
                 if (parseInt(req.body.fk_type_passenger) !== parseInt(_passenger.fk_type_passenger)) {
                     const _book_tour = await db.book_tour_history.findOne({
