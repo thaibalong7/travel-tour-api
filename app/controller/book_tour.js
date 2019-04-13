@@ -762,6 +762,9 @@ exports.updatePassenger = async (req, res) => {
             if (typeof req.body.phone !== 'undefined') //k bắt buộc
                 if (await validate_helper.validatePhoneNumber(req.body.phone))
                     _passenger.phone = req.body.phone
+                else {
+                    return res.status(400).json({ msg: 'Phone is invalid' });
+                }
             if (typeof req.body.passport !== 'undefined') //k bắt buộc
                 if (req.body.passport !== '')
                     _passenger.passport = req.body.passport
