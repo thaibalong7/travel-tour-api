@@ -705,6 +705,40 @@ exports.payBookTour = async (req, res) => {
     }
 }
 
+exports.unpayBookTour = async (req, res) => {
+    try {
+        const code = req.body.code;
+        const book_tour = await db.book_tour_history.findOne({
+            where: {
+                code: code
+            }
+        })
+        if (book_tour) {
+            if (book_tour.status === 'paid') {
+                book_tour.status = 'booked' //chuyển thành status booked
+                await book_tour.save();
+                return res.status(200).json({
+                    msg: 'Pay successful',
+                    data: book_tour
+                })
+            }
+            if (book_tour.status === 'booked') {
+                return res.status(400).json({ msg: 'This booking is booked' });
+            }
+            if (book_tour.status === 'cancelled') {
+                return res.status(400).json({ msg: 'This booking has been cancelled' });
+            }
+
+        }
+        else {
+            return res.status(400).json({ msg: 'Wrong code' });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(400).json({ msg: error.toString() });
+    }
+}
+
 exports.cancelBookTour = async (req, res) => {
     try {
         const code = req.body.code;
@@ -814,6 +848,44 @@ exports.updatePassenger = async (req, res) => {
         }
         else {
             return res.status(400).json({ msg: 'Wrong id passenger' });
+        }
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() });
+    }
+}
+
+
+exports.updateContactInfo = async (req, res) => {
+    try {
+        const idContactInfo = req.body.id;
+        const _contact_info = await db.book_tour_contact_info.findByPk(idContactInfo);
+        if (_contact_info) {
+            if (typeof req.body.fullname !== 'undefined') {
+                _contact_info.fullname = req.body.fullname
+            }
+            if (typeof req.body.phone !== 'undefined')
+                if (await validate_helper.validatePhoneNumber(req.body.phone))
+                    _contact_info.phone = req.body.phone
+                else {
+                    return res.status(400).json({ msg: 'Phone is invalid' });
+                }
+            if (typeof req.body.email !== 'undefined')
+                if (await validate_helper.validateEmail(req.body.email))
+                    _contact_info.email = req.body.email
+                else {
+                    return res.status(400).json({ msg: 'Email is invalid' });
+                }
+            if (typeof req.body.address !== 'undefined') {
+                _contact_info.address = req.body.address
+            }
+            await _contact_info.save();
+            return res.status(200).json({
+                msg: 'Update successful',
+                data: _contact_info
+            })
+        }
+        else {
+            return res.status(400).json({ msg: 'Wrong id contact_info' });
         }
     } catch (error) {
         return res.status(400).json({ msg: error.toString() });
