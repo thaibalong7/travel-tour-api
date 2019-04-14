@@ -798,6 +798,7 @@ exports.updatePassenger = async (req, res) => {
                         const new_price = parseInt(check_price_passenger.percent / 100 * (tour_turn.price - tour_turn.price * tour_turn.discount / 100));
                         //cập nhật lại giá toàn tour nếu có thay đổi
                         _book_tour.total_pay = _book_tour.total_pay + new_price - old_price;
+                        _passenger.fk_type_passenger = req.body.fk_type_passenger;
                         await _book_tour.save();
                     }
                     else {
