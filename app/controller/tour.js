@@ -548,7 +548,30 @@ exports.getAllWithoutPagination = (req, res) => {
             include: [{
                 model: db.tour_turns,
                 //admin dùng nên k cần fillter status
-            }],
+            },
+            {
+                model: db.type_tour
+            },
+            {
+                attributes: { exclude: ['fk_tour', 'fk_country'] },
+                model: db.tour_countries,
+                include: [{
+                    model: db.countries
+                }],
+            },
+            {
+                attributes: { exclude: ['fk_tour', 'fk_province'] },
+                model: db.tour_provinces,
+                include: [
+                    {
+                        attributes: { exclude: ['fk_country'] },
+                        model: db.provinces,
+                        include: [{
+                            model: db.countries
+                        }],
+                    }
+                ]
+            }]
             // order: [[db.tour_turns, 'start_date', 'DESC']]
         }
         tours.findAll(query).then(async _tours => {

@@ -362,3 +362,195 @@ exports.getAllTypeTour = (req, res) => {
         return res.status(400).json({ msg: error.toString() })
     }
 }
+
+exports.getAllCountries_admin = (req, res) => {
+    try {
+        db.countries.findAll().then(_countries => {
+            return res.status(200).json({ data: _countries })
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({ msg: error.toString() })
+    }
+
+}
+
+exports.getAllProvincesByCountry_admin = (req, res) => {
+    try {
+        const idCountry = req.params.id;
+        if (typeof idCountry === 'undefined' || isNaN(idCountry))
+            return res.status(405).json({ msg: 'Wrong id country' })
+        db.provinces.findAll({
+            where: {
+                fk_country: idCountry
+            },
+            attributes: { exclude: ['fk_country'] },
+        }).then((_provinces) => {
+            return res.status(200).json({ data: _provinces })
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({ msg: error.toString() })
+    }
+}
+
+exports.getAllProvinces_admin = (req, res) => {
+    try {
+        db.provinces.findAll().then((_provinces) => {
+            return res.status(200).json({ data: _provinces })
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({ msg: error.toString() })
+    }
+}
+
+exports.createTypeTour = (req, res) => {
+    try {
+        if (typeof req.body.name !== 'undefined') {
+            db.type_tour.create({ name: req.body.name }).then(_type_tour => {
+                res.status(200).json(_type_tour)
+            }).catch(err => {
+                console.error(err);
+                return res.status(400).json({ msg: err.toString() })
+            })
+        } else {
+            res.status(400).json({ msg: 'Param is invalid' })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({ msg: error.toString() })
+    }
+}
+
+exports.updateTypeTour = (req, res) => {
+    try {
+        if (typeof req.body.name !== 'undefined') {
+            db.type_tour.update(req.body, {
+                where: {
+                    id: req.body.id
+                }
+            }).then(async () => {
+                res.status(200).json({
+                    msg: 'Update successful',
+                    data: await db.type_tour.findByPk(req.body.id)
+                })
+            }).catch(err => {
+                res.status(400).json({ msg: err })
+            })
+        }
+        else {
+            res.status(400).json({ msg: 'Param is invalid' })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({ msg: error.toString() })
+    }
+}
+
+exports.createCountry = (req, res) => {
+    try {
+        if (typeof req.body.name !== 'undefined') {
+            db.countries.create({ name: req.body.name }).then(_country => {
+                res.status(200).json(_country)
+            }).catch(err => {
+                console.error(err);
+                return res.status(400).json({ msg: err.toString() })
+            })
+        } else {
+            res.status(400).json({ msg: 'Param is invalid' })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({ msg: error.toString() })
+    }
+}
+
+exports.updateCountry = (req, res) => {
+    try {
+        if (typeof req.body.name !== 'undefined') {
+            db.countries.update(req.body, {
+                where: {
+                    id: req.body.id
+                }
+            }).then(async () => {
+                res.status(200).json({
+                    msg: 'Update successful',
+                    data: await db.countries.findByPk(req.body.id)
+                })
+            }).catch(err => {
+                res.status(400).json({ msg: err })
+            })
+        }
+        else {
+            res.status(400).json({ msg: 'Param is invalid' })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({ msg: error.toString() })
+    }
+}
+
+exports.createProvince = async (req, res) => {
+    try {
+        if (typeof req.body.name !== 'undefined') {
+            const idCountry = req.body.idCountry;
+            if (typeof idCountry === 'undefined' || isNaN(idCountry))
+                return res.status(405).json({ msg: 'Wrong id country' })
+            const check_country = await db.countries.findByPk(idCountry);
+            if (check_country) {
+                db.provinces.create({
+                    name: req.body.name,
+                    fk_country: idCountry
+                }).then(_province => {
+                    res.status(200).json(_province)
+                }).catch(err => {
+                    console.error(err);
+                    return res.status(400).json({ msg: err.toString() })
+                })
+            }
+            else {
+                return res.status(400).json({ msg: 'Wrong id country' })
+            }
+        } else {
+            return res.status(400).json({ msg: 'Param is invalid' })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({ msg: error.toString() })
+    }
+}
+
+exports.updateProvince = async (req, res) => {
+    try {
+        const idProvince = req.body.id;
+        if (typeof idProvince === 'undefined' || isNaN(idProvince))
+            return res.status(405).json({ msg: 'Wrong id country' })
+        const _province = await db.provinces.findByPk(idProvince);
+        if (_province) {
+            if (typeof req.body.name !== 'undefined') {
+                _province.name = req.body.name;
+            }
+            if (typeof req.body.fk_country !== 'undefined') {
+                const _country = await db.countries.findByPk(req.body.fk_country);
+                if (_country) {
+                    _province.fk_country = _country.id;
+                }
+                else {
+                    return res.status(400).json({ msg: 'Wrong id country' })
+                }
+            }
+            await _province.save();
+            res.status(200).json({
+                msg: 'Update successful',
+                data: _province
+            })
+        }
+        else {
+            return res.status(400).json({ msg: 'Wrong id province' })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({ msg: error.toString() })
+    }
+}
