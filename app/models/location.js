@@ -1,4 +1,4 @@
-module.exports = function(sequelize, Sequelize) {
+module.exports = function (sequelize, Sequelize) {
   var Location = sequelize.define('locations', {
     id: {
       autoIncrement: true,
@@ -6,11 +6,11 @@ module.exports = function(sequelize, Sequelize) {
       type: Sequelize.INTEGER
     },
     latitude: {
-      type: Sequelize.FLOAT,
+      type: Sequelize.FLOAT(10, 6),
       allowNull: false
     },
     longitude: {
-      type: Sequelize.FLOAT,
+      type: Sequelize.FLOAT(10, 6),
       allowNull: false
     },
     name: {
@@ -35,16 +35,17 @@ module.exports = function(sequelize, Sequelize) {
       defaultValue: 'active'
     }
   },
-  {
-    charset: 'utf8',
-    collate: 'utf8_unicode_ci',
-    tableName: 'locations',
-    timestamps: false
-  });
+    {
+      charset: 'utf8',
+      collate: 'utf8_unicode_ci',
+      tableName: 'locations',
+      timestamps: false
+    });
 
   Location.associate = (models) => {
-    Location.belongsTo(models.types, {foreignKey: 'fk_type'})
-    Location.hasMany(models.routes, {foreignKey: 'fk_location'})
+    Location.belongsTo(models.types, { foreignKey: 'fk_type' })
+    Location.belongsTo(models.provinces, { foreignKey: 'fk_province' })
+    Location.hasMany(models.routes, { foreignKey: 'fk_location' })
   }
   return Location;
 }

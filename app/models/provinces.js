@@ -20,6 +20,7 @@ module.exports = function (sequelize, Sequelize) {
     Provinces.associate = (models) => {
         Provinces.belongsTo(models.countries, { foreignKey: 'fk_country' })
         Provinces.hasMany(models.tour_provinces, { foreignKey: 'fk_province' })
+        Provinces.hasMany(models.locations, { foreignKey: 'fk_province' })
     }
     return Provinces;
 }

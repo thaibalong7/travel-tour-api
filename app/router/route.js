@@ -14,4 +14,6 @@ router.get('/getById/:id', routes.getById);
 
 router.get('/getAllNotHaveTour', routes.getAllNotHaveTour); //middlewareAuthAdmin
 
+router.post('/getCurrentRoute', routes.getCurrentRoute);
+
 module.exports = router
