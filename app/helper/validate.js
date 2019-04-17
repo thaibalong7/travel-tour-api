@@ -9,6 +9,9 @@ const validatePhoneNumber = async (phone_number) => {
 }
 
 const check_time = async (arrive, leave) => {
+    if (arrive === null) {
+        return Date.parse('01/01/2011 00:00:00') < Date.parse('01/01/2011 ' + leave)
+    }
     return Date.parse('01/01/2011 ' + arrive) < Date.parse('01/01/2011 ' + leave)
 }
 
