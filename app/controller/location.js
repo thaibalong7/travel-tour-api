@@ -54,12 +54,14 @@ exports.create = async (req, res) => {
     try {
         if (typeof req.body.latitude !== 'undefined' && typeof req.body.longitude !== 'undefined'
             && typeof req.body.name !== 'undefined' && typeof req.body.address !== 'undefined'
-            && typeof req.body.description !== 'undefined' && typeof req.body.fk_type !== 'undefined') {
+            && typeof req.body.description !== 'undefined' && typeof req.body.fk_type !== 'undefined'
+            && typeof req.body.fk_province !== 'undefined') {
             if (typeof req.file !== 'undefined') {
                 if (!isNaN(req.body.latitude) && !isNaN(req.body.longitude)) {
-                    if (!isNaN(req.body.fk_type)) {
+                    if (!isNaN(req.body.fk_type) && !isNaN(req.body.fk_province)) {
                         const check_type = await db.types.findByPk(parseInt(req.body.fk_type));
-                        if (check_type) {
+                        const check_province = await db.provinces.findByPk(parseInt(req.body.fk_province));
+                        if (check_type && check_province) {
                             var date = new Date();
                             var timestamp = date.getTime();
                             fs.writeFile('public/assets/images/locationFeatured/' + timestamp + '.jpg', req.file.buffer, async (err) => {
@@ -73,7 +75,8 @@ exports.create = async (req, res) => {
                                     address: req.body.address,
                                     description: req.body.description,
                                     featured_img: timestamp + '.jpg',
-                                    fk_type: req.body.fk_type
+                                    fk_type: check_type.id,
+                                    fk_province: check_province.id
                                 }
                                 locations.create(new_location).then(_location => {
                                     if (_location.featured_img !== null) {
@@ -89,11 +92,11 @@ exports.create = async (req, res) => {
                             })
                         }
                         else {
-                            return res.status(400).json({ msg: 'Wrong location type' })
+                            return res.status(400).json({ msg: 'Wrong location type or province' })
                         }
                     }
                     else {
-                        return res.status(400).json({ msg: 'Wrong location type' })
+                        return res.status(400).json({ msg: 'Wrong location type or province' })
                     }
                 }
                 else {
@@ -158,6 +161,15 @@ exports.update = async (req, res) => {
                         else return res.status(400).json({ msg: 'Wrong location type' })
                     }
                     else return res.status(400).json({ msg: 'Wrong location type' })
+                }
+                if (typeof req.body.fk_province !== 'undefined') {
+                    if (!isNaN(req.body.fk_province)) {
+                        const check_province = await db.provinces.findByPk(parseInt(req.body.fk_province));
+                        if (check_province)
+                            _location.fk_province = req.body.fk_province;
+                        else return res.status(400).json({ msg: 'Wrong province' })
+                    }
+                    else return res.status(400).json({ msg: 'Wrong province' })
                 }
                 if (typeof req.body.description !== 'undefined')
                     _location.description = req.body.description;
