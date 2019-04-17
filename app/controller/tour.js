@@ -10,6 +10,18 @@ const asyncForEach = async (arr, cb) => {
     arr.forEach(cb);
 }
 
+const asyncForLoop = async (arr, cb) => {
+    for (let i = 0; i < arr.length; i++) {
+        await cb(arr[i], i);
+    }
+}
+
+const asyncForSet = async (set, cb) => {
+    for (let item of set) {
+        await cb(item);
+    }
+}
+
 const asyncFor = async (arr, cb) => {
     for (let i = 0; i < arr.length; i++) {
         if (await cb(arr[i], i) === true) { break }
@@ -23,6 +35,8 @@ const sort_route = async (routes) => {
     }
     const compare2Route = (route1, route2) => {
         if (parseInt(route1.day) === parseInt(route2.day)) {
+            if (route1.arrive_time === null)
+                return -1;
             if (sync_check_time(route1.arrive_time, route2.arrive_time)) {
                 //route1 nhỏ hơn route2
                 return -1;
@@ -92,7 +106,7 @@ exports.createWithRoutesAndListImage = async (req, res) => {
     try {
         if (typeof req.body.name !== 'undefined' && typeof req.body.policy !== 'undefined'
             && typeof req.body.description !== 'undefined' && typeof req.body.detail !== 'undefined'
-            && typeof req.body.routes !== 'undefined') {
+            && typeof req.body.routes !== 'undefined' && typeof req.body.fk_type_tour !== 'undefined') {
             if (Array.isArray(JSON.parse(req.body.routes))) {
                 if (typeof req.files !== 'undefined') {
                     var date = new Date();
@@ -107,62 +121,93 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                         }
                         return false;
                     })
-                    if (featured_image) {
-                        fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', featured_image.buffer, async (err) => {
-                            if (err) {
-                                return res.status(400).json({ msg: err.toString() })
-                            }
-                            const new_tour = {
-                                name: req.body.name,
-                                policy: req.body.policy,
-                                description: req.body.description,
-                                detail: req.body.detail,
-                                featured_img: timestamp + '.jpg'
-                            }
-                            const list_routes = JSON.parse(req.body.routes);
-                            await sort_route(list_routes);
-                            if (!(await helper_validate.check_list_routes(list_routes, false))) {
-                                return res.status(400).json({ msg: 'List routes is invalid' })
-                            }
-                            tours.create(new_tour).then(async _tour => {
-                                //change routes
-                                await asyncForEach(list_routes, async (route) => {
-                                    var _route = await db.routes.findByPk(route.id);
-                                    _route.fk_tour = _tour.id;
-                                    await _route.save();
-                                })
+                    const check_type = await db.type_tour.findByPk(parseInt(req.body.fk_type_tour))
+                    if (check_type) {
+                        if (featured_image) {
+                            fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', featured_image.buffer, async (err) => {
+                                if (err) {
+                                    return res.status(400).json({ msg: err.toString() })
+                                }
+                                const new_tour = {
+                                    name: req.body.name,
+                                    policy: req.body.policy,
+                                    description: req.body.description,
+                                    detail: req.body.detail,
+                                    featured_img: timestamp + '.jpg',
+                                    fk_type_tour: check_type.id
+                                }
+                                const list_routes = JSON.parse(req.body.routes);
 
-                                //write file list image
-                                await asyncFor(list_image, async (file, i) => {
-                                    if (file.fieldname === 'list_image') {
-                                        const name_image = _tour.id + '_' + timestamp + '_' + i + '.jpg';
-                                        fs.writeFile('public/assets/images/tourImage/' + name_image, file.buffer, async (err) => {
-                                            if (err) {
-                                                console.log(err);
-                                            }
-                                            else {
-                                                await db.tour_images.create({
-                                                    name: name_image,
-                                                    fk_tour: _tour.id
-                                                })
-                                            }
-                                            return false;
+                                await sort_route(list_routes);
+                                if (!(await helper_validate.check_list_routes(list_routes, false))) {
+                                    return res.status(400).json({ msg: 'List routes is invalid' })
+                                }
+                                tours.create(new_tour).then(async _tour => {
+                                    //change routes and get list country, province
+                                    let list_provinces = new Set();
+                                    let list_countries = new Set();
+                                    await asyncForLoop(list_routes, async (route) => {
+                                        var _route = await db.routes.findByPk(route.id);
+                                        _route.fk_tour = _tour.id;
+                                        const check_location = await db.locations.findOne({
+                                            where: {
+                                                id: _route.fk_location
+                                            },
+                                            include: [{
+                                                model: db.provinces,
+                                            }]
                                         })
-                                    }
-                                })
+                                        list_countries.add(parseInt(check_location.province.fk_country));
+                                        list_provinces.add(parseInt(check_location.province.id));
+                                        await _route.save();
+                                    })
+                                    asyncForSet(list_provinces, async (id_province) => {
+                                        db.tour_provinces.create({
+                                            fk_tour: _tour.id,
+                                            fk_province: id_province
+                                        })
+                                    })
+                                    asyncForSet(list_countries, async (id_country) => {
+                                        db.tour_countries.create({
+                                            fk_tour: _tour.id,
+                                            fk_country: id_country
+                                        })
+                                    })
+                                    //write file list image
+                                    await asyncFor(list_image, async (file, i) => {
+                                        if (file.fieldname === 'list_image') {
+                                            const name_image = _tour.id + '_' + timestamp + '_' + i + '.jpg';
+                                            fs.writeFile('public/assets/images/tourImage/' + name_image, file.buffer, async (err) => {
+                                                if (err) {
+                                                    console.log(err);
+                                                }
+                                                else {
+                                                    await db.tour_images.create({
+                                                        name: name_image,
+                                                        fk_tour: _tour.id
+                                                    })
+                                                }
+                                                return false;
+                                            })
+                                        }
+                                    })
 
-                                if (process.env.NODE_ENV === 'development')
-                                    _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
-                                else
-                                    _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
-                                return res.status(200).json(_tour)
-                            }).catch(err => {
-                                return res.status(400).json({ msg: err.toString() })
+                                    if (process.env.NODE_ENV === 'development')
+                                        _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                                    else
+                                        _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                                    return res.status(200).json(_tour)
+                                }).catch(err => {
+                                    return res.status(400).json({ msg: err.toString() })
+                                })
                             })
-                        })
+                        }
+                        else {
+                            return res.status(400).json({ msg: 'Missing featured image of tour' })
+                        }
                     }
                     else {
-                        return res.status(400).json({ msg: 'Missing featured image of tour' })
+                        return res.status(400).json({ msg: 'Wrong type tour' })
                     }
                 }
                 else {
@@ -378,6 +423,15 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                     _tour.description = req.body.description;
                 if (typeof req.body.detail !== 'undefined')
                     _tour.detail = req.body.detail;
+                if (typeof req.body.fk_type_tour !== 'undefined') {
+                    if (!isNaN(req.body.fk_type_tour)) {
+                        const check_type_tour = await db.type_tour.findByPk(parseInt(req.body.fk_type_tour));
+                        if (check_type_tour)
+                            _tour.fk_type_tour = req.body.fk_type_tour;
+                        else return res.status(400).json({ msg: 'Wrong type tour' })
+                    }
+                    else return res.status(400).json({ msg: 'Wrong type tour' })
+                }
                 if (typeof req.body.routes !== 'undefined') {
                     const list_routes = JSON.parse(req.body.routes);
                     await sort_route(list_routes);
@@ -390,10 +444,36 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                             { fk_tour: null },
                             { where: { fk_tour: _tour.id } }
                         )
-                        await asyncForEach(list_routes, async (route) => {
+                        await db.tour_provinces.destroy({ where: { fk_tour: _tour.id } })
+                        await db.tour_countries.destroy({ where: { fk_tour: _tour.id } })
+                        let list_provinces = new Set();
+                        let list_countries = new Set();
+                        await asyncForLoop(list_routes, async (route) => {
                             var _route = await db.routes.findByPk(route.id);
                             _route.fk_tour = _tour.id;
+                            const check_location = await db.locations.findOne({
+                                where: {
+                                    id: _route.fk_location
+                                },
+                                include: [{
+                                    model: db.provinces,
+                                }]
+                            })
+                            list_countries.add(parseInt(check_location.province.fk_country));
+                            list_provinces.add(parseInt(check_location.province.id));
                             await _route.save();
+                        })
+                        asyncForSet(list_provinces, async (id_province) => {
+                            db.tour_provinces.create({
+                                fk_tour: _tour.id,
+                                fk_province: id_province
+                            })
+                        })
+                        asyncForSet(list_countries, async (id_country) => {
+                            db.tour_countries.create({
+                                fk_tour: _tour.id,
+                                fk_country: id_country
+                            })
                         })
                     }
                 }
