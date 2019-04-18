@@ -396,7 +396,12 @@ exports.getAllProvincesByCountry_admin = (req, res) => {
 
 exports.getAllProvinces_admin = (req, res) => {
     try {
-        db.provinces.findAll().then((_provinces) => {
+        db.provinces.findAll({
+            attributes: {exclude: ['fk_country']},
+            include: [{
+                model: db.countries
+            }]
+        }).then((_provinces) => {
             return res.status(200).json({ data: _provinces })
         })
     } catch (error) {
