@@ -450,6 +450,13 @@ exports.getById = (req, res) => {
         attributes: { exclude: ['fk_type'] },
         where: { id: req.params.id },
         include: [{
+            attributes: { exclude: ['fk_country'] },
+            model: db.provinces,
+            include: [{
+                model: db.countries
+            }]
+        },
+        {
             model: db.types
         }]
     }
