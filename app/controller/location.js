@@ -78,14 +78,28 @@ exports.create = async (req, res) => {
                                     fk_type: check_type.id,
                                     fk_province: check_province.id
                                 }
-                                locations.create(new_location).then(_location => {
-                                    if (_location.featured_img !== null) {
-                                        if (process.env.NODE_ENV === 'development')
-                                            _location.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
-                                        else
-                                            _location.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
-                                    }
-                                    res.status(200).json(_location)
+                                locations.create(new_location).then(async _location => {
+                                    const location_result = await locations.findOne({
+                                        attributes: { exclude: ['fk_province', 'fk_type'] },
+                                        where: {
+                                            id: _location.id
+                                        },
+                                        include: [{
+                                            attributes: { exclude: ['fk_country'] },
+                                            model: db.provinces,
+                                            include: [{
+                                                model: db.countries
+                                            }]
+                                        },
+                                        {
+                                            model: db.types
+                                        }]
+                                    })
+                                    if (process.env.NODE_ENV === 'development')
+                                        location_result.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + location_result.featured_img;
+                                    else
+                                        location_result.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + location_result.featured_img;
+                                    res.status(200).json(location_result)
                                 }).catch(err => {
                                     return res.status(400).json({ msg: err });
                                 })
@@ -196,27 +210,57 @@ exports.update = async (req, res) => {
                         }
                         _location.featured_img = timestamp + '.jpg';
                         await _location.save();
+                        const location_result = await locations.findOne({
+                            attributes: { exclude: ['fk_province', , 'fk_type'] },
+                            where: {
+                                id: _location.id
+                            },
+                            include: [{
+                                attributes: { exclude: ['fk_country'] },
+                                model: db.provinces,
+                                include: [{
+                                    model: db.countries
+                                }]
+                            },
+                            {
+                                model: db.types
+                            }]
+                        })
                         if (process.env.NODE_ENV === 'development')
-                            _location.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+                            location_result.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + location_result.featured_img;
                         else
-                            _location.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+                            location_result.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + location_result.featured_img;
                         return res.status(200).json({
                             msg: 'Update successful',
-                            data: _location
+                            data: location_result
                         })
                     })
                 }
                 else {
                     await _location.save();
-                    if (_location.featured_img !== null) {
-                        if (process.env.NODE_ENV === 'development')
-                            _location.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
-                        else
-                            _location.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
-                    }
+                    const location_result = await locations.findOne({
+                        attributes: { exclude: ['fk_province', 'fk_type'] },
+                        where: {
+                            id: _location.id
+                        },
+                        include: [{
+                            attributes: { exclude: ['fk_country'] },
+                            model: db.provinces,
+                            include: [{
+                                model: db.countries
+                            }]
+                        },
+                        {
+                            model: db.types
+                        }]
+                    })
+                    if (process.env.NODE_ENV === 'development')
+                        location_result.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + location_result.featured_img;
+                    else
+                        location_result.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + location_result.featured_img;
                     return res.status(200).json({
                         msg: 'Update successful',
-                        data: _location
+                        data: location_result
                     })
                 }
             }
