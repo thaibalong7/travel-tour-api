@@ -69,8 +69,8 @@ exports.create = async (req, res) => {
                                     return res.status(400).json({ msg: err })
                                 }
                                 var new_location = {
-                                    latitude: req.body.latitude,
-                                    longitude: req.body.longitude,
+                                    latitude: parseFloat(req.body.latitude),
+                                    longitude: parseFloat(req.body.longitude),
                                     name: req.body.name,
                                     address: req.body.address,
                                     description: req.body.description,
@@ -155,13 +155,13 @@ exports.update = async (req, res) => {
                     _location.name = req.body.name;
                 if (typeof req.body.latitude !== 'undefined') {
                     if (!isNaN(req.body.latitude))
-                        _location.latitude = req.body.latitude;
+                        _location.latitude = parseFloat(req.body.latitude);
                     else
                         return res.status(400).json({ msg: 'Wrong latitude' })
                 }
                 if (typeof req.body.longitude !== 'undefined') {
                     if (!isNaN(req.body.longitude))
-                        _location.longitude = req.body.longitude;
+                        _location.longitude = parseFloat(req.body.longitude);
                     else
                         return res.status(400).json({ msg: 'Wrong longitude' })
                 }
