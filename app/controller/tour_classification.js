@@ -397,7 +397,7 @@ exports.getAllProvincesByCountry_admin = (req, res) => {
 exports.getAllProvinces_admin = (req, res) => {
     try {
         db.provinces.findAll({
-            attributes: {exclude: ['fk_country']},
+            attributes: { exclude: ['fk_country'] },
             include: [{
                 model: db.countries
             }]
@@ -507,8 +507,16 @@ exports.createProvince = async (req, res) => {
                 db.provinces.create({
                     name: req.body.name,
                     fk_country: idCountry
-                }).then(_province => {
-                    res.status(200).json(_province)
+                }).then(async _province => {
+                    res.status(200).json(await db.provinces.findOne({
+                        where: {
+                            id: _province.id
+                        },
+                        attributes: { exclude: ['fk_country'] },
+                        include: [{
+                            model: db.countries
+                        }]
+                    }))
                 }).catch(err => {
                     console.error(err);
                     return res.status(400).json({ msg: err.toString() })
@@ -548,7 +556,15 @@ exports.updateProvince = async (req, res) => {
             await _province.save();
             res.status(200).json({
                 msg: 'Update successful',
-                data: _province
+                data: await db.provinces.findOne({
+                    where: {
+                        id: _province.id
+                    },
+                    attributes: { exclude: ['fk_country'] },
+                    include: [{
+                        model: db.countries
+                    }]
+                })
             })
         }
         else {
