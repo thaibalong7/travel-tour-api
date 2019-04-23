@@ -44,6 +44,7 @@ module.exports = {
 				"(4, 'Đường sắt', 'railway');"),
 			queryInterface.sequelize.query("INSERT INTO `payment_method` (`id`, `name`) VALUES" +
 				"(1, 'incash'), " +
+				"(3, 'online'), " +
 				"(2, 'transfer');"),
 			queryInterface.sequelize.query("INSERT INTO `admins` (`id`, `username`, `name`, `password`) VALUES" +
 				"(1, 'admin', 'ADMIN', '$2a$10$PqMsU1cjeWI4djNgKQXl6.6fkPWRqvPcNVpg47x1r1tooBEq.IJFK')," +

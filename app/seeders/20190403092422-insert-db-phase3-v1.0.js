@@ -27,72 +27,72 @@ module.exports = {
                 "(11, '14:15:00', '14:45:00', 1, 'Tham quan nhà thờ Đức Bà', NULL, 25, 2, 1)," +
                 "(12, '15:00:00', '16:00:00', 1, 'Tham quan bưu điện thành phố', NULL, 26, 2, 1)," +
                 "(13, '17:00:00', NULL, 1, 'Quý khách kết thúc Tour Du Lịch Tham Quan Sài Gòn 1 Ngày tại văn phòng. Chia tay quý khách và hẹn gặp lại.\r\n', NULL, 30, 2, 1)," +
-                "(14, NULL, '10:00:00', 1, NULL, NULL, 51, 3, 1)," +
-                "(15, '18:00:00', '06:00:00', 1, NULL, NULL, 40, 3, 1)," +
-                "(16, '07:30:00', '09:00:00', 2, NULL, NULL, 31, 3, 1)," +
-                "(17, '09:30:00', '11:30:00', 2, NULL, NULL, 33, 3, 1)," +
-                "(18, '13:30:00', '15:30:00', 2, NULL, NULL, 32, 3, 1)," +
-                "(19, '16:00:00', '18:00:00', 2, NULL, NULL, 34, 3, 1)," +
-                "(20, '19:00:00', '06:00:00', 2, NULL, NULL, 40, 3, 1)," +
-                "(21, '07:00:00', '08:30:00', 3, NULL, NULL, 38, 3, 1)," +
-                "(22, '09:00:00', '11:00:00', 3, NULL, NULL, 35, 3, 1)," +
-                "(23, '12:00:00', '14:00:00', 3, NULL, NULL, 40, 3, 1)," +
-                "(24, '21:00:00', NULL, 3, NULL, NULL, 51, 3, 1)," +
-                "(25, NULL, '07:30:00', 1, NULL, NULL, 57, 4, 1)," +
-                "(26, '08:00:00', '09:30:00', 1, NULL, NULL, 25, 4, 1)," +
-                "(27, '09:30:00', '11:30:00', 1, NULL, NULL, 26, 4, 1)," +
-                "(28, '13:30:00', '15:00:00', 1, NULL, NULL, 56, 4, 1)," +
-                "(29, '15:00:00', NULL, 1, NULL, NULL, 57, 4, 1)," +
-                "(30, '06:30:00', '07:00:00', 1, NULL, NULL, 26, 5, 1)," +
-                "(31, '14:00:00', '15:00:00', 1, NULL, NULL, 41, 5, 1)," +
-                "(32, '16:00:00', '17:30:00', 1, NULL, NULL, 33, 5, 1)," +
-                "(33, '18:00:00', '06:00:00', 1, NULL, NULL, 40, 5, 1)," +
-                "(34, '07:30:00', '09:30:00', 2, NULL, NULL, 36, 5, 1)," +
-                "(35, '10:00:00', '11:35:00', 2, NULL, NULL, 32, 5, 1)," +
-                "(36, '14:00:00', '16:00:00', 2, NULL, NULL, 35, 5, 1)," +
-                "(37, '16:30:00', '18:30:00', 2, NULL, NULL, 34, 5, 1)," +
-                "(38, '19:00:00', '06:30:00', 2, NULL, NULL, 40, 5, 1)," +
-                "(39, '08:00:00', '09:00:00', 3, NULL, NULL, 31, 5, 1)," +
-                "(40, '09:30:00', '11:30:00', 3, NULL, NULL, 38, 5, 1)," +
-                "(41, '14:00:00', '15:30:00', 3, NULL, NULL, 39, 5, 1)," +
-                "(42, '16:30:00', '18:30:00', 3, NULL, NULL, 37, 5, 1)," +
-                "(43, '19:30:00', '05:00:00', 3, NULL, NULL, 40, 5, 1)," +
-                "(44, '10:00:00', '13:00:00', 4, NULL, NULL, 58, 5, 1)," +
-                "(45, '13:30:00', '14:30:00', 4, NULL, NULL, 49, 5, 1)," +
-                "(46, '16:00:00', '19:00:00', 4, NULL, NULL, 50, 5, 1)," +
-                "(47, '20:30:00', '08:00:00', 4, NULL, NULL, 58, 5, 1)," +
-                "(48, '09:00:00', '17:00:00', 5, NULL, NULL, 48, 5, 1)," +
-                "(49, '16:00:00', '07:30:00', 5, NULL, NULL, 58, 5, 1)," +
-                "(50, '19:00:00', NULL, 6, NULL, NULL, 26, 5, 1)," +
-                "(51, NULL, '04:00:00', 1, 'di chuyển bằng đường bộ', NULL, 25, 6, 1)," +
-                "(52, '09:00:00', '11:00:00', 1, 'di chuyển bằng đường bộ', NULL, 61, 6, 1)," +
-                "(53, '12:00:00', '15:00:00', 1, NULL, NULL, 60, 6, 1)," +
-                "(54, '18:00:00', '07:00:00', 1, NULL, NULL, 62, 6, 1)," +
-                "(56, '09:00:00', '14:00:00', 2, NULL, NULL, 80, 6, 1)," +
-                "(57, '15:00:00', '17:00:00', 2, NULL, NULL, 81, 6, 1)," +
-                "(58, '19:00:00', '20:00:00', 2, NULL, NULL, 82, 6, 3)," +
-                "(59, '21:00:00', '21:30:00', 2, NULL, NULL, 83, 6, 1)," +
-                "(60, '22:30:00', '10:00:00', 2, NULL, NULL, 63, 6, 1)," +
-                "(61, '11:00:00', '07:30:00', 3, NULL, NULL, 84, 6, 1)," +
-                "(62, '08:30:00', '12:00:00', 4, NULL, NULL, 64, 6, 1)," +
-                "(63, '17:00:00', '06:30:00', 4, NULL, NULL, 65, 6, 1)," +
-                "(64, '09:00:00', '15:00:00', 5, NULL, NULL, 48, 6, 1)," +
-                "(65, '19:00:00', '16:30:00', 5, NULL, NULL, 66, 6, 1)," +
-                "(66, '08:00:00', '09:30:00', 6, NULL, NULL, 85, 6, 1)," +
-                "(67, '10:30:00', '13:30:00', 6, NULL, NULL, 67, 6, 1)," +
-                "(68, '14:30:00', '16:00:00', 6, NULL, NULL, 86, 6, 1)," +
-                "(69, '17:00:00', '18:00:00', 6, NULL, NULL, 87, 6, 3)," +
-                "(70, '19:00:00', '19:30:00', 6, NULL, NULL, 88, 6, 1)," +
-                "(71, '20:30:00', '06:00:00', 6, NULL, NULL, 68, 6, 1)," +
-                "(72, '07:00:00', '09:00:00', 7, NULL, NULL, 69, 6, 1)," +
-                "(73, '10:00:00', '15:00:00', 7, NULL, NULL, 70, 6, 1)," +
-                "(74, '16:30:00', '08:00:00', 7, NULL, NULL, 89, 6, 3)," +
-                "(75, '10:00:00', '15:00:00', 8, NULL, NULL, 71, 6, 1)," +
-                "(76, '18:00:00', '08:30:00', 8, NULL, NULL, 73, 6, 1)," +
-                "(77, '10:00:00', '07:00:00', 9, NULL, NULL, 76, 6, 1)," +
-                "(78, '09:00:00', '11:30:00', 10, NULL, NULL, 74, 6, 1)," +
-                "(79, '15:00:00', '17:00:00', 10, NULL, NULL, 90, 6, 1)," +
-                "(80, '18:00:00', '19:00:00', 10, NULL, NULL, 88, 6, 3)," +
+                "(14, NULL, '10:00:00', 1, 'Tập trung trước 2 tiếng để chuẩn bị khởi hành', NULL, 51, 3, 1)," +
+                "(15, '18:00:00', '06:00:00', 1, 'Tới khách sạn và ở lại qua đêm', NULL, 40, 3, 1)," +
+                "(16, '07:30:00', '09:00:00', 2, 'Tham quan nhà thờ Con Gà', NULL, 31, 3, 1)," +
+                "(17, '09:30:00', '11:30:00', 2, 'Du ngoạn bằng cáp treo trước khi tới Thiền viên Trúc Lâm', NULL, 33, 3, 1)," +
+                "(18, '13:30:00', '15:30:00', 2, 'Thăm quan dinh tự cổ của vị vua cuối cùng của Việt Nam - vua Bảo Đại', NULL, 32, 3, 1)," +
+                "(19, '16:00:00', '18:00:00', 2, 'Thăm quan Showroom hoa nghệ thuật', NULL, 34, 3, 1)," +
+                "(20, '19:00:00', '06:00:00', 2, 'Quay về khách sạn nghỉ ngơi, chuẩn bị cho ngày tiếp theo', NULL, 40, 3, 1)," +
+                "(21, '07:00:00', '08:30:00', 3, 'Tham quan Ga xe lửa Thành phố', NULL, 38, 3, 1)," +
+                "(22, '09:00:00', '11:00:00', 3, 'Thăm quan làng hoa Vạn Thành', NULL, 35, 3, 1)," +
+                "(23, '12:00:00', '14:00:00', 3, 'Quay về khách sạn nghỉ ngơi, qua đêm, chuẩn bị quay về Vũng Tàu', NULL, 40, 3, 1)," +
+                "(24, '21:00:00', NULL, 3, 'Di chuyển về Vũng Tàu, kết thúc chuyến đi', NULL, 51, 3, 1)," +
+                "(25, NULL, '07:30:00', 1, 'Tập trung tại cổng trường ĐH Khoa học tự nhên trước 45 phút để chuẩn bị xuất phát', NULL, 57, 4, 1)," +
+                "(26, '08:00:00', '09:30:00', 1, 'Thăm quan nhà thờ Đức Bà thành phố', NULL, 25, 4, 1)," +
+                "(27, '09:30:00', '11:30:00', 1, 'Di chuyển sang Bưu điện Trung tâm thành phố ở gần đó', NULL, 26, 4, 1)," +
+                "(28, '13:30:00', '15:00:00', 1, 'Thăm quan Nhà hát TP Hồ Chí Minh', NULL, 56, 4, 1)," +
+                "(29, '15:00:00', NULL, 1, 'Quay về trường ĐH Khoa học tự nhiên, kết thúc chuyến đi.', NULL, 57, 4, 1)," +
+                "(30, '06:30:00', '07:00:00', 1, 'Tập trung ở Bưu điện Trung tâm trước 1 giờ để chuẩn bị khởi hành', NULL, 26, 5, 1)," +
+                "(31, '14:00:00', '15:00:00', 1, 'Tới Đà Lạt, thác Prenn là địa điểm tham quan đầu tiên trong chuyến hành trình', NULL, 41, 5, 1)," +
+                "(32, '16:00:00', '17:30:00', 1, 'Tham quan Thiền viện Trúc Lâm', NULL, 33, 5, 1)," +
+                "(33, '18:00:00', '06:00:00', 1, 'Về khách sạn, làm thủ tục, phân chia phòng. Ăn tối tại đây. Nghỉ ngơi chuẩn bị cho chuyến đi ngày mới', NULL, 40, 5, 1)," +
+                "(34, '07:30:00', '09:30:00', 2, 'Tham quan Thung Lũng Vàng', NULL, 36, 5, 1)," +
+                "(35, '10:00:00', '11:35:00', 2, 'Tham quan Dinh Bảo Đại, sau đó di chuyển ra một nơi gần đó để ăn trưa.', NULL, 32, 5, 1)," +
+                "(36, '14:00:00', '16:00:00', 2, 'Tham quan làng hoa Vạn Thành', NULL, 35, 5, 1)," +
+                "(37, '16:30:00', '18:30:00', 2, 'Thăm quan Showroom hoa nghệ thuật ', NULL, 34, 5, 1)," +
+                "(38, '19:00:00', '06:30:00', 2, 'Về lại khách sạn, ăn tối và nghỉ ngơi. Mọi người được tự đi lại', NULL, 40, 5, 1)," +
+                "(39, '08:00:00', '09:00:00', 3, 'Tham quan Nhà thờ Con Gà', NULL, 31, 5, 1)," +
+                "(40, '09:30:00', '11:30:00', 3, 'Tham quan Ga xe lửa, sau đó hành khách tự do đi lại ở siêu thị Big C thành phố và ăn trưa.', NULL, 38, 5, 1)," +
+                "(41, '14:00:00', '15:30:00', 3, 'Tham quan chùa Linh Thước', NULL, 39, 5, 1)," +
+                "(42, '16:30:00', '18:30:00', 3, 'Di chuyển lên đỉnh Langbiang, quý khách có thể leo núi, chụp ảnh thiên nhiên hùng vĩ tại đây.', NULL, 37, 5, 1)," +
+                "(43, '19:30:00', '05:00:00', 3, 'Về lại khách sạn, ăn tối và nghỉ ngơi. Chuẩn bị để di chuyển tới Đà Nẵng ngày hôm sau. Hãy ngủ dậy lúc 4h để chuẩn bị', NULL, 40, 5, 1)," +
+                "(44, '10:00:00', '13:00:00', 4, 'Tới khách sạn ở Đà Nẵng, quý khách được nghỉ ngơi một vài tiếng trước khi lên đường tham quan tiếp.', NULL, 58, 5, 1)," +
+                "(45, '13:30:00', '14:30:00', 4, 'Tham quan bảo tàng 3D TrickEye', NULL, 49, 5, 1)," +
+                "(46, '16:00:00', '19:00:00', 4, 'Di chuyển vào Hội An cách Đà Nẵng 15km, quý khách tự do đi lại ở phố cổ Hội An cũng như tự do lựa chọn món ăn cho bữa tối tại đây.', NULL, 50, 5, 1)," +
+                "(47, '20:30:00', '08:00:00', 4, 'Quay về khách sạn nghỉ ngơi.', NULL, 58, 5, 1)," +
+                "(48, '09:00:00', '17:00:00', 5, 'Tham quan Bà Nà Hill, quý khách được trải nghiệm tất cả những dịch vụ ở khu Bà Nà. Quý khách có thể tự do đi lại sau khi ăn trưa tại đây.', NULL, 48, 5, 1)," +
+                "(49, '16:00:00', '07:30:00', 5, 'Về lại khách sạn. Chuẩn bị quay về Hồ Chí Minh', NULL, 58, 5, 1)," +
+                "(50, '19:00:00', NULL, 6, 'Kết thúc chuyến đi, quý khách tự do di chuyển', NULL, 26, 5, 1)," +
+                "(51, NULL, '04:00:00', 1, 'Đoàn khởi hành rời TP.Hồ Chí Minh đi Nha Trang', NULL, 25, 6, 1)," +
+                "(52, '09:00:00', '11:00:00', 1, 'Trên đường ghé Phan Thiết, du khách dừng chân nghỉ ngơi và ngắm biển Đồi Dương. Ghé tham quan bãi biển Cà Ná – nơi giao hoà tuyệt đẹp giữa núi và biển', NULL, 61, 6, 1)," +
+                "(53, '12:00:00', '15:00:00', 1, 'Đoàn đi theo đường mới ven biển Sông Lô – Hòn Rớm ngắm cảnh biển tuyệt vời trên Vịnh Cam Ranh. Đoàn vào Nha Trang theo con đường mới ven biển Sông Lô – Hòn Rớ, qua đèo Cù Huân ngắm cảnh biển chiều trên vịnh Nha Trang', NULL, 60, 6, 1)," +
+                "(54, '18:00:00', '07:00:00', 1, 'Đến Nha Trang (tỉnh Khánh Hòa) đoàn thưởng thức tiệc Buffet tối đặc biệt, sau đó về khách sạn. Buổi tối, xe đưa Quý khách đi dạo phố biển về đêm, qua chợ đêm Nha Trang, công viên Phù Đổng, Cà phê Bốn Mùa, khu hải sản Tháp Bà… Nghỉ đêm tại Nha Trang. (Ăn sáng trưa, chiều, tối).', NULL, 62, 6, 1)," +
+                "(56, '09:00:00', '14:00:00', 2, 'Xe đưa đoàn khởi hành đi Dốc Lết, trên đường Quý khách  thưởng ngoạn các thắng cảnh nổi tiếng Nha Trang như: cầu Xóm Bóng, núi Cô Tiên, Hòn Chồng... Đến với bãi biển White Sand - Dốc Lết, một trong những bãi biển đẹp nổi tiếng của Khánh Hòa với bãi cát trắng thoai thoải trãi dài cùng làn nước trong xanh và hàng dừa nghiêng mình soi bóng,  Quý khách tắm biển và thưởng thức các món hải sản của ngư dân địa phương đánh bắt', NULL, 80, 6, 1)," +
+                "(57, '15:00:00', '17:00:00', 2, 'Đoàn đi tham quan Trung tâm Ngọc Trai Long Beach Pearl Nha Trang, là một trong hai trung tâm Ngọc Trai lớn nhất khu vực miền trung do tập đoàn Long Beach Pearl đầu tư. Đến đây Quý khách được nghe giới thiệu về qui trình nuôi cấy - khai thác - chế tác ngọc trai, được tham quan khu trưng bày với hơn 3.000 mẫu ngọc trai thiết kế tinh tế - đẹp mắt và sang trọng', NULL, 81, 6, 1)," +
+                "(58, '19:00:00', '20:00:00', 2, 'Tối khuya Đoàn ra sân bay Cam Ranh làm thủ tục bay Đà Nẵng.', NULL, 82, 6, 3)," +
+                "(59, '21:00:00', '21:30:00', 2, 'Tới Đà Nẵng và về khách sạn nghỉ ngơi.', NULL, 83, 6, 1)," +
+                "(60, '22:30:00', '10:00:00', 2, 'Quý khách nghỉ ngơi ở khách sạn để chuẩn bị các chuyến đi vào ngày hôm sau', NULL, 63, 6, 1)," +
+                "(61, '11:00:00', '07:30:00', 3, 'Lên Bán Đảo Sơn Trà mục kích phố biển Đà Nẵng trên cao, viếng Linh Ứng Tự - nơi có tượng Phật Bà 67m cao nhất Việt Nam và tắm biển Mỹ Khê Đà Nẵng. Ăn tối nhà hàng. Trãi nghiệm cảm giác với Vòng quay Mặt trời SUN WHEEL – Top 10 vòng quay cao nhất Thế Giới, chiêm ngưởng vẻ đẹp Đà Thành về đêm rực rỡ ánh đèn. (Vé Sun Wheel tự túc). Nghỉ đêm tại Bán Đảo Sơn Trà.', NULL, 84, 6, 1)," +
+                "(62, '08:30:00', '12:00:00', 4, 'Tiếp tục tham quan Ngũ Hành Sơn - Khám phá các hang động, vãn cảnh đẹp non nước trời mây', NULL, 64, 6, 1)," +
+                "(63, '17:00:00', '06:30:00', 4, 'Khởi hành vào Hội An bách bộ tham quan và mua sắm Phố Cổ với: Chùa Cầu Nhật Bản, Nhà Cổ hàng trăm năm tuổi, Hội Quán Phước Kiến & Xưởng thủ công mỹ nghệ.  Ăn tối Đặc sản Hội An: Cao lầu, bánh bao bánh vạc, hoành thánh, .. Nghỉ đêm tại Phố Cổ', NULL, 65, 6, 1)," +
+                "(64, '09:00:00', '15:00:00', 5, 'Khởi hành lên Bà Nà 9h00 sáng: Đến ga cáp treo Suối Mơ, lên tuyến cáp treo đạt 4 kỷ lục thế giới. 9h30 sáng: Tham quan Cầu vàng - Cây cầu độc đáo nằm trong vườn Thiên Thai ở Bà Nà Hill. Tham quan Khu Le Jardin, tham quan Hầm Rượu Debay của Pháp. Viếng Chùa Linh Ứng Bà Nà, chiêm ngưỡng tượng Phật Thích Ca cao 27m, Vườn Lộc Uyển, Quan Âm Các. Tiếp tục đến Gare Debay đi tuyến cáp thứ 2 lên đỉnh Bà Nà. Hướng dẫn đưa đoàn vào tham quan khu vui chơi Fantasy Park tham gia các trò chơi phiêu lưu mới lạ, ngộ nghĩnh, hấp dẫn, hiện đại như vòng quay tình yêu, Phi công Skiver, Đường đua lửa, Xe điện đụng Ngôi nhà ma. Khởi hành đi Cố Đô Huế - Di sản văn hoá Thế Giới, xuyên hầm đường bộ đèo Hải Vân, dừng chân tại làng chài Lăng Cô chụp hình lưu niệm', NULL, 48, 6, 1)," +
+                "(65, '19:00:00', '16:30:00', 5, 'Khởi hành đi Cố Đô Huế - Di sản văn hoá Thế Giới, xuyên hầm đường bộ đèo Hải Vân, dừng chân tại làng chài Lăng Cô chụp hình lưu niệm.Tham quan Lăng Khải Định - công trình mang nhiều trường phái kiến trúc khác nhau, kết hợp Đông - Tây, Âu - Á, Cổ Kim độc đáo so với các công trình kiến trúc truyền thống Việt Nam. Nhận phòng khách sạn nghỉ ngơi', NULL, 66, 6, 1)," +
+                "(66, '08:00:00', '09:30:00', 6, 'Tham quan thánh địa La Vang', NULL, 85, 6, 1)," +
+                "(67, '10:30:00', '13:30:00', 6, 'Ngồi thuyền ngược sông Son chinh phục Động Phong Nha: Cô Tiên & Cung Đình dưới sâu lòng núi nơi có con sông ngầm từ Lào chảy sang, chiêm ngưỡng các khối thạch nhũ tuyệt đẹp được kiến tạo bởi thiên nhiên qua hàng ngàn thiên niên kỷ.', NULL, 67, 6, 1)," +
+                "(68, '14:30:00', '16:00:00', 6, 'Khởi hành về Huế để chiêm ngưỡng vẻ đẹp của Kinh Thành Huế. ', NULL, 86, 6, 1)," +
+                "(69, '17:00:00', '18:00:00', 6, 'Xe đến đón quý khách ra sân bay khởi hành đi Hà Nội. ', NULL, 87, 6, 3)," +
+                "(70, '19:00:00', '19:30:00', 6, 'Tới Hà Nội', NULL, 88, 6, 1)," +
+                "(71, '20:30:00', '06:00:00', 6, 'Nhận phòng, ăn tối và nghỉ ngơi qua đêm.', NULL, 68, 6, 1)," +
+                "(72, '07:00:00', '09:00:00', 7, 'Xe khởi hành đi Ninh Bình, ngắm cảnh vùng nông thôn Việt Nam. Đến Ninh Bình, Quý khách ghé thăm Cố đô Hoa Lư - Kinh đô của nước ta vào thế kỷ X - nơi có hai ngôi đền thờ vua Đinh và vua Lê.', NULL, 69, 6, 1)," +
+                "(73, '10:00:00', '15:00:00', 7, 'Đoàn khởi hành đi Hạ long – Di sản thế giới được UNESCO công nhận năm 1994, thăm quan động Thiên Cung và hang Dấu Gỗ, đi qua Hòn Lư Hương, Hòn Gà Chọi, Hòn Chó Đá, (Dùng cơm trưa trên tàu trước khi thăm quan hang động).', NULL, 70, 6, 1)," +
+                "(74, '16:30:00', '08:00:00', 7, 'Tự do hoặc vui chơi tại công viên Hoàng Gia – Nghỉ đêm tại khách sạn Hạ Long.', NULL, 89, 6, 3)," +
+                "(75, '10:00:00', '15:00:00', 8, 'Hướng dẫn viên đón đoàn khởi hành đi Yên Tử. Đến Yên Tử, Quý khách leo núi khám phá vẻ đẹp tự nhiên của núi Yên Tử – còn được gọi là Bạch Vân Sơn (núi giữa mây trắng) cao hơn 1000m. Nghỉ ngơi, ăn trưa, lễ chùa tại khu vực Hoa Yên. Quý khách tiếp tục leo núi, chinh phục chặng đường khó khăn nhất của núi rừng Yên Tử mà đỉnh cao nhất là chùa Đồng (nằm ở độ cao 1068m so với mặt nước biển), lễ Phật và thưởng ngoạn cảnh đại ngàn Yên Tử từ trên đỉnh núi. Quý khách leo núi trở xuống chùa Hoa Yên. Đi cáp treo (vé tự túc) ngắm nhìn cảnh đẹp của Yên Tử từ trên cao với những chặng đường đã đi qua. Xe đón quý khách lên tàu đi Lào Cai.', NULL, 71, 6, 1)," +
+                "(76, '18:00:00', '08:30:00', 8, 'Tới khách sạn Lào Cai, quý khách nghỉ ngơi để chuẩn bị cho hôm sau.', NULL, 73, 6, 1)," +
+                "(77, '10:00:00', '07:00:00', 9, 'Tàu tới ga Lào Cai, xe ôtô đón quý khách lên Bản Cát Cát (Sapa),tìm hiểu về lối sống và phong tục của người H’Mông (đi bằng xe ôtô riêng) thăm nhà máy thuỷ điện từ thời Pháp thuộc, thăm trường học và nhà ở của đồng bào dân tộc thiểu số, kỹ thuật nhuộm chàm của người H’Mông, tự do dạo chơi. Quý khách nghỉ đêm tại Bản Cát Cát.', NULL, 76, 6, 1)," +
+                "(78, '09:00:00', '11:30:00', 10, 'Quý khách đi thăm Hàm Rồng (đi bộ) để ngắm cảnh thị trấn Sapa và khám phá hàng trăm loại phong lan, cây cảnh mà chỉ ở nơi đây mới có. Quý khách tự do dạo chơi, đi chợ Sapa tham quan và mua quà lưu niệm. Lên tàu đêm về Hà Nội', NULL, 74, 6, 1)," +
+                "(79, '15:00:00', '17:00:00', 10, 'Đoàn đi viếng Lăng Bác: phủ Chủ Tịch, vườn cây ao cá, nhà sàn Bác Hồ, chùa Một Cột.', NULL, 90, 6, 1)," +
+                "(80, '18:00:00', '19:00:00', 10, 'Xe đưa du khách ra sân bay chia tay. Kết thúc Tour Du Lich Xuyên Việt Miền Nam - Miền Bắc 10 Ngày và hẹn tái ngộ.', NULL, 88, 6, 3)," +
                 "(81, '07:00:00', '08:30:00', 1, NULL, NULL, 4, NULL, NULL)," +
                 "(82, '09:00:00', '12:00:00', 1, NULL, NULL, 2, NULL, NULL)," +
                 "(83, '14:00:00', '01:00:00', 1, NULL, NULL, 14, NULL, NULL)," +

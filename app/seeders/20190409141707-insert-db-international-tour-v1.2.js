@@ -428,7 +428,8 @@ module.exports = {
 							day: 1,
 							fk_location: 91,
 							fk_tour: 7,
-							fk_transport: 3
+							fk_transport: 3,
+							detail: 'TP.HCM - ISTANBUL. Quý khách tập trung tại sân bay Tân Sơn Nhất làm thủ tục đón chuyến bay tới Istanbul – Thành phố của Thổ Nhĩ Kỳ. Quý khách ăn nhẹ và nghỉ đêm trên máy bay. '
 						},
 						{
 							id: 98,
@@ -437,7 +438,8 @@ module.exports = {
 							day: 2,
 							fk_location: 92,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Tới sân bay Istanbul'
 						},
 						{
 							id: 99,
@@ -446,7 +448,8 @@ module.exports = {
 							day: 2,
 							fk_location: 93,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'ISTANBUL - CANAKKALE - TROY.  Di chuyển đến vùng đất Canakkale. Tham quan Thành cổ Troy.'
 						},
 						{
 							id: 100,
@@ -455,7 +458,8 @@ module.exports = {
 							day: 2,
 							fk_location: 94,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Nghỉ đêm tại Canakkale.'
 						},
 						{
 							id: 101,
@@ -464,7 +468,8 @@ module.exports = {
 							day: 3,
 							fk_location: 95,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'CANAKKALE - EPHESUS - KUSADASI. Trả phòng. Khởi hành đến thành phố biển Kusadasi. Trên đường đi dừng chân khám phá thành phố cổ đại Ephesus'
 						},
 						{
 							id: 102,
@@ -473,7 +478,8 @@ module.exports = {
 							day: 3,
 							fk_location: 96,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Nghỉ đêm tại Kusadasi.'
 						},
 						{
 							id: 103,
@@ -482,7 +488,8 @@ module.exports = {
 							day: 4,
 							fk_location: 97,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'KUSADASI -  PAMUKKALE. Trả phòng. Di chuyển đến Pamukkale. Chiêm ngưỡng những tàn tích còn sót lại của thành phố cổ linh thiêng Hierapolis'
 						},
 						{
 							id: 104,
@@ -491,7 +498,8 @@ module.exports = {
 							day: 4,
 							fk_location: 98,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Tiếp tục khám phá di sản thiên nhiên thế giới “Lâu Đài Bông”.'
 						},
 						{
 							id: 105,
@@ -500,7 +508,8 @@ module.exports = {
 							day: 4,
 							fk_location: 99,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Nghỉ đêm tại Pamukkale.'
 						},
 						{
 							id: 106,
@@ -509,7 +518,8 @@ module.exports = {
 							day: 5,
 							fk_location: 100,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'PAMUKKALE - KONYA - CAPPADOCIA. Trả phòng. Di chuyển đến vùng đất linh thiêng Konya. Tham quan Bảo tàng Philosopher Mevlana Celaleddin-I Rumi'
 						},
 						{
 							id: 107,
@@ -518,7 +528,8 @@ module.exports = {
 							day: 5,
 							fk_location: 101,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Tiếp tục hành trình đến Cappadocia. Trên đường đi, ghé thăm Caravanserai. Chiêm ngưỡng chương trình biểu diễn Ánh Sáng 3D trên đá Zelve Mapping (tùy theo điều kiện thời tiết)'
 						},
 						{
 							id: 108,
@@ -527,7 +538,8 @@ module.exports = {
 							day: 5,
 							fk_location: 102,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Nghỉ đêm tại Cappadocia.'
 						},
 						{
 							id: 109,
@@ -536,7 +548,8 @@ module.exports = {
 							day: 6,
 							fk_location: 103,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Khám phá Cappadocia: tham quan Bảo tàng ngoài trời Goreme Open Air Museum.'
 						},
 						{
 							id: 110,
@@ -545,7 +558,8 @@ module.exports = {
 							day: 6,
 							fk_location: 104,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Tiếp tục di chuyển đến Làng cổ Avanos. Thành phố ngầm Kaymakli hoặc Ozkonak.'
 						},
 						{
 							id: 111,
@@ -554,7 +568,8 @@ module.exports = {
 							day: 6,
 							fk_location: 105,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Thưởng thức chương trình biểu diễn ca múa nhạc truyền thống địa phương Turkish Night Dance.'
 						},
 						{
 							id: 112,
@@ -563,7 +578,8 @@ module.exports = {
 							day: 6,
 							fk_location: 102,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Nghỉ đêm tại Cappadocia.'
 						},
 						{
 							id: 113,
@@ -572,7 +588,8 @@ module.exports = {
 							day: 7,
 							fk_location: 106,
 							fk_tour: 7,
-							fk_transport: 3
+							fk_transport: 3,
+							detail: 'Trả phòng. Di chuyển ra sân bay đáp chuyến bay nội địa về Istanbul.'
 						},
 						{
 							id: 114,
@@ -581,7 +598,8 @@ module.exports = {
 							day: 7,
 							fk_location: 92,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Về tới Istanbul và tiếp tục di chuyển'
 						},
 						{
 							id: 115,
@@ -590,7 +608,8 @@ module.exports = {
 							day: 7,
 							fk_location: 107,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Trải nghiệm du ngoạn bằng tàu dọc eo biển Bosphorus, ngắm cây cầu Bosphorus nổi tiếng xuyên biển và nối liền 2 lục địa Á - Âu. Chiêm ngưỡng các kiến trúc đặc trưng và các hoạt động thường ngày của người dân địa phương dọc theo con sông.'
 						},
 						{
 							id: 116,
@@ -599,7 +618,8 @@ module.exports = {
 							day: 7,
 							fk_location: 109,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Nghỉ đêm ở Istanbul.'
 						},
 						{
 							id: 117,
@@ -608,7 +628,8 @@ module.exports = {
 							day: 8,
 							fk_location: 108,
 							fk_tour: 7,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Trả phòng. Tiếp tục hành trình khám phá Istanbul. Tự do mua sắm tại Chợ lồng Grand Bazaar. Sau đó ra sân bay Istanbul'
 						},
 						{
 							id: 118,
@@ -617,7 +638,8 @@ module.exports = {
 							day: 8,
 							fk_location: 92,
 							fk_tour: 7,
-							fk_transport: 3
+							fk_transport: 3,
+							detail: 'Đáp chuyến bay về lại Tp. HCM. Nghỉ đêm trên máy bay.'
 						},
 					]),
 					queryInterface.bulkInsert('tour_countries', [
@@ -772,7 +794,8 @@ module.exports = {
 							day: 1,
 							fk_location: 93,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'ISTANBUL - CANAKKALE - TROY.  Di chuyển đến vùng đất Canakkale. Tham quan Thành cổ Troy.'
 						},
 						{
 							id: 120,
@@ -781,7 +804,8 @@ module.exports = {
 							day: 1,
 							fk_location: 94,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Nghỉ đêm tại Canakkale.'
 						},
 						{
 							id: 121,
@@ -790,7 +814,8 @@ module.exports = {
 							day: 2,
 							fk_location: 95,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'CANAKKALE - EPHESUS - KUSADASI. Trả phòng. Khởi hành đến thành phố biển Kusadasi. Trên đường đi dừng chân khám phá thành phố cổ đại Ephesus'
 						},
 						{
 							id: 122,
@@ -799,7 +824,8 @@ module.exports = {
 							day: 2,
 							fk_location: 96,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Nghỉ đêm tại Kusadasi.'
 						},
 						{
 							id: 123,
@@ -808,7 +834,8 @@ module.exports = {
 							day: 3,
 							fk_location: 97,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'KUSADASI -  PAMUKKALE. Trả phòng. Di chuyển đến Pamukkale. Chiêm ngưỡng những tàn tích còn sót lại của thành phố cổ linh thiêng Hierapolis'
 						},
 						{
 							id: 124,
@@ -817,7 +844,8 @@ module.exports = {
 							day: 3,
 							fk_location: 98,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Tiếp tục khám phá di sản thiên nhiên thế giới “Lâu Đài Bông”.'
 						},
 						{
 							id: 125,
@@ -826,7 +854,8 @@ module.exports = {
 							day: 3,
 							fk_location: 99,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Nghỉ đêm tại Pamukkale.'
 						},
 						{
 							id: 126,
@@ -835,7 +864,8 @@ module.exports = {
 							day: 4,
 							fk_location: 100,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'PAMUKKALE - KONYA - CAPPADOCIA. Trả phòng. Di chuyển đến vùng đất linh thiêng Konya. Tham quan Bảo tàng Philosopher Mevlana Celaleddin-I Rumi'
 						},
 						{
 							id: 127,
@@ -844,7 +874,8 @@ module.exports = {
 							day: 4,
 							fk_location: 101,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Tiếp tục hành trình đến Cappadocia. Trên đường đi, ghé thăm Caravanserai. Chiêm ngưỡng chương trình biểu diễn Ánh Sáng 3D trên đá Zelve Mapping (tùy theo điều kiện thời tiết)'
 						},
 						{
 							id: 128,
@@ -853,7 +884,8 @@ module.exports = {
 							day: 4,
 							fk_location: 102,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Nghỉ đêm tại Cappadocia.'
 						},
 						{
 							id: 129,
@@ -862,7 +894,8 @@ module.exports = {
 							day: 5,
 							fk_location: 103,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Khám phá Cappadocia: tham quan Bảo tàng ngoài trời Goreme Open Air Museum.'
 						},
 						{
 							id: 130,
@@ -871,7 +904,8 @@ module.exports = {
 							day: 5,
 							fk_location: 104,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Tiếp tục di chuyển đến Làng cổ Avanos. Thành phố ngầm Kaymakli hoặc Ozkonak.'
 						},
 						{
 							id: 131,
@@ -880,7 +914,8 @@ module.exports = {
 							day: 5,
 							fk_location: 105,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Thưởng thức chương trình biểu diễn ca múa nhạc truyền thống địa phương Turkish Night Dance.'
 						},
 						{
 							id: 132,
@@ -889,7 +924,8 @@ module.exports = {
 							day: 5,
 							fk_location: 102,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Nghỉ đêm tại Cappadocia.'
 						},
 						{
 							id: 133,
@@ -898,7 +934,8 @@ module.exports = {
 							day: 6,
 							fk_location: 106,
 							fk_tour: 8,
-							fk_transport: 3
+							fk_transport: 3,
+							detail: 'Trả phòng. Di chuyển ra sân bay đáp chuyến bay nội địa về Istanbul.'
 						},
 						{
 							id: 134,
@@ -907,7 +944,8 @@ module.exports = {
 							day: 6,
 							fk_location: 92,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Về tới Istanbul và tiếp tục di chuyển'
 						},
 						{
 							id: 135,
@@ -916,7 +954,8 @@ module.exports = {
 							day: 6,
 							fk_location: 107,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Trải nghiệm du ngoạn bằng tàu dọc eo biển Bosphorus, ngắm cây cầu Bosphorus nổi tiếng xuyên biển và nối liền 2 lục địa Á - Âu. Chiêm ngưỡng các kiến trúc đặc trưng và các hoạt động thường ngày của người dân địa phương dọc theo con sông.'
 						},
 						{
 							id: 136,
@@ -925,7 +964,8 @@ module.exports = {
 							day: 6,
 							fk_location: 108,
 							fk_tour: 8,
-							fk_transport: 1
+							fk_transport: 1,
+							detail: 'Tự do mua sắm tại Chợ lồng Grand Bazaar. Và kết thúc chuyến đi sau đó.'
 						},
 					]),
 					queryInterface.bulkInsert('tour_countries', [
