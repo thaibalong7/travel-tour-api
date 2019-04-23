@@ -344,7 +344,7 @@ exports.getCurrentRoute = async (req, res) => {
             routes.findAll(query).then(async (_routes) => {
                 const result = [];
                 await asyncFor(_routes, (route, index) => {
-                    console.log(parseFloat(route.location.dataValues.distince))
+                    // console.log(parseFloat(route.location.dataValues.distince))
                     if (parseFloat(route.location.dataValues.distince) <= distance) {
                         //check time
                         // var time = '12:30:00',
@@ -397,8 +397,14 @@ exports.getCurrentRoute = async (req, res) => {
                 else {
                     //sort theo khoảng cách
                     result.sort(sortRoutesByDistance);
+                    if (result[0].location.featured_img !== null) {
+                        if (process.env.NODE_ENV === 'development')
+                            result[0].location.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + result[0].location.featured_img;
+                        else
+                            result[0].location.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + result[0].location.featured_img;
+                    }
                     return res.status(200).json({
-                        data: result,
+                        data: result[0],
                     })
                 }
             })
@@ -407,7 +413,7 @@ exports.getCurrentRoute = async (req, res) => {
             return res.status(400).json({ msg: "Wrong id tour turn" })
         }
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(400).json({ msg: error.toString() })
     }
 }
