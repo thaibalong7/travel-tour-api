@@ -810,7 +810,7 @@ exports.requestCancelBookTour = async (req, res) => {
         if (book_tour) {
             if (book_tour.status === 'paid') { // book tour đã paid thì mới có thể request cancel
                 book_tour.status = 'pending_cancel';
-                // await book_tour.save();
+                await book_tour.save();
                 const query = {
                     where: {
                         code: code
