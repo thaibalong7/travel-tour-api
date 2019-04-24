@@ -39,7 +39,6 @@ const book_tour = async (req, res, _user) => {
     //     phone, //not require
     //     birthdate,
     //     sex,
-    //     passport, //not require
     //     type //
     // }
 
@@ -136,8 +135,8 @@ const book_tour = async (req, res, _user) => {
                             }
                             if (passenger.phone) //k bắt buộc
                                 new_passenger.phone = passenger.phone
-                            if (passenger.passport) //k bắt buộc
-                                new_passenger.passport = passenger.passport
+                            // if (passenger.passport) //k bắt buộc
+                            //     new_passenger.passport = passenger.passport
                             await db.passengers.create(new_passenger);
                         })
                         //tạo passenger xong
@@ -210,16 +209,47 @@ exports.book_tour = async (req, res) => {
 
 const check_policy_cancel_booking = async (booking) => {
     //check theo tour turn của booking này
-    if (booking.request_cancel_bookings.length !== 0) { //đã gởi request thì k đc gởi lại
-        return false;
+    if (booking.status == 'paid') {
+        const start_date = new Date(booking.tour_turn.start_date);
+        const cur_date = new Date();
+        if (booking.payment_method.name == 'online')
+            if (cur_date < start_date)
+                return true;
+            else return false;
+        else { // payment_method là incash và tranfer
+            const timeDiff = (start_date) - (cur_date);
+            const days = timeDiff / (1000 * 60 * 60 * 24) //số ngày còn lại trc khi đi
+            if (days > 6) //nếu còn lại trên 7 ngày -> cho phép request hủy
+                return true;
+            else return false //ngược lại tới cty mà chuyển
+        }
     }
-    return true; //tạm thời
+    return false; // book tour chưa thanh toán hoặc đang chờ hủy hoặc đã bị hủy hoặc đã đi thì k thể cancel
 }
 
 const add_is_cancel_booking = async (list_booking) => { //thêm 1 record là dựa vào policy thì hiện giờ có thể hủy đặt tour hay k
     for (var i = 0; i < list_booking.length; i++) {
-        list_booking[i].dataValues.isCancelBooking = await check_policy_cancel_booking(list_booking[i]);
-        list_booking[i].dataValues.request_cancel_bookings = list_booking[i].dataValues.request_cancel_bookings[0]
+        list_booking[i].isCancelBooking = await check_policy_cancel_booking(list_booking[i]);
+    }
+}
+
+const addPriceOfListPricePassengers = async (_price_passengers, price) => {
+    return _price_passengers.map(price_passenger => {
+        var new_obj = {};
+        new_obj.type = price_passenger.type_passenger.name;
+        new_obj.percent = price_passenger.percent;
+        console.log(price)
+        new_obj.price = parseFloat(parseInt(price_passenger.percent) / 100) * parseInt(price)
+        // new_obj.price = new_obj.price - parseInt(new_obj.price * discount);
+        return new_obj
+    })
+}
+
+const addPricePassengerOfListBookTour = async (_book_tour) => {
+    for (let i = 0; i < _book_tour.length; i++) {
+        _book_tour[i].tour_turn.discount = parseFloat(_book_tour[i].tour_turn.discount / 100);
+        const list_price = await addPriceOfListPricePassengers(_book_tour[i].tour_turn.price_passengers, _book_tour[i].tour_turn.end_price);
+        _book_tour[i].tour_turn.price_passengers = list_price;
     }
 }
 
@@ -240,17 +270,41 @@ exports.getHistoryBookTourByUser = (req, res) => {
             page = parseInt(page);
             per_page = parseInt(per_page);
             const query = {
-                attributes: { exclude: ['fk_contact_info'] },
                 include: [{
                     model: db.book_tour_contact_info,
                     where: {
                         fk_user: _user.id
                     }
                 },
+                // {
+                //     attributes: ['id', 'status'],
+                //     model: db.request_cancel_booking
+                // },
                 {
-                    attributes: ['id', 'status'],
-                    model: db.request_cancel_booking
+                    model: db.payment_method
+                },
+                {
+                    model: db.tour_turns,
+                    attributes: {
+                        exclude: ['fk_tour'],
+                        include: [
+                            [Sequelize.literal('DATEDIFF(end_date, start_date) + 1'), 'lasting'],
+                            [Sequelize.literal('CAST(price - (discount * price) / 100 AS UNSIGNED)'), 'end_price'],
+                            [Sequelize.literal('price'), 'original_price'],
+                        ]
+                    },
+                    include: [{
+                        model: db.tours
+                    },
+                    {
+                        attributes: { exclude: ['fk_tourturn', 'fk_type_passenger'] },
+                        model: db.price_passenger,
+                        include: [{
+                            model: db.type_passenger
+                        }]
+                    }]
                 }],
+                attributes: { exclude: ['fk_contact_info'] },
                 limit: per_page,
                 offset: (page - 1) * per_page
             }
@@ -264,10 +318,12 @@ exports.getHistoryBookTourByUser = (req, res) => {
                     next_page = -1;
                 if (parseInt(_book_tour_history.rows.length) === 0)
                     next_page = -1;
-                await add_is_cancel_booking(_book_tour_history.rows);
+                const result = _book_tour_history.rows.map((node) => node.get({ plain: true }));
+                await add_is_cancel_booking(result);
+                await addPricePassengerOfListBookTour(result);
                 return res.status(200).json({
                     itemCount: _book_tour_history.count, //số lượng record được trả về
-                    data: _book_tour_history.rows,
+                    data: result,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })
             })
@@ -680,7 +736,7 @@ exports.payBookTour = async (req, res) => {
             }
         })
         if (book_tour) {
-            if (book_tour.status === 'booked') {
+            if (book_tour.status === 'booked' || book_tour.status === 'pending_cancel') { // book tour vừa book hoặc đang chờ cancel có thể chuyể thành paid
                 book_tour.status = 'paid' //chuyển thành status đã thanh toán
                 await book_tour.save();
                 return res.status(200).json({
@@ -694,7 +750,9 @@ exports.payBookTour = async (req, res) => {
             if (book_tour.status === 'cancelled') {
                 return res.status(400).json({ msg: 'This booking has been cancelled' });
             }
-
+            if (book_tour.status === 'finished') {
+                return res.status(400).json({ msg: 'This booking has been finished' });
+            }
         }
         else {
             return res.status(400).json({ msg: 'Wrong code' });
@@ -714,7 +772,7 @@ exports.unpayBookTour = async (req, res) => {
             }
         })
         if (book_tour) {
-            if (book_tour.status === 'paid') {
+            if (book_tour.status === 'paid' || book_tour.status === 'pending_cancel') {
                 book_tour.status = 'booked' //chuyển thành status booked
                 await book_tour.save();
                 return res.status(200).json({
@@ -728,7 +786,90 @@ exports.unpayBookTour = async (req, res) => {
             if (book_tour.status === 'cancelled') {
                 return res.status(400).json({ msg: 'This booking has been cancelled' });
             }
+            if (book_tour.status === 'finished') {
+                return res.status(400).json({ msg: 'This booking has been finished' });
+            }
+        }
+        else {
+            return res.status(400).json({ msg: 'Wrong code' });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(400).json({ msg: error.toString() });
+    }
+}
 
+exports.requestCancelBookTour = async (req, res) => {
+    try {
+        const code = req.params.code;
+        const book_tour = await db.book_tour_history.findOne({
+            where: {
+                code: code
+            }
+        })
+        if (book_tour) {
+            if (book_tour.status === 'paid') { // book tour đã paid thì mới có thể request cancel
+                book_tour.status = 'pending_cancel';
+                // await book_tour.save();
+                const query = {
+                    where: {
+                        code: code
+                    },
+                    include: [{
+                        model: db.book_tour_contact_info
+                    },
+                    {
+                        model: db.payment_method
+                    },
+                    {
+                        model: db.tour_turns,
+                        attributes: {
+                            exclude: ['fk_tour'],
+                            include: [
+                                [Sequelize.literal('DATEDIFF(end_date, start_date) + 1'), 'lasting'],
+                                [Sequelize.literal('CAST(price - (discount * price) / 100 AS UNSIGNED)'), 'end_price'],
+                                [Sequelize.literal('price'), 'original_price'],
+                            ]
+                        },
+                        include: [
+                            {
+                                attributes: { exclude: ['fk_tourturn', 'fk_type_passenger'] },
+                                model: db.price_passenger,
+                                include: [{
+                                    model: db.type_passenger
+                                }]
+                            },
+                            {
+                                model: db.tours
+                            },
+                        ]
+                    }
+                    ],
+                    attributes: { exclude: ['fk_contact_info'] }
+                }
+                var result = await db.book_tour_history.findAll(query);
+                result = result.map((node) => node.get({ plain: true }));
+                await add_is_cancel_booking(result);
+                result[0].tour_turn.discount = parseFloat(result[0].tour_turn.discount / 100);
+                const list_price = await addPriceOfListPricePassengers(result[0].tour_turn.price_passengers, result[0].tour_turn.end_price);
+                result[0].tour_turn.price_passengers = list_price;
+                return res.status(200).json({
+                    msg: 'Request successful',
+                    data: result[0]
+                })
+            }
+            if (book_tour.status === 'booked') {
+                return res.status(400).json({ msg: 'This booking is booked' });
+            }
+            if (book_tour.status === 'cancelled') {
+                return res.status(400).json({ msg: 'This booking has been cancelled' });
+            }
+            if (book_tour.status === 'finished') {
+                return res.status(400).json({ msg: 'This booking has been finished' });
+            }
+            if (book_tour.status === 'pending_cancel') {
+                return res.status(400).json({ msg: 'This booking is pending to cancel' });
+            }
         }
         else {
             return res.status(400).json({ msg: 'Wrong code' });
@@ -799,9 +940,9 @@ exports.updatePassenger = async (req, res) => {
                 else {
                     return res.status(400).json({ msg: 'Phone is invalid' });
                 }
-            if (typeof req.body.passport !== 'undefined') //k bắt buộc
-                if (req.body.passport !== '')
-                    _passenger.passport = req.body.passport
+            // if (typeof req.body.passport !== 'undefined') //k bắt buộc
+            //     if (req.body.passport !== '')
+            //         _passenger.passport = req.body.passport
             if (typeof req.body.fk_type_passenger !== 'undefined') {
                 if (parseInt(req.body.fk_type_passenger) !== parseInt(_passenger.fk_type_passenger)) {
                     const _book_tour = await db.book_tour_history.findOne({
