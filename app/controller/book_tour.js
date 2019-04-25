@@ -811,87 +811,87 @@ exports.unpayBookTour = async (req, res) => {
     }
 }
 
-exports.requestCancelBookTour = async (req, res) => {
-    try {
-        const code = req.params.code;
-        const book_tour = await db.book_tour_history.findOne({
-            where: {
-                code: code
-            }
-        })
-        if (book_tour) {
-            if (book_tour.status === 'paid') { // book tour đã paid thì mới có thể request cancel
-                book_tour.status = 'pending_cancel';
-                await book_tour.save();
-                const query = {
-                    where: {
-                        code: code
-                    },
-                    include: [{
-                        model: db.book_tour_contact_info
-                    },
-                    {
-                        model: db.payment_method
-                    },
-                    {
-                        model: db.tour_turns,
-                        attributes: {
-                            exclude: ['fk_tour'],
-                            include: [
-                                [Sequelize.literal('DATEDIFF(end_date, start_date) + 1'), 'lasting'],
-                                [Sequelize.literal('CAST(price - (discount * price) / 100 AS UNSIGNED)'), 'end_price'],
-                                [Sequelize.literal('price'), 'original_price'],
-                            ]
-                        },
-                        include: [
-                            {
-                                attributes: { exclude: ['fk_tourturn', 'fk_type_passenger'] },
-                                model: db.price_passenger,
-                                include: [{
-                                    model: db.type_passenger
-                                }]
-                            },
-                            {
-                                attributes: { exclude: ['detail'] },
-                                model: db.tours
-                            },
-                        ]
-                    }
-                    ],
-                    attributes: { exclude: ['fk_contact_info'] }
-                }
-                var result = await db.book_tour_history.findAll(query);
-                result = result.map((node) => node.get({ plain: true }));
-                await add_is_cancel_booking(result);
-                result[0].tour_turn.discount = parseFloat(result[0].tour_turn.discount / 100);
-                const list_price = await addPriceOfListPricePassengers(result[0].tour_turn.price_passengers, result[0].tour_turn.end_price);
-                result[0].tour_turn.price_passengers = list_price;
-                return res.status(200).json({
-                    msg: 'Request successful',
-                    data: result[0]
-                })
-            }
-            if (book_tour.status === 'booked') {
-                return res.status(400).json({ msg: 'This booking is booked' });
-            }
-            if (book_tour.status === 'cancelled') {
-                return res.status(400).json({ msg: 'This booking has been cancelled' });
-            }
-            if (book_tour.status === 'finished') {
-                return res.status(400).json({ msg: 'This booking has been finished' });
-            }
-            if (book_tour.status === 'pending_cancel') {
-                return res.status(400).json({ msg: 'This booking is pending to cancel' });
-            }
-        }
-        else {
-            return res.status(400).json({ msg: 'Wrong code' });
-        }
-    } catch (error) {
-        console.error(error);
-        return res.status(400).json({ msg: error.toString() });
-    }
-}
+// exports.requestCancelBookTour = async (req, res) => {
+//     try {
+//         const code = req.params.code;
+//         const book_tour = await db.book_tour_history.findOne({
+//             where: {
+//                 code: code
+//             }
+//         })
+//         if (book_tour) {
+//             if (book_tour.status === 'paid') { // book tour đã paid thì mới có thể request cancel
+//                 book_tour.status = 'pending_cancel';
+//                 await book_tour.save();
+//                 const query = {
+//                     where: {
+//                         code: code
+//                     },
+//                     include: [{
+//                         model: db.book_tour_contact_info
+//                     },
+//                     {
+//                         model: db.payment_method
+//                     },
+//                     {
+//                         model: db.tour_turns,
+//                         attributes: {
+//                             exclude: ['fk_tour'],
+//                             include: [
+//                                 [Sequelize.literal('DATEDIFF(end_date, start_date) + 1'), 'lasting'],
+//                                 [Sequelize.literal('CAST(price - (discount * price) / 100 AS UNSIGNED)'), 'end_price'],
+//                                 [Sequelize.literal('price'), 'original_price'],
+//                             ]
+//                         },
+//                         include: [
+//                             {
+//                                 attributes: { exclude: ['fk_tourturn', 'fk_type_passenger'] },
+//                                 model: db.price_passenger,
+//                                 include: [{
+//                                     model: db.type_passenger
+//                                 }]
+//                             },
+//                             {
+//                                 attributes: { exclude: ['detail'] },
+//                                 model: db.tours
+//                             },
+//                         ]
+//                     }
+//                     ],
+//                     attributes: { exclude: ['fk_contact_info'] }
+//                 }
+//                 var result = await db.book_tour_history.findAll(query);
+//                 result = result.map((node) => node.get({ plain: true }));
+//                 await add_is_cancel_booking(result);
+//                 result[0].tour_turn.discount = parseFloat(result[0].tour_turn.discount / 100);
+//                 const list_price = await addPriceOfListPricePassengers(result[0].tour_turn.price_passengers, result[0].tour_turn.end_price);
+//                 result[0].tour_turn.price_passengers = list_price;
+//                 return res.status(200).json({
+//                     msg: 'Request successful',
+//                     data: result[0]
+//                 })
+//             }
+//             if (book_tour.status === 'booked') {
+//                 return res.status(400).json({ msg: 'This booking is booked' });
+//             }
+//             if (book_tour.status === 'cancelled') {
+//                 return res.status(400).json({ msg: 'This booking has been cancelled' });
+//             }
+//             if (book_tour.status === 'finished') {
+//                 return res.status(400).json({ msg: 'This booking has been finished' });
+//             }
+//             if (book_tour.status === 'pending_cancel') {
+//                 return res.status(400).json({ msg: 'This booking is pending to cancel' });
+//             }
+//         }
+//         else {
+//             return res.status(400).json({ msg: 'Wrong code' });
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(400).json({ msg: error.toString() });
+//     }
+// }
 
 exports.cancelBookTour = async (req, res) => {
     try {
