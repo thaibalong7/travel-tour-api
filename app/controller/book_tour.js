@@ -96,7 +96,7 @@ const book_tour = async (req, res, _user) => {
                 return res.status(400).json({ msg: 'Wrong tour turn' });
             }
             //pass hết các kiểm tra hợp lệ
-            if (req.body.payment === 'incash' || req.body.payment === 'transfer') { //thanh toán tiền mặt hoặc chuyển khoảng ngân hàng
+            if (req.body.payment === 'incash' || req.body.payment === 'transfer' || req.body.payment === 'online') { //thanh toán tiền mặt hoặc chuyển khoảng ngân hàng
 
                 var new_contact_info = {
                     email: req.body.email,
@@ -122,6 +122,11 @@ const book_tour = async (req, res, _user) => {
                         fk_payment: payment.id,
                         code: uuidv1()
                     };
+
+                    if (req.body.payment === 'online') {
+                        new_book_tour.status = 'paid' //thanh toán online thì status là đã thanh toán rồi
+                    }
+
                     db.book_tour_history.create(new_book_tour).then(async _book_tour => {
                         //tạo xong lấy id tạo passenger
                         await asyncFor(req.body.passengers, async (passenger) => {
@@ -238,7 +243,6 @@ const addPriceOfListPricePassengers = async (_price_passengers, price) => {
         var new_obj = {};
         new_obj.type = price_passenger.type_passenger.name;
         new_obj.percent = price_passenger.percent;
-        console.log(price)
         new_obj.price = parseFloat(parseInt(price_passenger.percent) / 100) * parseInt(price)
         // new_obj.price = new_obj.price - parseInt(new_obj.price * discount);
         return new_obj
@@ -294,6 +298,7 @@ exports.getHistoryBookTourByUser = (req, res) => {
                         ]
                     },
                     include: [{
+                        attributes: { exclude: ['detail'] },
                         model: db.tours
                     },
                     {
@@ -370,6 +375,7 @@ exports.getHistoryBookTourById = (req, res) => {
                         },
                         attributes: { exclude: ['fk_tour'] },
                         include: [{
+                            attributes: { exclude: ['detail'] },
                             model: db.tours
                         }]
                     })
@@ -490,6 +496,7 @@ exports.getAllBookTourHistoryWithoutPagination = (req, res) => {
             attributes: { exclude: ['fk_tour'] },
             model: db.tour_turns,
             include: [{
+                attributes: { exclude: ['detail'] },
                 model: db.tours
             }]
         }
@@ -573,6 +580,7 @@ exports.getHistoryBookTourByCode = (req, res) => {
                     },
                     attributes: { exclude: ['fk_tour'] },
                     include: [{
+                        attributes: { exclude: ['detail'] },
                         model: db.tours
                     }]
                 })
@@ -690,6 +698,7 @@ exports.getBookTourHistoryByTourTurn = async (req, res) => {
                     id: idTourTurn
                 },
                 include: [{
+                    attributes: { exclude: ['detail'] },
                     model: db.tours
                 }]
             });
@@ -840,6 +849,7 @@ exports.requestCancelBookTour = async (req, res) => {
                                 }]
                             },
                             {
+                                attributes: { exclude: ['detail'] },
                                 model: db.tours
                             },
                         ]
