@@ -68,5 +68,38 @@ exports.create = async (req, res) => {
         // console.error(error);
         return res.status(400).json({ msg: error.toString() })
     }
+}
 
+exports.getAllRequests = (req, res) => {
+    try {
+        const query = {
+            attributes: {
+                exclude: ['fk_book_tour']
+            },
+            include: [{
+                attributes: {
+                    exclude: ['fk_contact_info', 'fk_payment']
+                },
+                model: db.book_tour_history,
+                include: [{
+                    model: db.book_tour_contact_info
+                },
+                {
+                    attributes: {
+                        exclude: ['fk_book_tour']
+                    },
+                    model: db.passengers
+                },
+                {
+                    model: db.payment_method
+                }]
+            }]
+        }
+        request_cancel_booking.findAll(query).then(_requests => {
+            return res.status(200).json({ data: _requests });
+        })
+    } catch (error) {
+        // console.error(error);
+        return res.status(400).json({ msg: error.toString() })
+    }
 }
