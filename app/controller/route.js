@@ -63,39 +63,60 @@ exports.create = async (req, res) => {
     try {
         if (typeof req.body.arrive_time !== 'undefined' && typeof req.body.leave_time !== 'undefined'
             && typeof req.body.day !== 'undefined' && typeof req.body.idLocation !== 'undefined'
-            && typeof req.body.idTransport !== 'undefined' && typeof req.body.title !== 'undefined') {
+            && typeof req.body.idTransport !== 'undefined' && typeof req.body.title !== 'undefined'
+            && typeof req.body.detail !== 'undefined') {
 
             if (isNaN(req.body.day) || isNaN(req.body.idLocation) || isNaN(req.body.idTransport)) {
                 return res.status(400).json({ msg: 'Param is invalid' })
             }
             else {
+                const location = await db.locations.findByPk(req.body.idLocation);
+                const transport = await db.transports.findByPk(req.body.idTransport);
+                if (!location)
+                    return res.status(400).json({ msg: 'Wrong location' })
+                if (!transport)
+                    return res.status(400).json({ msg: 'Wrong transport' })
                 const new_routes = {
                     arrive_time: req.body.arrive_time,
                     leave_time: req.body.leave_time,
                     day: req.body.day,
                     fk_location: req.body.idLocation,
                     fk_transport: req.body.idTransport,
-                    title: req.body.title
+                    title: req.body.title,
+                    detail: req.body.detail
                 }
-                const location = await db.locations.findByPk(new_routes.fk_location);
-                const transport = await db.locations.findByPk(new_routes.fk_transport);
-                if (location === null)
-                    return res.status(400).json({ msg: 'Wrong location' })
-                if (transport === null)
-                    return res.status(400).json({ msg: 'Wrong transport' })
-                routes.create(new_routes).then(_route => {
-                    res.status(200).json(_route)
+                routes.create(new_routes).then(async _route => {
+                    const query = {
+                        where: {
+                            id: _route.id
+                        },
+                        attributes: { exclude: ['fk_location', 'fk_transport'] },
+                        include: [{
+                            model: db.locations,
+                        },
+                        {
+                            model: db.transports
+                        }]
+                    }
+                    let _route_result = await routes.findOne(query)
+                    if (_route_result.location.featured_img !== null) {
+                        if (process.env.NODE_ENV === 'development')
+                            _route_result.location.featured_img = 'http://' + req.headers.host + link_img.link_location_featured + _route_result.location.featured_img;
+                        else
+                            _route_result.location.featured_img = 'https://' + req.headers.host + link_img.link_location_featured + _route_result.location.featured_img;
+                    }
+                    return res.status(200).json(_route_result);
                 }).catch(err => {
-                    res.status(400).json({ msg: err })
+                    return res.status(400).json({ msg: err })
                 })
             }
         }
         else {
-            res.status(400).json({ msg: 'Param is invalid' })
+            return res.status(400).json({ msg: 'Param is invalid' })
         }
     }
     catch (e) {
-        res.status(400).json({ msg: e })
+        return res.status(400).json({ msg: e.toString() })
     }
 }
 
@@ -113,7 +134,18 @@ exports.update = async (req, res) => {
     try {
         if (typeof req.body.id !== 'undefined') {
             if (!isNaN(req.body.id)) {
-                const _route = await routes.findByPk(req.body.id);
+                const query = {
+                    where: {
+                        id: req.body.id
+                    },
+                    include: [{
+                        model: db.locations,
+                    },
+                    {
+                        model: db.transports
+                    }]
+                }
+                const _route = await routes.findOne(query);
                 if (_route) {
                     if (typeof req.body.arrive_time !== 'undefined')
                         _route.arrive_time = req.body.arrive_time;
@@ -121,19 +153,31 @@ exports.update = async (req, res) => {
                         _route.leave_time = req.body.leave_time;
                     if (typeof req.body.title !== 'undefined')
                         _route.title = req.body.title;
+                    if (typeof req.body.detail !== 'undefined')
+                        _route.detail = req.body.detail;
                     if (typeof req.body.day !== 'undefined' && !isNaN(req.body.day))
                         _route.day = req.body.day
                     if (typeof req.body.idLocation !== 'undefined' && !isNaN(req.body.idLocation)) {
                         const check_location = await db.locations.findByPk(req.body.idLocation)
-                        if (check_location)
+                        if (check_location) {
                             _route.fk_location = req.body.idLocation;
+                            _route.dataValues.location = check_location;
+                        }
                     }
                     if (typeof req.body.idTransport !== 'undefined' && !isNaN(req.body.idTransport)) {
                         const check_transport = await db.transports.findByPk(req.body.idTransport)
-                        if (check_transport)
+                        if (check_transport) {
                             _route.fk_transport = req.body.idTransport;
+                            _route.dataValues.transport = check_transport;
+                        }
                     }
                     await _route.save();
+                    if (_route.location.featured_img !== null) {
+                        if (process.env.NODE_ENV === 'development')
+                            _route.dataValues.location.featured_img = 'http://' + req.headers.host + link_img.link_location_featured + _route.location.featured_img;
+                        else
+                            _route.dataValues.location.featured_img = 'https://' + req.headers.host + link_img.link_location_featured + _route.location.featured_img;
+                    }
                     return res.status(200).json({
                         msg: 'Update successful',
                         data: _route
@@ -152,7 +196,7 @@ exports.update = async (req, res) => {
         }
     }
     catch (e) {
-        res.status(400).json({ msg: e })
+        res.status(400).json({ msg: e.toString() })
     }
 
 }
