@@ -4,6 +4,7 @@ const helper_add_link = require('../helper/add_full_link');
 const helper_validate = require('../helper/validate');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
+const link_img = require('../config/setting').link_img;
 
 var publicKEY = fs.readFileSync('./app/middleware/public.key', 'utf8');
 var verifyOptions = {
@@ -31,9 +32,9 @@ const create_review = async (req, res, _user) => {
                         new_review.email = _user.email;
                         if (_user.avatar !== null && _user.avatar.indexOf('graph.facebook.com') === -1) {
                             if (process.env.NODE_ENV === 'development')
-                                _user.avatar = 'http://' + req.headers.host + '/assets/avatar/' + _user.avatar;
+                                _user.avatar = 'http://' + req.headers.host + link_img.link_avatar_user + _user.avatar;
                             else
-                                _user.avatar = 'https://' + req.headers.host + '/assets/avatar/' + _user.avatar;
+                                _user.avatar = 'https://' + req.headers.host + link_img.link_avatar_user + _user.avatar;
                         }
                     }
                     else {

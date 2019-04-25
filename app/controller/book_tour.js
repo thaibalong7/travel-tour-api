@@ -6,7 +6,7 @@ var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const uuidv1 = require('uuid/v1');
 const helper_add_link = require('../helper/add_full_link');
-
+const link_img = require('../config/setting').link_img;
 
 var publicKEY = fs.readFileSync('./app/middleware/public.key', 'utf8');
 var verifyOptions = {
@@ -411,9 +411,9 @@ exports.getHistoryBookTourById = (req, res) => {
                     if (is_info_tour) { //nếu lấy thêm thông tin tour turn nữa
                         if (tour_turn.tour.featured_img !== null) {
                             if (process.env.NODE_ENV === 'development')
-                                tour_turn.tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
+                                tour_turn.tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + tour_turn.tour.featured_img
                             else
-                                tour_turn.tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
+                                tour_turn.tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + tour_turn.tour.featured_img
                         }
                         _book_tour_history.dataValues.tour_turn = tour_turn
                     }
@@ -616,9 +616,9 @@ exports.getHistoryBookTourByCode = (req, res) => {
                 if (is_info_tour) { //nếu lấy thêm thông tin tour turn nữa
                     if (tour_turn.tour.featured_img !== null) {
                         if (process.env.NODE_ENV === 'development')
-                            tour_turn.tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
+                            tour_turn.tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + tour_turn.tour.featured_img
                         else
-                            tour_turn.tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
+                            tour_turn.tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + tour_turn.tour.featured_img
                     }
                     _book_tour_history.dataValues.tour_turn = tour_turn
                 }

@@ -5,6 +5,7 @@ const Op = Sequelize.Op;
 const helper_add_link = require('../helper/add_full_link');
 const helper_validate = require('../helper/validate');
 const fs = require('fs');
+const link_img = require('../config/setting').link_img;
 
 const asyncForEach = async (arr, cb) => {
     arr.forEach(cb);
@@ -59,7 +60,7 @@ const delete_list_image = async (deleted_images, idTour) => {
         });
         if (_tour_image) {
             //ảnh này khớp điều kiện, xóa đi
-            fs.unlink('public/assets/images/tourImage/' + _tour_image.name, (err) => {
+            fs.unlink('public' + link_img.link_tour_img + _tour_image.name, (err) => {
                 if (err) {
                     console.error(err)
                 }
@@ -74,7 +75,7 @@ const add_new_images_tour = async (new_images, idTour, timestamp) => {
     await asyncForEach(new_images, (image, index) => {
         if (image.fieldname === 'new_images') {
             const name_image = idTour + '_' + timestamp + '_' + index + '.jpg';
-            fs.writeFile('public/assets/images/tourImage/' + name_image, image.buffer, async (err) => {
+            fs.writeFile('public' + link_img.link_tour_img + name_image, image.buffer, async (err) => {
                 if (err) {
                     console.log(err);
                 }
@@ -124,7 +125,7 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                     const check_type = await db.type_tour.findByPk(parseInt(req.body.fk_type_tour))
                     if (check_type) {
                         if (featured_image) {
-                            fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', featured_image.buffer, async (err) => {
+                            fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', featured_image.buffer, async (err) => {
                                 if (err) {
                                     return res.status(400).json({ msg: err.toString() })
                                 }
@@ -177,7 +178,7 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                                     await asyncFor(list_image, async (file, i) => {
                                         if (file.fieldname === 'list_image') {
                                             const name_image = _tour.id + '_' + timestamp + '_' + i + '.jpg';
-                                            fs.writeFile('public/assets/images/tourImage/' + name_image, file.buffer, async (err) => {
+                                            fs.writeFile('public' + link_img.link_tour_img + name_image, file.buffer, async (err) => {
                                                 if (err) {
                                                     console.log(err);
                                                 }
@@ -193,9 +194,9 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                                     })
 
                                     if (process.env.NODE_ENV === 'development')
-                                        _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                                        _tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img;
                                     else
-                                        _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                                        _tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img;
                                     return res.status(200).json(_tour)
                                 }).catch(err => {
                                     return res.status(400).json({ msg: err.toString() })
@@ -236,7 +237,7 @@ exports.createWithRoutes = async (req, res) => {
                 if (typeof req.file !== 'undefined') {
                     var date = new Date();
                     var timestamp = date.getTime();
-                    fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', req.file.buffer, async (err) => {
+                    fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', req.file.buffer, async (err) => {
                         if (err) {
                             return res.status(400).json({ msg: err.toString() })
                         }
@@ -267,9 +268,9 @@ exports.createWithRoutes = async (req, res) => {
                                 await _route.save();
                             })
                             if (process.env.NODE_ENV === 'development')
-                                _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                                _tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img;
                             else
-                                _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                                _tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img;
                             return res.status(200).json(_tour)
                         }).catch(err => {
                             return res.status(400).json({ msg: err.toString() })
@@ -360,13 +361,13 @@ exports.updateWithRoutes = async (req, res) => {
                 if (typeof req.file !== 'undefined') {
                     var date = new Date();
                     var timestamp = date.getTime();
-                    fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', req.file.buffer, async (err) => {
+                    fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', req.file.buffer, async (err) => {
                         if (err) {
                             return res.status(400).json({ msg: err.toString() })
                         }
                         if (_tour.featured_img !== null) {
                             //xóa file cũ đi
-                            fs.unlink('public/assets/images/tourFeatured/' + _tour.featured_img, (err) => {
+                            fs.unlink('public' + link_img.link_tour_featured + _tour.featured_img, (err) => {
                                 if (err) {
                                     console.error(err)
                                 }
@@ -375,9 +376,9 @@ exports.updateWithRoutes = async (req, res) => {
                         _tour.featured_img = timestamp + '.jpg';
                         await _tour.save();
                         if (process.env.NODE_ENV === 'development')
-                            _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                            _tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img;
                         else
-                            _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                            _tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img;
                         return res.status(200).json({
                             msg: 'Update successful',
                             data: _tour
@@ -387,9 +388,9 @@ exports.updateWithRoutes = async (req, res) => {
                 else {
                     await _tour.save();
                     if (process.env.NODE_ENV === 'development')
-                        _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                        _tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img;
                     else
-                        _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                        _tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img;
                     return res.status(200).json({
                         msg: 'Update successful',
                         data: _tour
@@ -510,14 +511,14 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                         return false;
                     }) //list_image chỉ còn lại file có fieldname khác featured_image (new_images)
                     if (featured_image) { //nếu có featured_image
-                        fs.writeFile('public/assets/images/tourFeatured/' + timestamp + '.jpg', featured_image.buffer, async (err) => {
+                        fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', featured_image.buffer, async (err) => {
                             if (err) {
                                 console.log(err)
                                 throw err;
                             }
                             if (_tour.featured_img !== null) {
                                 //xóa file cũ đi
-                                fs.unlink('public/assets/images/tourFeatured/' + _tour.featured_img, (err) => {
+                                fs.unlink('public' + link_img.link_tour_featured + _tour.featured_img, (err) => {
                                     if (err) {
                                         console.error(err)
                                     }
@@ -531,9 +532,9 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                         await _tour.save();
                         const result_tour = await tours.findByPk(req.body.id);
                         if (process.env.NODE_ENV === 'development')
-                            result_tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + result_tour.featured_img;
+                            result_tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + result_tour.featured_img;
                         else
-                            result_tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _toresult_tourur.featured_img;
+                            result_tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _toresult_tourur.featured_img;
                         return res.status(200).json({
                             msg: 'Update successful',
                             data: result_tour
@@ -544,9 +545,9 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                         await _tour.save();
                         const result_tour = await tours.findByPk(req.body.id);
                         if (process.env.NODE_ENV === 'development')
-                            result_tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + result_tour.featured_img;
+                            result_tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + result_tour.featured_img;
                         else
-                            result_tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _toresult_tourur.featured_img;
+                            result_tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _toresult_tourur.featured_img;
                         return res.status(200).json({
                             msg: 'Update successful',
                             data: result_tour
@@ -557,9 +558,9 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                 else {
                     await _tour.save();
                     if (process.env.NODE_ENV === 'development')
-                        _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                        _tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img;
                     else
-                        _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img;
+                        _tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img;
                     return res.status(200).json({
                         msg: 'Update successful',
                         data: _tour
@@ -704,9 +705,9 @@ exports.getById = (req, res) => {
         if (_tour !== null) {
             if (_tour.featured_img !== null) {
                 if (process.env.NODE_ENV === 'development')
-                    _tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img
+                    _tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img
                 else
-                    _tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + _tour.featured_img
+                    _tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img
             }
             await helper_add_link.addLinkLocationFeaturedImgOfListRoutes(_tour.routes, req.headers.host);
             await helper_add_link.addLinkTourImgOfListToursImg(_tour.tour_images, req.headers.host)

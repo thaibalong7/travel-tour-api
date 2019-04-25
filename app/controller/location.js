@@ -64,7 +64,7 @@ exports.create = async (req, res) => {
                         if (check_type && check_province) {
                             var date = new Date();
                             var timestamp = date.getTime();
-                            fs.writeFile('public/assets/images/locationFeatured/' + timestamp + '.jpg', req.file.buffer, async (err) => {
+                            fs.writeFile('public' + link_img.link_location_featured + timestamp + '.jpg', req.file.buffer, async (err) => {
                                 if (err) {
                                     return res.status(400).json({ msg: err })
                                 }
@@ -96,9 +96,9 @@ exports.create = async (req, res) => {
                                         }]
                                     })
                                     if (process.env.NODE_ENV === 'development')
-                                        location_result.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + location_result.featured_img;
+                                        location_result.featured_img = 'http://' + req.headers.host + link_img.link_location_featured + location_result.featured_img;
                                     else
-                                        location_result.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + location_result.featured_img;
+                                        location_result.featured_img = 'https://' + req.headers.host + link_img.link_location_featured + location_result.featured_img;
                                     res.status(200).json(location_result)
                                 }).catch(err => {
                                     return res.status(400).json({ msg: err });
@@ -197,12 +197,12 @@ exports.update = async (req, res) => {
                 if (typeof req.file !== 'undefined') {
                     var date = new Date();
                     var timestamp = date.getTime();
-                    fs.writeFile('public/assets/images/locationFeatured/' + timestamp + '.jpg', req.file.buffer, async (err) => {
+                    fs.writeFile('public' + link_img.link_location_featured + timestamp + '.jpg', req.file.buffer, async (err) => {
                         if (err) {
                             return res.status(400).json({ msg: err })
                         }
                         if (_location.featured_img !== null) {
-                            fs.unlink('public/assets/images/locationFeatured/' + _location.featured_img, (err) => {
+                            fs.unlink('public' + link_img.link_location_featured + _location.featured_img, (err) => {
                                 if (err) {
                                     console.error(err)
                                 }
@@ -227,9 +227,9 @@ exports.update = async (req, res) => {
                             }]
                         })
                         if (process.env.NODE_ENV === 'development')
-                            location_result.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + location_result.featured_img;
+                            location_result.featured_img = 'http://' + req.headers.host + link_img.link_location_featured + location_result.featured_img;
                         else
-                            location_result.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + location_result.featured_img;
+                            location_result.featured_img = 'https://' + req.headers.host + link_img.link_location_featured + location_result.featured_img;
                         return res.status(200).json({
                             msg: 'Update successful',
                             data: location_result
@@ -255,9 +255,9 @@ exports.update = async (req, res) => {
                         }]
                     })
                     if (process.env.NODE_ENV === 'development')
-                        location_result.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + location_result.featured_img;
+                        location_result.featured_img = 'http://' + req.headers.host + link_img.link_location_featured + location_result.featured_img;
                     else
-                        location_result.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + location_result.featured_img;
+                        location_result.featured_img = 'https://' + req.headers.host + link_img.link_location_featured + location_result.featured_img;
                     return res.status(200).json({
                         msg: 'Update successful',
                         data: location_result
@@ -464,9 +464,9 @@ exports.getById = (req, res) => {
         if (_location !== null) {
             if (_location.featured_img !== null) {
                 if (process.env.NODE_ENV === 'development')
-                    _location.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+                    _location.featured_img = 'http://' + req.headers.host + link_img.link_location_featured + _location.featured_img;
                 else
-                    _location.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + _location.featured_img;
+                    _location.featured_img = 'https://' + req.headers.host + link_img.link_location_featured + _location.featured_img;
             }
         }
         res.status(200).json({ data: _location })

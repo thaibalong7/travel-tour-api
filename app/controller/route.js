@@ -443,9 +443,9 @@ exports.getCurrentRoute = async (req, res) => {
                     result.sort(sortRoutesByDistance);
                     if (result[0].location.featured_img !== null) {
                         if (process.env.NODE_ENV === 'development')
-                            result[0].location.featured_img = 'http://' + req.headers.host + '/assets/images/locationFeatured/' + result[0].location.featured_img;
+                            result[0].location.featured_img = 'http://' + req.headers.host + link_img.link_location_featured + result[0].location.featured_img;
                         else
-                            result[0].location.featured_img = 'https://' + req.headers.host + '/assets/images/locationFeatured/' + result[0].location.featured_img;
+                            result[0].location.featured_img = 'https://' + req.headers.host + link_img.link_location_featured + result[0].location.featured_img;
                     }
                     return res.status(200).json({
                         data: result[0],

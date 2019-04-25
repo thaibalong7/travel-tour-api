@@ -2,6 +2,7 @@ const db = require('../models');
 const tour_images = db.tour_images;
 const helper_add_link = require('../helper/add_full_link');
 const fs = require('fs');
+const link_img = require('../config/setting').link_img;
 
 const asyncFor = async (arr, cb) => {
     for (let i = 0; i < arr.length; i++) {
@@ -54,7 +55,7 @@ exports.createByTour = async (req, res) => {
                     var timestamp = date.getTime();
                     await asyncFor(req.files, async (file, i) => {
                         const name_image = idTour + '_' + timestamp + '_' + i + '.jpg';
-                        fs.writeFile('public/assets/images/tourImage/' + name_image, file.buffer, async (err) => {
+                        fs.writeFile('public' + link_img.link_tour_img + name_image, file.buffer, async (err) => {
                             if (err) {
                                 console.log(err);
                             }

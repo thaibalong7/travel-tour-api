@@ -4,6 +4,7 @@ var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const add_link = require('../helper/add_full_link');
 const validate_helper = require('../helper/validate');
+const link_img = require('../config/setting').link_img;
 
 const asyncForEach = async (arr, cb) => {
     arr.forEach(cb);
@@ -36,7 +37,7 @@ const convertDiscountOfListTourTurn = async (tour_turns) => {
 //     }
 // }
 
-const convertDiscountAndGetNumReviewOfListTourTurn= async (tour_turns) => {
+const convertDiscountAndGetNumReviewOfListTourTurn = async (tour_turns) => {
     for (var i = 0; i < tour_turns.length; i++) {
         tour_turns[i].discount = parseFloat(tour_turns[i].discount / 100);
         tour_turns[i].tour.dataValues.num_review = (await db.reviews.findAll({ where: { fk_tour: tour_turns[i].tour.id } })).length
@@ -303,9 +304,9 @@ exports.getById = (req, res) => {
         if (tour_turn !== null) {
             if (tour_turn.tour.featured_img !== null) {
                 if (process.env.NODE_ENV === 'development')
-                    tour_turn.tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
+                    tour_turn.tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + tour_turn.tour.featured_img
                 else
-                    tour_turn.tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
+                    tour_turn.tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + tour_turn.tour.featured_img
             }
         }
         tour_turn.discount = parseFloat(tour_turn.discount / 100);
@@ -369,9 +370,9 @@ exports.getById_admin = (req, res) => {
         if (tour_turn !== null) {
             if (tour_turn.tour.featured_img !== null) {
                 if (process.env.NODE_ENV === 'development')
-                    tour_turn.tour.featured_img = 'http://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
+                    tour_turn.tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + tour_turn.tour.featured_img
                 else
-                    tour_turn.tour.featured_img = 'https://' + req.headers.host + '/assets/images/tourFeatured/' + tour_turn.tour.featured_img
+                    tour_turn.tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + tour_turn.tour.featured_img
             }
         }
         res.status(200).json({ data: tour_turn })
