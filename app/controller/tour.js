@@ -105,7 +105,7 @@ const convertDiscountOfListTour = async (tours) => {
 exports.createWithRoutesAndListImage = async (req, res) => {
     try {
         if (typeof req.body.name !== 'undefined' && typeof req.body.policy !== 'undefined'
-            && typeof req.body.description !== 'undefined' && typeof req.body.detail !== 'undefined'
+            && typeof req.body.description !== 'undefined' //&& typeof req.body.detail !== 'undefined'
             && typeof req.body.routes !== 'undefined' && typeof req.body.fk_type_tour !== 'undefined') {
             if (Array.isArray(JSON.parse(req.body.routes))) {
                 if (typeof req.files !== 'undefined') {
@@ -132,7 +132,7 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                                     name: req.body.name,
                                     policy: req.body.policy,
                                     description: req.body.description,
-                                    detail: req.body.detail,
+                                    //detail: req.body.detail, //bỏ detail
                                     featured_img: timestamp + '.jpg',
                                     fk_type_tour: check_type.id
                                 }
@@ -230,7 +230,7 @@ exports.createWithRoutesAndListImage = async (req, res) => {
 exports.createWithRoutes = async (req, res) => {
     try {
         if (typeof req.body.name !== 'undefined' && typeof req.body.policy !== 'undefined'
-            && typeof req.body.description !== 'undefined' && typeof req.body.detail !== 'undefined'
+            && typeof req.body.description !== 'undefined' //&& typeof req.body.detail !== 'undefined'
             && typeof req.body.routes !== 'undefined') {
             if (Array.isArray(JSON.parse(req.body.routes))) {
                 if (typeof req.file !== 'undefined') {
@@ -244,7 +244,7 @@ exports.createWithRoutes = async (req, res) => {
                             name: req.body.name,
                             policy: req.body.policy,
                             description: req.body.description,
-                            detail: req.body.detail,
+                            //detail: req.body.detail,
                             featured_img: timestamp + '.jpg'
                         }
                         const list_routes = JSON.parse(req.body.routes);
@@ -296,12 +296,12 @@ exports.createWithRoutes = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         if (typeof req.body.name !== 'undefined' && typeof req.body.policy !== 'undefined'
-            && typeof req.body.description !== 'undefined' && typeof req.body.detail !== 'undefined') {
+            && typeof req.body.description !== 'undefined') {
             const new_tour = {
                 name: req.body.name,
                 policy: req.body.policy,
                 description: req.body.description,
-                detail: req.body.detail,
+                //detail: req.body.detail,
             }
             tours.create(new_tour).then(async _tour => {
                 return res.status(200).json(_tour)
@@ -596,6 +596,7 @@ exports.getAllTour = (req, res) => {
                     status: 'public',
                 }
             }],
+            attributes: { exclude: ['detail'] },
             limit: per_page,
             offset: (page - 1) * per_page
         };
@@ -758,6 +759,7 @@ exports.getByLocation = (req, res) => {
                         fk_location: idLocation
                     }
                 }],
+                attributes: { exclude: ['detail'] },
                 order: [[db.tour_turns, 'start_date', 'DESC']],
                 limit: per_page,
                 offset: (page - 1) * per_page

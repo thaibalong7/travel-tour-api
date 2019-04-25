@@ -5,6 +5,8 @@ const validate_helper = require('../helper/validate');
 var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const uuidv1 = require('uuid/v1');
+const helper_add_link = require('../helper/add_full_link');
+
 
 var publicKEY = fs.readFileSync('./app/middleware/public.key', 'utf8');
 var verifyOptions = {
@@ -326,6 +328,7 @@ exports.getHistoryBookTourByUser = (req, res) => {
                 const result = _book_tour_history.rows.map((node) => node.get({ plain: true }));
                 await add_is_cancel_booking(result);
                 await addPricePassengerOfListBookTour(result);
+                await helper_add_link.addLinkToursFeaturedImgOfListBookTour(result, req.headers.host);
                 return res.status(200).json({
                     itemCount: _book_tour_history.count, //số lượng record được trả về
                     data: result,

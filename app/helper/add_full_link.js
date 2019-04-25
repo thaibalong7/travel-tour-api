@@ -25,6 +25,19 @@ const addLinkToursFeaturedImgOfListTourTurns = async (tour_turns, host) => {
     })
 }
 
+const addLinkToursFeaturedImgOfListBookTour = async (book_tour, host) => {
+    return book_tour.map(item => {
+        if (item.tour_turn.tour.featured_img !== null) {
+            if (process.env.NODE_ENV === 'development')
+                item.tour_turn.tour.featured_img = 'http://' + host + link_img.link_tour_featured + item.tour_turn.tour.featured_img
+            else
+                item.tour_turn.tour.featured_img = 'https://' + host + link_img.link_tour_featured + item.tour_turn.tour.featured_img
+        }
+        // console.log(item)
+        return item;
+    })
+}
+
 const addLinkLocationFeaturedImgOfListRoutes = async (_routes, host) => {
     return _routes.map(item => {
         if (item.location.featured_img === null) {
@@ -95,5 +108,6 @@ module.exports = {
     addLinkTourImgOfListToursImg,
     addLinkToursFeaturedImgOfListTours,
     addLinkToursFeaturedImgOfListTourTurns,
-    addLinkAvatarUserOfListReview
+    addLinkAvatarUserOfListReview,
+    addLinkToursFeaturedImgOfListBookTour
 }
