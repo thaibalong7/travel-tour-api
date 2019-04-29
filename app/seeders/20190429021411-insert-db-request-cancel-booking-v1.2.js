@@ -15,12 +15,25 @@ module.exports = {
 		return Promise.all([
 			queryInterface.bulkInsert('request_cancel_booking', [
 				{
-					id: 1,
+					id: 2,
 					message: 'Bận đột xuất nên không thể đi được, mong được chấp nhận',
 					fk_book_tour: 3,
 					fk_user: 12
 				},
 			]),
+			queryInterface.bulkInsert('request_cancel_booking', [
+				{
+					id: 1,
+					message: 'Cty đang làm tổ chức Company Trip vào ngày đó, nên không thể tham gia tour được',
+					fk_book_tour: 7,
+					fk_user: 13
+				},
+			]),
+			queryInterface.bulkUpdate('book_tour_contact_info',
+				{ fk_user: 13 },
+				{
+					id: 7
+				}),
 			queryInterface.bulkUpdate('book_tour_history',
 				{ status: 'paid' },
 				{
@@ -63,6 +76,11 @@ module.exports = {
 				{ status: 'booked' },
 				{
 					id: 4
+				}),
+			queryInterface.bulkUpdate('book_tour_contact_info',
+				{ fk_user: null },
+				{
+					id: 7
 				}),
 		])
 	}
