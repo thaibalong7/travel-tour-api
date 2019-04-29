@@ -74,7 +74,7 @@ exports.getAllRequests = (req, res) => {
     try {
         const query = {
             attributes: {
-                exclude: ['fk_book_tour']
+                exclude: ['fk_book_tour', 'status']
             },
             include: [{
                 attributes: {
@@ -93,6 +93,10 @@ exports.getAllRequests = (req, res) => {
                 {
                     model: db.payment_method
                 }]
+            },
+            {
+                model: db.users,
+                attributes: ['fullname', 'email']
             }]
         }
         request_cancel_booking.findAll(query).then(_requests => {
