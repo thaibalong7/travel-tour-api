@@ -101,7 +101,7 @@ exports.create = async (req, res) => {
                                         location_result.featured_img = 'https://' + req.headers.host + link_img.link_location_featured + location_result.featured_img;
                                     res.status(200).json(location_result)
                                 }).catch(err => {
-                                    return res.status(400).json({ msg: err });
+                                    return res.status(400).json({ msg: err.toString() });
                                 })
                             })
                         }
@@ -126,7 +126,7 @@ exports.create = async (req, res) => {
         }
     }
     catch (err) {
-        return res.status(400).json({ msg: err })
+        return res.status(400).json({ msg: err.toString() })
     }
 }
 
@@ -141,7 +141,7 @@ exports.updateWithoutFeaturedImg = (req, res) => {
         })
     }
     catch (err) {
-        res.status(400).json({ msg: err })
+        res.status(400).json({ msg: err.toString() })
     }
 }
 
@@ -273,7 +273,7 @@ exports.update = async (req, res) => {
         }
     }
     catch (err) {
-        return res.status(400).json({ msg: err })
+        return res.status(400).json({ msg: err.toString() })
     }
 }
 
@@ -281,9 +281,16 @@ exports.getAllWithoutPagination = (req, res) => {
     try {
         const status = req.query.status;
         var query = {
-            attributes: { exclude: ['fk_type'] },
+            attributes: { exclude: ['fk_type', 'fk_province'] },
             include: [{
                 model: db.types
+            },
+            {
+                attributes: { exclude: ['fk_country'] },
+                model: db.provinces,
+                include: [{
+                    model: db.countries
+                }]
             }]
         }
         if (status === 'active') query.where = { status: 'active' }

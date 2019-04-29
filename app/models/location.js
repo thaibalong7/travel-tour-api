@@ -6,11 +6,11 @@ module.exports = function (sequelize, Sequelize) {
       type: Sequelize.INTEGER
     },
     latitude: {
-      type: Sequelize.FLOAT,
+      type: Sequelize.DECIMAL(13, 10),
       allowNull: false
     },
     longitude: {
-      type: Sequelize.FLOAT,
+      type: Sequelize.DECIMAL(13, 10),
       allowNull: false
     },
     name: {
