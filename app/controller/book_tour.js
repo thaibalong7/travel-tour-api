@@ -688,6 +688,17 @@ exports.getAllBookTourHistoryGroupByTourTurn = async (req, res) => {
     }
 }
 
+const priority_status = {
+    "pending_cancel": 1,
+    "booked": 2,
+    "paid": 3,
+    "cancelled": 4,
+    "finished": 5
+}
+const sortBookTour = (book_tour1, book_tour2) => {
+    return priority_status[book_tour1.status] - priority_status[book_tour2.status];
+}
+
 exports.getBookTourHistoryByTourTurn = async (req, res) => {
     try {
         const idTourTurn = req.params.id;
@@ -725,6 +736,7 @@ exports.getBookTourHistoryByTourTurn = async (req, res) => {
                 }]
             }
             db.book_tour_history.findAll(query).then(async _book_tours => {
+                _book_tours.sort(sortBookTour);
                 return res.status(200).json({
                     data: {
                         tour_turn: tour_turn,
@@ -734,7 +746,7 @@ exports.getBookTourHistoryByTourTurn = async (req, res) => {
             })
         }
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(400).json({ msg: error.toString() });
     }
 }
