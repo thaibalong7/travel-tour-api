@@ -70,6 +70,18 @@ exports.create = async (req, res) => {
     }
 }
 
+const sortRequest = (request1, request2) =>{
+    if (request1.book_tour_history.status === 'pending_cancel')
+    {
+        return -1;
+    }
+    if (request2.book_tour_history.status === 'pending_cancel')
+    {
+        return 1;
+    }
+    return 0;
+}
+
 exports.getAllRequests = (req, res) => {
     try {
         const query = {
@@ -100,6 +112,7 @@ exports.getAllRequests = (req, res) => {
             }]
         }
         request_cancel_booking.findAll(query).then(_requests => {
+            _requests.sort(sortRequest);
             return res.status(200).json({ data: _requests });
         })
     } catch (error) {
