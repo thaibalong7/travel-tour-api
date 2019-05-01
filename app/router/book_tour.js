@@ -38,6 +38,8 @@ router.post('/updatePassenger', book_tour.updatePassenger) //middlewareAuthAdmin
 
 router.post('/updateContactInfo', book_tour.updateContactInfo) //middlewareAuthAdmin
 
+router.get('/getListNeedCall', book_tour.getListNeedCall) //middlewareAuthAdmin
+
 module.exports = router;
 
 

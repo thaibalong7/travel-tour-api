@@ -1045,3 +1045,72 @@ exports.updateContactInfo = async (req, res) => {
         return res.status(400).json({ msg: error.toString() });
     }
 }
+
+exports.deletePassenger = (req, res) => {
+    try {
+        // do something to delete passengers
+
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() });
+    }
+}
+
+const filterBookTourNeedCall = async (_book_tours, days_need_call) => {
+    return _book_tours.filter((_book_tour) => {
+        // return true or false
+        if (_book_tour.dataValues.days > 0) {
+            //trước 3 ngày mới cho book tour
+            const days = parseInt(_book_tour.dataValues.days);
+            const cur_date = new Date();
+            const timeDiff = new Date(_book_tour.tour_turn.start_date) - cur_date;
+            const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
+            if (days > 7) //book trước ngày đi trên 7 ngày
+            {
+                // phải thanh toán trước 3 ngày
+                if (days_before_go > 3 && days_before_go <= (3 + days_need_call))
+                    return true;
+                else return false;
+            }
+            if (days <= 7 && days >= 3) { //book trước ngày đi từ 3 -> 7 ngày
+                //phải thanh toán trước 1 ngày
+                if (days_before_go > 1 && days_before_go <= (1 + days_need_call))
+                    return true;
+                else return false;
+            }
+        }
+        else return false;
+    })
+}
+
+exports.getListNeedCall = (req, res) => {
+    try {
+        const default_days_need_call = 2;
+        let days_need_call;
+        if (typeof req.query.days_need_call === 'undefined') days_need_call = default_days_need_call;
+        else days_need_call = req.query.days_need_call
+        days_need_call = parseInt(days_need_call);
+        const query = {
+            where: {
+                status: 'booked'
+            },
+            include: [{
+                model: db.tour_turns
+            },
+            {
+                model: db.book_tour_contact_info
+            }],
+            attributes: {
+                include: [
+                    [Sequelize.literal('DATEDIFF(tour_turn.start_date, book_tour_history.book_time) + 1'), 'days'],
+                ]
+            }
+        }
+        db.book_tour_history.findAll(query).then(async _book_tours => {
+            return res.status(200).json({
+                data: await filterBookTourNeedCall(_book_tours, days_need_call)
+            })
+        })
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() });
+    }
+}
