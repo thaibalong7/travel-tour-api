@@ -685,7 +685,7 @@ exports.updateWithPricePassenger = async (req, res) => {
                     return res.status(400).json({ msg: 'Can not update this turn' })
                 }
                 if (typeof req.body.end_date !== 'undefined') // có end_date
-                    if (new Date(req.body.start_date) < new Date(req.body.end_date) && new Date(req.body.start_date) > new Date()) {
+                    if (new Date(req.body.start_date) <= new Date(req.body.end_date) && new Date(req.body.start_date) > new Date()) {
                         //thỏa mọi điều kiện
                         _tour_turn.start_date = req.body.start_date;
                         _tour_turn.end_date = req.body.end_date;
