@@ -13,6 +13,9 @@ module.exports = (sequelize, Sequelize) => {
         message: {
             type: Sequelize.TEXT,
         },
+        request_time: {
+            type: Sequelize.DATE,
+        }
     },
         {
             charset: 'utf8',

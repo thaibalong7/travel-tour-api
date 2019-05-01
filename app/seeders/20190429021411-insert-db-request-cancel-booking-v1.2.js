@@ -18,7 +18,8 @@ module.exports = {
 					id: 2,
 					message: 'Bận đột xuất nên không thể đi được, mong được chấp nhận',
 					fk_book_tour: 3,
-					fk_user: 12
+					fk_user: 12,
+					request_time: new Date('2019-04-22 11:15:21')
 				},
 			]),
 			queryInterface.bulkInsert('request_cancel_booking', [
@@ -26,7 +27,8 @@ module.exports = {
 					id: 1,
 					message: 'Cty đang làm tổ chức Company Trip vào ngày đó, nên không thể tham gia tour được',
 					fk_book_tour: 7,
-					fk_user: 13
+					fk_user: 13,
+					request_time: new Date('2019-04-28 04:07:44')
 				},
 			]),
 			queryInterface.bulkUpdate('book_tour_contact_info',
