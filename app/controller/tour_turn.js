@@ -925,8 +925,102 @@ exports.search = async (req, res) => {
             })
         }
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.status(400).json({ msg: error.toString() })
     }
+}
 
+const getRatioRoutesMatch = async (tour_turn) => {
+    const list_routes = await db.routes.findAll({
+        where: {
+            fk_tour: tour_turn.tour.id
+        }
+    })
+    return tour_turn.num_routes_match / list_routes.length;
+}
+
+const filterTourTurnRecoment = async (tour_turns) => {
+    const result = [];
+    for (let i = 0; i < tour_turns.length; i++) {
+        if (tour_turns[i].tour !== null) {
+            const tour_turn_temp = tour_turns[i].get({ plain: true })
+            tour_turn_temp.num_routes_match = tour_turn_temp.tour.routes.length;
+            tour_turn_temp.tour.routes = undefined;
+            tour_turn_temp.ratio_routes_match = await getRatioRoutesMatch(tour_turn_temp)
+            result.push(tour_turn_temp);
+        }
+    }
+    return result;
+}
+
+const sortTourTurnByRatioRoutesMatch = (tour_turn1, tour_turn2) => {
+    return tour_turn2.ratio_routes_match - tour_turn1.ratio_routes_match;
+}
+
+exports.getRecommendation = (req, res) => {
+    try {
+        const arr_location = req.body.locations;
+        if (!Array.isArray(arr_location)) {
+            return res.status(400).json({ msg: 'Wrong list locations' })
+        }
+        else {
+            var isUniqueTour = (req.query.isUniqueTour == 'true');
+            const arr_idLocation = [];
+            for (let i = 0; i < arr_location.length; i++) {
+                arr_idLocation.push(arr_location[i].id)
+            }
+            const query = {
+                where: {
+                    status: 'public',
+                    start_date: {
+                        [Op.gt]: new Date()
+                    }
+                },
+                include: [
+                    {
+                        model: db.tours,
+                        include: [{
+                            model: db.routes,
+                            where: {
+                                fk_location: {
+                                    [Op.or]: arr_idLocation
+                                }
+                            }
+                        }]
+                    }
+                ],
+                attributes: {
+                    exclude: ['fk_tour']
+                },
+                order: [['start_date', 'ASC']]
+            }
+            db.tour_turns.findAll(query).then(async (_tour_turns) => {
+                const _tour_turns_filter = await filterTourTurnRecoment(_tour_turns);
+                if (isUniqueTour) { //lấy unique
+                    var unique = {};
+                    var distinct = [];
+                    await asyncForEach(_tour_turns_filter, function (item) {
+                        if (!unique[item.tour.id]) {
+                            distinct.push(item);
+                            unique[item.tour.id] = true;
+                        }
+                    });
+                    await add_link.addLinkToursFeaturedImgOfListTourTurns(distinct, req.headers.host);
+                    distinct.sort(sortTourTurnByRatioRoutesMatch);
+                    return res.status(200).json({
+                        data: distinct,
+                    })
+                }
+                else {
+                    await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns_filter, req.headers.host)
+                    _tour_turns_filter.sort(sortTourTurnByRatioRoutesMatch);
+                    return res.status(200).json({
+                        data: _tour_turns_filter,
+                    })
+                }
+            })
+        }
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() })
+    }
 }

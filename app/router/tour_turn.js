@@ -34,4 +34,6 @@ router.get('/search', tour_turns.search);
 
 router.get('/increaseView/:id', tour_turns.increaseView);
 
+router.post('/getRecommendation', tour_turns.getRecommendation);
+
 module.exports = router
