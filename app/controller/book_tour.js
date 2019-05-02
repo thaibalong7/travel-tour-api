@@ -1058,10 +1058,44 @@ exports.updateContactInfo = async (req, res) => {
     }
 }
 
-exports.deletePassenger = (req, res) => {
+exports.deletePassenger = async (req, res) => {
     try {
         // do something to delete passengers
+        const idPassenger = req.body.id;
+        const _passenger = await db.passengers.findByPk(idPassenger);
+        if (_passenger) {
+            if (_passenger.fk_book_tour !== null) {
+                const _book_tour = await db.book_tour_history.findOne({
+                    where: {
+                        id: _passenger.fk_book_tour
+                    },
+                    include: [{
+                        model: db.tour_turns,
+                    }]
+                })
+                const tour_turn = _book_tour.tour_turn;
+                const price_passenger = await db.price_passenger.findOne({
+                    where: {
+                        fk_tourturn: tour_turn.id,
+                        fk_type_passenger: _passenger.fk_type_passenger
+                    }
+                })
 
+                //tính price của passenger đó
+                const price = parseInt(price_passenger.percent / 100 * (tour_turn.price - tour_turn.price * tour_turn.discount / 100));
+
+                _book_tour.total_pay = _book_tour.total_pay - price;
+                _passenger.fk_book_tour = null;
+
+                await _book_tour.save();
+                await _passenger.save();
+
+                return res.status(200).json({ msg: 'Delete passenger successful' });
+            }
+            else {
+                return res.status(400).json({ msg: 'This passenger does not belong to any booking' });
+            }
+        }
     } catch (error) {
         return res.status(400).json({ msg: error.toString() });
     }

@@ -36,6 +36,8 @@ router.post('/cancelBookTour', book_tour.cancelBookTour) //middlewareAuthAdmin
 
 router.post('/updatePassenger', book_tour.updatePassenger) //middlewareAuthAdmin
 
+router.post('/deletePassenger', book_tour.deletePassenger) //middlewareAuthAdmin
+
 router.post('/updateContactInfo', book_tour.updateContactInfo) //middlewareAuthAdmin
 
 router.get('/getListNeedCall', book_tour.getListNeedCall) //middlewareAuthAdmin
