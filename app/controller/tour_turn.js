@@ -46,6 +46,23 @@ const convertDiscountAndGetNumReviewOfListTourTurn = async (tour_turns) => {
 
 const arr_status = ['private', 'public'];
 
+const check_policy_allow_booking = (tour_turn) => {
+    //trước 3 ngày khởi hành thì mới được book
+    if (tour_turn.status === arr_status[0]) // tour turn đang là private
+        return false;
+    const cur_date = new Date();
+    const timeDiff = new Date(tour_turn.start_date) - cur_date;
+    const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
+    if (days_before_go > 3) return true;
+    else return false;
+}
+
+const add_is_allow_booking = async (tour_turns) => {
+    for (var i = 0; i < tour_turns.length; i++) {
+        tour_turns[i].isAllowBooking = await check_policy_allow_booking(tour_turns[i]);
+    }
+}
+
 exports.create = async (req, res) => {
     // {
     //     start_date,
@@ -312,6 +329,7 @@ exports.getById = (req, res) => {
         tour_turn.discount = parseFloat(tour_turn.discount / 100);
         const list_price = await addPriceOfListPricePassengers(tour_turn.price_passengers, tour_turn.price, tour_turn.discount);
         tour_turn.price_passengers = list_price;
+        tour_turn.isAllowBooking = await check_policy_allow_booking(tour_turn)
         res.status(200).json({ data: tour_turn })
     }).catch(err => {
         console.log(err)
@@ -499,8 +517,10 @@ exports.getAll = (req, res) => { //update here
                     if (parseInt(result_paginate.length) === 0)
                         next_page = -1;
 
-                    const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
+                    let result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
                     await convertDiscountAndGetNumReviewOfListTourTurn(result);
+                    result = result.map((node) => node.get({ plain: true }));
+                    await add_is_allow_booking(result);
                     res.status(200).json({
                         itemCount: distinct.length, //số lượng record được trả về
                         data: result,
@@ -521,8 +541,10 @@ exports.getAll = (req, res) => { //update here
                     if (parseInt(result_paginate.length) === 0)
                         next_page = -1;
 
-                    const result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
+                    let result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
                     await convertDiscountAndGetNumReviewOfListTourTurn(result);
+                    result = result.map((node) => node.get({ plain: true }));
+                    await add_is_allow_booking(result);
                     res.status(200).json({
                         itemCount: _tour_turns.rows.length, //số lượng record được trả về
                         data: result,
