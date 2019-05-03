@@ -917,7 +917,7 @@ exports.cancelBookTour = async (req, res) => {
             }]
         })
         if (book_tour) {
-            if (book_tour.status !== 'cancelled') {
+            if (book_tour.status === 'booked' || book_tour.status === 'paid' || book_tour.status === 'pending_cancel') {
                 book_tour.status = 'cancelled' //chuyển thành status hủy đặt tour
                 //update số lượng người đi ở tour turn nữa ...
                 const tour_turn = book_tour.tour_turn
