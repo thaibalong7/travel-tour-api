@@ -556,7 +556,6 @@ exports.getHistoryBookTourByCode = (req, res) => {
         const code = req.params.code;
         var is_info_tour = (req.query.tour == 'true');
         var query = {
-            attributes: { exclude: ['fk_contact_info', 'fk_payment'] },
             where: {
                 code: code
             },
@@ -564,16 +563,16 @@ exports.getHistoryBookTourByCode = (req, res) => {
                 model: db.book_tour_contact_info
             },
             {
+                model: db.payment_method
+            },
+            {
                 attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
                 model: db.passengers,
                 include: [{
                     model: db.type_passenger
                 }]
-            },
-            {
-                model: db.payment_method
-            }
-            ]
+            }],
+            attributes: { exclude: [] },
         }
         db.book_tour_history.findOne(query).then(async _book_tour_history => {
             if (_book_tour_history) {
