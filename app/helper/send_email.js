@@ -2,10 +2,6 @@ var smtpTransport = require('../send_email');
 const { html_verify_email, html_forgetPassword_email, html_e_ticket } = require('../send_email/email_html/email_html');
 
 const sendVerifyEmail = (token, email, req, res) => {
-    // verificationMail_data = {
-    //     token,
-    //     email,
-    // }
     var linkVerify, linkTeam;
     if (process.env.NODE_ENV === 'development') {
         linkVerify = "http://" + req.headers.host + "/user/verify?sign=" + token;
@@ -19,7 +15,7 @@ const sendVerifyEmail = (token, email, req, res) => {
     mailOptions = {
         from: '"Tour Travel" <tour.travel.k15@gmail.com>',
         to: email,
-        subject: "Verify account in Tour Travel",
+        subject: "[Tour Travel] Chứng thực tài khoản",
         html: html_verify_email(linkVerify, linkTeam),
     };
     smtpTransport.sendMail(mailOptions, function (error, response) {
@@ -50,7 +46,7 @@ const sendForgetPasswordEmail = (new_password, _user, req, res) => {
     mailOptions = {
         from: '"Tour Travel" <tour.travel.k15@gmail.com>',
         to: _user.email,
-        subject: "Reset password in Tour Travel",
+        subject: "[Tour Travel] Thay đổi mật khẩu",
         html: html_forgetPassword_email(new_password, linkTeam),
     };
     smtpTransport.sendMail(mailOptions, async function (error, response) {
