@@ -176,6 +176,25 @@ exports.getTourTurnByProvince = async (req, res) => {
     }
 }
 
+const arr_status = ['private', 'public'];
+
+const check_policy_allow_booking = (tour_turn) => {
+    //trước 3 ngày khởi hành thì mới được book
+    if (tour_turn.status === arr_status[0]) // tour turn đang là private
+        return false;
+    const cur_date = new Date();
+    const timeDiff = new Date(tour_turn.start_date) - cur_date;
+    const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
+    if (days_before_go > 3) return true;
+    else return false;
+}
+
+const add_is_allow_booking = async (tour_turns) => {
+    for (var i = 0; i < tour_turns.length; i++) {
+        tour_turns[i].isAllowBooking = await check_policy_allow_booking(tour_turns[i]);
+    }
+}
+
 exports.getTourTurnByType = (req, res) => {
     try {
         const idType = parseInt(req.params.id)
@@ -228,10 +247,12 @@ exports.getTourTurnByType = (req, res) => {
                     next_page = -1;
 
                 await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns.rows, req.headers.host)
-                await convertDiscountAndGetNumReviewOfListTourTurn(_tour_turns.rows)
+                await convertDiscountAndGetNumReviewOfListTourTurn(_tour_turns.rows);
+                const result = _tour_turns.rows.map((node) => node.get({ plain: true }));
+                await add_is_allow_booking(result);
                 res.status(200).json({
                     itemCount: _tour_turns.count, //số lượng record được trả về
-                    data: _tour_turns.rows,
+                    data: result,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })
             })
