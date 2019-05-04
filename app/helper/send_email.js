@@ -1,5 +1,5 @@
 var smtpTransport = require('../send_email');
-const { html_verify_email, html_forgetPassword_email } = require('../send_email/email_html/email_html');
+const { html_verify_email, html_forgetPassword_email, html_e_ticket } = require('../send_email/email_html/email_html');
 
 const sendVerifyEmail = (token, email, req, res) => {
     // verificationMail_data = {
@@ -68,7 +68,36 @@ const sendForgetPasswordEmail = (new_password, _user, req, res) => {
     });
 }
 
+const sendETicketEmail = (req, res, book_tour) => {
+    var linkTeam;
+    if (process.env.NODE_ENV === 'development') {
+        linkTeam = "http://" + req.headers.host;
+    }
+    else {
+        linkTeam = "https://" + req.headers.host;
+    }
+    mailOptions = {
+        from: '"Tour Travel" <tour.travel.k15@gmail.com>',
+        to: book_tour.book_tour_contact_info.email,
+        subject: "[Tour Travel] Vé Điện Tử " + book_tour.id,
+        html: html_e_ticket(linkTeam, book_tour),
+    };
+    smtpTransport.sendMail(mailOptions, async function (error, response) {
+        if (error) {
+            console.log(error);
+            // res.status(400).json({
+            //     msg: "Error in SMTP server",
+            //     error: error
+            // });
+        } else {
+            console.log("Message sent: " + response.messageId + ' Send to: ' + response.accepted);
+        }
+    });
+
+}
+
 module.exports = {
     sendVerifyEmail,
-    sendForgetPasswordEmail
+    sendForgetPasswordEmail,
+    sendETicketEmail
 }

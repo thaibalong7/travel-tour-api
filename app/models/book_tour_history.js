@@ -25,6 +25,9 @@ module.exports = function (sequelize, Sequelize) {
         },
         code: {
             type: Sequelize.TEXT,
+        },
+        code_ticket: {
+            type: Sequelize.TEXT,
         }
     },
         {
