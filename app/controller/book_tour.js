@@ -7,6 +7,7 @@ const Op = Sequelize.Op;
 const uuidv1 = require('uuid/v1');
 const helper_add_link = require('../helper/add_full_link');
 const link_img = require('../config/setting').link_img;
+const { sendETicketEmail } = require('../helper/send_email');
 
 var publicKEY = fs.readFileSync('./app/middleware/public.key', 'utf8');
 var verifyOptions = {
@@ -22,6 +23,23 @@ const asyncFor = async (arr, cb) => {
     for (let i = 0; i < arr.length; i++) {
         await cb(arr[i], i);
     }
+}
+
+// Random number from 0 to length
+const randomNumber = (length) => {
+    return Math.floor(Math.random() * length)
+}
+
+// Generate Pseudo Random String, if safety is important use dedicated crypto/math library for less possible collisions!
+const generateCode = async (length) => {
+    const possible =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let text = "";
+
+    for (let i = 0; i < length; i++) {
+        text += possible.charAt(randomNumber(possible.length));
+    }
+    return text;
 }
 
 const book_tour = async (req, res, _user) => {
@@ -110,10 +128,19 @@ const book_tour = async (req, res, _user) => {
                     new_contact_info.fk_user = _user.id
                 }
                 //tạo contact info trước
-                db.book_tour_contact_info.create(new_contact_info).then((_contact_info) => {
+                db.book_tour_contact_info.create(new_contact_info).then(async (_contact_info) => {
                     //tạo xong và có id
                     let payment = _payments.find(p => p.name === req.body.payment);
                     //lấy id của contact info tạo book tour
+
+                    let code_ticket = await generateCode(10);
+
+                    let check_code_ticket = await db.book_tour_history.findAll({ where: { code_ticket: code_ticket } })
+
+                    while (!check_code_ticket) {
+                        code_ticket = await generateCode(10);
+                        check_code_ticket = await db.book_tour_history.findAll({ where: { code_ticket: code_ticket } })
+                    }
 
                     const new_book_tour = {
                         book_time: new Date(),
@@ -122,7 +149,8 @@ const book_tour = async (req, res, _user) => {
                         fk_contact_info: _contact_info.id,
                         fk_tour_turn: req.body.idTour_Turn,
                         fk_payment: payment.id,
-                        code: uuidv1()
+                        code: uuidv1(),
+                        code_ticket: code_ticket
                     };
 
                     if (req.body.payment === 'online') {
@@ -153,6 +181,46 @@ const book_tour = async (req, res, _user) => {
                         _tour_turn.num_current_people = num_current_people;
                         await _tour_turn.save();
 
+                        /* Gởi email nếu là đã thanh toán */
+                        if (req.body.payment === 'online') {
+                            const query = {
+                                where: {
+                                    id: _book_tour.id
+                                },
+                                include: [{
+                                    model: db.book_tour_contact_info
+                                },
+                                {
+                                    model: db.payment_method
+                                },
+                                {
+                                    attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                                    model: db.passengers,
+                                    include: [{
+                                        model: db.type_passenger
+                                    }]
+                                },
+                                {
+                                    model: db.tour_turns,
+                                    include: [{
+                                        model: db.tours,
+                                        include: [{
+                                            model: db.routes,
+                                            include: [{
+                                                model: db.locations
+                                            }]
+                                        }]
+                                    }]
+                                }],
+                                attributes: { exclude: [] },
+                            }
+                            const book_tour_for_send_email = await db.book_tour_history.findOne(query);
+                            sendETicketEmail(req, res, book_tour_for_send_email);
+                            return res.status(200).json({
+                                msg: 'Book tour successful',
+                                book_tour: book_tour_for_send_email,
+                            });
+                        }
                         //xong //trả response cho client
                         return res.status(200).json({
                             msg: 'Book tour successful',
@@ -571,6 +639,10 @@ exports.getHistoryBookTourByCode = (req, res) => {
                 include: [{
                     model: db.type_passenger
                 }]
+            },
+            {
+                model: db.request_cancel_booking,
+                attributes: { exclude: ['fk_book_tour'] },
             }],
             attributes: { exclude: [] },
         }
@@ -762,6 +834,42 @@ exports.payBookTour = async (req, res) => {
             if (book_tour.status === 'booked' || book_tour.status === 'pending_cancel') { // book tour vừa book hoặc đang chờ cancel có thể chuyể thành paid
                 book_tour.status = 'paid' //chuyển thành status đã thanh toán
                 await book_tour.save();
+
+                /* Gởi Email E-Ticket */
+                const query = {
+                    where: {
+                        id: _book_tour.id
+                    },
+                    include: [{
+                        model: db.book_tour_contact_info
+                    },
+                    {
+                        model: db.payment_method
+                    },
+                    {
+                        attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                        model: db.passengers,
+                        include: [{
+                            model: db.type_passenger
+                        }]
+                    },
+                    {
+                        model: db.tour_turns,
+                        include: [{
+                            model: db.tours,
+                            include: [{
+                                model: db.routes,
+                                include: [{
+                                    model: db.locations
+                                }]
+                            }]
+                        }]
+                    }],
+                    attributes: { exclude: [] },
+                }
+                const book_tour_for_send_email = await db.book_tour_history.findOne(query);
+                sendETicketEmail(req, res, book_tour_for_send_email);
+
                 return res.status(200).json({
                     msg: 'Pay successful',
                     data: book_tour
@@ -923,6 +1031,9 @@ exports.cancelBookTour = async (req, res) => {
                 tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger);
                 await book_tour.save();
                 await tour_turn.save();
+
+                //check thêm lý do hủy nữa, nếu có thì tạo mới một request_cancel_booking cho booking này
+
                 return res.status(200).json({
                     msg: 'Cancelled successful',
                     data: book_tour
