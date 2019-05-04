@@ -563,13 +563,13 @@ exports.getHistoryBookTourByCode = (req, res) => {
             include: [{
                 model: db.book_tour_contact_info
             },
-            // {
-            //     attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
-            //     model: db.passengers,
-            //     include: [{
-            //         model: db.type_passenger
-            //     }]
-            // },
+            {
+                attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                model: db.passengers,
+                include: [{
+                    model: db.type_passenger
+                }]
+            },
             {
                 model: db.payment_method
             }
