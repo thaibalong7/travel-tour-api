@@ -526,7 +526,7 @@ exports.getByTypeNearMe = async (req, res) => {
     if (typeof type === 'undefined') type = type_default
     lat = parseFloat(lat);
     lng = parseFloat(lng);
-    distance = parseInt(distance);
+    distance = parseFloat(distance);
     var query = {
         attributes: { exclude: ['fk_type'] },
         where: db.sequelize.and(

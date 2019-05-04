@@ -37,10 +37,14 @@ const convertDiscountOfListTourTurn = async (tour_turns) => {
 //     }
 // }
 
-const convertDiscountAndGetNumReviewOfListTourTurn = async (tour_turns) => {
+const convertDiscountAndGetNumReviewOfListTourTurn = async (tour_turns, isDataValues = true) => {
     for (var i = 0; i < tour_turns.length; i++) {
         tour_turns[i].discount = parseFloat(tour_turns[i].discount / 100);
-        tour_turns[i].tour.dataValues.num_review = (await db.reviews.findAll({ where: { fk_tour: tour_turns[i].tour.id } })).length
+        if (isDataValues)
+            tour_turns[i].tour.dataValues.num_review = (await db.reviews.findAll({ where: { fk_tour: tour_turns[i].tour.id } })).length
+        else
+            tour_turns[i].tour.num_review = (await db.reviews.findAll({ where: { fk_tour: tour_turns[i].tour.id } })).length
+
     }
 }
 
@@ -957,18 +961,59 @@ const sortTourTurnByRatioRoutesMatch = (tour_turn1, tour_turn2) => {
     return tour_turn2.ratio_routes_match - tour_turn1.ratio_routes_match;
 }
 
-exports.getRecommendation = (req, res) => {
+const addLocationsAroundLocations = async (locations, distance) => {
+    let result = locations;
+    for (let i = 0; i < locations.length; i++) {
+        const query = {
+            where: db.sequelize.and(
+                locations[i].latitude && locations[i].longitude && distance ? db.sequelize.where(
+                    db.sequelize.literal(`6371 * acos(cos(radians(${locations[i].latitude})) * cos(radians(locations.latitude)) * cos(radians(${locations[i].longitude}) - radians(locations.longitude)) + sin(radians(${locations[i].latitude})) * sin(radians(locations.latitude)))`),
+                    '<=',
+                    distance,
+                ) : null,
+                {
+                    status: 'active'
+                }
+            )
+        }
+        const location_add = await db.locations.findAll(query);
+        // console.log(location_add)
+        result = result.concat(location_add);
+    }
+    return result;
+}
+
+function uniques(arr) {
+    var a = [];
+    for (var i = 0, l = arr.length; i < l; i++)
+        if (a.indexOf(arr[i]) === -1 && arr[i] !== '')
+            a.push(arr[i]);
+    return a;
+}
+
+
+exports.getRecommendation = async (req, res) => {
     try {
-        const arr_location = req.body.locations;
+        let arr_location = req.body.locations;
         if (!Array.isArray(arr_location)) {
             return res.status(400).json({ msg: 'Wrong list locations' })
         }
         else {
+            const distance_default = 1; //kilometer
             var isUniqueTour = (req.query.isUniqueTour == 'true');
-            const arr_idLocation = [];
+            var distance = req.body.distance;
+            if (typeof distance === 'undefined') distance = distance_default;
+            distance = parseFloat(distance);
+            if (distance) { //nó phải khác 0
+                const locations_add = await addLocationsAroundLocations(arr_location, distance);
+                arr_location = arr_location.concat(locations_add);
+            }
+            let arr_idLocation = [];
             for (let i = 0; i < arr_location.length; i++) {
                 arr_idLocation.push(arr_location[i].id)
             }
+            arr_idLocation = uniques(arr_idLocation);
+            // console.log(arr_idLocation)
             const query = {
                 where: {
                     status: 'public',
@@ -990,7 +1035,12 @@ exports.getRecommendation = (req, res) => {
                     }
                 ],
                 attributes: {
-                    exclude: ['fk_tour']
+                    exclude: ['fk_tour', 'price'],
+                    include: [
+                        [Sequelize.literal('DATEDIFF(end_date, start_date) + 1'), 'lasting'],
+                        [Sequelize.literal('CAST(price - (discount * price) / 100 AS UNSIGNED)'), 'end_price'],
+                        [Sequelize.literal('price'), 'original_price'],
+                    ]
                 },
                 order: [['start_date', 'ASC']]
             }
@@ -1007,6 +1057,7 @@ exports.getRecommendation = (req, res) => {
                     });
                     await add_link.addLinkToursFeaturedImgOfListTourTurns(distinct, req.headers.host);
                     distinct.sort(sortTourTurnByRatioRoutesMatch);
+                    await convertDiscountAndGetNumReviewOfListTourTurn(_tour_turns_filter, false)
                     return res.status(200).json({
                         data: distinct,
                     })
@@ -1014,6 +1065,7 @@ exports.getRecommendation = (req, res) => {
                 else {
                     await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns_filter, req.headers.host)
                     _tour_turns_filter.sort(sortTourTurnByRatioRoutesMatch);
+                    await convertDiscountAndGetNumReviewOfListTourTurn(_tour_turns_filter, false)
                     return res.status(200).json({
                         data: _tour_turns_filter,
                     })
