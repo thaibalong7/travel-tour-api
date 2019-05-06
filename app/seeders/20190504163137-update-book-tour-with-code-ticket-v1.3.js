@@ -31,32 +31,32 @@ module.exports = {
 		*/
 		return Promise.all([
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code_ticket: await generateCode(10) },
+				{ code: await generateCode(8) },
 				{
 					id: 3
 				}),
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code_ticket: await generateCode(10) },
+				{ code: await generateCode(8) },
 				{
 					id: 4
 				}),
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code_ticket: await generateCode(10) },
+				{ code: await generateCode(8) },
 				{
 					id: 5
 				}),
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code_ticket: await generateCode(10) },
+				{ code: await generateCode(8) },
 				{
 					id: 6
 				}),
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code_ticket: await generateCode(10) },
+				{ code: await generateCode(8) },
 				{
 					id: 7
 				}),
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code_ticket: await generateCode(10) },
+				{ code: await generateCode(8) },
 				{
 					id: 8
 				}),
@@ -73,32 +73,32 @@ module.exports = {
 		*/
 		return Promise.all([
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code_ticket: null },
+				{ code: '78acc210-5059-11e9-aa13-03259040952a' },
 				{
 					id: 3
 				}),
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code_ticket: null },
+				{ code: '814d77c0-5059-11e9-989c-a5f26e5408ec' },
 				{
 					id: 4
 				}),
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code_ticket: null },
+				{ code: '870ae3a0-5059-11e9-8684-5d74946d80db' },
 				{
 					id: 5
 				}),
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code_ticket: null },
+				{ code: '89216790-5059-11e9-8c7e-c3f82d1fa1ef' },
 				{
 					id: 6
 				}),
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code_ticket: null },
+				{ code: '8fae3160-5059-11e9-98a6-11c33d1f98b4' },
 				{
 					id: 7
 				}),
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code_ticket: null },
+				{ code: 'a294e850-5059-11e9-8e50-6d47d5b38a8f' },
 				{
 					id: 8
 				}),

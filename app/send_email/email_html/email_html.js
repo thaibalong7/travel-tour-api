@@ -1312,7 +1312,7 @@ const html_e_ticket = (linkTeam, book_tour, linkTourTurn) => {
 												<div>
 													<span class="left-table">
 														<span style="font-weight: normal">Mã đặt vé (PNR): </span>
-														<span class="code-ticket">${book_tour.code_ticket}</span>
+														<span class="code-ticket">${book_tour.code}</span>
 													</span>
 													<div class="right-table">
 														<span>${time_arrive_string}</span>

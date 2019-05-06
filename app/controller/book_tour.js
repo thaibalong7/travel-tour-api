@@ -4,7 +4,6 @@ const fs = require('fs');
 const validate_helper = require('../helper/validate');
 var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-const uuidv1 = require('uuid/v1');
 const helper_add_link = require('../helper/add_full_link');
 const link_img = require('../config/setting').link_img;
 const { sendETicketEmail } = require('../helper/send_email');
@@ -135,11 +134,11 @@ const book_tour = async (req, res, _user) => {
 
                     let code_ticket = await generateCode(10);
 
-                    let check_code_ticket = await db.book_tour_history.findAll({ where: { code_ticket: code_ticket } })
+                    let check_code_ticket = await db.book_tour_history.findAll({ where: { code: code_ticket } })
 
                     while (!check_code_ticket) {
                         code_ticket = await generateCode(10);
-                        check_code_ticket = await db.book_tour_history.findAll({ where: { code_ticket: code_ticket } })
+                        check_code_ticket = await db.book_tour_history.findAll({ where: { code: code_ticket } })
                     }
 
                     const new_book_tour = {
@@ -149,8 +148,7 @@ const book_tour = async (req, res, _user) => {
                         fk_contact_info: _contact_info.id,
                         fk_tour_turn: req.body.idTour_Turn,
                         fk_payment: payment.id,
-                        code: uuidv1(),
-                        code_ticket: code_ticket
+                        code: code_ticket
                     };
 
                     if (req.body.payment === 'online') {
@@ -724,7 +722,8 @@ exports.getAllBookTourHistoryGroupByTourTurn = async (req, res) => {
                 attributes: ['name', 'id'],
                 model: db.tours
             }
-            ]
+            ],
+            // order: [[db.book_tour_history, 'book_time', 'ASC'], ['start_date', 'ASC']]
         }
         const has_departed = { //đang đi
             start_date: {
@@ -754,7 +753,7 @@ exports.getAllBookTourHistoryGroupByTourTurn = async (req, res) => {
             return res.status(200).json({ data: _tour_turn })
         })
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(400).json({ msg: error.toString() });
     }
 }
