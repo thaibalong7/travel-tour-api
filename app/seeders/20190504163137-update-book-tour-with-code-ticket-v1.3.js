@@ -41,12 +41,15 @@ module.exports = {
 					id: 4
 				}),
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code: await generateCode(8) },
+				{ code: await generateCode(8), },
 				{
 					id: 5
 				}),
 			queryInterface.bulkUpdate('book_tour_history',
-				{ code: await generateCode(8) },
+				{
+					code: await generateCode(8),
+					message_pay: 'Nguyễn Văn B thanh toán hộ'
+				},
 				{
 					id: 6
 				}),

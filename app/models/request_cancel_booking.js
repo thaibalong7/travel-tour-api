@@ -6,10 +6,10 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true,
             type: Sequelize.INTEGER
         },
-        status: {
-            type: Sequelize.ENUM('pending', 'solved'),
-            defaultValue: 'pending'
-        },
+        // status: {
+        //     type: Sequelize.ENUM('pending', 'solved'),
+        //     defaultValue: 'pending'
+        // },
         message: {
             type: Sequelize.TEXT,
         },

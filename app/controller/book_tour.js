@@ -132,12 +132,12 @@ const book_tour = async (req, res, _user) => {
                     let payment = _payments.find(p => p.name === req.body.payment);
                     //lấy id của contact info tạo book tour
 
-                    let code_ticket = await generateCode(10);
+                    let code_ticket = await generateCode(8);
 
                     let check_code_ticket = await db.book_tour_history.findAll({ where: { code: code_ticket } })
 
                     while (!check_code_ticket) {
-                        code_ticket = await generateCode(10);
+                        code_ticket = await generateCode(8);
                         check_code_ticket = await db.book_tour_history.findAll({ where: { code: code_ticket } })
                     }
 
@@ -1032,6 +1032,14 @@ exports.cancelBookTour = async (req, res) => {
                 await tour_turn.save();
 
                 //check thêm lý do hủy nữa, nếu có thì tạo mới một request_cancel_booking cho booking này
+                if (typeof req.body.message !== undefined) {
+                    if (req.body.message !== null) {
+                        db.request_cancel_booking.create({
+                            message: req.body.message,
+                            fk_book_tour: book_tour.id,
+                        })
+                    }
+                }
 
                 return res.status(200).json({
                     msg: 'Cancelled successful',
