@@ -1,5 +1,18 @@
 'use strict';
 
+function formatDate(days) {
+    const d = new Date();
+    d.setDate(d.getDate() + days)
+    var month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
 module.exports = {
     up: (queryInterface, Sequelize) => {
         /*
@@ -109,21 +122,21 @@ module.exports = {
             queryInterface.sequelize.query("INSERT INTO `tour_turns` (`id`, `start_date`, `end_date`, `num_current_people`, `num_max_people`, `price`, `discount`, `view`, `status`, `fk_tour`) VALUES" +
                 "(1, '2019-02-24', '2019-02-24', 0, 15, 100000, 0, 104, 'public', 1)," +
                 "(2, '2019-03-02', '2019-03-02', 0, 15, 100000, 0, 47, 'public', 1)," +
-                "(3, '2019-05-24', '2019-05-24', 1, 20, 200000, 0, 74, 'public', 2)," +
-                "(4, '2019-01-25', '2019-01-25', 2, 20, 215000, 0, 58, 'public', 2)," +
+                "(3, '" + formatDate(+9) + "', '" + formatDate(+9) + "', 2, 20, 200000, 0, 147, 'public', 2)," +
+                "(4, '" + formatDate(+2) + "', '" + formatDate(+2) + "', 2, 20, 215000, 0, 58, 'public', 2)," + //tour tới hạn kiểm tra thanh toán trên 7 ngày //check trước 2-3 ngày
                 "(5, '2019-04-20', '2019-04-22', 0, 60, 500000, 0, 75, 'public', 3)," +
-                "(6, '2019-05-08', '2019-05-08', 0, 30, 1500000, 0, 0, 'private', 4)," +
-                "(7, '2019-05-10', '2019-05-15', 0, 50, 1500000, 0, 47, 'public', 5)," +
+                "(6, '" + formatDate(+10) + "', '" + formatDate(+10) + "', 0, 30, 1500000, 0, 0, 'private', 4)," +
+                "(7, '" + formatDate(+20) + "', '" + formatDate(+26) + "', 0, 50, 1500000, 0, 47, 'public', 5)," +
                 "(8, '2019-03-04', '2019-03-06', 0, 60, 7500000, 0, 85, 'public', 6)," +
-                "(13, '2019-05-19', '2019-05-19', 0, 60, 550000, 0, 47, 'public', 1)," +
-                "(14, '2019-05-24', '2019-05-24', 6, 60, 500000, 5, 127, 'public', 2)," +
+                "(13, '" + formatDate(+37) + "', '" + formatDate(+37) + "', 0, 60, 550000, 0, 47, 'public', 1)," +
+                "(14, '" + formatDate(+35) + "', '" + formatDate(+35) + "', 6, 60, 500000, 5, 127, 'public', 2)," +
                 "(15, '2019-04-09', '2019-04-09', 0, 62, 600000, 7, 87, 'public', 1)," +
-                "(16, '2019-04-01', '2019-04-01', 0, 20, 450000, 3, 147, 'public', 4)," +
-                "(17, '2019-03-19', '2019-03-19', 0, 20, 500000, 5, 86, 'public', 4)," +
-                "(18, '2019-05-06', '2019-05-06', 0, 25, 300000, 0, 67, 'public', 2)," +
-                "(19, '2019-05-16', '2019-05-18', 0, 40, 500000, 5, 0, 'private', 4)," +
-                "(20, '2019-06-06', '2019-06-10', 0, 40, 500000, 5, 0, 'public', 3)," +
-                "(21, '2019-06-15', '2019-06-18', 0, 35, 550000, 0, 0, 'public', 3)," +
+                "(16, '" + formatDate(+4) + "', '" + formatDate(+4) + "', 6, 20, 300000, 3, 147, 'public', 4)," + //tour tới hạn kiểm tra thanh toán trên 7 ngày //check trước 4-5 ngày
+                "(17, '" + formatDate(+40) + "', '" + formatDate(+46) + "', 0, 20, 1800000, 5, 86, 'public', 5)," +
+                "(18, '" + formatDate(+1) + "', '" + formatDate(+1) + "', 0, 25, 300000, 0, 67, 'public', 2)," +
+                "(19, '" + formatDate(-1) + "', '" + formatDate(+1) + "', 2, 40, 200000, 5, 17, 'public', 4)," + //tour turn đang đi
+                "(20, '" + formatDate(-10) + "', '" + formatDate(-8) + "', 3, 40, 530000, 5, 114, 'public', 3)," + //tour đã đi
+                "(21, '" + formatDate(+45) + "', '" + formatDate(+48) + "', 0, 35, 550000, 0, 148, 'public', 3)," +
                 "(33, '2019-04-06', '2019-04-08', 0, 30, 300000, 6, 0, 'private', 4);"),
             queryInterface.sequelize.query("INSERT INTO `tour_images` (`id`, `name`, `fk_tour`) VALUES" +
                 "(1, 'SG_1.png', 1)," +
@@ -189,6 +202,13 @@ module.exports = {
                 "(5, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12)," +
                 "(6, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12)," +
                 "(7, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL)," +
+                "(9, '123A@gmail.com', 'Nguyễn Văn A', '0364651849', 'A713B Lê Văn Việt, Hiệp Phú, Quận 9, Hồ Chí Minh, Việt Nam', NULL)," +
+                "(10, 'nnthai@gmail.com', 'Nguyễn Ngọc Hải', '0755484454', '217 Đường Nguyễn Duy Trinh, Phường Bình Trưng Tây, Quận 2, Hồ Chí Minh, Việt Nam', NULL)," +
+                "(11, 'ntphung@gmail.com', 'Nguyễn Thị Phùng', '0334554871', '19 Đồng Văn Cống, Phường Thạnh Mỹ Lợi, Quận 2, Hồ Chí Minh, Việt Nam', NULL)," +
+                "(12, 'pntinh@gmail.com', 'Phạm Ngọc Tình', '0334548742', '18/844 Huỳnh Tấn Phát, Phú Thuận, Quận 7, Hồ Chí Minh, Việt Nam', NULL)," +
+                "(13, 'tmsang@gmail.com', 'Trương Minh Sang', '0754487564', '94/24 Bắc Hải, Phường 15, Quận 10, Hồ Chí Minh, Việt Nam', NULL)," +
+                "(14, 'ltthao@gmail.com', 'Lê Thanh Thảo', '0345545484', '09 Lãnh Binh Thăng, Phường 13, Quận 11, Hồ Chí Minh, Việt Nam', NULL)," +
+                "(15, 'ptlong@gmail.com', 'Phạm Thành Long', '0315549987', '26 Đường Hậu Giang, Phường 5, Quận 6, Hồ Chí Minh 700000, Việt Nam', NULL)," +
                 "(8, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL);"),
         ]);
     },

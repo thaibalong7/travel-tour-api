@@ -1,5 +1,18 @@
 'use strict';
 
+function formatDate(days) {
+	const d = new Date();
+	d.setDate(d.getDate() + days)
+	var month = '' + (d.getMonth() + 1),
+		day = '' + d.getDate(),
+		year = d.getFullYear();
+
+	if (month.length < 2) month = '0' + month;
+	if (day.length < 2) day = '0' + day;
+
+	return [year, month, day].join('-');
+}
+
 module.exports = {
 	up: (queryInterface, Sequelize) => {
 		/*
@@ -16,8 +29,8 @@ module.exports = {
 			queryInterface.bulkInsert('tour_turns', [
 				{
 					id: 34,
-					start_date: '2019-04-19',
-					end_date: '2019-04-24',
+					start_date: formatDate(19),
+					end_date: formatDate(24),
 					num_current_people: 0,
 					num_max_people: 30,
 					price: 18000000,
@@ -28,8 +41,8 @@ module.exports = {
 				},
 				{
 					id: 35,
-					start_date: '2019-04-28',
-					end_date: '2019-05-03',
+					start_date: formatDate(33),
+					end_date: formatDate(37),
 					num_current_people: 0,
 					num_max_people: 30,
 					price: 17000000,
@@ -40,8 +53,8 @@ module.exports = {
 				},
 				{
 					id: 36,
-					start_date: '2019-05-20',
-					end_date: '2019-05-25',
+					start_date: formatDate(10),
+					end_date: formatDate(15),
 					num_current_people: 0,
 					num_max_people: 30,
 					price: 18000000,
@@ -54,8 +67,8 @@ module.exports = {
 			queryInterface.bulkInsert('tour_turns', [
 				{
 					id: 37,
-					start_date: '2019-05-01',
-					end_date: '2019-05-09',
+					start_date: formatDate(11),
+					end_date: formatDate(19),
 					num_current_people: 0,
 					num_max_people: 35,
 					price: 32000000,
@@ -66,8 +79,8 @@ module.exports = {
 				},
 				{
 					id: 38,
-					start_date: '2019-05-25',
-					end_date: '2019-06-03',
+					start_date: formatDate(22),
+					end_date: formatDate(30),
 					num_current_people: 0,
 					num_max_people: 40,
 					price: 34000000,
@@ -78,8 +91,8 @@ module.exports = {
 				},
 				{
 					id: 39,
-					start_date: '2019-05-20',
-					end_date: '2019-05-29',
+					start_date: formatDate(40),
+					end_date: formatDate(78),
 					num_current_people: 0,
 					num_max_people: 35,
 					price: 33500000,

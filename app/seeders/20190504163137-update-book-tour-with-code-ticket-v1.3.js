@@ -63,6 +63,41 @@ module.exports = {
 				{
 					id: 8
 				}),
+			queryInterface.bulkUpdate('book_tour_history',
+				{ code: await generateCode(8) },
+				{
+					id: 9
+				}),
+			queryInterface.bulkUpdate('book_tour_history',
+				{ code: await generateCode(8) },
+				{
+					id: 10
+				}),
+			queryInterface.bulkUpdate('book_tour_history',
+				{ code: await generateCode(8) },
+				{
+					id: 11
+				}),
+			queryInterface.bulkUpdate('book_tour_history',
+				{ code: await generateCode(8) },
+				{
+					id: 12
+				}),
+			queryInterface.bulkUpdate('book_tour_history',
+				{ code: await generateCode(8) },
+				{
+					id: 13
+				}),
+			queryInterface.bulkUpdate('book_tour_history',
+				{ code: await generateCode(8) },
+				{
+					id: 14
+				}),
+			queryInterface.bulkUpdate('book_tour_history',
+				{ code: await generateCode(8) },
+				{
+					id: 15
+				}),
 		])
 	},
 
