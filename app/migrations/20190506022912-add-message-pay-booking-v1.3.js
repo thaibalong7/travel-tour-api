@@ -15,6 +15,7 @@ module.exports = {
 				'message_pay', // name of the key we're adding 
 				{
 					type: Sequelize.TEXT,
+					defaultValue: null
 				}
 			),
 		])

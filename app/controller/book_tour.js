@@ -832,12 +832,17 @@ exports.payBookTour = async (req, res) => {
         if (book_tour) {
             if (book_tour.status === 'booked' || book_tour.status === 'pending_cancel') { // book tour vừa book hoặc đang chờ cancel có thể chuyể thành paid
                 book_tour.status = 'paid' //chuyển thành status đã thanh toán
+                if (typeof req.body.message !== undefined) {
+                    if (req.body.message !== null) {
+                        book_tour.message_pay = req.body.message
+                    }
+                }
                 await book_tour.save();
 
                 /* Gởi Email E-Ticket */
                 const query = {
                     where: {
-                        id: _book_tour.id
+                        id: book_tour.id
                     },
                     include: [{
                         model: db.book_tour_contact_info
@@ -924,7 +929,7 @@ exports.unpayBookTour = async (req, res) => {
             return res.status(400).json({ msg: 'Wrong code' });
         }
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(400).json({ msg: error.toString() });
     }
 }
@@ -1055,7 +1060,7 @@ exports.cancelBookTour = async (req, res) => {
             return res.status(400).json({ msg: 'Wrong code' });
         }
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(400).json({ msg: error.toString() });
     }
 }

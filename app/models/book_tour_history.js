@@ -26,8 +26,9 @@ module.exports = function (sequelize, Sequelize) {
         code: {
             type: Sequelize.TEXT,
         },
-        code_ticket: {
+        message_pay: {
             type: Sequelize.TEXT,
+            defaultValue: null
         }
     },
         {

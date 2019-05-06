@@ -75,7 +75,7 @@ const sendETicketEmail = (req, res, book_tour) => {
     mailOptions = {
         from: '"Tour Travel" <tour.travel.k15@gmail.com>',
         to: book_tour.book_tour_contact_info.email,
-        subject: "[Tour Travel] Vé Điện Tử " + book_tour.id,
+        subject: "[Tour Travel] Vé Điện Tử " + book_tour.code,
         html: html_e_ticket(linkTeam, book_tour),
     };
     smtpTransport.sendMail(mailOptions, async function (error, response) {
