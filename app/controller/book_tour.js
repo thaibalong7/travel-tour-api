@@ -1241,7 +1241,7 @@ const filterBookTourNeedCall = async (_book_tours, days_need_call) => {
                 if (days_before_go > 3 && days_before_go <= (3 + days_need_call)) {
                     const payment_term = new Date(_book_tours[i].tour_turn.start_date);
                     payment_term.setDate(payment_term.getDate() - 4);
-                    payment_term.setHours(24);
+                    payment_term.setHours(23);
                     payment_term.setMinutes(59);
                     payment_term.setSeconds(59);
                     _book_tours[i].dataValues.payment_term = payment_term;
@@ -1253,7 +1253,7 @@ const filterBookTourNeedCall = async (_book_tours, days_need_call) => {
                 if (days_before_go > 1 && days_before_go <= (1 + days_need_call)) {
                     const payment_term = new Date(_book_tours[i].tour_turn.start_date);
                     payment_term.setDate(payment_term.getDate() - 2);
-                    payment_term.setHours(24);
+                    payment_term.setHours(23);
                     payment_term.setMinutes(59);
                     payment_term.setSeconds(59);
                     _book_tours[i].dataValues.payment_term = payment_term;
