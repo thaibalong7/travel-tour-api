@@ -10,6 +10,23 @@ const asyncForEach = async (arr, cb) => {
     arr.forEach(cb);
 }
 
+// Random number from 0 to length
+const randomNumber = (length) => {
+    return Math.floor(Math.random() * length)
+}
+
+// Generate Pseudo Random String, if safety is important use dedicated crypto/math library for less possible collisions!
+const generateCode_TourTurn = async (length) => {
+    const possible =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let text = "";
+
+    for (let i = 0; i < length; i++) {
+        text += possible.charAt(randomNumber(possible.length));
+    }
+    return text;
+}
+
 async function paginate(array, page_size, page_number) {
     --page_number; // because pages logically start with 1, but technically with 0
     return array.slice(page_number * page_size, (page_number + 1) * page_size);
@@ -91,6 +108,15 @@ exports.create = async (req, res) => {
                 return res.status(400).json({ msg: 'Wrong price' })
             if (arr_status.indexOf(req.body.status) === -1)
                 return res.status(400).json({ msg: 'Wrong status' })
+
+            let code_tour_turn = await generateCode_TourTurn(8);
+
+            let check_code_tour_turn = await tour_turns.findAll({ where: { code: code_tour_turn } })
+
+            while (!check_code_tour_turn) {
+                code_tour_turn = await generateCode_TourTurn(8);
+                check_code_tour_turn = await tour_turns.findAll({ where: { code: code_tour_turn } })
+            }
             const new_tour_turn = {
                 fk_tour: req.body.idTour,
                 start_date: new Date(req.body.start_date),
@@ -98,7 +124,8 @@ exports.create = async (req, res) => {
                 num_max_people: parseInt(req.body.num_max_people),
                 discount: parseFloat(req.body.discount),
                 price: parseInt(req.body.price),
-                status: req.body.status
+                status: req.body.status,
+                code: code_tour_turn
             }
             if (new_tour_turn.start_date > new_tour_turn.end_date) {
                 return res.status(400).json({ msg: 'Start time must be less than the end time' })
@@ -140,6 +167,7 @@ exports.createWithPricePassenger = async (req, res) => {
     //     idTour,
     //     price,
     //     status,
+    //     code,
     //     price_passenger [{id: 1, percent: 50}, {}] //id là id của price_pasenger, percent là của price_passenger
     // }
     try {
@@ -175,6 +203,16 @@ exports.createWithPricePassenger = async (req, res) => {
                     }
                 }
             }
+
+            let code_tour_turn = await generateCode_TourTurn(8);
+
+            let check_code_tour_turn = await tour_turns.findAll({ where: { code: code_tour_turn } })
+
+            while (!check_code_tour_turn) {
+                code_tour_turn = await generateCode_TourTurn(8);
+                check_code_tour_turn = await tour_turns.findAll({ where: { code: code_tour_turn } })
+            }
+
             const new_tour_turn = {
                 fk_tour: req.body.idTour,
                 start_date: new Date(req.body.start_date),
@@ -182,7 +220,8 @@ exports.createWithPricePassenger = async (req, res) => {
                 num_max_people: parseInt(req.body.num_max_people),
                 discount: parseFloat(req.body.discount),
                 price: parseInt(req.body.price),
-                status: req.body.status
+                status: req.body.status,
+                code: code_tour_turn
             }
             if (new_tour_turn.start_date > new_tour_turn.end_date) {
                 return res.status(400).json({ msg: 'Start time must be less than the end time' })
@@ -215,7 +254,8 @@ exports.createWithPricePassenger = async (req, res) => {
         }
     }
     catch (e) {
-        return res.status(400).json({ msg: 'Error' })
+        // console.error(e)
+        return res.status(400).json({ msg: e.toString() })
     }
 }
 
