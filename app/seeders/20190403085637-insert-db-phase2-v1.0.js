@@ -123,7 +123,7 @@ module.exports = {
                 "(1, '2019-02-24', '2019-02-24', 0, 15, 100000, 0, 104, 'public', 1)," +
                 "(2, '2019-03-02', '2019-03-02', 0, 15, 100000, 0, 47, 'public', 1)," +
                 "(3, '" + formatDate(+9) + "', '" + formatDate(+9) + "', 2, 20, 200000, 0, 147, 'public', 2)," +
-                "(4, '" + formatDate(+2) + "', '" + formatDate(+2) + "', 2, 20, 215000, 0, 58, 'public', 2)," + //tour tới hạn kiểm tra thanh toán trên 7 ngày //check trước 2-3 ngày
+                "(4, '" + formatDate(+2) + "', '" + formatDate(+2) + "', 2, 20, 215000, 0, 58, 'public', 2)," + //tour tới hạn kiểm tra thanh toán dưới 7 ngày //check trước 2-3 ngày
                 "(5, '2019-04-20', '2019-04-22', 0, 60, 500000, 0, 75, 'public', 3)," +
                 "(6, '" + formatDate(+10) + "', '" + formatDate(+10) + "', 0, 30, 1500000, 0, 0, 'private', 4)," +
                 "(7, '" + formatDate(+20) + "', '" + formatDate(+26) + "', 0, 50, 1500000, 0, 47, 'public', 5)," +
