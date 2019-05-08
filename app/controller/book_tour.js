@@ -620,6 +620,7 @@ exports.getAllBookTourHistoryWithoutPagination = (req, res) => {
 exports.getHistoryBookTourByCode = (req, res) => {
     try {
         const code = req.params.code;
+        const isAdmin = (req.query.isAdmin == 'true');
         var is_info_tour = (req.query.tour == 'true');
         var query = {
             where: {
@@ -681,7 +682,8 @@ exports.getHistoryBookTourByCode = (req, res) => {
                         price: price_of_type
                     }
                 })
-                tour_turn.discount = parseFloat(tour_turn.discount / 100);
+                if (!isAdmin)
+                    tour_turn.discount = parseFloat(tour_turn.discount / 100);
                 if (is_info_tour) { //nếu lấy thêm thông tin tour turn nữa
                     if (tour_turn.tour.featured_img !== null) {
                         if (process.env.NODE_ENV === 'development')
@@ -723,7 +725,7 @@ exports.getAllBookTourHistoryGroupByTourTurn = async (req, res) => {
                 model: db.tours
             }
             ],
-            // order: [[db.book_tour_history, 'book_time', 'ASC'], ['start_date', 'ASC']]
+            order: [['start_date', 'ASC']]
         }
         const has_departed = { //đang đi
             start_date: {
