@@ -725,7 +725,7 @@ exports.getAllBookTourHistoryGroupByTourTurn = async (req, res) => {
                 model: db.tours
             }
             ],
-            order: [['start_date', 'ASC']]
+            order: [['start_date', 'DESC']]
         }
         const has_departed = { //đang đi
             start_date: {
@@ -1226,30 +1226,38 @@ exports.deletePassenger = async (req, res) => {
 }
 
 const filterBookTourNeedCall = async (_book_tours, days_need_call) => {
-    return _book_tours.filter((_book_tour) => {
+    const result = [];
+    for (let i = 0; i < _book_tours.length; i++) {
         // return true or false
-        if (_book_tour.dataValues.days > 0) {
+        if (_book_tours[i].dataValues.days > 0) {
             //trước 3 ngày mới cho book tour
-            const days = parseInt(_book_tour.dataValues.days);
+            const days = parseInt(_book_tours[i].dataValues.days);
             const cur_date = new Date();
-            const timeDiff = new Date(_book_tour.tour_turn.start_date) - cur_date;
+            const timeDiff = new Date(_book_tours[i].tour_turn.start_date) - cur_date;
             const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
             if (days > 7) //book trước ngày đi trên 7 ngày
             {
                 // phải thanh toán trước 3 ngày
-                if (days_before_go > 3 && days_before_go <= (3 + days_need_call))
-                    return true;
-                else return false;
+                if (days_before_go > 3 && days_before_go <= (3 + days_need_call)) {
+                    const payment_term = new Date(_book_tours[i].tour_turn.start_date);
+                    payment_term.setDate(payment_term.getDate() - 4);
+                    _book_tours[i].dataValues.payment_term = payment_term;
+                    result.push(_book_tours[i]);
+                }
             }
             if (days <= 7 && days >= 3) { //book trước ngày đi từ 3 -> 7 ngày
                 //phải thanh toán trước 1 ngày
-                if (days_before_go > 1 && days_before_go <= (1 + days_need_call))
-                    return true;
-                else return false;
+                if (days_before_go > 1 && days_before_go <= (1 + days_need_call)) {
+                    const payment_term = new Date(_book_tours[i].tour_turn.start_date);
+                    payment_term.setDate(payment_term.getDate() - 2);
+                    _book_tours[i].dataValues.payment_term = payment_term;
+                    result.push(_book_tours[i]);
+                }
             }
         }
         else return false;
-    })
+    }
+    return result;
 }
 
 exports.getListNeedCall = (req, res) => {
@@ -1264,7 +1272,11 @@ exports.getListNeedCall = (req, res) => {
                 status: 'booked'
             },
             include: [{
-                model: db.tour_turns
+                model: db.tour_turns,
+                include: [{
+                    model: db.tours,
+                    attributes: ['id', 'name']
+                }]
             },
             {
                 model: db.book_tour_contact_info
