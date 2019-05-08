@@ -11,6 +11,9 @@ router.post('/createWithPricePassenger', tour_turns.createWithPricePassenger); /
 //example call api: http://localhost:5000/tour_turn/getById/2 
 router.get('/getById/:id', tour_turns.getById)
 
+//example call api: http://localhost:5000/tour_turn/getById/45SF5FF5 
+router.get('/getByCode/:code', tour_turns.getByCode)
+
 //example call api: http://localhost:5000/getById_admin/getById/2 //middlewareAuthAdmin
 router.get('/getById_admin/:id', tour_turns.getById_admin)
 

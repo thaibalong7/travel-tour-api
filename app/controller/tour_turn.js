@@ -381,6 +381,70 @@ exports.getById = (req, res) => {
     })
 }
 
+exports.getByCode = (req, res) => {
+    const code = req.params.code;
+    const query = {
+        attributes: { exclude: ['fk_tour'] },
+        where: {
+            code: code
+        },
+        include: [{
+            attributes: { exclude: ['fk_type_tour'] },
+            model: db.tours,
+            include: [{
+                model: db.type_tour
+            },
+            {
+                attributes: { exclude: ['fk_tour', 'fk_country'] },
+                model: db.tour_countries,
+                include: [{
+                    model: db.countries
+                }],
+            },
+            {
+                attributes: { exclude: ['fk_tour', 'fk_province'] },
+                model: db.tour_provinces,
+                include: [
+                    {
+                        attributes: { exclude: ['fk_country'] },
+                        model: db.provinces,
+                        include: [{
+                            model: db.countries
+                        }],
+                    }
+                ]
+            }]
+        },
+        {
+            attributes: { exclude: ['fk_tourturn', 'fk_type_passenger'] },
+            model: db.price_passenger,
+            include: [{
+                model: db.type_passenger
+            }]
+        }],
+    }
+    tour_turns.findOne(query).then(async _tour_turns => {
+        const tour_turn = _tour_turns.dataValues;
+        tour_turn.tour.dataValues.num_review = (await db.reviews.findAll({ where: { fk_tour: tour_turn.tour.id } })).length
+        if (tour_turn !== null) {
+            if (tour_turn.tour.featured_img !== null) {
+                if (process.env.NODE_ENV === 'development')
+                    tour_turn.tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + tour_turn.tour.featured_img
+                else
+                    tour_turn.tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + tour_turn.tour.featured_img
+            }
+        }
+        tour_turn.discount = parseFloat(tour_turn.discount / 100);
+        const list_price = await addPriceOfListPricePassengers(tour_turn.price_passengers, tour_turn.price, tour_turn.discount);
+        tour_turn.price_passengers = list_price;
+        tour_turn.isAllowBooking = await check_policy_allow_booking(tour_turn)
+        res.status(200).json({ data: tour_turn })
+    }).catch(err => {
+        // console.log(err)
+        res.status(400).json({ msg: err.toString() })
+    })
+}
+
 
 exports.getById_admin = (req, res) => {
     const id = req.params.id;
