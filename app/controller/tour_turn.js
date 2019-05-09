@@ -384,7 +384,7 @@ exports.getById = (req, res) => {
 exports.getByCode = (req, res) => {
     const code = req.params.code;
     const query = {
-        attributes: { exclude: ['fk_tour'] },
+        attributes: { exclude: [] },
         where: {
             code: code
         },
