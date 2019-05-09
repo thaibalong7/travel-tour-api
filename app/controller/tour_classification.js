@@ -16,6 +16,23 @@ const convertDiscountAndGetNumReviewOfListTourTurn = async (tour_turns) => {
     }
 }
 
+const check_policy_allow_booking = (tour_turn) => {
+    //trước 3 ngày khởi hành thì mới được book
+    if (tour_turn.status === arr_status[0]) // tour turn đang là private
+        return false;
+    const cur_date = new Date();
+    const timeDiff = new Date(tour_turn.start_date) - cur_date;
+    const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
+    if (days_before_go > 3) return true;
+    else return false;
+}
+
+const add_is_allow_booking = async (tour_turns) => {
+    for (var i = 0; i < tour_turns.length; i++) {
+        tour_turns[i].dataValues.isAllowBooking = await check_policy_allow_booking(tour_turns[i]);
+    }
+}
+
 exports.getTourTurnByCountry = async (req, res) => {
     try {
         const idCountry = parseInt(req.params.id)
@@ -81,6 +98,7 @@ exports.getTourTurnByCountry = async (req, res) => {
                     next_page = -1;
                 await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host)
                 await convertDiscountAndGetNumReviewOfListTourTurn(result_paginate)
+                await add_is_allow_booking(result_paginate);
                 return res.status(200).json({
                     itemCount: result.length,
                     data: result_paginate,
@@ -91,7 +109,7 @@ exports.getTourTurnByCountry = async (req, res) => {
             })
         }
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(400).json({ msg: error.toString() })
     }
 }
@@ -161,6 +179,7 @@ exports.getTourTurnByProvince = async (req, res) => {
                     next_page = -1;
                 await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host)
                 await convertDiscountAndGetNumReviewOfListTourTurn(result_paginate)
+                await add_is_allow_booking(result_paginate);
                 return res.status(200).json({
                     itemCount: result.length,
                     data: result_paginate,
@@ -171,29 +190,12 @@ exports.getTourTurnByProvince = async (req, res) => {
             })
         }
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(400).json({ msg: error.toString() })
     }
 }
 
 const arr_status = ['private', 'public'];
-
-const check_policy_allow_booking = (tour_turn) => {
-    //trước 3 ngày khởi hành thì mới được book
-    if (tour_turn.status === arr_status[0]) // tour turn đang là private
-        return false;
-    const cur_date = new Date();
-    const timeDiff = new Date(tour_turn.start_date) - cur_date;
-    const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
-    if (days_before_go > 3) return true;
-    else return false;
-}
-
-const add_is_allow_booking = async (tour_turns) => {
-    for (var i = 0; i < tour_turns.length; i++) {
-        tour_turns[i].isAllowBooking = await check_policy_allow_booking(tour_turns[i]);
-    }
-}
 
 exports.getTourTurnByType = (req, res) => {
     try {
@@ -248,17 +250,17 @@ exports.getTourTurnByType = (req, res) => {
 
                 await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns.rows, req.headers.host)
                 await convertDiscountAndGetNumReviewOfListTourTurn(_tour_turns.rows);
-                const result = _tour_turns.rows.map((node) => node.get({ plain: true }));
-                await add_is_allow_booking(result);
+                // const result = _tour_turns.rows.map((node) => node.get({ plain: true }));
+                await add_is_allow_booking(_tour_turns.rows);
                 res.status(200).json({
                     itemCount: _tour_turns.count, //số lượng record được trả về
-                    data: result,
+                    data: _tour_turns.rows,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })
             })
         }
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(400).json({ msg: error.toString() })
     }
 }
@@ -309,7 +311,7 @@ exports.getAllCountries = (req, res) => {
             })
         }
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(400).json({ msg: error.toString() })
     }
 }
@@ -367,7 +369,7 @@ exports.getAllProvincesByCountry = (req, res) => {
             })
         }
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(400).json({ msg: error.toString() })
     }
 }
@@ -390,7 +392,7 @@ exports.getAllCountries_admin = (req, res) => {
             return res.status(200).json({ data: _countries })
         })
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.status(400).json({ msg: error.toString() })
     }
 
@@ -410,7 +412,7 @@ exports.getAllProvincesByCountry_admin = (req, res) => {
             return res.status(200).json({ data: _provinces })
         })
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.status(400).json({ msg: error.toString() })
     }
 }
@@ -426,7 +428,7 @@ exports.getAllProvinces_admin = (req, res) => {
             return res.status(200).json({ data: _provinces })
         })
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.status(400).json({ msg: error.toString() })
     }
 }
@@ -437,14 +439,14 @@ exports.createTypeTour = (req, res) => {
             db.type_tour.create({ name: req.body.name }).then(_type_tour => {
                 res.status(200).json(_type_tour)
             }).catch(err => {
-                console.error(err);
+                // console.error(err);
                 return res.status(400).json({ msg: err.toString() })
             })
         } else {
             res.status(400).json({ msg: 'Param is invalid' })
         }
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.status(400).json({ msg: error.toString() })
     }
 }
@@ -469,7 +471,7 @@ exports.updateTypeTour = (req, res) => {
             res.status(400).json({ msg: 'Param is invalid' })
         }
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.status(400).json({ msg: error.toString() })
     }
 }
@@ -487,7 +489,7 @@ exports.createCountry = (req, res) => {
             res.status(400).json({ msg: 'Param is invalid' })
         }
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.status(400).json({ msg: error.toString() })
     }
 }
@@ -512,7 +514,7 @@ exports.updateCountry = (req, res) => {
             res.status(400).json({ msg: 'Param is invalid' })
         }
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.status(400).json({ msg: error.toString() })
     }
 }
@@ -539,7 +541,7 @@ exports.createProvince = async (req, res) => {
                         }]
                     }))
                 }).catch(err => {
-                    console.error(err);
+                    // console.error(err);
                     return res.status(400).json({ msg: err.toString() })
                 })
             }
@@ -550,7 +552,7 @@ exports.createProvince = async (req, res) => {
             return res.status(400).json({ msg: 'Param is invalid' })
         }
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.status(400).json({ msg: error.toString() })
     }
 }
@@ -592,7 +594,7 @@ exports.updateProvince = async (req, res) => {
             return res.status(400).json({ msg: 'Wrong id province' })
         }
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.status(400).json({ msg: error.toString() })
     }
 }
