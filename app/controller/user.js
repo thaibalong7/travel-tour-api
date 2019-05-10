@@ -293,6 +293,8 @@ exports.update = async (req, res) => {
         _user.fullname = req.body.fullname
     if (typeof req.body.address !== 'undefined')
         _user.address = req.body.address
+    if (typeof req.body.passport !== 'undefined')
+        _user.passport = req.body.passport
     if (typeof req.file !== 'undefined') {
         var date = new Date();
         var timestamp = date.getTime();

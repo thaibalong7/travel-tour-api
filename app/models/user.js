@@ -37,6 +37,10 @@ module.exports = (sequelize, Sequelize) => {
         avatar: {
             type: Sequelize.STRING
         },
+        passport: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
         isActive: {
             type: Sequelize.BOOLEAN,
             defaultValue: false

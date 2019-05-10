@@ -1,5 +1,7 @@
 'use strict';
 
+const bcrypt = require('bcrypt-nodejs');
+
 module.exports = {
 	up: (queryInterface, Sequelize) => {
 		/*
@@ -50,16 +52,16 @@ module.exports = {
 				"(1, 'admin', 'ADMIN', '$2a$10$PqMsU1cjeWI4djNgKQXl6.6fkPWRqvPcNVpg47x1r1tooBEq.IJFK')," +
 				"(2, 'nnlinh97', 'nnlinh', '$2a$10$JyHUnzm6z5/l1NdQR0IJjOrpMnGbm456hRqMa2a2CN26vrTLThrZe');"),
 			queryInterface.sequelize.query("INSERT INTO `users` (`id`, `username`, `fullname`, `password`, `sex`, `address`, `birthdate`, `phone`, `email`, `avatar`, `isActive`, `type`) VALUES" +
-				"(1, 'tblong', 'Thái Bá Long', '$2a$10$FBxM.3qOWiBOChTtQUNuju26KiU/aQicH5IGnqFwhchXcD4o.xbnK', 'male', NULL, NULL, '0123456789', NULL, NULL, 1, 'local')," +
-				"(3, 'thaibalong', 'Thái Bá Long 2', '$2a$10$8SBPUyrj4QpJ8sHJbP1oAelXSTnNUDZX6YyvG3b0adczBWoeEDD9y', 'male', NULL, NULL, NULL, 'tblong@gmail.com', NULL, 1, 'local')," +
-				"(4, 'nguoila', 'Người Lạ Ơi', '$2a$10$e4s.xPY2iZZ6nvD9wnZZcOHCC3kjycEQhkkZ79qieZ4PkvpAK/Zi.', 'male', NULL, NULL, '0702524116', 'la@gmail.com', NULL, 1, 'local')," +
-				"(5, 'nguoila', 'Người Lạ Ơi 02', '$2a$10$k3u4SQeoH1k..vxPcbbIkuTtcopvtqoWJykbYQzah0yQ5InD452Sm', 'other', 'đéo có địa chỉ', '1997-11-24', '0802524116', 'la02@gmail.com', '5-1552032846893.jpg', 1, 'local')," +
-				"(7, 'nnlinh97', 'Người Lạ', '$2a$10$o48sRtWBKq/t5xuBrXCcM.klfGp8d7LrEW7HEXnk.XBD1Ck5rQeuG', 'male', NULL, '1997-10-14', '0102524119', 'la0003@gmail.com', '7-anh avatar dep 2.jpg', 1, 'local')," +
-				"(9, '', 'new usser', '$2a$10$wtLa/mR.hZ1Oq/lFaebywelUSTyo8MxtQ7jEU56nGyDKJbCztMBWG', 'other', NULL, '1997-11-24', '0102521548', 'newuser@gmail.com', '9-1552032615094.jpg', 1, 'local')," +
-				"(10, '', 'Thái Bá Long', '$2a$10$R7Mqj0M77zkhYwZJY8U71.nMthj2iTjwexvro2PURyjqwFUfAYI.e', NULL, NULL, NULL, NULL, 'thaibalong7@gmail.com', 'https://graph.facebook.com/15465484654864521000/picture?width=100', 1, 'facebook')," +
-				"(11, '', 'Thái Bá Long', '$2a$10$v530GHSlF3cw1BgKITihduKVKz/RtaHjkhEFmQCJMJ0IfCd04PdlC', NULL, NULL, NULL, NULL, 'thaibalong9@gmail.com', 'https://graph.facebook.com/154654846548641500000/picture?width=100', 1, 'facebook')," +
-				"(12, '', 'Thái Bá Long', '$2a$10$1TF2dnwgD1m0CTLwQbKWg.r/Hk5QHW2mnEa52gGieQypfU6.tfQzG', NULL, NULL, NULL, '0396462182', 'thai.balong.7@gmail.com', NULL, 1, 'local')," +
-				"(13, '', 'Dragon Ryuuu', '$2a$10$6U4zshkxpAktCCdAx5EDjerrP9okd.oGGpXYgpeHJejJ9YujsfpFe', NULL, NULL, NULL, '0396462187', 'dragon97qn@gmail.com', NULL, 1, 'local');"),
+				"(1, 'tblong', 'Thái Bá Long', '" + bcrypt.hashSync('123456', null, null).toString() + "', 'male', NULL, NULL, '0123456789', NULL, NULL, 1, 'local')," +
+				"(3, 'thaibalong', 'Thái Bá Long 2', '" + bcrypt.hashSync('123456', null, null).toString() + "', 'male', NULL, NULL, NULL, 'tblong@gmail.com', NULL, 1, 'local')," +
+				"(4, 'nguoila', 'Người Lạ Ơi', '" + bcrypt.hashSync('123456', null, null).toString() + "', 'male', NULL, NULL, '0702524116', 'la@gmail.com', NULL, 1, 'local')," +
+				"(5, 'nguoila', 'Người Lạ Ơi 02', '" + bcrypt.hashSync('123456', null, null).toString() + "', 'other', 'đéo có địa chỉ', '1997-11-24', '0802524116', 'la02@gmail.com', '5-1552032846893.jpg', 1, 'local')," +
+				"(7, 'nnlinh97', 'Người Lạ', '" + bcrypt.hashSync('123456', null, null).toString() + "', 'male', NULL, '1997-10-14', '0102524119', 'la0003@gmail.com', '7-anh avatar dep 2.jpg', 1, 'local')," +
+				"(9, '', 'new usser', '" + bcrypt.hashSync('123456', null, null).toString() + "', 'other', NULL, '1997-11-24', '0102521548', 'newuser@gmail.com', '9-1552032615094.jpg', 1, 'local')," +
+				"(10, '', 'Thái Bá Long', '" + bcrypt.hashSync('123456', null, null).toString() + "', NULL, NULL, NULL, NULL, 'thaibalong7@gmail.com', 'https://graph.facebook.com/15465484654864521000/picture?width=100', 1, 'facebook')," +
+				"(11, '', 'Thái Bá Long', '" + bcrypt.hashSync('123456', null, null).toString() + "', NULL, NULL, NULL, NULL, 'thaibalong9@gmail.com', 'https://graph.facebook.com/154654846548641500000/picture?width=100', 1, 'facebook')," +
+				"(12, '', 'Thái Bá Long', '" + bcrypt.hashSync('123456', null, null).toString() + "', NULL, NULL, NULL, '0396462182', 'thai.balong.7@gmail.com', NULL, 1, 'local')," +
+				"(13, '', 'Dragon Ryuuu', '" + bcrypt.hashSync('123456', null, null).toString() + "', NULL, NULL, NULL, '0396462187', 'dragon97qn@gmail.com', NULL, 1, 'local');"),
 			queryInterface.sequelize.query("INSERT INTO `tours` (`id`, `name`, `description`, `detail`, `featured_img`, `policy`) VALUES" +
 				"(1, 'Tour tham quan Sài Gòn (nửa ngày)', 'Tham quan những địa danh mang đậm dấu ấn lịch sử như Bảo tàng chứng tích chiến tranh, Dinh Độc Lập.\r\nTìm hiểu nét văn hóa và một số kiến trúc độc đáo - điều tạo nên một phần linh hồn mảnh đất Sài Gòn: Nhà thờ Đức Bà, Bưu điện thành phố.\r\n\r\nBạn được trải nghiệm những gì?\r\nHành trình bắt đầu với chuyến thăm Bảo tàng chứng tích chiến tranh - top 5 trong số 25 bảo tàng hấp dẫn nhất châu Á. Đến với bảo tàng, bạn sẽ giật mình nhận ra đằng sau một cuộc sống hòa bình, yên ổn - mà bạn tưởng chừng như hiển nhiên này - là cả một chặng đường lịch sử thấm đẫm máu và nước mắt của dân tộc. Bảo tàng chứng tích chiến tranh như một nốt lặng tĩnh tâm giữa chốn phồn hoa đô hội, giúp bạn thêm yêu, thêm trân trọng cuộc sống thanh bình này.\r\n\r\nĐiểm dừng chân tiếp theo của Tour tham quan Sài Gòn chính là Dinh Độc Lập - một di tích quốc gia đặc biệt, dấu son quyền lực của của quá khứ. Dinh Độc Lập còn cuốn " +
 				"hút bạn bởi những câu chuyện lịch sử thú vị về sự hình thành, sự tồn tại, ý nghĩa văn hóa trong lối kiến trúc độc đáo và những dấu mốc lịch sử của đất nước mà nó đã mang trong mình hàng trăm năm qua. Chỉ vài giờ tham quan ngắn ngủi nhưng đủ giúp bạn hình dung về một giai đoạn lịch sử đầy biến động, và thêm tự hào về chiến thắng lịch sử vẻ vang của dân tộc Việt Nam.\r\n\r\nCuối hành trình, hãy trở về trung tâm thành phố để thăm Nhà thờ Đức Bà. Nơi giao hòa giữa nét cổ xưa và hiện đại, giữa kiến trúc phương Tây và văn hóa phương Đông. Bạn sẽ không khỏi trầm trồ thán phục trước màu gạch nơi đây vẫn giữ nguyên vẹn màu hồng tươi, chẳng bám chút bụi rêu, dẫu trải qua bao nắng mưa, thử thách. Nếu muốn tận hưởng hết vẻ đẹp của Nhà thờ Đức Bà, hãy dành chút thời gian ngồi lại, thưởng thức thú vui cà phê bệt trong ánh đèn lung linh phản chiếu từ các tòa cao ốc, cùng hòa nhịp sống với người Sài Gòn khi đêm về. " +
