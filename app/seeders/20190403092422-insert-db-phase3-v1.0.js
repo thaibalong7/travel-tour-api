@@ -159,14 +159,14 @@ module.exports = {
             queryInterface.sequelize.query("INSERT INTO `book_tour_history` (`id`, `code`, `book_time`, `status`, `num_passenger`, `total_pay`, `fk_contact_info`, `fk_tour_turn`, `fk_payment`) VALUES" +
                 "(3, '78acc210-5059-11e9-aa13-03259040952a', '" + formatDate(-5) + " 09:25:08', 'paid', 1, 1000000, 3, 14, 1)," +
                 "(4, '814d77c0-5059-11e9-989c-a5f26e5408ec', '" + formatDate(-3) + " 09:25:19', 'booked', 1, 1000000, 4, 3, 1)," +
-                "(5, '870ae3a0-5059-11e9-8684-5d74946d80db', '" + formatDate(-3) + " 09:27:03', 'booked', 2, 1000000, 5, 4, 2)," + //tới hạn nhắc nhỡ gọi điện 3 ngày
+                "(5, '870ae3a0-5059-11e9-8684-5d74946d80db', '" + formatDate(-3) + " 09:27:03', 'booked', 2, 1000000, 5, 4, 2)," + //tới hạn nhắc nhỡ gọi điện 
                 "(6, '89216790-5059-11e9-8c7e-c3f82d1fa1ef', '" + formatDate(-15) + " 13:42:47', 'booked', 2, 1000000, 6, 14, 1)," +
                 "(7, '8fae3160-5059-11e9-98a6-11c33d1f98b4', '" + formatDate(-9) + " 14:32:24', 'cancelled', 3, 1500000, 7, 14, 1)," +
                 "(9, '8fae3160-5059-11e9-98a6-11c3f5dd44b4', '" + formatDate(-9) + " 19:18:24', 'cancelled', 1, 550000, 9, 19, 3)," + //tour turn đang đi
                 "(10, '8ssw3160-5059-11e9-98a6-w6c3f5dd44b4', '" + formatDate(-19) + " 08:18:24', 'paid', 2, 1000000, 10, 19, 1)," + //tour turn đang đi
                 "(11, '55ff4160-5059-11e9-8ea6-11c355d7s8b4', '" + formatDate(-30) + " 15:04:00', 'finished', 1, 530000, 11, 20, 1)," + //tour đã đi
                 "(12, '55ff4160-5059-11e9-8ea6-4ss5w5d7s8b4', '" + formatDate(-38) + " 17:57:00', 'finished', 2, 780000, 12, 20, 2)," + //tour đã đi
-                "(13, '522s4160-5059-11e9-8ea6-4ss55d4s55e4', '" + formatDate(-28) + " 04:17:00', 'booked', 1, 500000, 13, 16, 1)," + //tới hạn nhắc nhỡ gọi điện 7 ngày
+                "(13, '522s4160-5059-11e9-8ea6-4ss55d4s55e4', '" + formatDate(-28) + " 04:17:00', 'booked', 1, 500000, 13, 16, 1)," + //tới hạn nhắc nhỡ gọi điện 
                 "(14, '115d4160-5059-11e9-8ea6-4ss55d4s55e4', '" + formatDate(-22) + " 09:25:00', 'paid', 5, 1500000, 14, 16, 2)," +
                 "(15, '1144s160-5s59-11e9-8ea6-4s55s44s55e4', '" + formatDate(-14) + " 16:37:00', 'booked', 1, 200000, 15, 3, 2)," +
                 "(8, 'a294e850-5059-11e9-8e50-6d47d5b38a8f', '" + formatDate(-11) + " 06:29:12', 'booked', 3, 1500000, 8, 14, 1);").then(

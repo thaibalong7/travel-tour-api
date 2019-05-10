@@ -18,6 +18,9 @@ exports.create = async (req, res) => {
                 },
                 include: [{
                     model: db.book_tour_contact_info
+                },
+                {
+                    model: db.tour_turns
                 }],
             });
             if (book_tour) {
@@ -41,19 +44,29 @@ exports.create = async (req, res) => {
                         })
                     }
                     else {
-
                         if (book_tour.status === 'booked') {
-                            return res.status(400).json({ msg: 'This booking is booked' });
+                            //hủy thẳng luôn
+                            const new_request = {
+                                message: req.body.message,
+                                fk_book_tour: idBookTour,
+                                fk_user: req.userData.id
+                            }
+                            book_tour.status = 'cancelled';
+                            const tour_turn = book_tour.tour_turn
+                            tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger);
+                            await book_tour.save();
+                            await tour_turn.save();
+                            //add new record
+                            await request_cancel_booking.create(new_request).then(_request => {
+                                return res.status(200).json({
+                                    data: {
+                                        status: 'cancelled',
+                                        isCancelBooking: false
+                                    }
+                                });
+                            })
                         }
-                        if (book_tour.status === 'cancelled') {
-                            return res.status(400).json({ msg: 'This booking has been cancelled' });
-                        }
-                        if (book_tour.status === 'finished') {
-                            return res.status(400).json({ msg: 'This booking has been finished' });
-                        }
-                        if (book_tour.status === 'pending_cancel') {
-                            return res.status(400).json({ msg: 'This booking is pending to cancel' });
-                        }
+                        else return res.status(400).json({ msg: 'Can not request cancel this booking' })
                     }
                 }
                 else {

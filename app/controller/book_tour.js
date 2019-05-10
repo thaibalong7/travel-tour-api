@@ -870,7 +870,7 @@ exports.payBookTour = async (req, res) => {
             return res.status(400).json({ msg: 'Wrong code' });
         }
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(400).json({ msg: error.toString() });
     }
 }

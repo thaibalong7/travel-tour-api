@@ -29,8 +29,8 @@ module.exports = {
 			queryInterface.bulkInsert('tour_turns', [
 				{
 					id: 34,
-					start_date: formatDate(19),
-					end_date: formatDate(24),
+					start_date: formatDate(49),
+					end_date: formatDate(54),
 					num_current_people: 0,
 					num_max_people: 30,
 					price: 18000000,
@@ -67,8 +67,8 @@ module.exports = {
 			queryInterface.bulkInsert('tour_turns', [
 				{
 					id: 37,
-					start_date: formatDate(11),
-					end_date: formatDate(19),
+					start_date: formatDate(41),
+					end_date: formatDate(49),
 					num_current_people: 0,
 					num_max_people: 35,
 					price: 32000000,
@@ -92,7 +92,7 @@ module.exports = {
 				{
 					id: 39,
 					start_date: formatDate(40),
-					end_date: formatDate(78),
+					end_date: formatDate(48),
 					num_current_people: 0,
 					num_max_people: 35,
 					price: 33500000,
