@@ -2,6 +2,7 @@ const db = require('../models');
 var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const add_link = require('../helper/add_full_link');
+const checkPolicy_helper = require('../helper/check_policy');
 
 async function paginate(array, page_size, page_number) {
     --page_number; // because pages logically start with 1, but technically with 0
@@ -13,23 +14,6 @@ const convertDiscountAndGetNumReviewOfListTourTurn = async (tour_turns) => {
         tour_turns[i].discount = parseFloat(tour_turns[i].discount / 100);
         tour_turns[i].tour.dataValues.num_review = (await db.reviews.findAll({ where: { fk_tour: tour_turns[i].tour.id } })).length
         tour_turns[i].tour.dataValues.fk_type_tour = undefined
-    }
-}
-
-const check_policy_allow_booking = (tour_turn) => {
-    //trước 3 ngày khởi hành thì mới được book
-    if (tour_turn.status === arr_status[0]) // tour turn đang là private
-        return false;
-    const cur_date = new Date();
-    const timeDiff = new Date(tour_turn.start_date) - cur_date;
-    const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
-    if (days_before_go > 3) return true;
-    else return false;
-}
-
-const add_is_allow_booking = async (tour_turns) => {
-    for (var i = 0; i < tour_turns.length; i++) {
-        tour_turns[i].dataValues.isAllowBooking = await check_policy_allow_booking(tour_turns[i]);
     }
 }
 
@@ -98,7 +82,7 @@ exports.getTourTurnByCountry = async (req, res) => {
                     next_page = -1;
                 await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host)
                 await convertDiscountAndGetNumReviewOfListTourTurn(result_paginate)
-                await add_is_allow_booking(result_paginate);
+                await checkPolicy_helper.add_is_allow_booking(result_paginate, false);
                 return res.status(200).json({
                     itemCount: result.length,
                     data: result_paginate,
@@ -179,7 +163,7 @@ exports.getTourTurnByProvince = async (req, res) => {
                     next_page = -1;
                 await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host)
                 await convertDiscountAndGetNumReviewOfListTourTurn(result_paginate)
-                await add_is_allow_booking(result_paginate);
+                await checkPolicy_helper.add_is_allow_booking(result_paginate, false);
                 return res.status(200).json({
                     itemCount: result.length,
                     data: result_paginate,
@@ -251,7 +235,7 @@ exports.getTourTurnByType = (req, res) => {
                 await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns.rows, req.headers.host)
                 await convertDiscountAndGetNumReviewOfListTourTurn(_tour_turns.rows);
                 // const result = _tour_turns.rows.map((node) => node.get({ plain: true }));
-                await add_is_allow_booking(_tour_turns.rows);
+                await checkPolicy_helper.add_is_allow_booking(_tour_turns.rows, false);
                 res.status(200).json({
                     itemCount: _tour_turns.count, //số lượng record được trả về
                     data: _tour_turns.rows,

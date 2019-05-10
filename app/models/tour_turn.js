@@ -38,7 +38,13 @@ module.exports = function (sequelize, Sequelize) {
     },
     status: {
       type: Sequelize.ENUM('public', 'private')
-    }
+    },
+    booking_term: {
+      type: Sequelize.INTEGER,
+    },
+    payment_term: {
+      type: Sequelize.INTEGER,
+    },
   },
     {
       charset: 'utf8',

@@ -11,11 +11,17 @@ module.exports = {
 		*/
 		return Promise.all([
 			queryInterface.addColumn(
-				'users', // name of Source model
-				'passport', // name of the key we're adding 
+				'tour_turns', // name of Source model
+				'booking_term', // name of the key we're adding 
 				{
-					type: Sequelize.STRING,
-					allowNull: true
+					type: Sequelize.INTEGER,
+				}
+			),
+			queryInterface.addColumn(
+				'tour_turns', // name of Source model
+				'payment_term', // name of the key we're adding 
+				{
+					type: Sequelize.INTEGER,
 				}
 			),
 		])
@@ -31,8 +37,12 @@ module.exports = {
 		*/
 		return Promise.all([
 			queryInterface.removeColumn(
-				'users', // name of Source model
-				'passport', // name of the key we're remove
+				'tour_turns', // name of Source model
+				'booking_term', // name of the key we're remove
+			),
+			queryInterface.removeColumn(
+				'tour_turns', // name of Source model
+				'payment_term', // name of the key we're remove
 			),
 		])
 	}

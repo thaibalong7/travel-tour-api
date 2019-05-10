@@ -4,6 +4,7 @@ var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const add_link = require('../helper/add_full_link');
 const validate_helper = require('../helper/validate');
+const checkPolicy_helper = require('../helper/check_policy');
 const link_img = require('../config/setting').link_img;
 
 const asyncForEach = async (arr, cb) => {
@@ -67,23 +68,6 @@ const convertDiscountAndGetNumReviewOfListTourTurn = async (tour_turns, isDataVa
 
 const arr_status = ['private', 'public'];
 
-const check_policy_allow_booking = (tour_turn) => {
-    //trước 3 ngày khởi hành thì mới được book
-    if (tour_turn.status === arr_status[0]) // tour turn đang là private
-        return false;
-    const cur_date = new Date();
-    const timeDiff = new Date(tour_turn.start_date) - cur_date;
-    const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
-    if (days_before_go > 3) return true;
-    else return false;
-}
-
-const add_is_allow_booking = async (tour_turns) => {
-    for (var i = 0; i < tour_turns.length; i++) {
-        tour_turns[i].isAllowBooking = await check_policy_allow_booking(tour_turns[i]);
-    }
-}
-
 exports.create = async (req, res) => {
     // {
     //     start_date,
@@ -98,7 +82,8 @@ exports.create = async (req, res) => {
         if (typeof req.body.num_max_people !== 'undefined' && typeof req.body.discount !== 'undefined'
             && typeof req.body.start_date !== 'undefined' && typeof req.body.end_date !== 'undefined'
             && typeof req.body.idTour !== 'undefined' && typeof req.body.price !== 'undefined'
-            && typeof req.body.status !== 'undefined') {
+            && typeof req.body.status !== 'undefined'
+            && typeof req.body.booking_term !== 'undefined' && typeof req.body.payment_term !== 'undefined') {
             if (isNaN(req.body.num_max_people) || isNaN(req.body.discount) || isNaN(req.body.price)) {
                 return res.status(400).json({ msg: 'Params is invalid' })
             }
@@ -108,7 +93,9 @@ exports.create = async (req, res) => {
                 return res.status(400).json({ msg: 'Wrong price' })
             if (arr_status.indexOf(req.body.status) === -1)
                 return res.status(400).json({ msg: 'Wrong status' })
-
+            if (parseInt(req.body.booking_term) < parseInt(req.body.payment_term) //hạn book phải lớn hơn hoặc bằng hạn pay
+                || parseInt(req.body.booking_term) < 0 || parseInt(req.body.payment_term) < 0) //cả hai hạn đều phải là dương
+                return res.status(400).json({ msg: 'Booking term and payment term not match' })
             let code_tour_turn = await generateCode_TourTurn(8);
 
             let check_code_tour_turn = await tour_turns.findAll({ where: { code: code_tour_turn } })
@@ -125,7 +112,9 @@ exports.create = async (req, res) => {
                 discount: parseFloat(req.body.discount),
                 price: parseInt(req.body.price),
                 status: req.body.status,
-                code: code_tour_turn
+                code: code_tour_turn,
+                booking_term: parseInt(req.body.booking_term),
+                payment_term: parseInt(req.body.payment_term)
             }
             if (new_tour_turn.start_date > new_tour_turn.end_date) {
                 return res.status(400).json({ msg: 'Start time must be less than the end time' })
@@ -174,8 +163,9 @@ exports.createWithPricePassenger = async (req, res) => {
         if (typeof req.body.num_max_people !== 'undefined' && typeof req.body.discount !== 'undefined'
             && typeof req.body.start_date !== 'undefined' && typeof req.body.end_date !== 'undefined'
             && typeof req.body.idTour !== 'undefined' && typeof req.body.price !== 'undefined'
-            && typeof req.body.status !== 'undefined' && typeof req.body.price_passenger !== 'undefined') {
-            if (isNaN(req.body.num_max_people) && isNaN(req.body.discount) && isNaN(req.body.price)) {
+            && typeof req.body.status !== 'undefined' && typeof req.body.price_passenger !== 'undefined'
+            && typeof req.body.booking_term !== 'undefined' && typeof req.body.payment_term !== 'undefined') {
+            if (isNaN(req.body.num_max_people) && isNaN(req.body.discount) && isNaN(req.body.price) && isNaN(req.body.booking_term) && isNaN(req.body.payment_term)) {
                 return res.status(400).json({ msg: 'Params is invalid' })
             }
             if (parseFloat(req.body.discount) < 0 || parseFloat(req.body.discount) > 100)
@@ -184,6 +174,9 @@ exports.createWithPricePassenger = async (req, res) => {
                 return res.status(400).json({ msg: 'Wrong price' })
             if (arr_status.indexOf(req.body.status) === -1)
                 return res.status(400).json({ msg: 'Wrong status' })
+            if (parseInt(req.body.booking_term) < parseInt(req.body.payment_term) //hạn book phải lớn hơn hoặc bằng hạn pay
+                || parseInt(req.body.booking_term) < 0 || parseInt(req.body.payment_term) < 0) //cả hai hạn đều phải là dương
+                return res.status(400).json({ msg: 'Booking term and payment term not match' })
             var list_price_passenger;
             if (!Array.isArray(req.body.price_passenger)) {
                 return res.status(400).json({ msg: 'Wrong list price passenger' })
@@ -221,7 +214,9 @@ exports.createWithPricePassenger = async (req, res) => {
                 discount: parseFloat(req.body.discount),
                 price: parseInt(req.body.price),
                 status: req.body.status,
-                code: code_tour_turn
+                code: code_tour_turn,
+                booking_term: parseInt(req.body.booking_term),
+                payment_term: parseInt(req.body.payment_term)
             }
             if (new_tour_turn.start_date > new_tour_turn.end_date) {
                 return res.status(400).json({ msg: 'Start time must be less than the end time' })
@@ -373,10 +368,10 @@ exports.getById = (req, res) => {
         tour_turn.discount = parseFloat(tour_turn.discount / 100);
         const list_price = await addPriceOfListPricePassengers(tour_turn.price_passengers, tour_turn.price, tour_turn.discount);
         tour_turn.price_passengers = list_price;
-        tour_turn.isAllowBooking = await check_policy_allow_booking(tour_turn)
+        tour_turn.isAllowBooking = await checkPolicy_helper.check_policy_allow_booking(tour_turn)
         res.status(200).json({ data: tour_turn })
     }).catch(err => {
-        console.log(err)
+        // console.log(err)
         res.status(400).json({ msg: err.toString() })
     })
 }
@@ -437,7 +432,7 @@ exports.getByCode = (req, res) => {
         tour_turn.discount = parseFloat(tour_turn.discount / 100);
         const list_price = await addPriceOfListPricePassengers(tour_turn.price_passengers, tour_turn.price, tour_turn.discount);
         tour_turn.price_passengers = list_price;
-        tour_turn.isAllowBooking = await check_policy_allow_booking(tour_turn)
+        tour_turn.isAllowBooking = await checkPolicy_helper.check_policy_allow_booking(tour_turn)
         res.status(200).json({ data: tour_turn })
     }).catch(err => {
         // console.log(err)
@@ -628,7 +623,7 @@ exports.getAll = (req, res) => { //update here
                     let result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
                     await convertDiscountAndGetNumReviewOfListTourTurn(result);
                     result = result.map((node) => node.get({ plain: true }));
-                    await add_is_allow_booking(result);
+                    await checkPolicy_helper.add_is_allow_booking(result);
                     res.status(200).json({
                         itemCount: distinct.length, //số lượng record được trả về
                         data: result,
@@ -652,7 +647,7 @@ exports.getAll = (req, res) => { //update here
                     let result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
                     await convertDiscountAndGetNumReviewOfListTourTurn(result);
                     result = result.map((node) => node.get({ plain: true }));
-                    await add_is_allow_booking(result);
+                    await checkPolicy_helper.add_is_allow_booking(result);
                     res.status(200).json({
                         itemCount: _tour_turns.rows.length, //số lượng record được trả về
                         data: result,
@@ -709,6 +704,26 @@ exports.update = async (req, res) => {
                 if (arr_status.indexOf(req.body.status) !== -1)
                     _tour_turn.status = req.body.status
                 else return res.status(400).json({ msg: 'Wrong status' })
+            }
+            const booking_term = req.body.booking_term;
+            const payment_term = req.body.payment_term;
+            //bắt buộc phải có cả hai thì mới update được ...
+            if (typeof booking_term !== 'undefined' || !isNaN(booking_term)) {
+                if (parseInt(booking_term) > 0) { //có booking term
+                    if (typeof payment_term !== 'undefined' || !isNaN(payment_term)) {
+                        if (parseInt(payment_term) > 0) { //có payment term
+                            //có cả hai
+                            if (parseInt(booking_term) >= parseInt(payment_term)) {
+                                //thỏa
+                                _tour_turn.booking_term = parseInt(booking_term);
+                                _tour_turn.payment_term = parseInt(payment_term);
+                            }
+                            else return res.status(400).json({ msg: 'Booking term and payment term not match' })
+                        }
+                        else return res.status(400).json({ msg: 'Wrong payment term' })
+                    }
+                }
+                else return res.status(400).json({ msg: 'Wrong booking term' })
             }
             if (typeof req.body.start_date !== 'undefined') { //có start_date
                 if (new Date() >= new Date(_tour_turn.start_date)) //ngày hiện tại lớn hơn ngày đi - tức tour đang hoặc đã đi
@@ -803,6 +818,26 @@ exports.updateWithPricePassenger = async (req, res) => {
                 if (parseInt(req.body.price) > 0)
                     _tour_turn.price = parseInt(req.body.price);
                 else return res.status(400).json({ msg: 'Wrong price' })
+            }
+            const booking_term = req.body.booking_term;
+            const payment_term = req.body.payment_term;
+            //bắt buộc phải có cả hai thì mới update được ...
+            if (typeof booking_term !== 'undefined' || !isNaN(booking_term)) {
+                if (parseInt(booking_term) > 0) { //có booking term
+                    if (typeof payment_term !== 'undefined' || !isNaN(payment_term)) {
+                        if (parseInt(payment_term) > 0) { //có payment term
+                            //có cả hai
+                            if (parseInt(booking_term) >= parseInt(payment_term)) {
+                                //thỏa
+                                _tour_turn.booking_term = parseInt(booking_term);
+                                _tour_turn.payment_term = parseInt(payment_term);
+                            }
+                            else return res.status(400).json({ msg: 'Booking term and payment term not match' })
+                        }
+                        else return res.status(400).json({ msg: 'Wrong payment term' })
+                    }
+                }
+                else return res.status(400).json({ msg: 'Wrong booking term' })
             }
             if (typeof req.body.status !== 'undefined') {
                 if (arr_status.indexOf(req.body.status) !== -1)
