@@ -83,7 +83,8 @@ exports.create = async (req, res) => {
             && typeof req.body.start_date !== 'undefined' && typeof req.body.end_date !== 'undefined'
             && typeof req.body.idTour !== 'undefined' && typeof req.body.price !== 'undefined'
             && typeof req.body.status !== 'undefined'
-            && typeof req.body.booking_term !== 'undefined' && typeof req.body.payment_term !== 'undefined') {
+            && typeof req.body.booking_term !== 'undefined' && typeof req.body.payment_term !== 'undefined'
+            && typeof req.body.isHoliday !== 'undefined') {
             if (isNaN(req.body.num_max_people) || isNaN(req.body.discount) || isNaN(req.body.price)) {
                 return res.status(400).json({ msg: 'Params is invalid' })
             }
@@ -114,7 +115,8 @@ exports.create = async (req, res) => {
                 status: req.body.status,
                 code: code_tour_turn,
                 booking_term: parseInt(req.body.booking_term),
-                payment_term: parseInt(req.body.payment_term)
+                payment_term: parseInt(req.body.payment_term),
+                isHoliday: (req.query.isHoliday == 'true')
             }
             if (new_tour_turn.start_date > new_tour_turn.end_date) {
                 return res.status(400).json({ msg: 'Start time must be less than the end time' })
@@ -164,7 +166,8 @@ exports.createWithPricePassenger = async (req, res) => {
             && typeof req.body.start_date !== 'undefined' && typeof req.body.end_date !== 'undefined'
             && typeof req.body.idTour !== 'undefined' && typeof req.body.price !== 'undefined'
             && typeof req.body.status !== 'undefined' && typeof req.body.price_passenger !== 'undefined'
-            && typeof req.body.booking_term !== 'undefined' && typeof req.body.payment_term !== 'undefined') {
+            && typeof req.body.booking_term !== 'undefined' && typeof req.body.payment_term !== 'undefined'
+            && typeof req.body.isHoliday !== 'undefined') {
             if (isNaN(req.body.num_max_people) && isNaN(req.body.discount) && isNaN(req.body.price) && isNaN(req.body.booking_term) && isNaN(req.body.payment_term)) {
                 return res.status(400).json({ msg: 'Params is invalid' })
             }
@@ -216,7 +219,8 @@ exports.createWithPricePassenger = async (req, res) => {
                 status: req.body.status,
                 code: code_tour_turn,
                 booking_term: parseInt(req.body.booking_term),
-                payment_term: parseInt(req.body.payment_term)
+                payment_term: parseInt(req.body.payment_term),
+                isHoliday: (req.query.isHoliday == 'true')
             }
             if (new_tour_turn.start_date > new_tour_turn.end_date) {
                 return res.status(400).json({ msg: 'Start time must be less than the end time' })
@@ -705,6 +709,9 @@ exports.update = async (req, res) => {
                     _tour_turn.status = req.body.status
                 else return res.status(400).json({ msg: 'Wrong status' })
             }
+            if (typeof req.body.isHoliday !== 'undefined') {
+                _tour_turn.isHoliday = (req.body.isHoliday == 'true')
+            }
             const booking_term = req.body.booking_term;
             const payment_term = req.body.payment_term;
             //bắt buộc phải có cả hai thì mới update được ...
@@ -731,7 +738,7 @@ exports.update = async (req, res) => {
                     return res.status(400).json({ msg: 'Can not update this turn' })
                 }
                 if (typeof req.body.end_date !== 'undefined') // có end_date
-                    if (new Date(req.body.start_date) < new Date(req.body.end_date) && new Date(req.body.start_date) > new Date()) {
+                    if (new Date(req.body.start_date) <= new Date(req.body.end_date) && new Date(req.body.start_date) > new Date()) {
                         //thỏa mọi điều kiện
                         _tour_turn.start_date = req.body.start_date;
                         _tour_turn.end_date = req.body.end_date;
@@ -839,11 +846,15 @@ exports.updateWithPricePassenger = async (req, res) => {
                 }
                 else return res.status(400).json({ msg: 'Wrong booking term' })
             }
+            if (typeof req.body.isHoliday !== 'undefined') {
+                _tour_turn.isHoliday = (req.body.isHoliday == 'true')
+            }
             if (typeof req.body.status !== 'undefined') {
                 if (arr_status.indexOf(req.body.status) !== -1)
                     _tour_turn.status = req.body.status
                 else return res.status(400).json({ msg: 'Wrong status' })
             }
+            console.log(new Date(req.body.start_date) <= new Date(req.body.end_date), new Date(req.body.start_date) > new Date())
             if (typeof req.body.start_date !== 'undefined') { //có start_date
                 if (new Date() >= new Date(_tour_turn.start_date)) //ngày hiện tại lớn hơn ngày đi - tức tour đang hoặc đã đi
                 {

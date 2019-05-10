@@ -45,6 +45,10 @@ module.exports = function (sequelize, Sequelize) {
     payment_term: {
       type: Sequelize.INTEGER,
     },
+    isHoliday: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
+    }
   },
     {
       charset: 'utf8',
