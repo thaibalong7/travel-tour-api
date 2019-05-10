@@ -7,6 +7,7 @@ const Op = Sequelize.Op;
 const helper_add_link = require('../helper/add_full_link');
 const link_img = require('../config/setting').link_img;
 const { sendETicketEmail } = require('../helper/send_email');
+const checkPolicy_helper = require('../helper/check_policy');
 
 var publicKEY = fs.readFileSync('./app/middleware/public.key', 'utf8');
 var verifyOptions = {
@@ -280,32 +281,6 @@ exports.book_tour = async (req, res) => {
     }
 }
 
-const check_policy_cancel_booking = async (booking) => {
-    //check theo tour turn của booking này
-    if (booking.status == 'paid') {
-        const start_date = new Date(booking.tour_turn.start_date);
-        const cur_date = new Date();
-        if (booking.payment_method.name == 'online')
-            if (cur_date < start_date)
-                return true;
-            else return false;
-        else { // payment_method là incash và tranfer
-            const timeDiff = (start_date) - (cur_date);
-            const days = timeDiff / (1000 * 60 * 60 * 24) //số ngày còn lại trc khi đi
-            if (days > 6) //nếu còn lại trên 7 ngày -> cho phép request hủy
-                return true;
-            else return false //ngược lại tới cty mà chuyển
-        }
-    }
-    return false; // book tour chưa thanh toán hoặc đang chờ hủy hoặc đã bị hủy hoặc đã đi thì k thể cancel
-}
-
-const add_is_cancel_booking = async (list_booking) => { //thêm 1 record là dựa vào policy thì hiện giờ có thể hủy đặt tour hay k
-    for (var i = 0; i < list_booking.length; i++) {
-        list_booking[i].isCancelBooking = await check_policy_cancel_booking(list_booking[i]);
-    }
-}
-
 const addPriceOfListPricePassengers = async (_price_passengers, price) => {
     return _price_passengers.map(price_passenger => {
         var new_obj = {};
@@ -392,7 +367,7 @@ exports.getHistoryBookTourByUser = (req, res) => {
                 if (parseInt(_book_tour_history.rows.length) === 0)
                     next_page = -1;
                 const result = _book_tour_history.rows.map((node) => node.get({ plain: true }));
-                await add_is_cancel_booking(result);
+                await checkPolicy_helper.add_is_cancel_booking(result);
                 await addPricePassengerOfListBookTour(result);
                 await helper_add_link.addLinkToursFeaturedImgOfListBookTour(result, req.headers.host);
                 return res.status(200).json({
@@ -987,7 +962,7 @@ exports.unpayBookTour = async (req, res) => {
 //                 }
 //                 var result = await db.book_tour_history.findAll(query);
 //                 result = result.map((node) => node.get({ plain: true }));
-//                 await add_is_cancel_booking(result);
+//                 await checkPolicy_helper.add_is_cancel_booking(result);
 //                 result[0].tour_turn.discount = parseFloat(result[0].tour_turn.discount / 100);
 //                 const list_price = await addPriceOfListPricePassengers(result[0].tour_turn.price_passengers, result[0].tour_turn.end_price);
 //                 result[0].tour_turn.price_passengers = list_price;
@@ -1241,39 +1216,20 @@ const filterBookTourNeedCall = async (_book_tours, days_need_call) => {
     const result = [];
     for (let i = 0; i < _book_tours.length; i++) {
         // return true or false
-        if (_book_tours[i].dataValues.days > 0) {
-            //trước 3 ngày mới cho book tour
-            const days = parseInt(_book_tours[i].dataValues.days);
-            const cur_date = new Date();
-            const timeDiff = new Date(_book_tours[i].tour_turn.start_date) - cur_date;
-            const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
-            if (days > 7) //book trước ngày đi trên 7 ngày
-            {
-                // phải thanh toán trước 3 ngày
-                if (days_before_go > 3 && days_before_go <= (3 + days_need_call)) {
-                    const payment_term = new Date(_book_tours[i].tour_turn.start_date);
-                    payment_term.setDate(payment_term.getDate() - 4);
-                    payment_term.setHours(23);
-                    payment_term.setMinutes(59);
-                    payment_term.setSeconds(59);
-                    _book_tours[i].dataValues.payment_term = payment_term;
-                    result.push(_book_tours[i]);
-                }
-            }
-            if (days <= 7 && days >= 3) { //book trước ngày đi từ 3 -> 7 ngày
-                //phải thanh toán trước 1 ngày
-                if (days_before_go > 1 && days_before_go <= (1 + days_need_call)) {
-                    const payment_term = new Date(_book_tours[i].tour_turn.start_date);
-                    payment_term.setDate(payment_term.getDate() - 2);
-                    payment_term.setHours(23);
-                    payment_term.setMinutes(59);
-                    payment_term.setSeconds(59);
-                    _book_tours[i].dataValues.payment_term = payment_term;
-                    result.push(_book_tours[i]);
-                }
-            }
+        const cur_date = new Date();
+        const timeDiff = new Date(_book_tours[i].tour_turn.start_date) - cur_date;
+        const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
+
+        // phải thanh toán trước _book_tours[i].tour_turn.payment_term ngày
+        if (days_before_go > parseInt(_book_tours[i].tour_turn.payment_term) && days_before_go <= (parseInt(_book_tours[i].tour_turn.payment_term) + days_need_call)) {
+            const payment_term = new Date(_book_tours[i].tour_turn.start_date);
+            payment_term.setDate(payment_term.getDate() - parseInt(_book_tours[i].tour_turn.payment_term) - 1);
+            payment_term.setHours(23);
+            payment_term.setMinutes(59);
+            payment_term.setSeconds(59);
+            _book_tours[i].dataValues.payment_term = payment_term;
+            result.push(_book_tours[i]);
         }
-        else return false;
     }
     return result;
 }
@@ -1299,11 +1255,11 @@ exports.getListNeedCall = (req, res) => {
             {
                 model: db.book_tour_contact_info
             }],
-            attributes: {
-                include: [
-                    [Sequelize.literal('DATEDIFF(tour_turn.start_date, book_tour_history.book_time) + 1'), 'days'],
-                ]
-            }
+            // attributes: {
+            //     include: [
+            //         [Sequelize.literal('DATEDIFF(tour_turn.start_date, book_tour_history.book_time) + 1'), 'days'],
+            //     ]
+            // }
         }
         db.book_tour_history.findAll(query).then(async _book_tours => {
             return res.status(200).json({

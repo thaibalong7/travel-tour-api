@@ -39,8 +39,8 @@ module.exports = {
 				}),
 			queryInterface.bulkUpdate('tour_turns',
 				{
-					booking_term: 2,
-					payment_term: 1
+					booking_term: 3,
+					payment_term: 2
 				},
 				{
 					fk_tour: 4
