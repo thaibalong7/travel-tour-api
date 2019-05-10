@@ -168,8 +168,8 @@ const book_tour = async (req, res, _user) => {
                             }
                             if (passenger.phone) //k bắt buộc
                                 new_passenger.phone = passenger.phone
-                            // if (passenger.passport) //k bắt buộc
-                            //     new_passenger.passport = passenger.passport
+                            if (passenger.passport) //k bắt buộc
+                                new_passenger.passport = passenger.passport
                             await db.passengers.create(new_passenger);
                         })
                         //tạo passenger xong
@@ -1039,14 +1039,26 @@ exports.cancelBookTour = async (req, res) => {
                 await tour_turn.save();
 
                 //check thêm lý do hủy nữa, nếu có thì tạo mới một request_cancel_booking cho booking này
-                if (typeof req.body.message !== undefined) {
-                    if (req.body.message !== null) {
+                // check xem đã có message chưa, có rồi thì thôi k thêm nữa
+                // const check_request = await db.request_cancel_booking.findOne({
+                //     where: {
+                //         fk_book_tour: book_tour.id
+                //     }
+                // })
+                // if (!check_request) {
+                const message = req.body.message
+                if (typeof message !== undefined) {
+                    if (message !== null && message !== "") {
                         db.request_cancel_booking.create({
-                            message: req.body.message,
+                            message: message,
                             fk_book_tour: book_tour.id,
                         })
                     }
                 }
+                // }
+                // else {
+
+                // }
 
                 return res.status(200).json({
                     msg: 'Cancelled successful',
@@ -1089,9 +1101,9 @@ exports.updatePassenger = async (req, res) => {
                 else {
                     return res.status(400).json({ msg: 'Phone is invalid' });
                 }
-            // if (typeof req.body.passport !== 'undefined') //k bắt buộc
-            //     if (req.body.passport !== '')
-            //         _passenger.passport = req.body.passport
+            if (typeof req.body.passport !== 'undefined') //k bắt buộc
+                if (req.body.passport !== '')
+                    _passenger.passport = req.body.passport
             if (typeof req.body.fk_type_passenger !== 'undefined') {
                 if (parseInt(req.body.fk_type_passenger) !== parseInt(_passenger.fk_type_passenger)) {
                     const _book_tour = await db.book_tour_history.findOne({
