@@ -32,7 +32,7 @@ module.exports = {
 					request_message: 'Bận đột xuất nên không thể đi được, mong được chấp nhận',
 					fk_book_tour: 3,
 					fk_user: 12,
-					request_time: new Date('2019-04-22 11:15:21')
+					request_time: new Date(formatDate(-1) + ' 11:15:21')
 				},
 			]),
 			queryInterface.bulkInsert('cancel_booking', [

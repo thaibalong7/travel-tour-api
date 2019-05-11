@@ -98,6 +98,11 @@ module.exports = {
 				{
 					id: 15
 				}),
+				queryInterface.bulkUpdate('book_tour_history',
+				{ code: await generateCode(8) },
+				{
+					id: 16
+				}),
 		])
 	},
 
