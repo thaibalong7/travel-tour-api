@@ -161,7 +161,7 @@ module.exports = {
                 "(4, '814d77c0-5059-11e9-989c-a5f26e5408ec', '" + formatDate(-3) + " 09:25:19', 'booked', 1, 1000000, 4, 3, 1)," +
                 "(5, '870ae3a0-5059-11e9-8684-5d74946d80db', '" + formatDate(-3) + " 09:27:03', 'booked', 2, 1000000, 5, 4, 2)," + //tới hạn nhắc nhỡ gọi điện 
                 "(6, '89216790-5059-11e9-8c7e-c3f82d1fa1ef', '" + formatDate(-15) + " 13:42:47', 'booked', 2, 1000000, 6, 14, 1)," +
-                "(7, '8fae3160-5059-11e9-98a6-11c33d1f98b4', '" + formatDate(-9) + " 14:32:24', 'cancelled', 3, 1500000, 7, 14, 1)," +
+                "(7, '8fae3160-5059-11e9-98a6-11c33d1f98b4', '" + formatDate(-15) + " 14:32:24', 'refunded', 3, 1500000, 7, 14, 1)," + //cancel đã nhận được tiền
                 "(9, '8fae3160-5059-11e9-98a6-11c3f5dd44b4', '" + formatDate(-9) + " 19:18:24', 'cancelled', 1, 550000, 9, 19, 3)," + //tour turn đang đi
                 "(10, '8ssw3160-5059-11e9-98a6-w6c3f5dd44b4', '" + formatDate(-19) + " 08:18:24', 'paid', 2, 1000000, 10, 19, 1)," + //tour turn đang đi
                 "(11, '55ff4160-5059-11e9-8ea6-11c355d7s8b4', '" + formatDate(-30) + " 15:04:00', 'finished', 1, 530000, 11, 20, 1)," + //tour đã đi
@@ -169,6 +169,7 @@ module.exports = {
                 "(13, '522s4160-5059-11e9-8ea6-4ss55d4s55e4', '" + formatDate(-28) + " 04:17:00', 'booked', 1, 500000, 13, 16, 1)," + //tới hạn nhắc nhỡ gọi điện 
                 "(14, '115d4160-5059-11e9-8ea6-4ss55d4s55e4', '" + formatDate(-22) + " 09:25:00', 'paid', 5, 1500000, 14, 16, 2)," +
                 "(15, '1144s160-5s59-11e9-8ea6-4s55s44s55e4', '" + formatDate(-14) + " 16:37:00', 'booked', 1, 200000, 15, 3, 2)," +
+                "(16, '1144s160-5s59-11e9-8ea6-4s5sdd55e4', '" + formatDate(-18) + " 05:15:00', 'confirm_cancel', 2, 400000, 16, 3, 1)," + 
                 "(8, 'a294e850-5059-11e9-8e50-6d47d5b38a8f', '" + formatDate(-11) + " 06:29:12', 'booked', 3, 1500000, 8, 14, 1);").then(
                     () => {
                         return queryInterface.sequelize.query("INSERT INTO `passengers` (`id`, `fullname`, `phone`, `birthdate`, `sex`, `passport`, `fk_book_tour`, `fk_type_passenger`) VALUES" +
@@ -196,6 +197,8 @@ module.exports = {
                             "(25, 'Mai Quang Tiến', '0316422754', '1992-07-14', 'male', '023232535', 14, 1)," +
                             "(26, 'Vinh Râu', '0776452841', '1985-04-09', 'male', '213215465', 14, 1)," +
                             "(27, 'Phạm Thành Long', '0315549987', '1983-01-27', 'male', '465156486', 15, 1)," +
+                            "(28, 'Lee Ngọc Hồi', '0345444878', '1989-01-09', 'male', '031154877', 16, 1)," +
+                            "(29, 'Hồ Thanh Hằng', '0311889987', '1988-01-17', 'female', '154548487', 16, 1)," +
                             "(14, 'Phạm Thị Ngọc', '0125466447', '2012-07-06', 'female', '332654865', 8, 2);")
                     }
                 ),

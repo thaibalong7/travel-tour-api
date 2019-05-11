@@ -1,5 +1,18 @@
 'use strict';
 
+function formatDate(days) {
+	const d = new Date();
+	d.setDate(d.getDate() + days)
+	var month = '' + (d.getMonth() + 1),
+		day = '' + d.getDate(),
+		year = d.getFullYear();
+
+	if (month.length < 2) month = '0' + month;
+	if (day.length < 2) day = '0' + day;
+
+	return [year, month, day].join('-');
+}
+
 module.exports = {
 	up: (queryInterface, Sequelize) => {
 		/*
@@ -28,7 +41,12 @@ module.exports = {
 					request_message: 'Cty đang làm tổ chức Company Trip vào ngày đó, nên không thể tham gia tour được',
 					fk_book_tour: 7,
 					fk_user: 13,
-					request_time: new Date('2019-04-28 04:07:44')
+					request_time: new Date(formatDate(-6) + ' 04:07:44'),
+					confirm_time: new Date(formatDate(-5) + ' 14:04:21'),
+					refund_period: formatDate(+1),
+					refunded_time: new Date(formatDate(-3) + ' 07:14:00'),
+					money_refunded: 935000,
+					refund_message: 'Đã thanh toán bằng tiền mặt'
 				},
 			]),
 			queryInterface.bulkUpdate('book_tour_contact_info',

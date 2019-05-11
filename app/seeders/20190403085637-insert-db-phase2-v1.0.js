@@ -205,10 +205,11 @@ module.exports = {
                 "(9, '123A@gmail.com', 'Nguyễn Văn A', '0364651849', 'A713B Lê Văn Việt, Hiệp Phú, Quận 9, Hồ Chí Minh, Việt Nam', NULL)," +
                 "(10, 'nnthai@gmail.com', 'Nguyễn Ngọc Hải', '0755484454', '217 Đường Nguyễn Duy Trinh, Phường Bình Trưng Tây, Quận 2, Hồ Chí Minh, Việt Nam', NULL)," +
                 "(11, 'ntphung@gmail.com', 'Nguyễn Thị Phùng', '0334554871', '19 Đồng Văn Cống, Phường Thạnh Mỹ Lợi, Quận 2, Hồ Chí Minh, Việt Nam', NULL)," +
-                "(12, 'pntinh@gmail.com', 'Phạm Ngọc Tình', '0334548742', '18/844 Huỳnh Tấn Phát, Phú Thuận, Quận 7, Hồ Chí Minh, Việt Nam', NULL)," +
+                "(12, 'pntinh@gmail.com', 'Phạm Ngọc Tình', '0334548742', '18/844 Huỳnh Tấn Phát, Phú Thuận, Quận 7, Hồ Chí Minh, Việt Nam', 13)," +
                 "(13, 'tmsang@gmail.com', 'Trương Minh Sang', '0754487564', '94/24 Bắc Hải, Phường 15, Quận 10, Hồ Chí Minh, Việt Nam', NULL)," +
                 "(14, 'ltthao@gmail.com', 'Lê Thanh Thảo', '0345545484', '09 Lãnh Binh Thăng, Phường 13, Quận 11, Hồ Chí Minh, Việt Nam', NULL)," +
-                "(15, 'ptlong@gmail.com', 'Phạm Thành Long', '0315549987', '26 Đường Hậu Giang, Phường 5, Quận 6, Hồ Chí Minh 700000, Việt Nam', NULL)," +
+                "(15, 'ptlong@gmail.com', 'Phạm Thành Long', '0315549987', '26 Đường Hậu Giang, Phường 5, Quận 6, Hồ Chí Minh, Việt Nam', 3)," +
+                "(16, 'lnh@gmail.com', 'Lee Ngọc Hồi', '0221454786', '154/45 Đường Lê Lợi, Phường 5, Quận Gò Vấp, Hồ Chí Minh, Việt Nam', 3)," +
                 "(8, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL);"),
         ]);
     },
