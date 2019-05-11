@@ -38,6 +38,19 @@ module.exports = {
 					money_refunded: 315000,
 				}
 			]
+			),
+			queryInterface.bulkInsert('cancel_booking', [
+				{
+					id: 4,
+					request_message: 'Mắc thi cuối kỳ',
+					fk_book_tour: 17,
+					fk_user: 9,
+					request_time: new Date(formatDate(-15) + ' 17:34:11'),
+					confirm_time: new Date(formatDate(-14) + ' 04:41:37'),
+					refund_period: formatDate(-8),
+					money_refunded: 2500000,
+				}
+			]
 			)
 		])
 	},
@@ -53,7 +66,7 @@ module.exports = {
 		return Promise.all([
 			queryInterface.bulkDelete('cancel_booking', {
 				id: {
-					[Sequelize.Op.or]: [3],
+					[Sequelize.Op.or]: [3, 4],
 				}
 			}),
 		])

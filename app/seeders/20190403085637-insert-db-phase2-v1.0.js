@@ -125,14 +125,14 @@ module.exports = {
                 "(3, '" + formatDate(+9) + "', '" + formatDate(+9) + "', 2, 20, 200000, 0, 147, 'public', 2)," +
                 "(4, '" + formatDate(+2) + "', '" + formatDate(+2) + "', 2, 20, 215000, 0, 58, 'public', 2)," + //tour tới hạn kiểm tra thanh toán dưới 7 ngày //check trước 2-3 ngày
                 "(5, '2019-04-20', '2019-04-22', 0, 60, 500000, 0, 75, 'public', 3)," +
-                "(6, '" + formatDate(+10) + "', '" + formatDate(+10) + "', 0, 30, 1500000, 0, 0, 'private', 4)," +
-                "(7, '" + formatDate(+20) + "', '" + formatDate(+26) + "', 0, 50, 1500000, 0, 47, 'public', 5)," +
+                "(6, '" + formatDate(+10) + "', '" + formatDate(+10) + "', 0, 30, 150000, 0, 0, 'private', 4)," +
+                "(7, '" + formatDate(+20) + "', '" + formatDate(+26) + "', 0, 50, 3000000, 0, 47, 'public', 5)," +
                 "(8, '2019-03-04', '2019-03-06', 0, 60, 7500000, 0, 85, 'public', 6)," +
                 "(13, '" + formatDate(+37) + "', '" + formatDate(+37) + "', 0, 60, 550000, 0, 47, 'public', 1)," +
                 "(14, '" + formatDate(+35) + "', '" + formatDate(+35) + "', 6, 60, 500000, 5, 127, 'public', 2)," +
                 "(15, '2019-04-09', '2019-04-09', 0, 62, 600000, 7, 87, 'public', 1)," +
                 "(16, '" + formatDate(+4) + "', '" + formatDate(+4) + "', 6, 20, 300000, 3, 147, 'public', 4)," + //tour tới hạn kiểm tra thanh toán trên 7 ngày //check trước 4-5 ngày
-                "(17, '" + formatDate(+40) + "', '" + formatDate(+46) + "', 0, 20, 1800000, 5, 86, 'public', 5)," +
+                "(17, '" + formatDate(+40) + "', '" + formatDate(+46) + "', 0, 20, 540000, 5, 86, 'public', 5)," +
                 "(18, '" + formatDate(+1) + "', '" + formatDate(+1) + "', 0, 25, 300000, 0, 67, 'public', 2)," +
                 "(19, '" + formatDate(-1) + "', '" + formatDate(+1) + "', 2, 40, 200000, 5, 17, 'public', 4)," + //tour turn đang đi
                 "(20, '" + formatDate(-10) + "', '" + formatDate(-8) + "', 3, 40, 530000, 5, 114, 'public', 3)," + //tour đã đi
@@ -210,6 +210,7 @@ module.exports = {
                 "(14, 'ltthao@gmail.com', 'Lê Thanh Thảo', '0345545484', '09 Lãnh Binh Thăng, Phường 13, Quận 11, Hồ Chí Minh, Việt Nam', NULL)," +
                 "(15, 'ptlong@gmail.com', 'Phạm Thành Long', '0315549987', '26 Đường Hậu Giang, Phường 5, Quận 6, Hồ Chí Minh, Việt Nam', 3)," +
                 "(16, 'lnh@gmail.com', 'Lee Ngọc Hồi', '0221454786', '154/45 Đường Lê Lợi, Phường 5, Quận Gò Vấp, Hồ Chí Minh, Việt Nam', 3)," +
+                "(17, 'lvhai@gmail.com', 'Lê Văn Hải', '0102521548', '24 Đường Nguyễn Bỉnh Khiêm, Phường 8, Quận Bình Thạnh, Hồ Chí Minh, Việt Nam', 9)," +
                 "(8, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL);"),
         ]);
     },
