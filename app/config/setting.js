@@ -16,6 +16,10 @@ var config = {
         tls: {
             rejectUnauthorized: false
         }
+    },
+    company_info: {
+        name: 'Tour Travel',
+        address: '127 Nguyễn Văn Cừ, Quận 5, TP Hồ Chí Minh'
     }
 }
 

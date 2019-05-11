@@ -1,6 +1,6 @@
 'use strict'
 module.exports = (sequelize, Sequelize) => {
-    var RequestCancelTourBooking = sequelize.define('cancel_booking', {
+    var CancelTourBooking = sequelize.define('cancel_booking', {
         id: {
             autoIncrement: true,
             primaryKey: true,
@@ -36,10 +36,10 @@ module.exports = (sequelize, Sequelize) => {
             timestamps: false
         });
 
-    RequestCancelTourBooking.associate = (models) => {
-        RequestCancelTourBooking.belongsTo(models.book_tour_history, { foreignKey: 'fk_book_tour' })
-        RequestCancelTourBooking.belongsTo(models.users, { foreignKey: 'fk_user' })
+    CancelTourBooking.associate = (models) => {
+        CancelTourBooking.belongsTo(models.book_tour_history, { foreignKey: 'fk_book_tour' })
+        CancelTourBooking.belongsTo(models.users, { foreignKey: 'fk_user' })
     }
 
-    return RequestCancelTourBooking;
+    return CancelTourBooking;
 }

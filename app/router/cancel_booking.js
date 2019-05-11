@@ -5,6 +5,8 @@ const { middlewareAuthUser } = require('../middleware/auth')
 // create: { idBookTour, message} + token ở header
 router.post('/requestCancel', middlewareAuthUser, cancel_booking.requestCancel);
 
-router.get('/getAllProcessCancel', cancel_booking.getAllProcessCancel);
+router.get('/getAllProcessCancel', cancel_booking.getAllProcessCancel); //middlewareAuthAdmin
+
+router.post('/confirmCancel', cancel_booking.confirmCancel) //middlewareAuthAdmin
 
 module.exports = router
