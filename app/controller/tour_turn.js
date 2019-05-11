@@ -94,8 +94,12 @@ exports.create = async (req, res) => {
                 return res.status(400).json({ msg: 'Wrong price' })
             if (arr_status.indexOf(req.body.status) === -1)
                 return res.status(400).json({ msg: 'Wrong status' })
+            const cur_date = new Date();
+            const timeDiff = new Date(req.body.start_date) - cur_date;
+            const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
             if (parseInt(req.body.booking_term) < parseInt(req.body.payment_term) //hạn book phải lớn hơn hoặc bằng hạn pay
-                || parseInt(req.body.booking_term) < 0 || parseInt(req.body.payment_term) < 0) //cả hai hạn đều phải là dương
+                || parseInt(req.body.booking_term) < 0 || parseInt(req.body.payment_term) < 0 //cả hai hạn đều phải là dương
+                || parseInt(req.body.booking_term) >= days_before_go) //booking_term phải nhỏ hơn thời gian từ giờ cho tới lúc khởi hành
                 return res.status(400).json({ msg: 'Booking term and payment term not match' })
             let code_tour_turn = await generateCode_TourTurn(8);
 
@@ -177,8 +181,12 @@ exports.createWithPricePassenger = async (req, res) => {
                 return res.status(400).json({ msg: 'Wrong price' })
             if (arr_status.indexOf(req.body.status) === -1)
                 return res.status(400).json({ msg: 'Wrong status' })
+            const cur_date = new Date();
+            const timeDiff = new Date(req.body.start_date) - cur_date;
+            const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
             if (parseInt(req.body.booking_term) < parseInt(req.body.payment_term) //hạn book phải lớn hơn hoặc bằng hạn pay
-                || parseInt(req.body.booking_term) < 0 || parseInt(req.body.payment_term) < 0) //cả hai hạn đều phải là dương
+                || parseInt(req.body.booking_term) < 0 || parseInt(req.body.payment_term) < 0 //cả hai hạn đều phải là dương
+                || parseInt(req.body.booking_term) >= days_before_go) //booking_term phải nhỏ hơn thời gian từ giờ cho tới lúc khởi hành
                 return res.status(400).json({ msg: 'Booking term and payment term not match' })
             var list_price_passenger;
             if (!Array.isArray(req.body.price_passenger)) {
