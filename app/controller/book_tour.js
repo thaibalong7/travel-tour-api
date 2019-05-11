@@ -584,10 +584,10 @@ exports.getAllBookTourHistoryWithoutPagination = (req, res) => {
         const include_tour_turn = {
             attributes: { exclude: ['fk_tour'] },
             model: db.tour_turns,
-            // include: [{
-            //     attributes: { exclude: ['detail'] },
-            //     model: db.tours
-            // }]
+            include: [{
+                attributes: { exclude: ['detail'] },
+                model: db.tours
+            }]
         }
         const has_departed = { //đang đi
             start_date: {
