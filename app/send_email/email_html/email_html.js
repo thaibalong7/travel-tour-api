@@ -848,7 +848,7 @@ const html_e_ticket = (linkTeam, book_tour, linkTourTurn) => {
 		${day + `/` + month + `/` + year}
 		</td>
 		<td>
-		${book_tour.passengers[i].type_passenger.name}
+		${book_tour.passengers[i].type_passenger.name_vi}
 		</td>
 		</tr>`
 
@@ -1428,7 +1428,7 @@ const html_confirm_cancel_email = (linkTeam, cancel_booking) => {
 		${day + `/` + month + `/` + year}
 		</td>
 		<td>
-		${cancel_booking.book_tour_history.passengers[i].type_passenger.name}
+		${cancel_booking.book_tour_history.passengers[i].type_passenger.name_vi}
 		</td>
 		</tr>`
 
