@@ -42,7 +42,7 @@ module.exports = function (sequelize, Sequelize) {
         Book_Tour_History.belongsTo(models.book_tour_contact_info, { foreignKey: 'fk_contact_info' })
         Book_Tour_History.belongsTo(models.payment_method, { foreignKey: 'fk_payment' })
         Book_Tour_History.hasMany(models.passengers, { foreignKey: 'fk_book_tour' })
-        Book_Tour_History.hasMany(models.request_cancel_booking, { foreignKey: 'fk_book_tour' })
+        Book_Tour_History.hasMany(models.cancel_booking, { foreignKey: 'fk_book_tour' })
     }
     return Book_Tour_History;
 }

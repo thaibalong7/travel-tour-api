@@ -1,26 +1,38 @@
 'use strict'
 module.exports = (sequelize, Sequelize) => {
-    var RequestCancelTourBooking = sequelize.define('request_cancel_booking', {
+    var RequestCancelTourBooking = sequelize.define('cancel_booking', {
         id: {
             autoIncrement: true,
             primaryKey: true,
             type: Sequelize.INTEGER
         },
-        // status: {
-        //     type: Sequelize.ENUM('pending', 'solved'),
-        //     defaultValue: 'pending'
-        // },
-        message: {
+        request_message: {
             type: Sequelize.TEXT,
         },
         request_time: {
             type: Sequelize.DATE,
+        },
+        confirm_time: {
+            type: Sequelize.DATE,
+        },
+        refund_period: {
+            type: Sequelize.DATEONLY,
+        },
+        refund_message: {
+            type: Sequelize.TEXT,
+        },
+        money_refunded: {
+            type: Sequelize.INTEGER,
+            defaultValue: 0
+        },
+        refunded_time: {
+            type: Sequelize.DATE
         }
     },
         {
             charset: 'utf8',
             collate: 'utf8_unicode_ci',
-            tableName: 'request_cancel_booking',
+            tableName: 'cancel_booking',
             timestamps: false
         });
 

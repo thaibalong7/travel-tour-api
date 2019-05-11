@@ -325,7 +325,7 @@ exports.getHistoryBookTourByUser = (req, res) => {
                 },
                 // {
                 //     attributes: ['id', 'status'],
-                //     model: db.request_cancel_booking
+                //     model: db.cancel_booking
                 // },
                 {
                     model: db.payment_method
@@ -408,7 +408,7 @@ exports.getHistoryBookTourById = (req, res) => {
                 },
                 {
                     attributes: { exclude: ['fk_book_tour'] },
-                    model: db.request_cancel_booking
+                    model: db.cancel_booking
                 }]
             }
             db.book_tour_history.findOne(query).then(async _book_tour_history => {
@@ -615,7 +615,7 @@ exports.getHistoryBookTourByCode = (req, res) => {
                 }]
             },
             {
-                model: db.request_cancel_booking,
+                model: db.cancel_booking,
                 attributes: { exclude: ['fk_book_tour'] },
             }],
             attributes: { exclude: [] },
@@ -1013,9 +1013,9 @@ exports.cancelBookTour = async (req, res) => {
                 await book_tour.save();
                 await tour_turn.save();
 
-                //check thêm lý do hủy nữa, nếu có thì tạo mới một request_cancel_booking cho booking này
+                //check thêm lý do hủy nữa, nếu có thì tạo mới một cancel_booking cho booking này
                 // check xem đã có message chưa, có rồi thì thôi k thêm nữa
-                // const check_request = await db.request_cancel_booking.findOne({
+                // const check_request = await db.cancel_booking.findOne({
                 //     where: {
                 //         fk_book_tour: book_tour.id
                 //     }
@@ -1024,8 +1024,8 @@ exports.cancelBookTour = async (req, res) => {
                 const message = req.body.message
                 if (typeof message !== undefined) {
                     if (message !== null && message !== "") {
-                        db.request_cancel_booking.create({
-                            message: message,
+                        db.cancel_booking.create({
+                            request_message: message,
                             fk_book_tour: book_tour.id,
                         })
                     }

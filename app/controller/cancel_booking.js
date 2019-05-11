@@ -1,11 +1,10 @@
 const db = require('../models');
-const request_cancel_booking = db.request_cancel_booking;
+const cancel_booking = db.cancel_booking;
 
-exports.create = async (req, res) => {
+exports.requestCancel = async (req, res) => {
     try {
-        // const arr_status = ['pending', 'solved']
         if (typeof req.body.idBookTour === 'undefined'
-            || typeof req.body.message === 'undefined')
+            || typeof req.body.request_message === 'undefined')
             return res.status(400).json({ msg: 'Param is invalid' })
         else {
             const idBookTour = req.body.idBookTour
@@ -27,14 +26,14 @@ exports.create = async (req, res) => {
                 if (book_tour.book_tour_contact_info.fk_user === req.userData.id) {
                     if (book_tour.status === 'paid') { // book tour đã paid thì mới có thể request cancel
                         const new_request = {
-                            message: req.body.message,
+                            request_message: req.body.request_message,
                             fk_book_tour: idBookTour,
                             fk_user: req.userData.id
                         }
                         book_tour.status = 'pending_cancel';
                         await book_tour.save();
                         //add new record
-                        await request_cancel_booking.create(new_request).then(_request => {
+                        await cancel_booking.create(new_request).then(_request => {
                             return res.status(200).json({
                                 data: {
                                     status: 'pending_cancel',
@@ -47,7 +46,7 @@ exports.create = async (req, res) => {
                         if (book_tour.status === 'booked') {
                             //hủy thẳng luôn
                             const new_request = {
-                                message: req.body.message,
+                                request_message: req.body.request_message,
                                 fk_book_tour: idBookTour,
                                 fk_user: req.userData.id
                             }
@@ -57,7 +56,7 @@ exports.create = async (req, res) => {
                             await book_tour.save();
                             await tour_turn.save();
                             //add new record
-                            await request_cancel_booking.create(new_request).then(_request => {
+                            await cancel_booking.create(new_request).then(_request => {
                                 return res.status(200).json({
                                     data: {
                                         status: 'cancelled',
@@ -93,7 +92,7 @@ const sortRequest = (request1, request2) => {
     return 0;
 }
 
-exports.getAllRequests = (req, res) => {
+exports.getAllProcessCancel = (req, res) => {
     try {
         const query = {
             attributes: {
@@ -129,7 +128,7 @@ exports.getAllRequests = (req, res) => {
                 attributes: ['fullname', 'email']
             }]
         }
-        request_cancel_booking.findAll(query).then(_requests => {
+        cancel_booking.findAll(query).then(_requests => {
             _requests.sort(sortRequest);
             return res.status(200).json({ data: _requests });
         })

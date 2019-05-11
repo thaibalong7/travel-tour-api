@@ -13,19 +13,19 @@ module.exports = {
 		  }], {});
 		*/
 		return Promise.all([
-			queryInterface.bulkInsert('request_cancel_booking', [
+			queryInterface.bulkInsert('cancel_booking', [
 				{
 					id: 2,
-					message: 'Bận đột xuất nên không thể đi được, mong được chấp nhận',
+					request_message: 'Bận đột xuất nên không thể đi được, mong được chấp nhận',
 					fk_book_tour: 3,
 					fk_user: 12,
 					request_time: new Date('2019-04-22 11:15:21')
 				},
 			]),
-			queryInterface.bulkInsert('request_cancel_booking', [
+			queryInterface.bulkInsert('cancel_booking', [
 				{
 					id: 1,
-					message: 'Cty đang làm tổ chức Company Trip vào ngày đó, nên không thể tham gia tour được',
+					request_message: 'Cty đang làm tổ chức Company Trip vào ngày đó, nên không thể tham gia tour được',
 					fk_book_tour: 7,
 					fk_user: 13,
 					request_time: new Date('2019-04-28 04:07:44')
@@ -63,7 +63,7 @@ module.exports = {
 		  return queryInterface.bulkDelete('People', null, {});
 		*/
 		return Promise.all([
-			queryInterface.bulkDelete('request_cancel_booking', null, {}),
+			queryInterface.bulkDelete('cancel_booking', null, {}),
 			queryInterface.bulkUpdate('book_tour_history',
 				{ status: 'booked' },
 				{
