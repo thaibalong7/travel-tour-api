@@ -42,6 +42,21 @@ const generateCode = async (length) => {
     return text;
 }
 
+const priority_status_booking = {
+    "pending_cancel": 1,
+    "booked": 2,
+    "confirm_cancel": 3,
+    "paid": 4,
+    "finished": 5,
+    "not_refunded": 6,
+    "refunded": 7,
+    "cancelled": 8,
+}
+
+const sortBookTour = (book_tour1, book_tour2) => {
+    return priority_status_booking[book_tour1.status] - priority_status_booking[book_tour2.status];
+}
+
 const book_tour = async (req, res, _user) => {
     // {   //req.body
     //     idTour_Turn,
@@ -215,10 +230,6 @@ const book_tour = async (req, res, _user) => {
                             }
                             const book_tour_for_send_email = await db.book_tour_history.findOne(query);
                             sendETicketEmail(req, res, book_tour_for_send_email);
-                            return res.status(200).json({
-                                msg: 'Book tour successful',
-                                book_tour: book_tour_for_send_email,
-                            });
                         }
                         //xong //trả response cho client
                         return res.status(200).json({
@@ -240,7 +251,7 @@ const book_tour = async (req, res, _user) => {
         }
     }
     catch (err) {
-        console.log(err);
+        // console.log(err);
         return res.status(400).json({ msg: err.toString() });
     }
 }
@@ -539,10 +550,10 @@ exports.getAllBookTourHistoryWithoutPagination = (req, res) => {
         const include_tour_turn = {
             attributes: { exclude: ['fk_tour'] },
             model: db.tour_turns,
-            include: [{
-                attributes: { exclude: ['detail'] },
-                model: db.tours
-            }]
+            // include: [{
+            //     attributes: { exclude: ['detail'] },
+            //     model: db.tours
+            // }]
         }
         const has_departed = { //đang đi
             start_date: {
@@ -585,6 +596,7 @@ exports.getAllBookTourHistoryWithoutPagination = (req, res) => {
             }]
         };
         db.book_tour_history.findAll(query).then((_book_tours) => {
+            _book_tours.sort(sortBookTour);
             return res.status(200).json({ data: _book_tours })
         })
     } catch (error) {
@@ -733,17 +745,6 @@ exports.getAllBookTourHistoryGroupByTourTurn = async (req, res) => {
         // console.error(error);
         return res.status(400).json({ msg: error.toString() });
     }
-}
-
-const priority_status = {
-    "pending_cancel": 1,
-    "booked": 2,
-    "paid": 3,
-    "cancelled": 4,
-    "finished": 5
-}
-const sortBookTour = (book_tour1, book_tour2) => {
-    return priority_status[book_tour1.status] - priority_status[book_tour2.status];
 }
 
 exports.getBookTourHistoryByTourTurn = async (req, res) => {
@@ -994,6 +995,7 @@ exports.unpayBookTour = async (req, res) => {
 // }
 
 exports.cancelBookTour = async (req, res) => {
+    //api này cần được chỉnh sửa, phải thêm db cho bảng cancel_booking đầy đủ
     try {
         const code = req.body.code;
         const book_tour = await db.book_tour_history.findOne({
