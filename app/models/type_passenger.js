@@ -8,6 +8,9 @@ module.exports = function (sequelize, Sequelize) {
         name: {
             type: Sequelize.STRING,
             allowNull: false
+        },
+        name_vi: {
+            type: Sequelize.STRING,
         }
     },
         {

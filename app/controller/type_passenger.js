@@ -2,8 +2,11 @@ const db = require('../models')
 const type_passenger = db.type_passenger;
 
 exports.create = (req, res) => {
-    if (typeof req.body.name !== 'undefined') {
-        type_passenger.create({ name: req.body.name }).then(_type => {
+    if (typeof req.body.name !== 'undefined' && typeof req.body.name_vi) {
+        type_passenger.create({
+            name: req.body.name,
+            name_vi: req.body.name_vi
+        }).then(_type => {
             res.status(200).json(_type)
         }).catch(err => {
             res.status(400).json({ msg: err })
