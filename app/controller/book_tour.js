@@ -53,6 +53,35 @@ const priority_status_booking = {
     "cancelled": 8,
 }
 
+const add_isNeedCall = (_book_tours, days_need_call) => {
+    for (let i = 0, length = _book_tours.length; i < length; i++) {
+        if (_book_tours[i].status === 'booked') {
+            const cur_date = new Date();
+            const timeDiff = new Date(_book_tours[i].tour_turn.start_date) - cur_date;
+            const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
+
+            // phải thanh toán trước _book_tours[i].tour_turn.payment_term ngày
+            if (days_before_go > parseInt(_book_tours[i].tour_turn.payment_term) && days_before_go <= (parseInt(_book_tours[i].tour_turn.payment_term) + days_need_call)) {
+                // const payment_term = new Date(_book_tours[i].tour_turn.start_date);
+                // payment_term.setDate(payment_term.getDate() - parseInt(_book_tours[i].tour_turn.payment_term) - 1);
+                // payment_term.setHours(23);
+                // payment_term.setMinutes(59);
+                // payment_term.setSeconds(59);
+                // _book_tours[i].dataValues.payment_term = payment_term;
+                // result.push(_book_tours[i]);
+
+                _book_tours[i].dataValues.isNeedCall = true;
+            }
+            else {
+                _book_tours[i].dataValues.isNeedCall = false;
+            }
+        }
+        else {
+            _book_tours[i].dataValues.isNeedCall = false;
+        }
+    }
+}
+
 const sortBookTour = (book_tour1, book_tour2) => {
     return priority_status_booking[book_tour1.status] - priority_status_booking[book_tour2.status];
 }
@@ -547,6 +576,11 @@ exports.getPassengerInBookTourHistory = (req, res) => {
 exports.getAllBookTourHistoryWithoutPagination = (req, res) => {
     try {
         const status = req.query.status;
+        const default_days_need_call = 2;
+        let days_need_call;
+        if (typeof req.query.days_need_call === 'undefined') days_need_call = default_days_need_call;
+        else days_need_call = req.query.days_need_call
+        days_need_call = parseInt(days_need_call);
         const include_tour_turn = {
             attributes: { exclude: ['fk_tour'] },
             model: db.tour_turns,
@@ -595,8 +629,9 @@ exports.getAllBookTourHistoryWithoutPagination = (req, res) => {
                 model: db.payment_method
             }]
         };
-        db.book_tour_history.findAll(query).then((_book_tours) => {
+        db.book_tour_history.findAll(query).then(async (_book_tours) => {
             _book_tours.sort(sortBookTour);
+            await add_isNeedCall(_book_tours, days_need_call);
             return res.status(200).json({ data: _book_tours })
         })
     } catch (error) {
@@ -1217,20 +1252,21 @@ exports.deletePassenger = async (req, res) => {
 const filterBookTourNeedCall = async (_book_tours, days_need_call) => {
     const result = [];
     for (let i = 0; i < _book_tours.length; i++) {
-        // return true or false
-        const cur_date = new Date();
-        const timeDiff = new Date(_book_tours[i].tour_turn.start_date) - cur_date;
-        const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
+        if (_book_tours[i].status === 'booked') {
+            const cur_date = new Date();
+            const timeDiff = new Date(_book_tours[i].tour_turn.start_date) - cur_date;
+            const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
 
-        // phải thanh toán trước _book_tours[i].tour_turn.payment_term ngày
-        if (days_before_go > parseInt(_book_tours[i].tour_turn.payment_term) && days_before_go <= (parseInt(_book_tours[i].tour_turn.payment_term) + days_need_call)) {
-            const payment_term = new Date(_book_tours[i].tour_turn.start_date);
-            payment_term.setDate(payment_term.getDate() - parseInt(_book_tours[i].tour_turn.payment_term) - 1);
-            payment_term.setHours(23);
-            payment_term.setMinutes(59);
-            payment_term.setSeconds(59);
-            _book_tours[i].dataValues.payment_term = payment_term;
-            result.push(_book_tours[i]);
+            // phải thanh toán trước _book_tours[i].tour_turn.payment_term ngày
+            if (days_before_go > parseInt(_book_tours[i].tour_turn.payment_term) && days_before_go <= (parseInt(_book_tours[i].tour_turn.payment_term) + days_need_call)) {
+                const payment_term = new Date(_book_tours[i].tour_turn.start_date);
+                payment_term.setDate(payment_term.getDate() - parseInt(_book_tours[i].tour_turn.payment_term) - 1);
+                payment_term.setHours(23);
+                payment_term.setMinutes(59);
+                payment_term.setSeconds(59);
+                _book_tours[i].dataValues.payment_term = payment_term;
+                result.push(_book_tours[i]);
+            }
         }
     }
     return result;
