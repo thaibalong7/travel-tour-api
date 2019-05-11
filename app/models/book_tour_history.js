@@ -10,7 +10,7 @@ module.exports = function (sequelize, Sequelize) {
             allowNull: false,
         },
         status: {
-            type: Sequelize.ENUM('booked', 'paid', 'cancelled', 'pending_cancel', 'finished'),
+            type: Sequelize.ENUM('booked', 'paid', 'cancelled', 'pending_cancel', 'confirm_cancel', 'refunded', 'not_refunded', 'finished'),
             defaultValue: 'booked'
         },
         num_passenger: {
