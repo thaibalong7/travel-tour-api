@@ -1,6 +1,6 @@
 
 const company_info = require('../../config/setting').company_info
-
+const cancel_policy = require('../../config/setting').cancel_policy
 function formatNumber(num) {
 	return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 }
@@ -1447,8 +1447,12 @@ const html_confirm_cancel_email = (linkTeam, cancel_booking) => {
 
 	const money_refunded = formatNumber(cancel_booking.money_refunded);
 
-	const refund_period_date = new Date(cancel_booking.refund_period);
-	const refund_period = arr_days_of_week[refund_period_date.getDay()] + ', ' + refund_period_date.getDate() + ' Thg ' + (refund_period_date.getMonth() + 1) + ' ' + refund_period_date.getFullYear();
+	const last_refund_period_date = new Date(cancel_booking.refund_period);
+	const last_refund_period = arr_days_of_week[last_refund_period_date.getDay()] + ', ' + last_refund_period_date.getDate() + ' Thg ' + (last_refund_period_date.getMonth() + 1) + ' ' + last_refund_period_date.getFullYear();
+
+	const first_refund_period_date = new Date();
+	first_refund_period_date.setDate(first_refund_period_date.getDate() + cancel_policy.time_receive_money_after_confirm);
+	const first_refund_period = arr_days_of_week[first_refund_period_date.getDay()] + ', ' + first_refund_period_date.getDate() + ' Thg ' + (first_refund_period_date.getMonth() + 1) + ' ' + first_refund_period_date.getFullYear();
 
 	return `<!doctype html>
 	<html>
@@ -1904,10 +1908,18 @@ const html_confirm_cancel_email = (linkTeam, cancel_booking) => {
                           </tr>
                           <tr>
                             <td>
-                                Thời hạn nhận:
+                                Thời hạn có thể lên nhận:
                             </td>
                             <td>
-                                ${refund_period}
+                                ${first_refund_period}
+                            </td>
+													</tr>
+													<tr>
+                            <td>
+                                Thời hạn cuối lên nhận:
+                            </td>
+                            <td>
+                                ${last_refund_period}
                             </td>
                           </tr>
                           <tr>

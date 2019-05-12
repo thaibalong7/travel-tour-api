@@ -262,10 +262,34 @@ exports.refunded = async (req, res) => {
             if (_cancel_booking) {
                 const _book_tour_history = _cancel_booking.book_tour_history;
                 if (_book_tour_history.status === 'confirm_cancel') {
+                    //check xem hiện giờ có nằm trong khoảng có thể refund hay k
+                    let curDate = new Date();
+                    const refund_period = new Date(_cancel_booking.refund_period + ' 00:00:00 GMT+07:00');
+                    curDate = new Date(curDate.getFullYear() + '-' + (curDate.getMonth() + 1) + '-' + curDate.getDate() + ' 00:00:00 GMT+07:00');
+                    if (curDate <= refund_period) {
+                        _book_tour_history.status = 'refunded';
+                        if (typeof req.body.refund_message !== 'undefined') {
+                            if (req.body.refund_message !== '') {
+                                _cancel_booking.refund_message = req.body.refund_message;
+                            }
+                        }
+                        _cancel_booking.refunded_time = new Date();
+                        await _book_tour_history.save();
+                        await _cancel_booking.save();
+                        res.status(200).json({
+                            msg: 'Refund successful',
+                            data: _cancel_booking
+                        })
 
+
+                        //gởi mail nữa ...
+                    }
+                    else {
+                        return res.status(400).json({ msg: 'Beyond the refund period' })
+                    }
                 }
                 else {
-
+                    return res.status(400).json({ msg: 'Can not refund this book tour' })
                 }
             }
             else {

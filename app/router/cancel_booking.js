@@ -9,4 +9,6 @@ router.get('/getAllProcessCancel', cancel_booking.getAllProcessCancel); //middle
 
 router.post('/confirmCancel', cancel_booking.confirmCancel) //middlewareAuthAdmin
 
+router.post('/refunded', cancel_booking.refunded) //middlewareAuthAdmin
+
 module.exports = router
