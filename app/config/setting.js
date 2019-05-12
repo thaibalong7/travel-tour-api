@@ -20,6 +20,9 @@ var config = {
     company_info: {
         name: 'Tour Travel',
         address: '127 Nguyễn Văn Cừ, Quận 5, TP Hồ Chí Minh'
+    },
+    cancel_policy:{
+        time_receive_money_after_confirm: 3 //số ngày sau khi admin confirm request cancel booking, có thể tới cty nhân lại tiền
     }
 }
 
