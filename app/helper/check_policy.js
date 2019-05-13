@@ -22,9 +22,10 @@ const add_is_allow_booking = async (tour_turns, isRawObj = true) => {
 
 const check_policy_cancel_booking = async (booking) => {
     //check theo tour turn của booking này
-    if (booking.status == 'paid') {
-        const start_date = new Date(booking.tour_turn.start_date);
+    if (booking.status == 'paid' || booking.status == 'booked') {
+        const start_date = new Date(booking.tour_turn.start_date + ' 00:00:00 GMT+07:00');
         const cur_date = new Date();
+        curDate = new Date(curDate.getFullYear() + '-' + (curDate.getMonth() + 1) + '-' + curDate.getDate() + ' 00:00:00 GMT+07:00');
         if (booking.payment_method.name == 'online')
             if (cur_date < start_date)
                 return true;
@@ -32,7 +33,7 @@ const check_policy_cancel_booking = async (booking) => {
         else { // payment_method là incash và tranfer
             const timeDiff = (start_date) - (cur_date);
             const days = timeDiff / (1000 * 60 * 60 * 24) //số ngày còn lại trc khi đi
-            if (days > 6) //nếu còn lại trên 7 ngày -> cho phép request hủy
+            if (days > 2) //nếu còn lại trên 7 ngày -> cho phép request hủy
                 return true;
             else return false //ngược lại tới cty mà chuyển
         }
