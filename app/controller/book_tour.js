@@ -1029,8 +1029,7 @@ exports.unpayBookTour = async (req, res) => {
 //     }
 // }
 
-exports.cancelBookTour = async (req, res) => {
-    //api này cần được chỉnh sửa, phải thêm db cho bảng cancel_booking đầy đủ
+exports.cancelBookTourStatusBooked = async (req, res) => {
     try {
         const code = req.body.code;
         const book_tour = await db.book_tour_history.findOne({
@@ -1042,7 +1041,56 @@ exports.cancelBookTour = async (req, res) => {
             }]
         })
         if (book_tour) {
-            if (book_tour.status === 'booked' || book_tour.status === 'paid' || book_tour.status === 'pending_cancel') {
+            if (book_tour.status == 'booked') {
+                //hủy thẳng luôn
+                const new_request = {
+                    fk_book_tour: book_tour.id,
+                    confirm_time: new Date(),
+                    refunded_time: new Date()
+                }
+                if (typeof req.body.request_message !== 'undefined')
+                    new_request.request_message = req.body.request_message;
+                book_tour.status = 'cancelled';
+                const tour_turn = book_tour.tour_turn
+                tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger);
+                await book_tour.save();
+                await tour_turn.save();
+                //add new record
+                await db.cancel_booking.create(new_request).then(_request => {
+                    return res.status(200).json({
+                        data: {
+                            book_tour: book_tour,
+                            cancel_booking: _request
+                        }
+                    });
+                })
+            }
+            else return res.status(400).json({ msg: "This book tour don't have status 'booked'" });
+        }
+        else {
+            return res.status(400).json({ msg: 'Wrong code' });
+        }
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() });
+    }
+}
+
+
+
+exports.cancelBookTour = async (req, res) => {
+    //api này cần được chỉnh sửa, phải thêm db cho bảng cancel_booking đầy đủ đủ đủ
+    try {
+        const code = req.body.code;
+        const book_tour = await db.book_tour_history.findOne({
+            where: {
+                code: code
+            },
+            include: [{
+                model: db.tour_turns
+            }]
+        })
+        if (book_tour) {
+            if (book_tour.status === 'paid') {
                 book_tour.status = 'cancelled' //chuyển thành status hủy đặt tour
                 //update số lượng người đi ở tour turn nữa ...
                 const tour_turn = book_tour.tour_turn
@@ -1078,7 +1126,7 @@ exports.cancelBookTour = async (req, res) => {
                 })
             }
             else {
-                return res.status(400).json({ msg: 'This booking has been cancelled' });
+                return res.status(400).json({ msg: "This book tour don't have status 'paid'" });
             }
 
         }
