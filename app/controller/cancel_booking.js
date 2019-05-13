@@ -99,7 +99,7 @@ const sortRequest = (request1, request2) => {
     return (priority_status_book_tour[request1.book_tour_history.status] - priority_status_book_tour[request2.book_tour_history.status]);
 }
 
-exports.getAllProcessCancel = (req, res) => {
+exports.getAllProcessCancel = async (req, res) => {
     try {
         const query = {
             attributes: {
@@ -166,10 +166,10 @@ exports.confirmCancel = async (req, res) => {
                     const money_refunded = (req.body.money_refunded);
                     if (!isNaN(money_refunded) && parseInt(money_refunded) >= 0) {
                         const curDate = new Date();
-                        const refund_period = new Date(req.body.refund_period);
-                        const timeDiff = refund_period - new Date(curDate.getFullYear() + '-' + (curDate.getMonth() + 1) + '-' + curDate.getDate());
-                        const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24)) //số ngày còn lại có thể lên nhận thanh toán;
-                        if (days_before_go > cancel_policy.time_receive_money_after_confirm) {
+                        const refund_period = new Date(req.body.refund_period + ' 00:00:00 GMT+07:00');
+                        const timeDiff = refund_period - new Date(curDate.getFullYear() + '-' + (curDate.getMonth() + 1) + '-' + curDate.getDate() + ' 00:00:00 GMT+07:00');
+                        const days_before_can_refund = parseInt(timeDiff / (1000 * 60 * 60 * 24)) //số ngày còn lại có thể lên nhận thanh toán;
+                        if (days_before_can_refund > cancel_policy.time_receive_money_after_confirm) {
                             _cancel_booking.refund_period = refund_period
                             _cancel_booking.money_refunded = parseInt(money_refunded);
                             _cancel_booking.confirm_time = new Date();
@@ -244,6 +244,47 @@ exports.confirmCancel = async (req, res) => {
     }
 }
 
+
+exports.updateRefundPeriod = async (req, res) => {
+    try {
+        if (typeof req.body.idCancelBooking !== 'undefined' && typeof req.body.refund_period) {
+            let _cancel_booking = await cancel_booking.findOne({
+                where: {
+                    id: req.body.idCancelBooking
+                },
+                // include: [{
+                //     model: db.book_tour_history,
+                //     include: [{
+                //         model: db.tour_turns
+                //     }]
+                // }]
+            })
+            if (_cancel_booking) {
+                const confirm_time = new Date(_cancel_booking.confirm_time);
+                const refund_period = new Date(req.body.refund_period + ' 00:00:00 GMT+07:00');
+                const timeDiff = refund_period - new Date(confirm_time.getFullYear() + '-' + (confirm_time.getMonth() + 1) + '-' + confirm_time.getDate() + ' 00:00:00 GMT+07:00');
+                const days_before_can_refund = parseInt(timeDiff / (1000 * 60 * 60 * 24)) //số ngày còn lại có thể lên nhận thanh toán;
+                if (days_before_can_refund > cancel_policy.time_receive_money_after_confirm) {
+                    _cancel_booking.refund_period = refund_period
+                    await _cancel_booking.save();
+                    return res.status(200).json({
+                        msg: 'Update refund period successful',
+                        data: _cancel_booking
+                    })
+                }
+                else {
+                    return res.status(400).json({ msg: 'Wrong refund period' })
+                }
+            }
+            else return res.status(400).json({ msg: 'Wrong id of cancel_booking' })
+        }
+        else {
+            return res.status(400).json({ msg: 'Params are invalid' })
+        }
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() })
+    }
+}
 
 exports.refunded = async (req, res) => {
     try {
