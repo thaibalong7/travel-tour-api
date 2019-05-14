@@ -855,10 +855,12 @@ exports.payBookTour = async (req, res) => {
             }
         })
         if (book_tour) {
-            if (book_tour.status === 'booked' || book_tour.status === 'pending_cancel') { // book tour vừa book hoặc đang chờ cancel có thể chuyể thành paid
+            if (book_tour.status === 'booked') { // book tour vừa book mới có thể chuyể thành paid
                 book_tour.status = 'paid' //chuyển thành status đã thanh toán
                 if (typeof req.body.message_pay !== 'undefined') {
+                    if (req.body.message_pay !== null)
                     book_tour.message_pay = JSON.stringify(req.body.message_pay)
+                    else return res.status(400).json({ msg: 'Message pay is null' });
                 }
                 else {
                     return res.status(400).json({ msg: 'Missing message pay' });
@@ -905,14 +907,8 @@ exports.payBookTour = async (req, res) => {
                     data: book_tour
                 })
             }
-            if (book_tour.status === 'paid') {
-                return res.status(400).json({ msg: 'This booking has been paid' });
-            }
-            if (book_tour.status === 'cancelled') {
-                return res.status(400).json({ msg: 'This booking has been cancelled' });
-            }
-            if (book_tour.status === 'finished') {
-                return res.status(400).json({ msg: 'This booking has been finished' });
+            else {
+                return res.status(400).json({ msg: 'Can not pay this book tour' });
             }
         }
         else {

@@ -312,7 +312,9 @@ exports.refunded = async (req, res) => {
                     if (curDate <= refund_period) {
                         _book_tour_history.status = 'refunded';
                         if (typeof req.body.refund_message !== 'undefined') { //refund_message là một obj
+                            if (req.body.refund_message !== null)
                                 _cancel_booking.refund_message = JSON.stringify(req.body.refund_message);
+                            else return res.status(400).json({ msg: 'Refund message is null' })
                         }
                         else return res.status(400).json({ msg: 'Missing refund message' })
                         _cancel_booking.refunded_time = new Date();
@@ -323,36 +325,40 @@ exports.refunded = async (req, res) => {
                             data: _cancel_booking
                         })
 
-                        _cancel_booking = await cancel_booking.findOne({
-                            where: {
-                                id: req.body.idCancelBooking
-                            },
-                            include: [{
-                                model: db.book_tour_history,
+                        try {
+                            _cancel_booking = await cancel_booking.findOne({
+                                where: {
+                                    id: req.body.idCancelBooking
+                                },
                                 include: [{
-                                    model: db.book_tour_contact_info
-                                },
-                                {
-                                    model: db.payment_method
-                                },
-                                {
-                                    attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
-                                    model: db.passengers,
+                                    model: db.book_tour_history,
                                     include: [{
-                                        model: db.type_passenger
-                                    }]
-                                },
-                                {
-                                    model: db.tour_turns,
-                                    include: [{
-                                        model: db.tours,
-                                    }]
-                                }],
-                            }]
-                        })
-                        send_mail_helper.sendRefundedEmail(req, _cancel_booking)
+                                        model: db.book_tour_contact_info
+                                    },
+                                    {
+                                        model: db.payment_method
+                                    },
+                                    {
+                                        attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                                        model: db.passengers,
+                                        include: [{
+                                            model: db.type_passenger
+                                        }]
+                                    },
+                                    {
+                                        model: db.tour_turns,
+                                        include: [{
+                                            model: db.tours,
+                                        }]
+                                    }],
+                                }]
+                            })
+                            send_mail_helper.sendRefundedEmail(req, _cancel_booking)
 
-                        return;
+                            return;
+                        } catch (error) {
+                            // console.log(error)
+                        }
                     }
                     else {
                         return res.status(400).json({ msg: 'Beyond the refund period' })
