@@ -196,22 +196,22 @@ module.exports = {
                 "(55, 'N_B_9.png', 6)," +
                 "(56, 'N_B_10.png', 6)," +
                 "(57, 'N_B_11.png', 6);"),
-            queryInterface.sequelize.query("INSERT INTO `book_tour_contact_info` (`id`, `email`, `fullname`, `phone`, `address`, `fk_user`) VALUES" +
-                "(3, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12)," +
-                "(4, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12)," +
-                "(5, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12)," +
-                "(6, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12)," +
-                "(7, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL)," +
-                "(9, '123A@gmail.com', 'Nguyễn Văn A', '0364651849', 'A713B Lê Văn Việt, Hiệp Phú, Quận 9, Hồ Chí Minh, Việt Nam', NULL)," +
-                "(10, 'nnthai@gmail.com', 'Nguyễn Ngọc Hải', '0755484454', '217 Đường Nguyễn Duy Trinh, Phường Bình Trưng Tây, Quận 2, Hồ Chí Minh, Việt Nam', NULL)," +
-                "(11, 'ntphung@gmail.com', 'Nguyễn Thị Phùng', '0334554871', '19 Đồng Văn Cống, Phường Thạnh Mỹ Lợi, Quận 2, Hồ Chí Minh, Việt Nam', NULL)," +
-                "(12, 'pntinh@gmail.com', 'Phạm Ngọc Tình', '0334548742', '18/844 Huỳnh Tấn Phát, Phú Thuận, Quận 7, Hồ Chí Minh, Việt Nam', 13)," +
-                "(13, 'tmsang@gmail.com', 'Trương Minh Sang', '0754487564', '94/24 Bắc Hải, Phường 15, Quận 10, Hồ Chí Minh, Việt Nam', NULL)," +
-                "(14, 'ltthao@gmail.com', 'Lê Thanh Thảo', '0345545484', '09 Lãnh Binh Thăng, Phường 13, Quận 11, Hồ Chí Minh, Việt Nam', NULL)," +
-                "(15, 'ptlong@gmail.com', 'Phạm Thành Long', '0315549987', '26 Đường Hậu Giang, Phường 5, Quận 6, Hồ Chí Minh, Việt Nam', 3)," +
-                "(16, 'lnh@gmail.com', 'Lee Ngọc Hồi', '0221454786', '154/45 Đường Lê Lợi, Phường 5, Quận Gò Vấp, Hồ Chí Minh, Việt Nam', 3)," +
-                "(17, 'lvhai@gmail.com', 'Lê Văn Hải', '0102521548', '24 Đường Nguyễn Bỉnh Khiêm, Phường 8, Quận Bình Thạnh, Hồ Chí Minh, Việt Nam', 9)," +
-                "(8, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL);"),
+            queryInterface.sequelize.query("INSERT INTO `book_tour_contact_info` (`id`, `email`, `fullname`, `phone`, `address`, `fk_user`, `passport`) VALUES" +
+                "(3, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12, '206120720')," +
+                "(4, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12, '206120720')," +
+                "(5, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12, '206120720')," +
+                "(6, 'thai.balong.7@gmail.com', 'Thái Bá Long', '0123456489', 'làng đại học Thủ Đức', 12, '206120720')," +
+                "(7, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL, '206124151')," +
+                "(9, '123A@gmail.com', 'Nguyễn Văn A', '0364651849', 'A713B Lê Văn Việt, Hiệp Phú, Quận 9, Hồ Chí Minh, Việt Nam', NULL, '265654364')," +
+                "(10, 'nnthai@gmail.com', 'Nguyễn Ngọc Hải', '0755484454', '217 Đường Nguyễn Duy Trinh, Phường Bình Trưng Tây, Quận 2, Hồ Chí Minh, Việt Nam', NULL, '311548487')," +
+                "(11, 'ntphung@gmail.com', 'Nguyễn Thị Phùng', '0334554871', '19 Đồng Văn Cống, Phường Thạnh Mỹ Lợi, Quận 2, Hồ Chí Minh, Việt Nam', NULL, '988842154')," +
+                "(12, 'pntinh@gmail.com', 'Phạm Ngọc Tình', '0334548742', '18/844 Huỳnh Tấn Phát, Phú Thuận, Quận 7, Hồ Chí Minh, Việt Nam', 13, '111321546')," +
+                "(13, 'tmsang@gmail.com', 'Trương Minh Sang', '0754487564', '94/24 Bắc Hải, Phường 15, Quận 10, Hồ Chí Minh, Việt Nam', NULL, '445654845')," +
+                "(14, 'ltthao@gmail.com', 'Lê Thanh Thảo', '0345545484', '09 Lãnh Binh Thăng, Phường 13, Quận 11, Hồ Chí Minh, Việt Nam', NULL, '121354684')," +
+                "(15, 'ptlong@gmail.com', 'Phạm Thành Long', '0315549987', '26 Đường Hậu Giang, Phường 5, Quận 6, Hồ Chí Minh, Việt Nam', 3, '465156486')," +
+                "(16, 'lnh@gmail.com', 'Lee Ngọc Hồi', '0221454786', '154/45 Đường Lê Lợi, Phường 5, Quận Gò Vấp, Hồ Chí Minh, Việt Nam', 3, '031154877')," +
+                "(17, 'lvhai@gmail.com', 'Lê Văn Hải', '0102521548', '24 Đường Nguyễn Bỉnh Khiêm, Phường 8, Quận Bình Thạnh, Hồ Chí Minh, Việt Nam', 9, '211548876')," +
+                "(8, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL, '206124151');"),
         ]);
     },
 

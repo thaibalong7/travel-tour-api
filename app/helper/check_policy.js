@@ -24,8 +24,8 @@ const check_policy_cancel_booking = async (booking) => {
     //check theo tour turn của booking này
     if (booking.status == 'paid' || booking.status == 'booked') {
         const start_date = new Date(booking.tour_turn.start_date + ' 00:00:00 GMT+07:00');
-        const cur_date = new Date();
-        curDate = new Date(curDate.getFullYear() + '-' + (curDate.getMonth() + 1) + '-' + curDate.getDate() + ' 00:00:00 GMT+07:00');
+        let cur_date = new Date();
+        cur_date = new Date(cur_date.getFullYear() + '-' + (cur_date.getMonth() + 1) + '-' + cur_date.getDate() + ' 00:00:00 GMT+07:00');
         if (booking.payment_method.name == 'online')
             if (cur_date < start_date)
                 return true;

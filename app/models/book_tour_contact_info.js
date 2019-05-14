@@ -18,6 +18,9 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.TEXT,
             allowNull: true,
         },
+        passport: {
+            type: Sequelize.STRING,
+        }
     },
         {
             charset: 'utf8',
