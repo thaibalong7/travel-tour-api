@@ -52,7 +52,6 @@ exports.requestCancel = async (req, res) => {
                                 fk_book_tour: idBookTour,
                                 fk_user: req.userData.id,
                                 confirm_time: new Date(),
-                                refunded_time: new Date()
                             }
                             book_tour.status = 'cancelled';
                             const tour_turn = book_tour.tour_turn

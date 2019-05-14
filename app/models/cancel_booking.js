@@ -27,6 +27,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         refunded_time: {
             type: Sequelize.DATE
+        },
+        request_offline_person: {
+            type: Sequelize.TEXT,
         }
     },
         {

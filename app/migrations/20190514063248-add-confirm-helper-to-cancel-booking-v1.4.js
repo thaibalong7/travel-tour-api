@@ -12,7 +12,7 @@ module.exports = {
         return Promise.all([
             queryInterface.addColumn(
                 'cancel_booking', // name of Source model
-                'request_offline_helper', // name of the key we're adding 
+                'request_offline_person', // name of the key we're adding 
                 {
                     type: Sequelize.STRING
                 }
@@ -31,7 +31,7 @@ module.exports = {
         return Promise.all([
             queryInterface.removeColumn(
                 'cancel_booking', // name of Source model
-                'request_offline_helper', // name of the key we're remove
+                'request_offline_person', // name of the key we're remove
             ),
         ])
     }

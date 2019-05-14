@@ -868,7 +868,7 @@ const html_e_ticket_email = (linkTeam, book_tour, linkTourTurn) => {
 
 	}
 
-	const datetime_arrive = new Date(cancel_booking.book_tour_history.tour_turn.start_date + ' ' + cancel_booking.book_tour_history.tour_turn.tour.routes[0].arrive_time + ' GMT+07:00')
+	const datetime_arrive = new Date(book_tour.tour_turn.start_date + ' ' + book_tour.tour_turn.tour.routes[0].arrive_time + ' GMT+07:00')
 	const time_arrive_string = toStringDatetime(datetime_arrive);
 
 	const start_at = 'Khởi hành tại ' + book_tour.tour_turn.tour.routes[0].location.name;

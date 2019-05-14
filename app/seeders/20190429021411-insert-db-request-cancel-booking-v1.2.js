@@ -61,11 +61,10 @@ module.exports = {
 					fk_user: null,
 					request_time: new Date(formatDate(-6) + ' 11:15:21'),
 					confirm_time: new Date(formatDate(-6) + ' 11:15:21'),
-					refund_message: JSON.stringify({
+					request_offline_person: JSON.stringify({
 						name: 'Nguyễn Văn A',
 						passport: '265654364',
-						helper: false
-					})
+					}),
 				},
 			]),
 			queryInterface.bulkUpdate('book_tour_contact_info',
