@@ -703,6 +703,7 @@ exports.getHistoryBookTourByCode = (req, res) => {
                     var price_of_type = parseFloat(parseInt(type.price_passengers[0].percent) / 100) * parseInt(tour_turn.price)
                     price_of_type = price_of_type - parseInt(price_of_type * parseFloat(tour_turn.discount / 100))
                     type_passenger_detail[i] = {
+                        name_vi: type.name_vi,
                         type: type.name,
                         num_passenger: list_passenger.length,
                         price: price_of_type
