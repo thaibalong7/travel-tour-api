@@ -8,6 +8,8 @@ const helper_add_link = require('../helper/add_full_link');
 const link_img = require('../config/setting').link_img;
 const { sendETicketEmail } = require('../helper/send_email');
 const checkPolicy_helper = require('../helper/check_policy');
+const send_mail_helper = require('../helper/send_email');
+const cancel_policy = require('../config/setting').cancel_policy;
 
 var publicKEY = fs.readFileSync('./app/middleware/public.key', 'utf8');
 var verifyOptions = {
@@ -1106,61 +1108,108 @@ exports.cancelBookTourStatusBooked = async (req, res) => {
 exports.confirmCancelBookTourOffline = async (req, res) => {
     //api này cần được chỉnh sửa, phải thêm db cho bảng cancel_booking đầy đủ
     try {
-        const code = req.body.code;
-        const book_tour = await db.book_tour_history.findOne({
-            where: {
-                code: code
-            },
-            include: [{
-                model: db.tour_turns
-            }]
-        })
-        if (book_tour) {
-            if (book_tour.status === 'paid') {
-                book_tour.status = 'cancelled' //chuyển thành status hủy đặt tour
-                //update số lượng người đi ở tour turn nữa ...
-                const tour_turn = book_tour.tour_turn
-                tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger);
-                await book_tour.save();
-                await tour_turn.save();
+        if (typeof req.body.refund_period !== 'undefined' && typeof req.body.money_refunded !== 'undefined'
+            && typeof req.body.request_message !== 'undefined' && typeof req.body.request_offline_person !== 'undefined') {
+            if (req.body.request_offline_person === null) return res.status(400).json({ msg: 'Request Offline Person is null' });
+            const code = req.body.code;
+            const book_tour = await db.book_tour_history.findOne({
+                where: {
+                    code: code
+                },
+                include: [{
+                    model: db.tour_turns
+                }]
+            })
+            if (book_tour) {
+                if (book_tour.status === 'paid') { //paid thì mới có thể requesst được chớ pending_cancel thì dùng api khác
+                    book_tour.status = 'confirm_cancel' //chuyển thành status confirm_cancel
 
-                //check thêm lý do hủy nữa, nếu có thì tạo mới một cancel_booking cho booking này
-                // check xem đã có message chưa, có rồi thì thôi k thêm nữa
-                // const check_request = await db.cancel_booking.findOne({
-                //     where: {
-                //         fk_book_tour: book_tour.id
-                //     }
-                // })
-                // if (!check_request) {
-                const message = req.body.message
-                if (typeof message !== undefined) {
-                    if (message !== null && message !== "") {
-                        db.cancel_booking.create({
-                            request_message: message,
-                            fk_book_tour: book_tour.id,
-                        })
+                    const money_refunded = (req.body.money_refunded);
+                    if (!isNaN(money_refunded) && parseInt(money_refunded) >= 0) {
+                        const curDate = new Date();
+                        const refund_period = new Date(req.body.refund_period + ' 00:00:00 GMT+07:00');
+                        const timeDiff = refund_period - new Date(curDate.getFullYear() + '-' + (curDate.getMonth() + 1) + '-' + curDate.getDate() + ' 00:00:00 GMT+07:00');
+                        const days_before_can_refund = parseInt(timeDiff / (1000 * 60 * 60 * 24)) //số ngày còn lại có thể lên nhận thanh toán;
+                        if (days_before_can_refund > cancel_policy.time_receive_money_after_confirm) {
+                            const new_cancel_booking = {
+                                request_message: req.body.request_message,
+                                fk_book_tour: book_tour.id,
+                                request_offline_person: JSON.stringify(req.body.request_offline_person),
+                                confirm_time: new Date(),
+                                refund_period: req.body.refund_period,
+                                money_refunded: parseInt(req.body.money_refunded)
+                            }
+
+                            db.cancel_booking.create(new_cancel_booking).then(async _cancel_booking => {
+                                //update số lượng người đi ở tour turn nữa ...
+                                const tour_turn = book_tour.tour_turn
+                                tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger);
+                                await book_tour.save();
+                                await tour_turn.save();
+                                res.status(200).json({
+                                    msg: 'Confirm cancel successful',
+                                    data: {
+                                        book_tour: book_tour,
+                                        cancel_booking: _cancel_booking
+                                    }
+                                })
+
+                                //gởi mail confirm
+                                const cancel_booking = await db.cancel_booking.findOne({
+                                    where: {
+                                        id: _cancel_booking.id
+                                    },
+                                    include: [{
+                                        model: db.book_tour_history,
+                                        include: [{
+                                            model: db.book_tour_contact_info
+                                        },
+                                        {
+                                            model: db.payment_method
+                                        },
+                                        {
+                                            attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                                            model: db.passengers,
+                                            include: [{
+                                                model: db.type_passenger
+                                            }]
+                                        },
+                                        {
+                                            model: db.tour_turns,
+                                            include: [{
+                                                model: db.tours,
+                                                include: [{
+                                                    model: db.routes,
+                                                    include: [{
+                                                        model: db.locations
+                                                    }]
+                                                }]
+                                            }]
+                                        }],
+                                    }]
+                                })
+                                send_mail_helper.sendConfirmCancelEmail(req, cancel_booking)
+
+                                return;
+
+                            });
+                        }
+                        else {
+                            return res.status(400).json({ msg: 'Wrong refund period' })
+                        }
                     }
+                    else return res.status(400).json({ msg: 'Wrong money to refunded' })
                 }
-                // }
-                // else {
-
-                // }
-
-                return res.status(200).json({
-                    msg: 'Cancelled successful',
-                    data: book_tour
-                })
-
-
-
+                else {
+                    return res.status(400).json({ msg: "This book tour don't have status 'paid'" });
+                }
             }
             else {
-                return res.status(400).json({ msg: "This book tour don't have status 'paid'" });
+                return res.status(400).json({ msg: 'Wrong code' });
             }
-
         }
         else {
-            return res.status(400).json({ msg: 'Wrong code' });
+            return res.status(400).json({ msg: 'Params is invalid' });
         }
     } catch (error) {
         // console.error(error);

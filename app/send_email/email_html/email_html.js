@@ -17,7 +17,7 @@ function toStringDatetime(date) {
 	return hour + ':' + min + ' ' + ampm + ' ' + arr_days_of_week[date.getDay()] + ', ' + date.getDate() + ' Thg ' + (date.getMonth() + 1) + ' ' + date.getFullYear();
 }
 
-function toStringDate(date){
+function toStringDate(date) {
 	return arr_days_of_week[date.getDay()] + ', ' + date.getDate() + ' Thg ' + (date.getMonth() + 1) + ' ' + date.getFullYear();
 }
 
@@ -1453,8 +1453,22 @@ const html_confirm_cancel_email = (linkTeam, cancel_booking) => {
 	const last_refund_period = toStringDate(last_refund_period_date);
 
 	const first_refund_period_date = new Date();
-	first_refund_period_date.setDate(first_refund_period_date.getDate() + cancel_policy.time_receive_money_after_confirm);
+	first_refund_period_date.setDate(first_refund_period_date.getDate() + cancel_policy.time_receive_money_after_confirm + 1);
 	const first_refund_period = toStringDate(first_refund_period_date);
+
+	let request_offline_person = ``;
+	if (cancel_booking.request_offline_person !== null) {
+		const person = JSON.parse(cancel_booking.request_offline_person);
+		request_offline_person =
+			`<tr>
+					<td>
+						Người yêu cầu hủy:
+					</td>
+					<td>
+						${person.name} - 	${person.passport}
+					</td>
+			</tr>`
+	}
 
 	return `<!doctype html>
 	<html>
@@ -1930,8 +1944,9 @@ const html_confirm_cancel_email = (linkTeam, cancel_booking) => {
                             </td>
                             <td>
                                 ${company_info.address}
-                            </td>
-                          </tr>
+														</td>
+													</tr>
+													${request_offline_person}
                         </table>
                         <div style="margin-top: 15px">
                         Quý khách vui lòng đến đúng địa điểm theo đúng thời hạn quy định ở trên.
