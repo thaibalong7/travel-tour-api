@@ -19,7 +19,7 @@ module.exports = {
             name: 'Thái Bá Long',
             passport: '206120720',
             note: '',
-            help: false
+            helper: false
           })
         },
         { id: 3 }),
@@ -29,7 +29,7 @@ module.exports = {
             name: 'Thái Bá Sơn',
             passport: '206720245',
             note: 'Em trai thanh toán hộ',
-            help: true
+            helper: true
           })
         },
         { id: 4 }),
@@ -39,7 +39,7 @@ module.exports = {
             name: 'Thái Bá Long',
             passport: '206120720',
             note: '',
-            help: false
+            helper: false
           })
         },
         { id: 6 }),
@@ -49,7 +49,7 @@ module.exports = {
             name: 'Phạm Hưng Tuấn Anh',
             passport: '206124151',
             note: '',
-            help: false
+            helper: false
           })
         },
         { id: 7 }),
@@ -59,7 +59,7 @@ module.exports = {
             name: 'Nguyễn Ngọc Hải',
             passport: '311548487',
             note: 'Đã thanh toán tại quầy',
-            help: false
+            helper: false
           })
         },
         { id: 10 }),
@@ -69,7 +69,7 @@ module.exports = {
             name: 'Nguyễn Thị Phùng',
             passport: '988842154',
             note: '',
-            help: false
+            helper: false
           })
         },
         { id: 11 }),
@@ -79,7 +79,7 @@ module.exports = {
             name: 'Phạm Ngọc Tình',
             passport: '111321546',
             note: '',
-            help: false
+            helper: false
           })
         },
         { id: 12 }),
@@ -89,7 +89,7 @@ module.exports = {
             name: 'Lê Phương Mai',
             passport: '215444512',
             note: 'Người nhà lên thanh toán giùm',
-            help: true
+            helper: true
           })
         },
         { id: 14 }),
@@ -99,7 +99,7 @@ module.exports = {
             name: 'Lee Ngọc Hồi',
             passport: '031154877',
             note: '',
-            help: false
+            helper: false
           })
         },
         { id: 16 }),
@@ -109,7 +109,7 @@ module.exports = {
             name: 'Lê Văn Hải',
             passport: '211548876',
             note: '',
-            help: false
+            helper: false
           })
         },
         { id: 17 }),
@@ -119,7 +119,7 @@ module.exports = {
             name: 'Trần Văn Kiên',
             passport: '254549542',
             note: '',
-            help: false
+            helper: false
           })
         },
         { id: 18 }),
