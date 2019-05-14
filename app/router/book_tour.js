@@ -30,9 +30,9 @@ router.post('/payBookTour', book_tour.payBookTour) //middlewareAuthAdmin
 
 router.post('/unpayBookTour', book_tour.unpayBookTour) //middlewareAuthAdmin
 
-router.post('/cancelBookTour', book_tour.cancelBookTour) //middlewareAuthAdmin
-
 router.post('/cancelBookTourStatusBooked', book_tour.cancelBookTourStatusBooked) //middlewareAuthAdmin
+
+router.post('/confirmCancelBookTourOffline', book_tour.confirmCancelBookTourOffline) //middlewareAuthAdmin
 
 // router.get('/requestCancelBookTour/:code', book_tour.requestCancelBookTour)
 

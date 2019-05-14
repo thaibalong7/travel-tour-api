@@ -211,6 +211,7 @@ module.exports = {
                 "(15, 'ptlong@gmail.com', 'Phạm Thành Long', '0315549987', '26 Đường Hậu Giang, Phường 5, Quận 6, Hồ Chí Minh, Việt Nam', 3, '465156486')," +
                 "(16, 'lnh@gmail.com', 'Lee Ngọc Hồi', '0221454786', '154/45 Đường Lê Lợi, Phường 5, Quận Gò Vấp, Hồ Chí Minh, Việt Nam', 3, '031154877')," +
                 "(17, 'lvhai@gmail.com', 'Lê Văn Hải', '0102521548', '24 Đường Nguyễn Bỉnh Khiêm, Phường 8, Quận Bình Thạnh, Hồ Chí Minh, Việt Nam', 9, '211548876')," +
+                "(18, 'tvkien@gmail.com', 'Trần Văn Kiên', '0344578451', '110 Đường Nguyễn Văn Cừ, Phường Cầu Kho, Quận 1, Hồ Chí Minh, Việt Nam', NULL, '254549542')," +
                 "(8, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL, '206124151');"),
         ]);
     },

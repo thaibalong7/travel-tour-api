@@ -147,6 +147,7 @@ exports.getAllProcessCancel = async (req, res) => {
     }
 }
 
+//confirm một cancel_booking khi đã có request 
 exports.confirmCancel = async (req, res) => {
     try {
         if (typeof req.body.idCancelBooking !== 'undefined' && typeof req.body.refund_period !== 'undefined'
@@ -311,11 +312,10 @@ exports.refunded = async (req, res) => {
                     curDate = new Date(curDate.getFullYear() + '-' + (curDate.getMonth() + 1) + '-' + curDate.getDate() + ' 00:00:00 GMT+07:00');
                     if (curDate <= refund_period) {
                         _book_tour_history.status = 'refunded';
-                        if (typeof req.body.refund_message !== 'undefined') {
-                            if (req.body.refund_message !== '') {
-                                _cancel_booking.refund_message = req.body.refund_message;
-                            }
+                        if (typeof req.body.refund_message !== 'undefined') { //refund_message là một obj
+                                _cancel_booking.refund_message = JSON.stringify(req.body.refund_message);
                         }
+                        else return res.status(400).json({ msg: 'Missing refund message' })
                         _cancel_booking.refunded_time = new Date();
                         await _book_tour_history.save();
                         await _cancel_booking.save();

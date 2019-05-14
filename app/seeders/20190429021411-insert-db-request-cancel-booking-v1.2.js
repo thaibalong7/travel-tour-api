@@ -46,7 +46,26 @@ module.exports = {
 					refund_period: formatDate(+1),
 					refunded_time: new Date(formatDate(-3) + ' 07:14:00'),
 					money_refunded: 935000,
-					refund_message: 'Đã thanh toán bằng tiền mặt'
+					refund_message: JSON.stringify({
+						name: 'Phạm Hưng Tuấn Anh',
+						passport: '206124151',
+						helper: false
+					})
+				},
+			]),
+			queryInterface.bulkInsert('cancel_booking', [ //cái này hủy khi chưa paid
+				{
+					id: 3,
+					request_message: 'Xin hủy vì bận',
+					fk_book_tour: 9,
+					fk_user: null,
+					request_time: new Date(formatDate(-6) + ' 11:15:21'),
+					confirm_time: new Date(formatDate(-6) + ' 11:15:21'),
+					refund_message: JSON.stringify({
+						name: 'Nguyễn Văn A',
+						passport: '265654364',
+						helper: false
+					})
 				},
 			]),
 			queryInterface.bulkUpdate('book_tour_contact_info',

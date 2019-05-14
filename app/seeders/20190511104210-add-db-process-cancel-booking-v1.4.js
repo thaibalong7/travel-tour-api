@@ -28,7 +28,7 @@ module.exports = {
 		return Promise.all([
 			queryInterface.bulkInsert('cancel_booking', [
 				{
-					id: 3,
+					id: 4,
 					request_message: 'Có lịch công tác đột xuất',
 					fk_book_tour: 16,
 					fk_user: 3,
@@ -41,7 +41,7 @@ module.exports = {
 			),
 			queryInterface.bulkInsert('cancel_booking', [
 				{
-					id: 4,
+					id: 5,
 					request_message: 'Mắc thi cuối kỳ',
 					fk_book_tour: 17,
 					fk_user: 9,
@@ -49,6 +49,23 @@ module.exports = {
 					confirm_time: new Date(formatDate(-14) + ' 04:41:37'),
 					refund_period: formatDate(-8),
 					money_refunded: 2500000,
+				}
+			]
+			),
+			queryInterface.bulkInsert('cancel_booking', [
+				{
+					id: 6,
+					request_message: 'Cty có lịch công tác đột xuất ở nước ngoài',
+					fk_book_tour: 18,
+					fk_user: null,
+					request_time: new Date(formatDate(-8) + ' 12:04:00'),
+					confirm_time: new Date(formatDate(-8) + ' 12:05:00'),
+					refund_period: formatDate(+10),
+					money_refunded: 1150000,
+					request_offline_helper: JSON.stringify({
+						name: 'Lê Thị Thanh Thảo',
+						passport: '215454687',
+					})
 				}
 			]
 			)

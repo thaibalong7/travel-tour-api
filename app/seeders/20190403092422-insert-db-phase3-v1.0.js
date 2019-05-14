@@ -170,7 +170,8 @@ module.exports = {
                 "(14, '115d4160-5059-11e9-8ea6-4ss55d4s55e4', '" + formatDate(-22) + " 09:25:00', 'paid', 5, 1500000, 14, 16, 2)," +
                 "(15, '1144s160-5s59-11e9-8ea6-4s55s44s55e4', '" + formatDate(-14) + " 16:37:00', 'booked', 1, 200000, 15, 3, 2)," +
                 "(16, '1144s160-5s59-11e9-8ea6-4s5sdd55e4', '" + formatDate(-18) + " 05:15:00', 'confirm_cancel', 2, 400000, 16, 3, 1)," + 
-                "(17, '11444d60-5s59-11e9-8ea6-4sddf55ef4', '" + formatDate(-24) + " 17:14:00', 'not_refunded', 1, 3000000, 17, 7, 2)," + 
+                "(17, '11444d60-5s59-11e9-8ea6-4sddf55ef4', '" + formatDate(-24) + " 17:14:00', 'not_refunded', 1, 3000000, 17, 7, 2)," + //không thèm nhận tiền hoàn trả
+                "(18, '15ss4d60-5s59-11e9-8ea6-4sddf55ef4', '" + formatDate(-19) + " 16:08:00', 'confirm_cancel', 1, 3000000, 18, 7, 1)," + //ng nhà tới cty xin hủy giùm
                 "(8, 'a294e850-5059-11e9-8e50-6d47d5b38a8f', '" + formatDate(-11) + " 06:29:12', 'booked', 3, 1500000, 8, 14, 1);").then(
                     () => {
                         return queryInterface.sequelize.query("INSERT INTO `passengers` (`id`, `fullname`, `phone`, `birthdate`, `sex`, `passport`, `fk_book_tour`, `fk_type_passenger`) VALUES" +
@@ -201,6 +202,7 @@ module.exports = {
                             "(28, 'Lee Ngọc Hồi', '0345444878', '1989-01-09', 'male', '031154877', 16, 1)," +
                             "(29, 'Hồ Thanh Hằng', '0311889987', '1988-01-17', 'female', '154548487', 16, 1)," +
                             "(30, 'Lê Văn Hải', '0102521548', '1997-02-06', 'male', '211548876', 17, 1)," +
+                            "(31, 'Trần Văn Kiên', '0344578451', '1988-09-30', 'male', '254549542', 18, 1)," +
                             "(14, 'Phạm Thị Ngọc', '0125466447', '2012-07-06', 'female', '332654865', 8, 2);")
                     }
                 ),

@@ -86,7 +86,7 @@ const sortBookTour = (book_tour1, book_tour2) => {
     return priority_status_booking[book_tour1.status] - priority_status_booking[book_tour2.status];
 }
 
-const book_tour = async (req, res, _user) => {
+const book_tour = async (req, res, _user = null) => {
     // {   //req.body
     //     idTour_Turn,
     //     payment,
@@ -111,7 +111,8 @@ const book_tour = async (req, res, _user) => {
         if (typeof req.body.fullname !== 'undefined' && typeof req.body.phone !== 'undefined' //những thuộc tính này là bắt buộc
             && typeof req.body.email !== 'undefined' && typeof req.body.address !== 'undefined'
             && typeof req.body.passengers !== 'undefined' && typeof req.body.total_pay !== 'undefined'
-            && typeof req.body.idTour_Turn !== 'undefined' && typeof req.body.payment !== 'undefined') {
+            && typeof req.body.idTour_Turn !== 'undefined' && typeof req.body.payment !== 'undefined'
+            && typeof req.body.passport !== 'undefined') {
             const arr_sex = ['male', 'female', 'other'];
             const _types = await db.type_passenger.findAll();
             const arr_type = await asyncMap(_types, (type) => {
@@ -167,6 +168,7 @@ const book_tour = async (req, res, _user) => {
                     fullname: req.body.fullname,
                     phone: req.body.phone,
                     address: req.body.address,
+                    passport: req.body.passport
                 }
                 if (_user !== null) { //check có user hay k
                     new_contact_info.fk_user = _user.id
@@ -313,7 +315,7 @@ exports.book_tour = async (req, res) => {
         }
         else {
             //k có user
-            book_tour(req, res, null);
+            book_tour(req, res);
         }
     }
     catch (err) {
@@ -1029,6 +1031,7 @@ exports.unpayBookTour = async (req, res) => {
 //     }
 // }
 
+//hủy chưa thanh toán cho admin
 exports.cancelBookTourStatusBooked = async (req, res) => {
     try {
         const code = req.body.code;
@@ -1038,37 +1041,45 @@ exports.cancelBookTourStatusBooked = async (req, res) => {
             },
             include: [{
                 model: db.tour_turns
+            }, {
+                model: db.book_tour_contact_info
             }]
         })
-        if (book_tour) {
-            if (book_tour.status == 'booked') {
-                //hủy thẳng luôn
-                const new_request = {
-                    fk_book_tour: book_tour.id,
-                    confirm_time: new Date(),
-                    refunded_time: new Date()
+        if (typeof req.body.request_message !== 'undefined') {
+            if (book_tour) {
+                if (book_tour.status == 'booked') {
+                    //hủy thẳng luôn
+                    const new_request = {
+                        fk_book_tour: book_tour.id,
+                        confirm_time: new Date(),
+                        request_message: req.body.request_message,
+                    }
+                    if (typeof req.body.request_offline_helper !== 'undefined') {
+                        new_request.request_offline_helper = JSON.stringify(req.body.request_offline_helper);
+                    }
+                    book_tour.status = 'cancelled';
+                    const tour_turn = book_tour.tour_turn
+                    tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger);
+                    await book_tour.save();
+                    await tour_turn.save();
+                    //add new record
+                    await db.cancel_booking.create(new_request).then(_request => {
+                        return res.status(200).json({
+                            data: {
+                                book_tour: book_tour,
+                                cancel_booking: _request
+                            }
+                        });
+                    })
                 }
-                if (typeof req.body.request_message !== 'undefined')
-                    new_request.request_message = req.body.request_message;
-                book_tour.status = 'cancelled';
-                const tour_turn = book_tour.tour_turn
-                tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger);
-                await book_tour.save();
-                await tour_turn.save();
-                //add new record
-                await db.cancel_booking.create(new_request).then(_request => {
-                    return res.status(200).json({
-                        data: {
-                            book_tour: book_tour,
-                            cancel_booking: _request
-                        }
-                    });
-                })
+                else return res.status(400).json({ msg: "This book tour don't have status 'booked'" });
             }
-            else return res.status(400).json({ msg: "This book tour don't have status 'booked'" });
+            else {
+                return res.status(400).json({ msg: 'Wrong code' });
+            }
         }
         else {
-            return res.status(400).json({ msg: 'Wrong code' });
+            return res.status(400).json({ msg: 'Missing request message' });
         }
     } catch (error) {
         return res.status(400).json({ msg: error.toString() });
@@ -1076,9 +1087,9 @@ exports.cancelBookTourStatusBooked = async (req, res) => {
 }
 
 
-
-exports.cancelBookTour = async (req, res) => {
-    //api này cần được chỉnh sửa, phải thêm db cho bảng cancel_booking đầy đủ đủ đủ
+//confirm cancel booking offline, khi chưa có request và phải tạo mới request
+exports.confirmCancelBookTourOffline = async (req, res) => {
+    //api này cần được chỉnh sửa, phải thêm db cho bảng cancel_booking đầy đủ
     try {
         const code = req.body.code;
         const book_tour = await db.book_tour_history.findOne({
