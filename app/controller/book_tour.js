@@ -32,6 +32,26 @@ const randomNumber = (length) => {
     return Math.floor(Math.random() * length)
 }
 
+const parseJSONListBookTour = async (book_tours, isRaw = false) => {
+    for (let i = 0, l = book_tours.length; i < l; i++) {
+        if (book_tours[i].cancel_bookings.length > 0) {
+            if (isRaw) {
+                book_tours[i].cancel_bookings[0].refund_message = JSON.parse(book_tours[i].cancel_bookings[0].refund_message);
+                book_tours[i].cancel_bookings[0].request_offline_person = JSON.parse(book_tours[i].cancel_bookings[0].request_offline_person);
+            }
+            else {
+                book_tours[i].cancel_bookings[0].dataValues.refund_message = JSON.parse(book_tours[i].cancel_bookings[0].dataValues.refund_message);
+                book_tours[i].cancel_bookings[0].dataValues.request_offline_person = JSON.parse(book_tours[i].cancel_bookings[0].dataValues.request_offline_person);
+            }
+        }
+        // if (_book_tour_history.status == 'paid')
+        if (isRaw)
+            book_tours[i].message_pay = JSON.parse(book_tours[i].message_pay);
+        else
+            book_tours[i].dataValues.message_pay = JSON.parse(book_tours[i].message_pay);
+    }
+}
+
 // Generate Pseudo Random String, if safety is important use dedicated crypto/math library for less possible collisions!
 const generateCode = async (length) => {
     const possible =
@@ -414,6 +434,7 @@ exports.getHistoryBookTourByUser = (req, res) => {
                 await checkPolicy_helper.add_is_cancel_booking(result);
                 await addPricePassengerOfListBookTour(result);
                 await helper_add_link.addLinkToursFeaturedImgOfListBookTour(result, req.headers.host);
+                await parseJSONListBookTour(result, true);
                 return res.status(200).json({
                     itemCount: _book_tour_history.count, //số lượng record được trả về
                     data: result,
@@ -726,9 +747,9 @@ exports.getHistoryBookTourByCode = (req, res) => {
 
                 if (_book_tour_history.cancel_bookings.length > 0) {
                     _book_tour_history.cancel_bookings[0].dataValues.refund_message = JSON.parse(_book_tour_history.cancel_bookings[0].dataValues.refund_message);
+                    _book_tour_history.cancel_bookings[0].dataValues.request_offline_person = JSON.parse(_book_tour_history.cancel_bookings[0].dataValues.request_offline_person);
                 }
-                if (_book_tour_history.status == 'paid')
-                    _book_tour_history.dataValues.message_pay = JSON.parse(_book_tour_history.message_pay);
+                _book_tour_history.dataValues.message_pay = JSON.parse(_book_tour_history.message_pay);
                 return res.status(200).json({
                     data: _book_tour_history
                 })
@@ -860,7 +881,7 @@ exports.payBookTour = async (req, res) => {
                 book_tour.status = 'paid' //chuyển thành status đã thanh toán
                 if (typeof req.body.message_pay !== 'undefined') {
                     if (req.body.message_pay !== null)
-                    book_tour.message_pay = JSON.stringify(req.body.message_pay)
+                        book_tour.message_pay = JSON.stringify(req.body.message_pay)
                     else return res.status(400).json({ msg: 'Message pay is null' });
                 }
                 else {
