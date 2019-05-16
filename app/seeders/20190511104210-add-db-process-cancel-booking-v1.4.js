@@ -68,7 +68,22 @@ module.exports = {
 					})
 				}
 			]
-			)
+			),
+			queryInterface.bulkInsert('cancel_booking', [
+				{
+					id: 7,
+					request_message: 'Bị bệnh không thể đi được',
+					fk_book_tour: 20,
+					fk_user: null,
+					request_time: new Date(formatDate(-11) + ' 12:04:00'),
+					confirm_time: new Date(formatDate(-11) + ' 12:04:00'),
+					money_refunded: 0,
+					request_offline_person: JSON.stringify({
+						name: 'Trần Lê Phương Mai',
+						passport: '215545621',
+					})
+				}
+			])
 		])
 	},
 
@@ -83,7 +98,7 @@ module.exports = {
 		return Promise.all([
 			queryInterface.bulkDelete('cancel_booking', {
 				id: {
-					[Sequelize.Op.or]: [3, 4],
+					[Sequelize.Op.or]: [4, 5, 6, 7],
 				}
 			}),
 		])

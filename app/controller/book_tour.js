@@ -1235,6 +1235,99 @@ exports.confirmCancelBookTourOffline = async (req, res) => {
     }
 }
 
+exports.cencelBookTourWithNoMoneyRefund = async (req, res) => {
+    try {
+        if (typeof req.body.code !== 'undefined' && typeof req.body.request_message !== 'undefined'
+            && typeof req.body.request_offline_person !== 'undefined') {
+            const book_tour = await db.book_tour_history.findOne({
+                where: {
+                    code: req.body.code
+                },
+                include: [{
+                    model: db.tour_turns
+                }]
+            })
+            if (book_tour) {
+                if (book_tour.status == 'paid') {
+                    const new_request_cancel = {
+                        fk_book_tour: book_tour.id,
+                        request_message: req.body.request_message,
+                        request_offline_person: JSON.stringify(req.body.request_offline_person),
+                        confirm_time: new Date()
+                    }
+                    db.cancel_booking.create(new_request_cancel).then(async _cancel_booking => {
+                        book_tour.status = 'refunded';
+                        book_tour.save();
+
+                        //update số lượng người đi ở tour turn nữa ...
+                        const tour_turn = book_tour.tour_turn
+                        tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger);
+                        tour_turn.save();
+
+                        res.status(200).json({
+                            msg: 'Cancel book tour successful',
+                            data: {
+                                book_tour: book_tour,
+                                cancel_booking: _cancel_booking
+                            }
+                        })
+
+                        //gởi mail nữa
+                        const cancel_booking = await db.cancel_booking.findOne({
+                            where: {
+                                id: _cancel_booking.id
+                            },
+                            include: [{
+                                model: db.book_tour_history,
+                                include: [{
+                                    model: db.book_tour_contact_info
+                                },
+                                {
+                                    model: db.payment_method
+                                },
+                                {
+                                    attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                                    model: db.passengers,
+                                    include: [{
+                                        model: db.type_passenger
+                                    }]
+                                },
+                                {
+                                    model: db.tour_turns,
+                                    include: [{
+                                        model: db.tours,
+                                        include: [{
+                                            model: db.routes,
+                                            include: [{
+                                                model: db.locations
+                                            }]
+                                        }]
+                                    }]
+                                }],
+                            }]
+                        })
+                        send_mail_helper.sendConfirmCancelWithNoMoneyEmail(req, cancel_booking)
+
+                        return;
+                    })
+                }
+                else {
+                    return res.status(400).json({ msg: "This book tour don't have status 'paid'" });
+                }
+            }
+            else {
+                return res.status(400).json({ msg: 'Wrong code' });
+            }
+        }
+        else {
+            return res.status(400).json({ msg: 'Params is invalid' });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ msg: error.toString() });
+    }
+}
+
 exports.updatePassenger = async (req, res) => {
     try {
         const idPassenger = req.body.id;

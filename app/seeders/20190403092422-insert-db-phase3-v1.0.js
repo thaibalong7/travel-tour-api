@@ -165,13 +165,15 @@ module.exports = {
                 "(9, '8fae3160-5059-11e9-98a6-11c3f5dd44b4', '" + formatDate(-9) + " 19:18:24', 'cancelled', 1, 550000, 9, 19, 3)," + //tour turn đang đi
                 "(10, '8ssw3160-5059-11e9-98a6-w6c3f5dd44b4', '" + formatDate(-19) + " 08:18:24', 'paid', 2, 1000000, 10, 19, 1)," + //tour turn đang đi
                 "(11, '55ff4160-5059-11e9-8ea6-11c355d7s8b4', '" + formatDate(-30) + " 15:04:00', 'finished', 1, 530000, 11, 20, 1)," + //tour đã đi
-                "(12, '55ff4160-5059-11e9-8ea6-4ss5w5d7s8b4', '" + formatDate(-38) + " 17:57:00', 'finished', 2, 780000, 12, 20, 2)," + //tour đã đi
+                "(12, '55ff4160-d44s-11e9-8ea6-4ss5w5d7s8b4', '" + formatDate(-38) + " 17:57:00', 'finished', 2, 780000, 12, 20, 2)," + //tour đã đi
                 "(13, '522s4160-5059-11e9-8ea6-4ss55d4s55e4', '" + formatDate(-28) + " 04:17:00', 'booked', 1, 500000, 13, 16, 1)," + //tới hạn nhắc nhỡ gọi điện 
                 "(14, '115d4160-5059-11e9-8ea6-4ss55d4s55e4', '" + formatDate(-22) + " 09:25:00', 'paid', 5, 1500000, 14, 16, 2)," +
                 "(15, '1144s160-5s59-11e9-8ea6-4s55s44s55e4', '" + formatDate(-14) + " 16:37:00', 'booked', 1, 200000, 15, 3, 2)," +
-                "(16, '1144s160-5s59-11e9-8ea6-4s5sdd55e4', '" + formatDate(-18) + " 05:15:00', 'confirm_cancel', 2, 400000, 16, 3, 1)," + 
+                "(16, '1144s160-5s59-11e9-8ea6-4s5sdd55e4', '" + formatDate(-18) + " 05:15:00', 'confirm_cancel', 2, 400000, 16, 3, 1)," +
                 "(17, '11444d60-5s59-11e9-8ea6-4sddf55ef4', '" + formatDate(-24) + " 17:14:00', 'not_refunded', 1, 3000000, 17, 7, 2)," + //không thèm nhận tiền hoàn trả
                 "(18, '15ss4d60-5s59-11e9-8ea6-4sddf55ef4', '" + formatDate(-19) + " 16:08:00', 'confirm_cancel', 1, 3000000, 18, 7, 1)," + //ng nhà tới cty xin hủy giùm
+                "(19, '15ss4d60-5s59-11e9-8ea6-41dds55ef4', '" + formatDate(-19) + " 09:28:00', 'paid', 1, 300000, 19, 18, 3)," + //book tour gần tới ngày đi
+                "(20, '15ss4d60-3dd5g-11e9-8ea6-41dds55ef4', '" + formatDate(-28) + " 08:35:00', 'refunded', 1, 500000, 20, 20, 1)," + //book tour đã xin hủy khi gần tới ngày đi
                 "(8, 'a294e850-5059-11e9-8e50-6d47d5b38a8f', '" + formatDate(-11) + " 06:29:12', 'booked', 3, 1500000, 8, 14, 1);").then(
                     () => {
                         return queryInterface.sequelize.query("INSERT INTO `passengers` (`id`, `fullname`, `phone`, `birthdate`, `sex`, `passport`, `fk_book_tour`, `fk_type_passenger`) VALUES" +
@@ -203,6 +205,8 @@ module.exports = {
                             "(29, 'Hồ Thanh Hằng', '0311889987', '1988-01-17', 'female', '154548487', 16, 1)," +
                             "(30, 'Lê Văn Hải', '0102521548', '1997-02-06', 'male', '211548876', 17, 1)," +
                             "(31, 'Trần Văn Kiên', '0344578451', '1988-09-30', 'male', '254549542', 18, 1)," +
+                            "(32, 'Nguyễn Trần Trung Kiên', '0346665442', '1987-12-05', 'male', '206664551', 19, 1)," +
+                            "(33, 'Võ Văn Thanh', '0346665452', '1992-08-30', 'male', '322154460', 20, 1)," +
                             "(14, 'Phạm Thị Ngọc', '0125466447', '2012-07-06', 'female', '332654865', 8, 2);")
                     }
                 ),

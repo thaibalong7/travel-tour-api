@@ -33,9 +33,9 @@ const check_policy_cancel_booking = async (booking) => {
         else { // payment_method là incash và tranfer
             const timeDiff = (start_date) - (cur_date);
             const days = timeDiff / (1000 * 60 * 60 * 24) //số ngày còn lại trc khi đi
-            if (days > 2) //nếu còn lại trên 7 ngày -> cho phép request hủy
+            if (days >= 2) //nếu còn lại trên 2 ngày -> cho phép request hủy
                 return true;
-            else return false //ngược lại tới cty mà chuyển
+            else return false //ngược lại tới cty mà hủy
         }
     }
     return false; // book tour chưa thanh toán hoặc đang chờ hủy hoặc đã bị hủy hoặc đã đi thì k thể cancel

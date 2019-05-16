@@ -133,7 +133,7 @@ module.exports = {
                 "(15, '2019-04-09', '2019-04-09', 0, 62, 600000, 7, 87, 'public', 1)," +
                 "(16, '" + formatDate(+4) + "', '" + formatDate(+4) + "', 6, 20, 300000, 3, 147, 'public', 4)," + //tour tới hạn kiểm tra thanh toán trên 7 ngày //check trước 4-5 ngày
                 "(17, '" + formatDate(+40) + "', '" + formatDate(+46) + "', 0, 20, 540000, 5, 86, 'public', 5)," +
-                "(18, '" + formatDate(+1) + "', '" + formatDate(+1) + "', 0, 25, 300000, 0, 67, 'public', 2)," +
+                "(18, '" + formatDate(+1) + "', '" + formatDate(+1) + "', 1, 25, 300000, 0, 134, 'public', 2)," +
                 "(19, '" + formatDate(-1) + "', '" + formatDate(+1) + "', 2, 40, 200000, 5, 17, 'public', 4)," + //tour turn đang đi
                 "(20, '" + formatDate(-10) + "', '" + formatDate(-8) + "', 3, 40, 530000, 5, 114, 'public', 3)," + //tour đã đi
                 "(21, '" + formatDate(+45) + "', '" + formatDate(+48) + "', 0, 35, 550000, 0, 148, 'public', 3)," +
@@ -212,6 +212,8 @@ module.exports = {
                 "(16, 'lnh@gmail.com', 'Lee Ngọc Hồi', '0221454786', '154/45 Đường Lê Lợi, Phường 5, Quận Gò Vấp, Hồ Chí Minh, Việt Nam', 3, '031154877')," +
                 "(17, 'lvhai@gmail.com', 'Lê Văn Hải', '0102521548', '24 Đường Nguyễn Bỉnh Khiêm, Phường 8, Quận Bình Thạnh, Hồ Chí Minh, Việt Nam', 9, '211548876')," +
                 "(18, 'tvkien@gmail.com', 'Trần Văn Kiên', '0344578451', '110 Đường Nguyễn Văn Cừ, Phường Cầu Kho, Quận 1, Hồ Chí Minh, Việt Nam', NULL, '254549542')," +
+                "(19, 'nttkien@gmail.com', 'Nguyễn Trần Trung Kiên', '0346665442', '18/54 Đường Nguyễn Văn Cừ, Phường 4, Quận 5, Hồ Chí Minh, Việt Nam', NULL, '206664551')," +
+                "(20, 'vvthanh@gmail.com', 'Võ Văn Thanh', '0346665452', '115/54 Đường Kha Vạn Cân, Phường Linh Xuân, Quận Thủ Đức, Hồ Chí Minh, Việt Nam', NULL, '322154460')," +
                 "(8, 'phta@gmail.com', 'Phạm Hưng Tuấn Anh', '0125466454', 'làng đại học Thủ Đức', NULL, '206124151');"),
         ]);
     },

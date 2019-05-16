@@ -123,6 +123,26 @@ module.exports = {
           })
         },
         { id: 18 }),
+      queryInterface.bulkUpdate('book_tour_history',
+        {
+          message_pay: JSON.stringify({
+            name: 'Nguyễn Trần Trung Kiên',
+            passport: '206664551',
+            note: '',
+            helper: false
+          })
+        },
+        { id: 19 }),
+      queryInterface.bulkUpdate('book_tour_history',
+        {
+          message_pay: JSON.stringify({
+            name: 'Võ Văn Thanh',
+            passport: '322154460',
+            note: '',
+            helper: false
+          })
+        },
+        { id: 20 }),
     ])
   },
 
@@ -139,57 +159,11 @@ module.exports = {
         {
           message_pay: null
         },
-        { id: 3 }),
-      queryInterface.bulkUpdate('book_tour_history',
         {
-          message_pay: null
-        },
-        { id: 4 }),
-      queryInterface.bulkUpdate('book_tour_history',
-        {
-          message_pay: 'Nguyễn Văn B thanh toán hộ'
-        },
-        { id: 6 }),
-      queryInterface.bulkUpdate('book_tour_history',
-        {
-          message_pay: null
-        },
-        { id: 7 }),
-      queryInterface.bulkUpdate('book_tour_history',
-        {
-          message_pay: null
-        },
-        { id: 10 }),
-      queryInterface.bulkUpdate('book_tour_history',
-        {
-          message_pay: null
-        },
-        { id: 11 }),
-      queryInterface.bulkUpdate('book_tour_history',
-        {
-          message_pay: null
-        },
-        { id: 12 }),
-      queryInterface.bulkUpdate('book_tour_history',
-        {
-          message_pay: null
-        },
-        { id: 14 }),
-      queryInterface.bulkUpdate('book_tour_history',
-        {
-          message_pay: null
-        },
-        { id: 16 }),
-      queryInterface.bulkUpdate('book_tour_history',
-        {
-          message_pay: null
-        },
-        { id: 17 }),
-      queryInterface.bulkUpdate('book_tour_history',
-        {
-          message_pay: null
-        },
-        { id: 18 }),
+          id: {
+            [Sequelize.Op.or]: [3, 4, 6, 7, 10, 11, 12, 14, 16, 17, 18, 19, 20],
+          }
+        })
     ])
   }
 };

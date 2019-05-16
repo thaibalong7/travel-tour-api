@@ -166,7 +166,7 @@ exports.confirmCancel = async (req, res) => {
                 const _book_tour_history = _cancel_booking.book_tour_history;
                 if (_book_tour_history.status === 'pending_cancel') {
                     const money_refunded = (req.body.money_refunded);
-                    if (!isNaN(money_refunded) && parseInt(money_refunded) >= 0) {
+                    if (!isNaN(money_refunded) && parseInt(money_refunded) > 0) {
                         const curDate = new Date();
                         const refund_period = new Date(req.body.refund_period + ' 00:00:00 GMT+07:00');
                         const timeDiff = refund_period - new Date(curDate.getFullYear() + '-' + (curDate.getMonth() + 1) + '-' + curDate.getDate() + ' 00:00:00 GMT+07:00');

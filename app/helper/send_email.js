@@ -3,7 +3,8 @@ const { html_verify_email,
     html_forgetPassword_email,
     html_e_ticket_email,
     html_confirm_cancel_email,
-    html_refunded_email } = require('../send_email/email_html/email_html');
+    html_refunded_email,
+    html_confirm_cancel_with_no_money_email } = require('../send_email/email_html/email_html');
 const company_info = require('../config/setting').company_info
 
 const sendVerifyEmail = (token, email, req, res) => {
@@ -151,10 +152,38 @@ const sendRefundedEmail = (req, cancel_booking) => {
     });
 }
 
+const sendConfirmCancelWithNoMoneyEmail = (req, cancel_booking) => {
+    var linkTeam;
+    if (process.env.NODE_ENV === 'development') {
+        linkTeam = "http://" + req.headers.host;
+    }
+    else {
+        linkTeam = "https://" + req.headers.host;
+    }
+    mailOptions = {
+        from: '"' + company_info.name + '" <tour.travel.k15@gmail.com>',
+        to: cancel_booking.book_tour_history.book_tour_contact_info.email,
+        subject: "[" + company_info.name + "] Thông báo hủy vé #" + cancel_booking.book_tour_history.code,
+        html: html_confirm_cancel_with_no_money_email(linkTeam, cancel_booking),
+    };
+    smtpTransport.sendMail(mailOptions, async function (error, response) {
+        if (error) {
+            console.log(error);
+            // res.status(400).json({
+            //     msg: "Error in SMTP server",
+            //     error: error
+            // });
+        } else {
+            console.log("Message sent: " + response.messageId + ' Send to: ' + response.accepted);
+        }
+    });
+}
+
 module.exports = {
     sendVerifyEmail,
     sendForgetPasswordEmail,
     sendETicketEmail,
     sendConfirmCancelEmail,
-    sendRefundedEmail
+    sendRefundedEmail,
+    sendConfirmCancelWithNoMoneyEmail
 }

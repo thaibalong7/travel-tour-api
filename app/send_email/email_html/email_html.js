@@ -2053,6 +2053,610 @@ const html_confirm_cancel_email = (linkTeam, cancel_booking) => {
 	</html>`
 }
 
+const html_confirm_cancel_with_no_money_email = (linkTeam, cancel_booking) => {
+	let html_list_passenger = ``;
+	for (let i = 0; i < cancel_booking.book_tour_history.passengers.length; i++) {
+		const birthdate = new Date(cancel_booking.book_tour_history.passengers[i].birthdate);
+		var month = (birthdate.getMonth() + 1);
+		var day = (birthdate.getDate());
+		var year = (birthdate.getFullYear());
+		html_list_passenger += `<tr>
+		<td>
+		${ (i + 1) + `.`}
+		</td>
+		<td class="name">
+			${cancel_booking.book_tour_history.passengers[i].fullname}
+		</td>
+		<td>
+		${cancel_booking.book_tour_history.passengers[i].sex === 'male' ? `Nam` : `Nữ`}
+		</td>
+		<td>
+		${day + `/` + month + `/` + year}
+		</td>
+		<td>
+		${cancel_booking.book_tour_history.passengers[i].type_passenger.name_vi}
+		</td>
+		</tr>`
+
+	}
+
+	const datetime_arrive = new Date(cancel_booking.book_tour_history.tour_turn.start_date + ' ' + cancel_booking.book_tour_history.tour_turn.tour.routes[0].arrive_time + ' GMT+07:00')
+	const time_arrive_string = toStringDatetime(datetime_arrive);
+
+	const start_at = 'Khởi hành tại ' + cancel_booking.book_tour_history.tour_turn.tour.routes[0].location.name;
+
+	let request_offline_person = ``;
+	if (cancel_booking.request_offline_person !== null) {
+		const person = JSON.parse(cancel_booking.request_offline_person);
+		request_offline_person =
+			`<tr>
+					<td>
+						Người yêu cầu hủy:
+					</td>
+					<td>
+						${person.name} - 	${person.passport}
+					</td>
+			</tr>`
+	}
+
+	return `<!doctype html>
+	<html>
+	
+	<head>
+		<meta name="viewport" content="width=device-width" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Simple Transactional Email</title>
+		<style>
+			/* -------------------------------------
+			  GLOBAL RESETS
+		  ------------------------------------- */
+	
+			/*All the styling goes here*/
+	
+			img {
+				border: none;
+				-ms-interpolation-mode: bicubic;
+				max-width: 100%;
+			}
+	
+			body {
+				background-color: #f6f6f6;
+				font-family: sans-serif;
+				-webkit-font-smoothing: antialiased;
+				font-size: 14px;
+				line-height: 1.4;
+				margin: 0;
+				padding: 0;
+				-ms-text-size-adjust: 100%;
+				-webkit-text-size-adjust: 100%;
+			}
+	
+			table {
+				border-collapse: separate;
+				mso-table-lspace: 0pt;
+				mso-table-rspace: 0pt;
+				width: 100%;
+			}
+	
+			table td {
+				font-family: sans-serif;
+				font-size: 14px;
+				vertical-align: top;
+			}
+	
+			/* -------------------------------------
+			  BODY & CONTAINER
+		  ------------------------------------- */
+	
+			.body {
+				background-color: #f6f6f6;
+				width: 100%;
+			}
+	
+			/* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */
+			.container {
+				display: block;
+				margin: 0 auto !important;
+				/* makes it centered */
+				max-width: 580px;
+				padding: 10px;
+				width: 580px;
+			}
+	
+			/* This should also be a block element, so that it will fill 100% of the .container */
+			.content {
+				box-sizing: border-box;
+				display: block;
+				margin: 0 auto;
+				max-width: 580px;
+				padding: 10px;
+			}
+	
+			/* -------------------------------------
+			  HEADER, FOOTER, MAIN
+		  ------------------------------------- */
+			.main {
+				background: #ffffff;
+				border-radius: 3px;
+				width: 100%;
+			}
+	
+			.wrapper {
+				box-sizing: border-box;
+				padding: 20px;
+			}
+	
+			.content-block {
+				padding-bottom: 10px;
+				padding-top: 10px;
+			}
+	
+			.footer {
+				clear: both;
+				margin-top: 10px;
+				text-align: center;
+				width: 100%;
+			}
+	
+			.footer td,
+			.footer p,
+			.footer span,
+			.footer a {
+				color: #999999;
+				font-size: 12px;
+				text-align: center;
+			}
+	
+			/* -------------------------------------
+			  TYPOGRAPHY
+		  ------------------------------------- */
+			h1,
+			h2,
+			h3,
+			h4 {
+				color: #000000;
+				font-family: sans-serif;
+				font-weight: 400;
+				line-height: 1.4;
+				margin: 0;
+				margin-bottom: 30px;
+			}
+	
+			h1 {
+				font-size: 35px;
+				font-weight: 300;
+				text-align: center;
+				text-transform: capitalize;
+			}
+	
+			p,
+			ul,
+			ol {
+				font-family: sans-serif;
+				font-size: 14px;
+				font-weight: normal;
+				margin: 0;
+				margin-bottom: 15px;
+			}
+	
+			p li,
+			ul li,
+			ol li {
+				list-style-position: inside;
+				margin-left: 5px;
+			}
+	
+			a {
+				color: #3498db;
+				text-decoration: underline;
+			}
+	
+			/* -------------------------------------
+			  BUTTONS
+		  ------------------------------------- */
+			.btn {
+				box-sizing: border-box;
+				width: 100%;
+			}
+	
+			.btn>tbody>tr>td {
+				padding-bottom: 15px;
+			}
+	
+			.btn table {
+				width: auto;
+			}
+	
+			.btn table td {
+				background-color: #ffffff;
+				border-radius: 5px;
+				text-align: center;
+			}
+	
+			.btn a {
+				background-color: #ffffff;
+				border: solid 1px #3498db;
+				border-radius: 5px;
+				box-sizing: border-box;
+				color: #3498db;
+				cursor: pointer;
+				display: inline-block;
+				font-size: 14px;
+				font-weight: bold;
+				margin: 0;
+				padding: 12px 25px;
+				text-decoration: none;
+				text-transform: capitalize;
+			}
+	
+			.btn-primary table td {
+				background-color: #3498db;
+			}
+	
+			.btn-primary a {
+				background-color: #3498db;
+				border-color: #3498db;
+				color: #ffffff;
+			}
+	
+			/* -------------------------------------
+			  OTHER STYLES THAT MIGHT BE USEFUL
+		  ------------------------------------- */
+			.last {
+				margin-bottom: 0;
+			}
+	
+			.first {
+				margin-top: 0;
+			}
+	
+			.align-center {
+				text-align: center;
+			}
+	
+			.text-bold {
+				font-weight: bold;
+			}
+	
+			.align-right {
+				text-align: right;
+			}
+	
+			.text-margin-request {
+				margin-top: 20px;
+			}
+	
+			.text-info-tour {
+				font-weight: bold;
+				color: cornflowerblue;
+				margin-top: 25px;
+				text-transform: uppercase;
+			}
+	
+			.align-left {
+				text-align: left;
+			}
+	
+			.clear {
+				clear: both;
+			}
+	
+			.mt0 {
+				margin-top: 0;
+			}
+	
+			.mb0 {
+				margin-bottom: 0;
+			}
+	
+			.preheader {
+				color: transparent;
+				display: none;
+				height: 0;
+				max-height: 0;
+				max-width: 0;
+				opacity: 0;
+				overflow: hidden;
+				mso-hide: all;
+				visibility: hidden;
+				width: 0;
+			}
+	
+			.powered-by a {
+				text-decoration: none;
+			}
+	
+			.left-table {
+				float: left;
+				font-weight: bold;
+				margin-left: 0;
+				width: 140px;
+			}
+	
+			.right-table {
+				font-weight: bold;
+				text-transform: capitalize;
+				font-size: 120%
+			}
+	
+			.code-ticket {
+				font-weight: bold;
+				font-size: 23px;
+				color: cornflowerblue
+			}
+	
+			.text-note {
+				margin-top: 20px;
+				font-size: 90%;
+				font-style: italic;
+				font-weight: bold;
+				color: rgba(43, 42, 42, 0.829);
+			}
+	
+			hr {
+				margin-top: 15px;
+				height: 1.8px;
+				border: none;
+				color: rgba(2, 2, 2, 0.63);
+				background-color: rgba(51, 43, 43, 0.589);
+			}
+	
+			.info-contact-head {
+				margin-top: 25px;
+				font-weight: bold;
+			}
+	
+			.info-passenger-head {
+				margin-top: 25px;
+				font-weight: bold;
+			}
+	
+			.table-passenger {
+				margin-top: 15px;
+			}
+	
+			.table-passenger .name {
+				font-weight: bold;
+			}
+
+			.table-refund {
+				margin-top: 15px
+			}
+	
+			.end-mail {
+				text-align: center;
+				padding-left: 50px;
+				padding-right: 50px;
+				padding-top: 60px
+			}
+	
+			/* -------------------------------------
+			  RESPONSIVE AND MOBILE FRIENDLY STYLES
+		  ------------------------------------- */
+			@media only screen and (max-width: 620px) {
+				table[class=body] h1 {
+					font-size: 28px !important;
+					margin-bottom: 10px !important;
+				}
+	
+				table[class=body] p,
+				table[class=body] ul,
+				table[class=body] ol,
+				table[class=body] td,
+				table[class=body] span,
+				table[class=body] a {
+					font-size: 16px !important;
+				}
+	
+				table[class=body] .wrapper,
+				table[class=body] .article {
+					padding: 10px !important;
+				}
+	
+				table[class=body] .content {
+					padding: 0 !important;
+				}
+	
+				table[class=body] .container {
+					padding: 0 !important;
+					width: 100% !important;
+				}
+	
+				table[class=body] .main {
+					border-left-width: 0 !important;
+					border-radius: 0 !important;
+					border-right-width: 0 !important;
+				}
+	
+				table[class=body] .btn table {
+					width: 100% !important;
+				}
+	
+				table[class=body] .btn a {
+					width: 100% !important;
+				}
+	
+				table[class=body] .img-responsive {
+					height: auto !important;
+					max-width: 100% !important;
+					width: auto !important;
+				}
+			}
+	
+			/* -------------------------------------
+			  PRESERVE THESE STYLES IN THE HEAD
+		  ------------------------------------- */
+			@media all {
+				.ExternalClass {
+					width: 100%;
+				}
+	
+				.ExternalClass,
+				.ExternalClass p,
+				.ExternalClass span,
+				.ExternalClass font,
+				.ExternalClass td,
+				.ExternalClass div {
+					line-height: 100%;
+				}
+	
+				.apple-link a {
+					color: inherit !important;
+					font-family: inherit !important;
+					font-size: inherit !important;
+					font-weight: inherit !important;
+					line-height: inherit !important;
+					text-decoration: none !important;
+				}
+	
+				.btn-primary table td:hover {
+					background-color: #34495e !important;
+				}
+	
+				.btn-primary a:hover {
+					background-color: #34495e !important;
+					border-color: #34495e !important;
+				}
+			}
+		</style>
+	</head>
+	
+	<body class="">
+		<span class="preheader">This is preheader text. Some clients will show this text as a preview.</span>
+		<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
+			<tr>
+				<td>&nbsp;</td>
+				<td class="container">
+					<div class="content">
+	
+						<!-- START CENTERED WHITE CONTAINER -->
+						<table role="presentation" class="main">
+	
+							<!-- START MAIN CONTENT AREA -->
+							<tr>
+								<td class="wrapper">
+									<table role="presentation" border="0" cellpadding="0" cellspacing="0">
+										<tr>
+											<td>
+												<h2 class="align-center">Xác nhận hủy đặt vé</h2>
+												<div class="text-bold">Kính gởi quý khách ${cancel_booking.book_tour_history.book_tour_contact_info.fullname},</div>
+												<div class="text-margin-request">Yêu cầu hủy vé của quý khách đã được
+                        xác nhận. Dưới đâu là thông tin hủy vé của quý khách:</div>
+												<table class="table-refund">
+													${request_offline_person}
+                          <tr>
+                            <td>
+                                Số tiền được hoàn trả:
+                            </td>
+                            <td style="font-weight: bold">
+                                0 VNĐ
+                            </td>
+                          </tr>
+                        </table>
+                        <div style="margin-top: 15px">
+												Bởi vì quý khách đã yêu cầu hoàn tiền quá trễ, theo chính sách của công ty, 
+												quý khách sẽ mất <span style="font-weight: bold">toàn bộ</span> số tiền đã đặt vé.
+                    </div>
+                    <div style="margin-top: 10px">Nếu quý khách có bất kỳ thắc mắc nào, vui lòng liên hệ cho công ty.</div>
+												<div class="text-info-tour">Thông tin vé đã hủy: </div>
+												<hr />
+												<div>
+													<span class="left-table">Tên tour</span>
+													<span class="right-table">${cancel_booking.book_tour_history.tour_turn.tour.name}</span>
+												</div>
+												<hr />
+												<div>
+													<span class="left-table">
+														<span style="font-weight: normal">Mã đặt vé (PNR): </span>
+														<span class="code-ticket">${cancel_booking.book_tour_history.code}</span>
+													</span>
+													<div class="right-table">
+														<span>${time_arrive_string}</span>
+														<div style="font-weight: normal;font-size: 90%">${start_at}</div>
+													</div>
+												</div>
+												<br />
+												<hr />
+												<div>
+													<div class="info-contact-head">Thông tin người đặt: </div>
+													<table class="table-passenger">
+														<tr>
+															<td>
+																Tên:
+															</td>
+															<td class="name">
+																${cancel_booking.book_tour_history.book_tour_contact_info.fullname}
+															</td>
+														</tr>
+														<tr>
+															<td>
+																Email:
+															</td>
+															<td>
+																${cancel_booking.book_tour_history.book_tour_contact_info.email}
+															</td>
+														</tr>
+														<tr>
+															<td>
+																Điện thoại:
+															</td>
+															<td>
+																${cancel_booking.book_tour_history.book_tour_contact_info.phone}
+															</td>
+														</tr>
+														<tr>
+															<td>
+																Địa chỉ:
+															</td>
+															<td>
+																${cancel_booking.book_tour_history.book_tour_contact_info.address}
+															</td>
+														</tr>
+													</table>
+												</div>
+												<hr />
+												<div>
+													<div class="info-passenger-head">Thông tin hành khách: </div>
+													<table class="table-passenger">
+														${html_list_passenger}
+													</table>
+												</div>
+											</td>
+										</tr>
+									</table>
+									<div class="end-mail">
+										Email này được gởi tới quý khách ${cancel_booking.book_tour_history.book_tour_contact_info.fullname} vì quý khách đã yêu cầu với ${company_info.name} hủy vé sau khi đã thanh toán.
+									</div>
+	
+								</td>
+							</tr>
+	
+							<!-- END MAIN CONTENT AREA -->
+						</table>
+						<!-- END CENTERED WHITE CONTAINER -->
+	
+						<!-- START FOOTER -->
+						<div class="footer">
+							<table role="presentation" border="0" cellpadding="0" cellspacing="0">
+								<tr>
+									<td class="content-block powered-by">
+										Powered by <a href="${linkTeam}">${company_info.name} Team</a>.
+									</td>
+								</tr>
+							</table>
+						</div>
+						<!-- END FOOTER -->
+	
+					</div>
+				</td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+	</body>
+	
+	</html>`
+}
+
 
 const html_refunded_email = (linkTeam, cancel_booking) => {
 
@@ -2436,5 +3040,6 @@ module.exports = {
 	html_forgetPassword_email,
 	html_e_ticket_email,
 	html_confirm_cancel_email,
-	html_refunded_email
+	html_refunded_email,
+	html_confirm_cancel_with_no_money_email
 }
