@@ -1235,7 +1235,7 @@ exports.confirmCancelBookTourOffline = async (req, res) => {
     }
 }
 
-exports.cencelBookTourWithNoMoneyRefund = async (req, res) => {
+exports.cancelBookTourWithNoMoneyRefund = async (req, res) => {
     try {
         if (typeof req.body.code !== 'undefined' && typeof req.body.request_message !== 'undefined'
             && typeof req.body.request_offline_person !== 'undefined') {

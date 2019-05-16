@@ -1,26 +1,7 @@
 
 const company_info = require('../../config/setting').company_info
 const cancel_policy = require('../../config/setting').cancel_policy
-function formatNumber(num) {
-	return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-}
-
-const arr_days_of_week = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba',
-	'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy']
-
-function toStringDatetime(date) {
-	var ampm = date.getHours() >= 12 ? 'PM' : 'AM';
-	let hour = date.getHours();
-	if (hour < 10) hour = '0' + hour
-	let min = date.getMinutes();
-	if (min < 10) min = '0' + min
-	return hour + ':' + min + ' ' + ampm + ' ' + arr_days_of_week[date.getDay()] + ', ' + date.getDate() + ' Thg ' + (date.getMonth() + 1) + ' ' + date.getFullYear();
-}
-
-function toStringDate(date) {
-	return arr_days_of_week[date.getDay()] + ', ' + date.getDate() + ' Thg ' + (date.getMonth() + 1) + ' ' + date.getFullYear();
-}
-
+const helper = require('../../helper');
 
 const html_verify_email = (linkVerify, linkTeam) => {
 	return `<!doctype html>
@@ -869,7 +850,7 @@ const html_e_ticket_email = (linkTeam, book_tour, linkTourTurn) => {
 	}
 
 	const datetime_arrive = new Date(book_tour.tour_turn.start_date + ' ' + book_tour.tour_turn.tour.routes[0].arrive_time + ' GMT+07:00')
-	const time_arrive_string = toStringDatetime(datetime_arrive);
+	const time_arrive_string = helper.toStringDatetime(datetime_arrive);
 
 	const start_at = 'Khởi hành tại ' + book_tour.tour_turn.tour.routes[0].location.name;
 
@@ -1443,18 +1424,18 @@ const html_confirm_cancel_email = (linkTeam, cancel_booking) => {
 	}
 
 	const datetime_arrive = new Date(cancel_booking.book_tour_history.tour_turn.start_date + ' ' + cancel_booking.book_tour_history.tour_turn.tour.routes[0].arrive_time + ' GMT+07:00')
-	const time_arrive_string = toStringDatetime(datetime_arrive);
+	const time_arrive_string = helper.toStringDatetime(datetime_arrive);
 
 	const start_at = 'Khởi hành tại ' + cancel_booking.book_tour_history.tour_turn.tour.routes[0].location.name;
 
-	const money_refunded = formatNumber(cancel_booking.money_refunded);
+	const money_refunded = helper.formatNumber(cancel_booking.money_refunded);
 
 	const last_refund_period_date = new Date(cancel_booking.refund_period);
-	const last_refund_period = toStringDate(last_refund_period_date);
+	const last_refund_period = helper.toStringDate(last_refund_period_date);
 
 	const first_refund_period_date = new Date();
 	first_refund_period_date.setDate(first_refund_period_date.getDate() + cancel_policy.time_receive_money_after_confirm + 1);
-	const first_refund_period = toStringDate(first_refund_period_date);
+	const first_refund_period = helper.toStringDate(first_refund_period_date);
 
 	let request_offline_person = ``;
 	if (cancel_booking.request_offline_person !== null) {
@@ -2081,7 +2062,7 @@ const html_confirm_cancel_with_no_money_email = (linkTeam, cancel_booking) => {
 	}
 
 	const datetime_arrive = new Date(cancel_booking.book_tour_history.tour_turn.start_date + ' ' + cancel_booking.book_tour_history.tour_turn.tour.routes[0].arrive_time + ' GMT+07:00')
-	const time_arrive_string = toStringDatetime(datetime_arrive);
+	const time_arrive_string = helper.toStringDatetime(datetime_arrive);
 
 	const start_at = 'Khởi hành tại ' + cancel_booking.book_tour_history.tour_turn.tour.routes[0].location.name;
 
@@ -2660,9 +2641,9 @@ const html_confirm_cancel_with_no_money_email = (linkTeam, cancel_booking) => {
 
 const html_refunded_email = (linkTeam, cancel_booking) => {
 
-	const money_refunded = formatNumber(cancel_booking.money_refunded);
+	const money_refunded = helper.formatNumber(cancel_booking.money_refunded);
 	const refunded_time_date = new Date(cancel_booking.refunded_time);
-	const refunded_time_string = toStringDatetime(refunded_time_date);
+	const refunded_time_string = helper.toStringDatetime(refunded_time_date);
 
 	const refund_person = JSON.parse(cancel_booking.book_tour_history.message_pay);
 

@@ -6,17 +6,20 @@ const { html_verify_email,
     html_refunded_email,
     html_confirm_cancel_with_no_money_email } = require('../send_email/email_html/email_html');
 const company_info = require('../config/setting').company_info
+const helper = require('../helper');
+const dev = require('../config/setting').development;
+const prod = require('../config/setting').production;
 
 const sendVerifyEmail = (token, email, req, res) => {
     var linkVerify, linkTeam;
     if (process.env.NODE_ENV === 'development') {
-        linkVerify = "http://" + req.headers.host + "/user/verify?sign=" + token;
-        linkTeam = "http://" + req.headers.host;
+        linkVerify = dev.server_host + "/user/verify?sign=" + token; //api
+        linkTeam = dev.users_host;
     }
     else {
         //production
-        linkVerify = "https://" + req.headers.host + "/user/verify?sign=" + token;
-        linkTeam = "https://" + req.headers.host;
+        linkVerify = prod.server_host + "/user/verify?sign=" + token; //api
+        linkTeam = prod.users_host;
     }
     mailOptions = {
         from: '"' + company_info.name + '" <tour.travel.k15@gmail.com>',
@@ -44,10 +47,10 @@ const sendForgetPasswordEmail = (new_password, _user, req, res) => {
     // }
     var linkTeam;
     if (process.env.NODE_ENV === 'development') {
-        linkTeam = "http://" + req.headers.host;
+        linkTeam = dev.users_host;
     }
     else {
-        linkTeam = "https://" + req.headers.host;
+        linkTeam = prod.users_host;
     }
     mailOptions = {
         from: '"' + company_info.name + '" <tour.travel.k15@gmail.com>',
@@ -72,17 +75,20 @@ const sendForgetPasswordEmail = (new_password, _user, req, res) => {
 
 const sendETicketEmail = (req, res, book_tour) => {
     var linkTeam;
+    var linkTourTurn;
     if (process.env.NODE_ENV === 'development') {
-        linkTeam = "http://" + req.headers.host;
+        linkTeam = dev.users_host;
+        linkTourTurn = dev.users_host + '/tour/' + book_tour.code + '/' + helper.slugify(book_tour.tour_turn.tour.name);
     }
     else {
-        linkTeam = "https://" + req.headers.host;
+        linkTeam = prod.users_host;
+        linkTourTurn = prod.users_host + '/tour/' + book_tour.code + '/' + helper.slugify(book_tour.tour_turn.tour.name);
     }
     mailOptions = {
         from: '"' + company_info.name + '" <tour.travel.k15@gmail.com>',
         to: book_tour.book_tour_contact_info.email,
         subject: "[" + company_info.name + "] Vé Điện Tử #" + book_tour.code,
-        html: html_e_ticket_email(linkTeam, book_tour),
+        html: html_e_ticket_email(linkTeam, book_tour, linkTourTurn),
     };
     smtpTransport.sendMail(mailOptions, async function (error, response) {
         if (error) {
@@ -101,10 +107,10 @@ const sendETicketEmail = (req, res, book_tour) => {
 const sendConfirmCancelEmail = (req, cancel_booking) => {
     var linkTeam;
     if (process.env.NODE_ENV === 'development') {
-        linkTeam = "http://" + req.headers.host;
+        linkTeam = dev.users_host;
     }
     else {
-        linkTeam = "https://" + req.headers.host;
+        linkTeam = prod.users_host;
     }
     mailOptions = {
         from: '"' + company_info.name + '" <tour.travel.k15@gmail.com>',
@@ -128,10 +134,10 @@ const sendConfirmCancelEmail = (req, cancel_booking) => {
 const sendRefundedEmail = (req, cancel_booking) => {
     var linkTeam;
     if (process.env.NODE_ENV === 'development') {
-        linkTeam = "http://" + req.headers.host;
+        linkTeam = dev.users_host;
     }
     else {
-        linkTeam = "https://" + req.headers.host;
+        linkTeam = prod.users_host;
     }
     mailOptions = {
         from: '"' + company_info.name + '" <tour.travel.k15@gmail.com>',
@@ -155,10 +161,10 @@ const sendRefundedEmail = (req, cancel_booking) => {
 const sendConfirmCancelWithNoMoneyEmail = (req, cancel_booking) => {
     var linkTeam;
     if (process.env.NODE_ENV === 'development') {
-        linkTeam = "http://" + req.headers.host;
+        linkTeam = dev.users_host;
     }
     else {
-        linkTeam = "https://" + req.headers.host;
+        linkTeam = prod.users_host;
     }
     mailOptions = {
         from: '"' + company_info.name + '" <tour.travel.k15@gmail.com>',

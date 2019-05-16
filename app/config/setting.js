@@ -23,6 +23,14 @@ var config = {
     },
     cancel_policy:{
         time_receive_money_after_confirm: 3 //số ngày sau khi admin confirm request cancel booking, có thể tới cty nhân lại tiền
+    },
+    development: {
+        users_host: 'http://localhost:3000',
+        server_host: 'http://localhost:5000',
+    },
+    production: {
+        users_host: 'https://any.domain.com',
+        server_host: 'http://any.domain.se.com',
     }
 }
 

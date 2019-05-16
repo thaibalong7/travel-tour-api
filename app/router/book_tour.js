@@ -32,7 +32,7 @@ router.post('/unpayBookTour', book_tour.unpayBookTour) //middlewareAuthAdmin
 
 router.post('/cancelBookTourStatusBooked', book_tour.cancelBookTourStatusBooked) //middlewareAuthAdmin
 
-router.post('/cencelBookTourWithNoMoneyRefund', book_tour.cencelBookTourWithNoMoneyRefund) //middlewareAuthAdmin
+router.post('/cancelBookTourWithNoMoneyRefund', book_tour.cancelBookTourWithNoMoneyRefund) //middlewareAuthAdmin
 
 router.post('/confirmCancelBookTourOffline', book_tour.confirmCancelBookTourOffline) //middlewareAuthAdmin
 
