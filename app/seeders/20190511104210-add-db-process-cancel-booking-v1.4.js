@@ -65,6 +65,8 @@ module.exports = {
 					request_offline_person: JSON.stringify({
 						name: 'Lê Thị Thanh Thảo',
 						passport: '215454687',
+						helper: true,
+						note: 'Có người yêu cầu hộ'
 					})
 				}
 			]
@@ -81,6 +83,8 @@ module.exports = {
 					request_offline_person: JSON.stringify({
 						name: 'Trần Lê Phương Mai',
 						passport: '215545621',
+						helper: true,
+						note: 'Người yêu cầu hộ'
 					})
 				}
 			])

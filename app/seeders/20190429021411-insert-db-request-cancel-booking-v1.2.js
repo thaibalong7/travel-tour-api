@@ -49,7 +49,8 @@ module.exports = {
 					refund_message: JSON.stringify({
 						name: 'Phạm Hưng Tuấn Anh',
 						passport: '206124151',
-						helper: false
+						helper: false,
+						note: ''
 					})
 				},
 			]),
@@ -64,6 +65,8 @@ module.exports = {
 					request_offline_person: JSON.stringify({
 						name: 'Nguyễn Văn A',
 						passport: '265654364',
+						helper: false,
+						note: ''
 					}),
 				},
 			]),
