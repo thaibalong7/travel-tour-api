@@ -150,7 +150,7 @@ exports.getAllProcessCancel = async (req, res) => {
 exports.confirmCancel = async (req, res) => {
     try {
         if (typeof req.body.idCancelBooking !== 'undefined' && typeof req.body.refund_period !== 'undefined'
-            && typeof req.body.money_refunded !== 'undefined') {
+            && typeof req.body.money_refunded !== 'undefined' && typeof req.body.refund_message !== 'undefined') {
             let _cancel_booking = await cancel_booking.findOne({
                 where: {
                     id: req.body.idCancelBooking
@@ -175,6 +175,7 @@ exports.confirmCancel = async (req, res) => {
                             _cancel_booking.refund_period = refund_period
                             _cancel_booking.money_refunded = parseInt(money_refunded);
                             _cancel_booking.confirm_time = new Date();
+                            _cancel_booking.refund_message = JSON.stringify(req.body.refund_message);
                             _book_tour_history.status = 'confirm_cancel';
                             await _book_tour_history.save();
                             await _cancel_booking.save();
@@ -314,9 +315,7 @@ exports.refunded = async (req, res) => {
                         if (typeof req.body.refund_message !== 'undefined') { //refund_message là một obj
                             if (req.body.refund_message !== null)
                                 _cancel_booking.refund_message = JSON.stringify(req.body.refund_message);
-                            else return res.status(400).json({ msg: 'Refund message is null' })
                         }
-                        else return res.status(400).json({ msg: 'Missing refund message' })
                         _cancel_booking.refunded_time = new Date();
                         await _book_tour_history.save();
                         await _cancel_booking.save();
