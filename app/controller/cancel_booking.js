@@ -399,9 +399,9 @@ exports.updateRefundMessage = async (req, res) => {
                                 data: _cancel_booking
                             })
                         }
-                        else return res.status(200).json({ msg: 'Wrong refund message' })
+                        else return res.status(400).json({ msg: 'Wrong refund message' })
                     }
-                    else return res.status(200).json({ msg: 'Wrong refund message' })
+                    else return res.status(400).json({ msg: 'Wrong refund message' })
                 }
                 else {
                     return res.status(400).json({ msg: 'Status of this booking is not confirm_cancel' })
