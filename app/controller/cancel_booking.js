@@ -395,7 +395,7 @@ exports.updateRefundMessage = async (req, res) => {
                             await _cancel_booking.save();
                             _cancel_booking.dataValues.refund_message = JSON.parse(_cancel_booking.refund_message)
                             return res.status(200).json({
-                                msg: 'Update refund message sucessful',
+                                msg: 'Update refund message successful',
                                 data: _cancel_booking
                             })
                         }
@@ -415,7 +415,55 @@ exports.updateRefundMessage = async (req, res) => {
             return res.status(400).json({ msg: 'Wrong id of cancel_booking' })
         }
     } catch (error) {
-        console.error(error);
+        // console.error(error);
+        return res.status(400).json({ msg: error.toString() })
+    }
+}
+
+exports.removeRequest = async (req, res) => {
+    try {
+        if (typeof req.body.idCancelBooking !== 'undefined') {
+            let _cancel_booking = await cancel_booking.findOne({
+                where: {
+                    id: req.body.idCancelBooking
+                },
+                include: [{
+                    model: db.book_tour_history,
+                }]
+            })
+            if (_cancel_booking) {
+                if (_cancel_booking.book_tour_history.status == 'pending_cancel') { //chỉ pending_cancel mới có thể chuyển về lại paid 
+                    const _book_tour_history = _cancel_booking.book_tour_history;
+                    _book_tour_history.status = 'paid';
+                    _book_tour_history.save();
+                    cancel_booking.destroy({
+                        where: {
+                            id: _cancel_booking.id
+                        }
+                    }).then(() => {
+                        _book_tour_history.dataValues.message_pay = JSON.parse(_book_tour_history.message_pay)
+                        return res.status(200).json({
+                            msg: 'Remove request cancel booking successful',
+                            data: _book_tour_history
+                        })
+                    }, function (err) {
+                        console.log(err);
+                    });
+
+                }
+                else {
+                    return res.status(400).json({ msg: 'Status of this booking is not pending_cancel' })
+                }
+            }
+            else {
+                return res.status(400).json({ msg: 'Wrong id of cancel_booking' })
+            }
+        }
+        else {
+            return res.status(400).json({ msg: 'Wrong id of cancel_booking' })
+        }
+    } catch (error) {
+        // console.error(error);
         return res.status(400).json({ msg: error.toString() })
     }
 }
