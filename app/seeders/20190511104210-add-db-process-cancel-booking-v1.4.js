@@ -40,6 +40,7 @@ module.exports = {
 						name: 'Lê Trần Bảo Lâm',
 						passport: '315444658',
 						helper: true,
+						note: 'nothing to note'
 					})
 				}
 			]
@@ -77,6 +78,7 @@ module.exports = {
 						name: 'Trần Văn Kiên',
 						passport: '254549542',
 						helper: false,
+						note: 'this is note'
 					})
 				}
 			]
