@@ -173,7 +173,7 @@ module.exports = {
                 "(17, '11444d60-5s59-11e9-8ea6-4sddf55ef4', '" + formatDate(-24) + " 17:14:00', 'not_refunded', 1, 3000000, 17, 7, 2)," + //không thèm nhận tiền hoàn trả
                 "(18, '15ss4d60-5s59-11e9-8ea6-4sddf55ef4', '" + formatDate(-19) + " 16:08:00', 'confirm_cancel', 1, 3000000, 18, 7, 1)," + //ng nhà tới cty xin hủy giùm
                 "(19, '15ss4d60-5s59-11e9-8ea6-41dds55ef4', '" + formatDate(-19) + " 09:28:00', 'paid', 1, 300000, 19, 18, 3)," + //book tour gần tới ngày đi
-                "(20, '15ss4d60-3dd5g-11e9-8ea6-41dds55ef4', '" + formatDate(-28) + " 08:35:00', 'refunded', 1, 500000, 20, 20, 1)," + //book tour đã xin hủy khi gần tới ngày đi
+                "(20, '15ss4d60-3dd5g-11e9-8ea6-41dds55ef4', '" + formatDate(-28) + " 08:35:00', 'refunded', 1, 500000, 20, 20, 1)," + //book tour đã xin hủy khi gần tới ngày đi //hoàn tiền 0%
                 "(8, 'a294e850-5059-11e9-8e50-6d47d5b38a8f', '" + formatDate(-11) + " 06:29:12', 'booked', 3, 1500000, 8, 14, 1);").then(
                     () => {
                         return queryInterface.sequelize.query("INSERT INTO `passengers` (`id`, `fullname`, `phone`, `birthdate`, `sex`, `passport`, `fk_book_tour`, `fk_type_passenger`) VALUES" +
