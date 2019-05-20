@@ -375,3 +375,47 @@ exports.refunded = async (req, res) => {
         return res.status(400).json({ msg: error.toString() })
     }
 }
+
+exports.updateRefundMessage = async (req, res) => {
+    try {
+        if (typeof req.body.idCancelBooking !== 'undefined') {
+            let _cancel_booking = await cancel_booking.findOne({
+                where: {
+                    id: req.body.idCancelBooking
+                },
+                include: [{
+                    model: db.book_tour_history,
+                }]
+            })
+            if (_cancel_booking) {
+                if (_cancel_booking.book_tour_history.status == 'confirm_cancel') { //chỉ confirm_cancel mới có thể update
+                    if (typeof req.body.refund_message !== 'undefined') { //refund_message là một obj
+                        if (req.body.refund_message !== null) {
+                            _cancel_booking.refund_message = JSON.stringify(req.body.refund_message);
+                            await _cancel_booking.save();
+                            _cancel_booking.dataValues.refund_message = JSON.parse(_cancel_booking.refund_message)
+                            return res.status(200).json({
+                                msg: 'Update refund message sucessful',
+                                data: _cancel_booking
+                            })
+                        }
+                        else return res.status(200).json({ msg: 'Wrong refund message' })
+                    }
+                    else return res.status(200).json({ msg: 'Wrong refund message' })
+                }
+                else {
+                    return res.status(400).json({ msg: 'Status of this booking is not confirm_cancel' })
+                }
+            }
+            else {
+                return res.status(400).json({ msg: 'Wrong id of cancel_booking' })
+            }
+        }
+        else {
+            return res.status(400).json({ msg: 'Wrong id of cancel_booking' })
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(400).json({ msg: error.toString() })
+    }
+}

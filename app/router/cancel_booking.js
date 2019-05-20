@@ -13,4 +13,6 @@ router.post('/refunded', cancel_booking.refunded); //middlewareAuthAdmin
 
 router.post('/updateRefundPeriod', cancel_booking.updateRefundPeriod);  //middlewareAuthAdmin
 
+router.post('/updateRefundMessage', cancel_booking.updateRefundMessage); //middlewareAuthAdmin
+
 module.exports = router
