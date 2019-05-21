@@ -35,7 +35,7 @@ module.exports = {
 					request_time: new Date(formatDate(-2) + ' 11:15:21'),
 					confirm_time: new Date(formatDate(-1) + ' 05:16:21'),
 					refund_period: formatDate(+5),
-					money_refunded: 315000,
+					money_refunded: 200000,
 					refund_message: JSON.stringify({
 						name: 'Lê Trần Bảo Lâm',
 						passport: '315444658',
@@ -67,7 +67,7 @@ module.exports = {
 					request_time: new Date(formatDate(-8) + ' 12:04:00'),
 					confirm_time: new Date(formatDate(-8) + ' 12:05:00'),
 					refund_period: formatDate(+10),
-					money_refunded: 1150000,
+					money_refunded: 3000000,
 					request_offline_person: JSON.stringify({
 						name: 'Lê Thị Thanh Thảo',
 						passport: '215454687',
