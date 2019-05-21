@@ -11,6 +11,8 @@ router.post('/createWithRoutes', upload.single('image'), tours.createWithRoutes)
 
 router.post('/createWithRoutesAndListImage', upload.any('featured_image', 'list_image'), tours.createWithRoutesAndListImage) //middlewareAuthAdmin
 
+router.post('/createWithRoutesAndListImage_v2', upload.any('list_image', 'featured_image'), tours.createWithRoutesAndListImage_v2) //middlewareAuthAdmin
+
 router.post('/create', tours.create); //middlewareAuthAdmin
 
 router.post('/updateWithRoutes', upload.single('image'), tours.updateWithRoutes); //middlewareAuthAdmin
