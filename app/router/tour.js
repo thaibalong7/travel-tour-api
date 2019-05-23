@@ -19,6 +19,8 @@ router.post('/updateWithRoutes', upload.single('image'), tours.updateWithRoutes)
 
 router.post('/updateWithRoutesAndListImage', upload.any('featured_image', 'new_images'), tours.updateWithRoutesAndListImage); //middlewareAuthAdmin
 
+router.post('/updateWithRoutesAndListImage_v2', upload.any('featured_image', 'new_images'), tours.updateWithRoutesAndListImage_v2); //middlewareAuthAdmin
+
 router.get('/getById/:id', tours.getById);
 
 // Gởi lên id location, trả về những tour đi ngang qua điểm đó (những tour phải có tour_turns còn nhận book)

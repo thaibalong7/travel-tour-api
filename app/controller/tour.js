@@ -709,6 +709,176 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
     }
 }
 
+exports.updateWithRoutesAndListImage_v2 = async (req, res) => {
+    try {
+        if (typeof req.body.id === 'undefined' || isNaN(req.body.id)) {
+            return res.status(400).json({ msg: 'Param is invalid' })
+        }
+        else {
+            const _tour = await tours.findByPk(req.body.id);
+            if (!_tour) {
+                //k tồn tại tour này
+                return res.status(400).json({ msg: 'Wrong id' })
+            }
+            else {
+                if (typeof req.body.name !== 'undefined')
+                    _tour.name = req.body.name;
+                if (typeof req.body.policy !== 'undefined')
+                    _tour.policy = req.body.policy;
+                if (typeof req.body.description !== 'undefined')
+                    _tour.description = req.body.description;
+                if (typeof req.body.detail !== 'undefined')
+                    _tour.detail = req.body.detail;
+                if (typeof req.body.fk_type_tour !== 'undefined') {
+                    if (!isNaN(req.body.fk_type_tour)) {
+                        const check_type_tour = await db.type_tour.findByPk(parseInt(req.body.fk_type_tour));
+                        if (check_type_tour)
+                            _tour.fk_type_tour = req.body.fk_type_tour;
+                        else return res.status(400).json({ msg: 'Wrong type tour' })
+                    }
+                    else return res.status(400).json({ msg: 'Wrong type tour' })
+                }
+                if (typeof req.body.routes !== 'undefined') {
+                    const list_routes = JSON.parse(req.body.routes);
+                    await sort_route(list_routes);
+                    if (!(await helper_validate.check_list_routes_v2(list_routes, true))) {
+                        return res.status(400).json({ msg: 'List routes is invalid' })
+                    }
+                    else {
+                        //xóa routes cũ
+                        await db.routes.destroy(
+                            { where: { fk_tour: _tour.id } }
+                        )
+                        await db.tour_provinces.destroy({ where: { fk_tour: _tour.id } })
+                        await db.tour_countries.destroy({ where: { fk_tour: _tour.id } })
+                        let list_provinces = new Set();
+                        let list_countries = new Set();
+                        await asyncForLoop(list_routes, async (route) => {
+                            let new_route = route;
+                            new_route.fk_tour = _tour.id;
+                            await db.routes.create(new_route);
+                            const check_location = await db.locations.findOne({
+                                where: {
+                                    id: route.fk_location
+                                },
+                                include: [{
+                                    model: db.provinces,
+                                }]
+                            })
+                            list_countries.add(parseInt(check_location.province.fk_country));
+                            list_provinces.add(parseInt(check_location.province.id));
+                        })
+                        asyncForSet(list_provinces, async (id_province) => {
+                            db.tour_provinces.create({
+                                fk_tour: _tour.id,
+                                fk_province: id_province
+                            })
+                        })
+                        asyncForSet(list_countries, async (id_country) => {
+                            db.tour_countries.create({
+                                fk_tour: _tour.id,
+                                fk_country: id_country
+                            })
+                        })
+                    }
+                }
+                if (typeof req.body.deleted_images !== 'undefined') {
+                    //xóa file image cũ in here
+                    // [
+                    //     {
+                    //         id: 64
+                    //     }
+                    // ]
+                    const list_delete_images = JSON.parse(req.body.deleted_images)
+                    if (Array.isArray(list_delete_images)) {
+                        //thỏa là array
+                        // await delete_list_image(list_delete_images, _tour.id) //deleted_images là arr id, mỗi id check có phải của tour này k (query trong db ra rồi check), nếu phải thì xóa file đó đi
+                        await delete_list_image(list_delete_images, _tour.id)
+                    }
+                    else {
+                        return res.status(400).json({ msg: 'Wrong list deleted image' })
+                    }
+                }
+                if (typeof req.files !== 'undefined') { //nếu có gởi file lên
+                    var date = new Date();
+                    var timestamp = date.getTime();
+
+                    let featured_image = null;
+                    let list_image = req.files;
+
+                    await asyncFor(list_image, async (element, i) => {
+                        if (element.fieldname === 'featured_image') {
+                            featured_image = element;
+                            list_image.splice(i, 1); //tách file có fieldname là featured_image ra
+                            return true;
+                        }
+                        return false;
+                    }) //list_image chỉ còn lại file có fieldname khác featured_image (new_images)
+                    if (featured_image) { //nếu có featured_image
+                        fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', featured_image.buffer, async (err) => {
+                            if (err) {
+                                console.log(err)
+                                throw err;
+                            }
+                            if (_tour.featured_img !== null) {
+                                //xóa file cũ đi
+                                fs.unlink('public' + link_img.link_tour_featured + _tour.featured_img, (err) => {
+                                    if (err) {
+                                        console.error(err)
+                                    }
+                                });
+                            }
+                            _tour.featured_img = timestamp + '.jpg';
+                            await _tour.save();
+                        })
+                        //thêm new image in here
+                        await add_new_images_tour(list_image, _tour.id, timestamp);
+                        await _tour.save();
+                        const result_tour = await tours.findByPk(req.body.id);
+                        if (process.env.NODE_ENV === 'development')
+                            result_tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + result_tour.featured_img;
+                        else
+                            result_tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _toresult_tourur.featured_img;
+                        return res.status(200).json({
+                            msg: 'Update successful',
+                            data: result_tour
+                        });
+                    }
+                    else {
+                        await add_new_images_tour(list_image, _tour.id, timestamp);
+                        await _tour.save();
+                        const result_tour = await tours.findByPk(req.body.id);
+                        if (process.env.NODE_ENV === 'development')
+                            result_tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + result_tour.featured_img;
+                        else
+                            result_tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _toresult_tourur.featured_img;
+                        return res.status(200).json({
+                            msg: 'Update successful',
+                            data: result_tour
+                        });
+                    }
+
+                }
+                else {
+                    await _tour.save();
+                    if (process.env.NODE_ENV === 'development')
+                        _tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img;
+                    else
+                        _tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _tour.featured_img;
+                    return res.status(200).json({
+                        msg: 'Update successful',
+                        data: _tour
+                    });
+                }
+            }
+        }
+    }
+    catch (err) {
+        // console.log('end err', err)
+        return res.status(400).json({ msg: err.toString() })
+    }
+}
+
 exports.getAllTour = (req, res) => {
     const page_default = 1;
     const per_page_default = 10;
