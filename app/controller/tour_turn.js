@@ -1092,6 +1092,209 @@ exports.search = async (req, res) => {
     }
 }
 
+exports.search_v2 = async (req, res) => {
+    const arr_sortBy = ['price', 'date', 'view', 'booking', 'rating'];
+    const arr_sortType = ['ASC', 'DESC'] //ascending (tăng dần) //descending  (giảm dần)
+    try {
+        let name_search = req.query.name;
+        const date_search = req.query.date;
+        const price_search = req.query.price;
+        const lasting_search = req.query.lasting;
+        let rating_search = req.query.rating;
+        var sortBy = req.query.sortBy;
+        var sortType = req.query.sortType;
+        if (typeof price_search !== 'undefined' && isNaN(parseInt(price_search)))
+            return res.status(400).json({ msg: 'Wrong price to search' })
+        if (typeof lasting_search !== 'undefined' && isNaN(parseInt(lasting_search)))
+            return res.status(400).json({ msg: 'Wrong lasting to search' })
+        if (typeof rating_search !== 'undefined' && isNaN(parseFloat(rating_search)))
+            return res.status(400).json({ msg: 'Wrong rating to search' })
+        const page_default = 1;
+        const per_page_default = 10;
+        var page, per_page;
+        if (typeof req.query.page === 'undefined') page = page_default;
+        else page = req.query.page
+        if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
+        else per_page = req.query.per_page
+        if (isNaN(page) || isNaN(per_page) || parseInt(per_page) <= 0 || parseInt(page) <= 0) {
+            return res.status(400).json({ msg: 'Params is invalid' })
+        }
+        else {
+            page = parseInt(page);
+            per_page = parseInt(per_page);
+            if (typeof name_search == 'undefined') {
+                name_search = '';
+            }
+            if (typeof rating_search == 'undefined') {
+                rating_search = 0;
+            }
+            else rating_search = parseFloat(rating_search);
+            const query_tours =
+                `SELECT DISTINCT tours.id
+                FROM tours, routes, locations 
+                WHERE tours.id = routes.fk_tour and routes.fk_location = locations.id
+                    and ((tours.name LIKE '%${name_search}%') OR (tours.description LIKE '%${name_search}%') 
+                        OR (routes.detail LIKE '%${name_search}%') OR (locations.name LIKE '%${name_search}%'))
+                    and tours.average_rating >= ${rating_search}`;
+            db.sequelize.query(query_tours).then(async (_tours) => {
+                const list_IDtour = [];
+                for (let i = 0, l = _tours[0].length; i < l; i++) {
+                    list_IDtour.push(_tours[0][i]['id']);
+                }
+                if (list_IDtour.length === 0) {
+                    return res.status(200).json({
+                        itemCount: 0, //số lượng record được trả về
+                        data: [],
+                        next_page: -1 //trang kế tiếp, nếu là -1 thì hết data rồi
+                    });
+                }
+                else {
+                    const query_tour_turn = {
+                        attributes: {
+                            exclude: ['fk_tour', 'price'],
+                            include: [
+                                [Sequelize.literal('DATEDIFF(end_date, start_date) + 1'), 'lasting'],
+                                [Sequelize.literal('CAST(price - (discount * price) / 100 AS UNSIGNED)'), 'end_price'],
+                                [Sequelize.literal('price'), 'original_price'],
+                            ]
+                        },
+                        include: [{
+                            model: db.tours,
+                            where: {
+                                id: {
+                                    [Op.or]: list_IDtour
+                                }
+                            }
+                        }],
+                        where: {
+                            [Op.and]: [
+                                { status: 'public' },
+                                {
+                                    start_date: {
+                                        [Op.gt]: new Date()
+                                    }
+                                }
+                            ]
+                        },
+                        limit: per_page,
+                        offset: (page - 1) * per_page
+                    }
+
+                    if (typeof price_search !== 'undefined') {
+                        query_tour_turn.where[Op.and].push(db.sequelize.literal('CAST(price - (discount * price) / 100 AS UNSIGNED) <=' + parseInt(price_search)))
+                    }
+
+                    if (typeof date_search !== 'undefined') { //search theo start_date
+                        query_tour_turn.where[Op.and].push({
+                            start_date: {
+                                [Op.eq]: new Date((date_search)), // format: yyyy-mm-dd
+                                // [Op.eq]: new Date(parseInt(date_search)), // format: timestamp
+                            }
+                        })
+                    }
+
+                    if (typeof lasting_search !== 'undefined') { //nếu có search bằng lasting
+                        query_tour_turn.where[Op.and].push(db.sequelize.literal('DATEDIFF(end_date, start_date) + 1 = ' + parseInt(lasting_search)))
+                    }
+                    if (typeof sortBy !== 'undefined' && typeof sortType !== 'undefined') { //2 params cùng được nhận
+                        sortBy = sortBy.toLowerCase();
+                        sortType = sortType.toUpperCase();
+                        if (arr_sortBy.indexOf(sortBy) === -1 || arr_sortType.indexOf(sortType) === -1) {
+                            //một trong hai không đúng quy định -> k sort gì hết
+                        }
+                        else { //sort by ...
+                            if (sortBy === arr_sortBy[0]) //price
+                            {
+                                query_tour_turn.order = [db.sequelize.literal('end_price ' + sortType)];
+                            }
+                            if (sortBy === arr_sortBy[1]) //date
+                            {
+                                query_tour_turn.order = [['start_date', sortType]];
+                            }
+                            if (sortBy === arr_sortBy[2]) //view
+                            {
+                                query_tour_turn.order = [['view', sortType]];
+                            }
+                            if (sortBy === arr_sortBy[3]) //booking
+                            {
+                                query_tour_turn.order = [['num_current_people', sortType]];
+                            }
+                            if (sortBy === arr_sortBy[4]) //rating
+                            {
+                                query_tour_turn.order = [[db.tours, 'average_rating', sortType]];
+                            }
+                        }
+                    }
+                    tour_turns.findAndCountAll(query_tour_turn).then(async _tour_turns => {
+                        var next_page = page + 1;
+                        //Kiểm tra còn dữ liệu không
+                        if ((parseInt(_tour_turns.rows.length) + (next_page - 2) * per_page) === parseInt(_tour_turns.count))
+                            next_page = -1;
+                        //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
+                        if ((parseInt(_tour_turns.rows.length) < per_page))
+                            next_page = -1;
+                        if (parseInt(_tour_turns.rows.length) === 0)
+                            next_page = -1;
+                        await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns.rows, req.headers.host)
+                        await convertDiscountAndGetNumReviewOfListTourTurn(_tour_turns.rows)
+                        return res.status(200).json({
+                            itemCount: _tour_turns.count, //số lượng record được trả về
+                            data: _tour_turns.rows,
+                            next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
+                        })
+                    }).catch(error => {
+                        // console.log(error)
+                        return res.status(400).json({ msg: error.toString() })
+                    })
+                }
+            })
+        }
+    } catch (error) {
+        // console.log(error)
+        return res.status(400).json({ msg: error.toString() })
+    }
+}
+
+// exports.api_test = async (req, res) => {
+//     try {
+//         const name_search = 'dinh doc lập';
+//         const rating_search = 0
+//         const query =
+//             `SELECT DISTINCT tours.id
+//             FROM tours, routes, locations 
+//             WHERE tours.id = routes.fk_tour and routes.fk_location = locations.id
+//                 and ((tours.name LIKE '%${name_search}%') OR (tours.description LIKE '%${name_search}%') 
+//                      OR (routes.detail LIKE '%${name_search}%') OR (locations.name LIKE '%${name_search}%'))
+//                 and tours.average_rating >= ${rating_search}`;
+
+//         const query_tesst = {
+//             where: {
+//                 [Op.and]: [
+//                     db.sequelize.literal(`tours.name LIKE '%tham quan%'`),
+
+//                 ]
+//             }
+//         }
+//         query_tesst.where[Op.and].push({
+//             fk_type_tour: 1
+//         })
+//         db.sequelize.query(query).then(_data => {
+//             console.log(_data[0]);
+//             const list_IDtour = [];
+//             for (let i = 0, l = _data[0].length; i < l; i++) {
+//                 list_IDtour.push(_data[0][i]['id']);
+//             }
+//             return res.status(200).json({
+//                 data: list_IDtour,
+//             })
+//         })
+
+//     } catch (error) {
+//         console.log(error)
+//         return res.status(400).json({ msg: error.toString() })
+//     }
+// }
+
 const getRatioRoutesMatch = async (tour_turn) => {
     const list_routes = await db.routes.findAll({
         where: {
