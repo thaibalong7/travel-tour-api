@@ -98,3 +98,17 @@ exports.updatePassword = async (req, res) => {
     }
 }
 
+exports.getListAdmins = async (req, res) => {
+    try {
+        const query = {
+            attributes: {
+                exclude: ['password']
+            }
+        }
+        admins.findAll(query).then((_admins) => {
+            return res.status(200).json({ data: _admins })
+        })
+    } catch (error) {
+        return res.status(400).json({ msg: err })
+    }
+}
