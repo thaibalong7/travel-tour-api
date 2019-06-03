@@ -66,20 +66,14 @@ module.exports = {
 					fk_user: null,
 					request_time: new Date(formatDate(-8) + ' 12:04:00'),
 					confirm_time: new Date(formatDate(-8) + ' 12:05:00'),
-					refund_period: formatDate(+10),
-					money_refunded: 3000000,
+					refunded_time: new Date(formatDate(-8) + ' 12:05:00'),
+					money_refunded: 2910000,
 					request_offline_person: JSON.stringify({
 						name: 'Lê Thị Thanh Thảo',
 						passport: '215454687',
 						helper: true,
 						note: 'Có người yêu cầu hộ'
 					}),
-					refund_message: JSON.stringify({
-						name: 'Trần Văn Kiên',
-						passport: '254549542',
-						helper: false,
-						note: 'this is note'
-					})
 				}
 			]
 			),

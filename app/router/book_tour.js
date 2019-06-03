@@ -36,6 +36,8 @@ router.post('/cancelBookTourWithNoMoneyRefund', book_tour.cancelBookTourWithNoMo
 
 router.post('/confirmCancelBookTourOffline', book_tour.confirmCancelBookTourOffline) //middlewareAuthAdmin
 
+router.post('/CancelBookTourOffline', book_tour.CancelBookTourOffline) //middlewareAuthAdmin
+
 // router.get('/requestCancelBookTour/:code', book_tour.requestCancelBookTour)
 
 router.post('/updatePassenger', book_tour.updatePassenger) //middlewareAuthAdmin
