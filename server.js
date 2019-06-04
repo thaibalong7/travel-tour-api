@@ -7,7 +7,7 @@ var env = require('dotenv');
 var cronjob = require('./app/cronjob');
 var logger = require('morgan');
 var FroalaEditor = require('wysiwyg-editor-node-sdk/lib/froalaEditor.js');
-// var socket = require('./app/socket');
+var socket = require('./app/socket');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const configFileMapping = {
@@ -76,7 +76,7 @@ var server = (app).listen(server_port, function (err) {
 // var io = require('socket.io').listen(server);
 // console.log(io)
 
-// socket.createSocketServer();
+socket.createSocketServer(server);
 cronjob.cron_ckeck_token();
 
 

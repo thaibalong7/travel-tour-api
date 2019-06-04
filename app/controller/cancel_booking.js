@@ -2,6 +2,7 @@ const db = require('../models');
 const cancel_booking = db.cancel_booking;
 const send_mail_helper = require('../helper/send_email');
 const cancel_policy = require('../config/setting').cancel_policy;
+const socket = require('../socket');
 
 exports.requestCancel = async (req, res) => {
     try {
@@ -223,8 +224,8 @@ exports.confirmCancel = async (req, res) => {
                                     }],
                                 }]
                             })
-                            send_mail_helper.sendConfirmCancelEmail(req, _cancel_booking)
-
+                            send_mail_helper.sendConfirmCancelEmail(req, _cancel_booking);
+                            socket.notiBookingChange_ConfirmCancelBookTour(_cancel_booking);
                             return;
                         }
                         else {
@@ -352,8 +353,8 @@ exports.refunded = async (req, res) => {
                                     }],
                                 }]
                             })
-                            send_mail_helper.sendRefundedEmail(req, _cancel_booking)
-
+                            send_mail_helper.sendRefundedEmail(req, _cancel_booking);
+                            socket.notiBookingChange_Refunded(_cancel_booking);
                             return;
                         } catch (error) {
                             // console.log(error)

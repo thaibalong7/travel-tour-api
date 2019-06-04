@@ -10,6 +10,7 @@ const { sendETicketEmail } = require('../helper/send_email');
 const checkPolicy_helper = require('../helper/check_policy');
 const send_mail_helper = require('../helper/send_email');
 const cancel_policy = require('../config/setting').cancel_policy;
+const socket = require('../socket');
 
 var publicKEY = fs.readFileSync('./app/middleware/public.key', 'utf8');
 var verifyOptions = {
@@ -248,48 +249,52 @@ const book_tour = async (req, res, _user = null) => {
                         _tour_turn.num_current_people = num_current_people;
                         await _tour_turn.save();
 
-                        /* Gởi email nếu là đã thanh toán */
-                        if (req.body.payment === 'online') {
-                            const query = {
-                                where: {
-                                    id: _book_tour.id
-                                },
-                                include: [{
-                                    model: db.book_tour_contact_info
-                                },
-                                {
-                                    model: db.payment_method
-                                },
-                                {
-                                    attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
-                                    model: db.passengers,
-                                    include: [{
-                                        model: db.type_passenger
-                                    }]
-                                },
-                                {
-                                    model: db.tour_turns,
-                                    include: [{
-                                        model: db.tours,
-                                        include: [{
-                                            model: db.routes,
-                                            include: [{
-                                                model: db.locations
-                                            }]
-                                        }]
-                                    }]
-                                }],
-                                attributes: { exclude: [] },
-                            }
-                            const book_tour_for_send_email = await db.book_tour_history.findOne(query);
-                            sendETicketEmail(req, res, book_tour_for_send_email);
-                        }
                         //xong //trả response cho client
-                        return res.status(200).json({
+                        res.status(200).json({
                             msg: 'Book tour successful',
                             book_tour: _book_tour,
                             contact_info: _contact_info
                         });
+                        const query = {
+                            where: {
+                                id: _book_tour.id
+                            },
+                            include: [{
+                                model: db.book_tour_contact_info
+                            },
+                            {
+                                model: db.payment_method
+                            },
+                            {
+                                attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                                model: db.passengers,
+                                include: [{
+                                    model: db.type_passenger
+                                }]
+                            },
+                            {
+                                model: db.tour_turns,
+                                include: [{
+                                    model: db.tours,
+                                    include: [{
+                                        model: db.routes,
+                                        include: [{
+                                            model: db.locations
+                                        }]
+                                    }]
+                                }]
+                            }],
+                            attributes: { exclude: [] },
+                        }
+                        const book_tour_for_send_email = await db.book_tour_history.findOne(query);
+                        /* Gởi email nếu là đã thanh toán */
+                        if (req.body.payment === 'online') {
+                            sendETicketEmail(req, res, book_tour_for_send_email); //đặt tour thành công đã thanh toán
+                            socket.notiBookingChange_BookNewTourPayOnline(book_tour_for_send_email);
+                        }
+                        else {
+                            socket.notiBookingChange_BookNewTour(book_tour_for_send_email); //đặt tour thành công mà chưa thanh toán
+                        }
                     })
 
                 })
@@ -928,6 +933,7 @@ exports.payBookTour = async (req, res) => {
                 }
                 const book_tour_for_send_email = await db.book_tour_history.findOne(query);
                 sendETicketEmail(req, res, book_tour_for_send_email);
+                socket.notiBookingChange_PayBookTour(book_tour_for_send_email);
 
                 return res.status(200).json({
                     msg: 'Pay successful',
@@ -1017,14 +1023,50 @@ exports.cancelBookTourStatusBooked = async (req, res) => {
                         await book_tour.save();
                         await tour_turn.save();
                         //add new record
-                        await db.cancel_booking.create(new_request).then(_request => {
-                            return res.status(200).json({
+                        await db.cancel_booking.create(new_request).then(async _request => {
+                            res.status(200).json({
                                 data: {
                                     book_tour: book_tour,
                                     cancel_booking: _request
                                 }
                             });
+
+                            /* Gởi Email E-Ticket */
+                            const query = {
+                                where: {
+                                    id: book_tour.id
+                                },
+                                include: [{
+                                    model: db.book_tour_contact_info
+                                },
+                                {
+                                    model: db.payment_method
+                                },
+                                {
+                                    attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                                    model: db.passengers,
+                                    include: [{
+                                        model: db.type_passenger
+                                    }]
+                                },
+                                {
+                                    model: db.tour_turns,
+                                    include: [{
+                                        model: db.tours,
+                                        include: [{
+                                            model: db.routes,
+                                            include: [{
+                                                model: db.locations
+                                            }]
+                                        }]
+                                    }]
+                                }],
+                                attributes: { exclude: [] },
+                            }
+                            const book_tour_for_send_email = await db.book_tour_history.findOne(query);
+                            socket.notiBookingChange_CancelBookTourStatusBooked(book_tour_for_send_email);
                         })
+
                     }
                     else return res.status(400).json({ msg: "This book tour don't have status 'booked'" });
                 }
@@ -1044,7 +1086,7 @@ exports.cancelBookTourStatusBooked = async (req, res) => {
     }
 }
 
-
+//api này đã được bỏ 
 //confirm cancel booking offline, khi chưa có request và phải tạo mới request
 exports.confirmCancelBookTourOffline = async (req, res) => {
     //api này cần được chỉnh sửa, phải thêm db cho bảng cancel_booking đầy đủ
@@ -1161,7 +1203,7 @@ exports.confirmCancelBookTourOffline = async (req, res) => {
 }
 
 //cancel trực tiếp tại cty, nhận tiền hoàn lại ngay lập tức
-exports.CancelBookTourOffline = async (req, res) => { 
+exports.CancelBookTourOffline = async (req, res) => {
     try {
         if (typeof req.body.money_refunded !== 'undefined'
             && typeof req.body.request_message !== 'undefined' && typeof req.body.request_offline_person !== 'undefined') {
@@ -1208,7 +1250,7 @@ exports.CancelBookTourOffline = async (req, res) => {
                                     }
                                 })
 
-                                //gởi mail confirm
+                                //gởi mail refund
                                 const cancel_booking = await db.cancel_booking.findOne({
                                     where: {
                                         id: _cancel_booking.id
@@ -1242,8 +1284,8 @@ exports.CancelBookTourOffline = async (req, res) => {
                                         }],
                                     }]
                                 })
-                                send_mail_helper.sendRefundedEmail(req, cancel_booking)
-
+                                send_mail_helper.sendRefundedEmail(req, cancel_booking);
+                                socket.notiBookingChange_CancelBookTourOffline(cancel_booking);
                                 return;
 
                             });
@@ -1271,6 +1313,7 @@ exports.CancelBookTourOffline = async (req, res) => {
     }
 }
 
+//cancel offline nhưng số tiền hoàn trả là 0
 exports.cancelBookTourWithNoMoneyRefund = async (req, res) => {
     try {
         if (typeof req.body.code !== 'undefined' && typeof req.body.request_message !== 'undefined'
@@ -1343,7 +1386,7 @@ exports.cancelBookTourWithNoMoneyRefund = async (req, res) => {
                             }]
                         })
                         send_mail_helper.sendConfirmCancelWithNoMoneyEmail(req, cancel_booking)
-
+                        socket.notiBookingChange_CancelBookTourOffline(cancel_booking);
                         return;
                     })
                 }
