@@ -1224,75 +1224,69 @@ exports.CancelBookTourOffline = async (req, res) => {
                     const money_refunded = (req.body.money_refunded);
                     if (!isNaN(money_refunded) && parseInt(money_refunded) >= 0) {
                         const curDate = new Date();
-                        const timeDiff = refund_period - new Date(curDate.getFullYear() + '-' + (curDate.getMonth() + 1) + '-' + curDate.getDate() + ' 00:00:00 GMT+07:00');
-                        const days_before_can_refund = parseInt(timeDiff / (1000 * 60 * 60 * 24)) //số ngày còn lại có thể lên nhận thanh toán;
-                        if (days_before_can_refund > cancel_policy.time_receive_money_after_confirm) {
-                            const new_cancel_booking = {
-                                request_message: req.body.request_message,
-                                fk_book_tour: book_tour.id,
-                                request_offline_person: JSON.stringify(req.body.request_offline_person),
-                                confirm_time: curDate,
-                                money_refunded: parseInt(req.body.money_refunded),
-                                refunded_time: curDate
-                            }
 
-                            db.cancel_booking.create(new_cancel_booking).then(async _cancel_booking => {
-                                //update số lượng người đi ở tour turn nữa ...
-                                const tour_turn = book_tour.tour_turn
-                                tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger);
-                                await book_tour.save();
-                                await tour_turn.save();
-                                res.status(200).json({
-                                    msg: 'Confirm cancel successful',
-                                    data: {
-                                        book_tour: book_tour,
-                                        cancel_booking: _cancel_booking
-                                    }
-                                })
+                        const new_cancel_booking = {
+                            request_message: req.body.request_message,
+                            fk_book_tour: book_tour.id,
+                            request_offline_person: JSON.stringify(req.body.request_offline_person),
+                            confirm_time: curDate,
+                            money_refunded: parseInt(req.body.money_refunded),
+                            refunded_time: curDate
+                        }
 
-                                //gởi mail refund
-                                const cancel_booking = await db.cancel_booking.findOne({
-                                    where: {
-                                        id: _cancel_booking.id
-                                    },
+                        db.cancel_booking.create(new_cancel_booking).then(async _cancel_booking => {
+                            //update số lượng người đi ở tour turn nữa ...
+                            const tour_turn = book_tour.tour_turn
+                            tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger);
+                            await book_tour.save();
+                            await tour_turn.save();
+                            res.status(200).json({
+                                msg: 'Confirm cancel successful',
+                                data: {
+                                    book_tour: book_tour,
+                                    cancel_booking: _cancel_booking
+                                }
+                            })
+
+                            //gởi mail refund
+                            const cancel_booking = await db.cancel_booking.findOne({
+                                where: {
+                                    id: _cancel_booking.id
+                                },
+                                include: [{
+                                    model: db.book_tour_history,
                                     include: [{
-                                        model: db.book_tour_history,
+                                        model: db.book_tour_contact_info
+                                    },
+                                    {
+                                        model: db.payment_method
+                                    },
+                                    {
+                                        attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                                        model: db.passengers,
                                         include: [{
-                                            model: db.book_tour_contact_info
-                                        },
-                                        {
-                                            model: db.payment_method
-                                        },
-                                        {
-                                            attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
-                                            model: db.passengers,
+                                            model: db.type_passenger
+                                        }]
+                                    },
+                                    {
+                                        model: db.tour_turns,
+                                        include: [{
+                                            model: db.tours,
                                             include: [{
-                                                model: db.type_passenger
-                                            }]
-                                        },
-                                        {
-                                            model: db.tour_turns,
-                                            include: [{
-                                                model: db.tours,
+                                                model: db.routes,
                                                 include: [{
-                                                    model: db.routes,
-                                                    include: [{
-                                                        model: db.locations
-                                                    }]
+                                                    model: db.locations
                                                 }]
                                             }]
-                                        }],
-                                    }]
-                                })
-                                send_mail_helper.sendRefundedEmail(req, cancel_booking);
-                                socket.notiBookingChange_CancelBookTourOffline(cancel_booking);
-                                return;
+                                        }]
+                                    }],
+                                }]
+                            })
+                            send_mail_helper.sendRefundedEmail(req, cancel_booking);
+                            socket.notiBookingChange_CancelBookTourOffline(cancel_booking);
+                            return;
 
-                            });
-                        }
-                        else {
-                            return res.status(400).json({ msg: 'Wrong refund period' })
-                        }
+                        });
                     }
                     else return res.status(400).json({ msg: 'Wrong money to refunded' })
                 }
