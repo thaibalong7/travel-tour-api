@@ -1231,7 +1231,8 @@ exports.CancelBookTourOffline = async (req, res) => {
                             request_offline_person: JSON.stringify(req.body.request_offline_person),
                             confirm_time: curDate,
                             money_refunded: parseInt(req.body.money_refunded),
-                            refunded_time: curDate
+                            refunded_time: curDate,
+                            refund_message: JSON.stringify(req.body.request_offline_person),
                         }
 
                         db.cancel_booking.create(new_cancel_booking).then(async _cancel_booking => {
