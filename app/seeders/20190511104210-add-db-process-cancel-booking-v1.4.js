@@ -74,6 +74,12 @@ module.exports = {
 						helper: true,
 						note: 'Có người yêu cầu hộ'
 					}),
+					refund_message: JSON.stringify({
+						name: 'Lê Thị Thanh Thảo',
+						passport: '215454687',
+						helper: true,
+						note: 'Có người yêu cầu hộ'
+					}),
 				}
 			]
 			),
