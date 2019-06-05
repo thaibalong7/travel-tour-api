@@ -241,12 +241,180 @@ exports.cancelTourTurn_CancelBookTourStatusBooked = async (req, res) => {
 //trong quy trình hủy chuyến đi //hủy book tour mà đã thanh toán hoặc đang chờ confirm hủy //paid || pending_cancel => cancelled
 exports.cancelTourTurn_ConfirmCancelBookTour = async (req, res) => {
     try {
-        if (typeof req.body.idBookTour !== 'undefined' && typeof req.body.refund_period !== 'undefined'
-        && typeof req.body.money_refunded !== 'undefined' && typeof req.body.refund_message !== 'undefined') {
-            
+        if (typeof req.body.code !== 'undefined' && typeof req.body.refund_period !== 'undefined'
+            && typeof req.body.refund_message !== 'undefined'
+            && typeof req.body.request_message !== 'undefined') {
+            const check_booking = await db.book_tour_history.findOne({
+                where: {
+                    code: req.body.code,
+                },
+                include: [{
+                    model: cancel_booking,
+                },
+                {
+                    model: db.tour_turns
+                }]
+            })
+            if (check_booking.status === 'paid') { //chưa có request
+                const curDate = new Date();
+                const refund_period = new Date(req.body.refund_period + ' 00:00:00 GMT+07:00');
+                const timeDiff = refund_period - new Date(curDate.getFullYear() + '-' + (curDate.getMonth() + 1) + '-' + curDate.getDate() + ' 00:00:00 GMT+07:00');
+                const days_before_can_refund = parseInt(timeDiff / (1000 * 60 * 60 * 24)) //số ngày còn lại có thể lên nhận thanh toán;
+                if (days_before_can_refund > cancel_policy.time_receive_money_after_confirm) {
+                    const new_request = {
+                        request_message: req.body.request_message,
+                        fk_book_tour: check_booking.id,
+                        confirm_time: new Date(),
+                        refund_period: refund_period,
+                        money_refunded: check_booking.total_pay,
+                        refund_message: JSON.stringify(req.body.refund_message)
+                    }
+                    check_booking.status = 'confirm_cancel';
+                    const tour_turn = check_booking.tour_turn;
+                    //update số lượng ng đi
+                    tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(check_booking.num_passenger);
 
+                    await check_booking.save();
+                    await tour_turn.save();
+
+                    //add new record
+                    await cancel_booking.create(new_request).then(async _request => {
+                        res.status(200).json({
+                            data: _request,
+                            msg: 'Confirm success'
+                        });
+
+
+                        try {
+                            //send mail and emit socket
+                            const _cancel_booking = await cancel_booking.findOne({
+                                where: {
+                                    id: _request.id
+                                },
+                                include: [{
+                                    model: db.book_tour_history,
+                                    include: [{
+                                        model: db.book_tour_contact_info
+                                    },
+                                    {
+                                        model: db.payment_method
+                                    },
+                                    {
+                                        attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                                        model: db.passengers,
+                                        include: [{
+                                            model: db.type_passenger
+                                        }]
+                                    },
+                                    {
+                                        model: db.tour_turns,
+                                        include: [{
+                                            model: db.tours,
+                                            include: [{
+                                                model: db.routes,
+                                                include: [{
+                                                    model: db.locations
+                                                }]
+                                            }]
+                                        }]
+                                    }],
+                                }]
+                            })
+                            if (_cancel_booking.book_tour_history.book_tour_contact_info.fk_user !== null)
+                            {
+                                _cancel_booking.fk_user = _cancel_booking.book_tour_history.book_tour_contact_info.fk_user;
+                                _cancel_booking.save();
+                            }
+                            send_mail_helper.sendConfirmCancelEmail(req, _cancel_booking);
+                            socket.notiBookingChange_ConfirmCancelBookTour(_cancel_booking);
+
+                        } catch (error) {
+                            console.log(error)
+                        }
+
+                    })
+
+                }
+                else {
+                    return res.status(400).json({ msg: 'Wrong refund period' })
+                }
+            }
+            else if (check_booking.status === 'pending_cancel') { //đã có request
+                var _cancel_booking = check_booking.cancel_bookings[0];
+                const curDate = new Date();
+                const refund_period = new Date(req.body.refund_period + ' 00:00:00 GMT+07:00');
+                const timeDiff = refund_period - new Date(curDate.getFullYear() + '-' + (curDate.getMonth() + 1) + '-' + curDate.getDate() + ' 00:00:00 GMT+07:00');
+                const days_before_can_refund = parseInt(timeDiff / (1000 * 60 * 60 * 24)) //số ngày còn lại có thể lên nhận thanh toán;
+                if (days_before_can_refund > cancel_policy.time_receive_money_after_confirm) {
+                    _cancel_booking.refund_period = refund_period
+                    _cancel_booking.money_refunded = check_booking.total_pay;
+                    _cancel_booking.confirm_time = new Date();
+                    _cancel_booking.refund_message = JSON.stringify(req.body.refund_message);
+                    check_booking.status = 'confirm_cancel';
+
+                    await check_booking.save();
+                    await _cancel_booking.save();
+
+                    //đã confirm rồi thì giảm ng đi ở tour turn xuống
+                    const tour_turn = check_booking.tour_turn
+                    tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(check_booking.num_passenger);
+                    await tour_turn.save();
+
+                    res.status(200).json({
+                        msg: 'Confirm successful',
+                        data: _cancel_booking
+                    })
+
+                    try {
+                        _cancel_booking = await cancel_booking.findOne({
+                            where: {
+                                id: _cancel_booking.id
+                            },
+                            include: [{
+                                model: db.book_tour_history,
+                                include: [{
+                                    model: db.book_tour_contact_info
+                                },
+                                {
+                                    model: db.payment_method
+                                },
+                                {
+                                    attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                                    model: db.passengers,
+                                    include: [{
+                                        model: db.type_passenger
+                                    }]
+                                },
+                                {
+                                    model: db.tour_turns,
+                                    include: [{
+                                        model: db.tours,
+                                        include: [{
+                                            model: db.routes,
+                                            include: [{
+                                                model: db.locations
+                                            }]
+                                        }]
+                                    }]
+                                }],
+                            }]
+                        })
+                        send_mail_helper.sendConfirmCancelEmail(req, _cancel_booking);
+                        socket.notiBookingChange_ConfirmCancelBookTour(_cancel_booking);
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+                else {
+                    return res.status(400).json({ msg: 'Wrong refund period' })
+                }
+            }
+            else {
+                return res.status(400).json({ msg: "Can not cancel this book tour" });
+            }
         }
     } catch (error) {
+        console.log(error)
         return res.status(400).json({ msg: error.toString() })
     }
 }

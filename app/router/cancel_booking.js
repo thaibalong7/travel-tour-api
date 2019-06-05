@@ -19,4 +19,7 @@ router.post('/removeRequest', cancel_booking.removeRequest); //middlewareAuthAdm
 
 router.post('/cancelTourTurn_CancelBookTourStatusBooked', cancel_booking.cancelTourTurn_CancelBookTourStatusBooked); //middlewareAuthAdmin
 
+router.post('/cancelTourTurn_ConfirmCancelBookTour', cancel_booking.cancelTourTurn_ConfirmCancelBookTour); //middlewareAuthAdmin
+
+
 module.exports = router
