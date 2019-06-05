@@ -147,6 +147,110 @@ exports.getAllProcessCancel = async (req, res) => {
     }
 }
 
+//trong quy trình hủy chuyến đi //hủy book tour mà mới chỉ đặt, chưa thanh toán //booked => cancelled
+exports.cancelTourTurn_CancelBookTourStatusBooked = async (req, res) => {
+    try {
+        const code = req.body.code;
+        const book_tour = await db.book_tour_history.findOne({
+            where: {
+                code: code
+            },
+            include: [{
+                model: db.tour_turns
+            }, {
+                model: db.book_tour_contact_info
+            }]
+        })
+        if (typeof req.body.request_message !== 'undefined') {
+
+            if (book_tour) {
+                if (book_tour.status == 'booked') {
+                    //hủy thẳng luôn
+                    const new_request = {
+                        fk_book_tour: book_tour.id,
+                        confirm_time: new Date(),
+                        request_message: req.body.request_message,
+                        money_refunded: 0
+                    }
+
+                    book_tour.status = 'cancelled';
+                    const tour_turn = book_tour.tour_turn
+                    tour_turn.num_current_people = parseInt(tour_turn.num_current_people) - parseInt(book_tour.num_passenger);
+                    await book_tour.save();
+                    await tour_turn.save();
+                    //add new record
+                    await db.cancel_booking.create(new_request).then(async _request => {
+                        res.status(200).json({
+                            data: {
+                                book_tour: book_tour,
+                                cancel_booking: _request
+                            }
+                        });
+
+                        /* Gởi Email E-Ticket */
+                        const query = {
+                            where: {
+                                id: book_tour.id
+                            },
+                            include: [{
+                                model: db.book_tour_contact_info
+                            },
+                            {
+                                model: db.payment_method
+                            },
+                            {
+                                attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                                model: db.passengers,
+                                include: [{
+                                    model: db.type_passenger
+                                }]
+                            },
+                            {
+                                model: db.tour_turns,
+                                include: [{
+                                    model: db.tours,
+                                    include: [{
+                                        model: db.routes,
+                                        include: [{
+                                            model: db.locations
+                                        }]
+                                    }]
+                                }]
+                            }],
+                            attributes: { exclude: [] },
+                        }
+                        const book_tour_for_send_email = await db.book_tour_history.findOne(query);
+                        socket.notiBookingChange_CancelBookTourStatusBooked(book_tour_for_send_email);
+                    })
+
+                }
+                else return res.status(400).json({ msg: "This book tour don't have status 'booked'" });
+            }
+            else {
+                return res.status(400).json({ msg: 'Wrong code' });
+            }
+        }
+        else {
+            return res.status(400).json({ msg: 'Missing params' });
+        }
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() })
+    }
+}
+
+//trong quy trình hủy chuyến đi //hủy book tour mà đã thanh toán hoặc đang chờ confirm hủy //paid || pending_cancel => cancelled
+exports.cancelTourTurn_ConfirmCancelBookTour = async (req, res) => {
+    try {
+        if (typeof req.body.idBookTour !== 'undefined' && typeof req.body.refund_period !== 'undefined'
+        && typeof req.body.money_refunded !== 'undefined' && typeof req.body.refund_message !== 'undefined') {
+            
+
+        }
+    } catch (error) {
+        return res.status(400).json({ msg: error.toString() })
+    }
+}
+
 //confirm một cancel_booking khi đã có request 
 exports.confirmCancel = async (req, res) => {
     try {
