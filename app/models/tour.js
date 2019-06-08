@@ -28,6 +28,10 @@ module.exports = function (sequelize, Sequelize) {
 		average_rating: {
 			type: Sequelize.FLOAT,
 			defaultValue: 0
+		},
+		num_days: {
+			type: Sequelize.INTEGER,
+			defaultValue: 1
 		}
 	},
 		{

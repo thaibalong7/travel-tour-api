@@ -107,7 +107,8 @@ exports.createWithRoutesAndListImage_v2 = async (req, res) => {
     try {
         if (typeof req.body.name !== 'undefined' && typeof req.body.policy !== 'undefined'
             && typeof req.body.description !== 'undefined' //&& typeof req.body.detail !== 'undefined'
-            && typeof req.body.routes !== 'undefined' && typeof req.body.fk_type_tour !== 'undefined') {
+            && typeof req.body.routes !== 'undefined' && typeof req.body.fk_type_tour !== 'undefined'
+            && typeof req.body.num_days !== 'undefined') {
             if (Array.isArray(JSON.parse(req.body.routes))) {
                 if (typeof req.files !== 'undefined') {
                     var date = new Date();
@@ -137,7 +138,8 @@ exports.createWithRoutesAndListImage_v2 = async (req, res) => {
                                     description: req.body.description,
                                     //detail: req.body.detail, //bỏ detail
                                     featured_img: timestamp + '.jpg',
-                                    fk_type_tour: check_type.id
+                                    fk_type_tour: check_type.id,
+                                    num_days: parseInt(req.body.num_days)
                                 }
                                 const list_routes = JSON.parse(req.body.routes);
 
@@ -241,7 +243,8 @@ exports.createWithRoutesAndListImage = async (req, res) => {
     try {
         if (typeof req.body.name !== 'undefined' && typeof req.body.policy !== 'undefined'
             && typeof req.body.description !== 'undefined' //&& typeof req.body.detail !== 'undefined'
-            && typeof req.body.routes !== 'undefined' && typeof req.body.fk_type_tour !== 'undefined') {
+            && typeof req.body.routes !== 'undefined' && typeof req.body.fk_type_tour !== 'undefined'
+            && typeof req.body.num_days !== 'undefined') {
             if (Array.isArray(JSON.parse(req.body.routes))) {
                 if (typeof req.files !== 'undefined') {
                     var date = new Date();
@@ -269,7 +272,8 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                                     description: req.body.description,
                                     //detail: req.body.detail, //bỏ detail
                                     featured_img: timestamp + '.jpg',
-                                    fk_type_tour: check_type.id
+                                    fk_type_tour: check_type.id,
+                                    num_days: parseInt(req.body.num_days)
                                 }
                                 const list_routes = JSON.parse(req.body.routes);
 
@@ -366,7 +370,7 @@ exports.createWithRoutes = async (req, res) => {
     try {
         if (typeof req.body.name !== 'undefined' && typeof req.body.policy !== 'undefined'
             && typeof req.body.description !== 'undefined' //&& typeof req.body.detail !== 'undefined'
-            && typeof req.body.routes !== 'undefined') {
+            && typeof req.body.routes !== 'undefined' && typeof req.body.num_days !== 'undefined') {
             if (Array.isArray(JSON.parse(req.body.routes))) {
                 if (typeof req.file !== 'undefined') {
                     var date = new Date();
@@ -380,7 +384,8 @@ exports.createWithRoutes = async (req, res) => {
                             policy: req.body.policy,
                             description: req.body.description,
                             //detail: req.body.detail,
-                            featured_img: timestamp + '.jpg'
+                            featured_img: timestamp + '.jpg',
+                            num_days: parseInt(req.body.num_days)
                         }
                         const list_routes = JSON.parse(req.body.routes);
                         await sort_route(list_routes);
@@ -431,12 +436,13 @@ exports.createWithRoutes = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         if (typeof req.body.name !== 'undefined' && typeof req.body.policy !== 'undefined'
-            && typeof req.body.description !== 'undefined') {
+            && typeof req.body.description !== 'undefined' && typeof req.body.num_days !== 'undefined') {
             const new_tour = {
                 name: req.body.name,
                 policy: req.body.policy,
                 description: req.body.description,
                 //detail: req.body.detail,
+                num_days: parseInt(req.body.num_days)
             }
             tours.create(new_tour).then(async _tour => {
                 return res.status(200).json(_tour)
@@ -473,6 +479,8 @@ exports.updateWithRoutes = async (req, res) => {
                     _tour.description = req.body.description;
                 if (typeof req.body.detail !== 'undefined')
                     _tour.detail = req.body.detail;
+                if (typeof req.body.num_days !== 'undefined')
+                    _tour.num_days = parseInt(req.body.num_days);
                 if (typeof req.body.routes !== 'undefined') {
                     const list_routes = JSON.parse(req.body.routes);
                     await sort_route(list_routes);
@@ -558,6 +566,8 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                     _tour.description = req.body.description;
                 if (typeof req.body.detail !== 'undefined')
                     _tour.detail = req.body.detail;
+                if (typeof req.body.num_days !== 'undefined')
+                    _tour.num_days = parseInt(req.body.num_days);
                 if (typeof req.body.fk_type_tour !== 'undefined') {
                     if (!isNaN(req.body.fk_type_tour)) {
                         const check_type_tour = await db.type_tour.findByPk(parseInt(req.body.fk_type_tour));
@@ -729,6 +739,8 @@ exports.updateWithRoutesAndListImage_v2 = async (req, res) => {
                     _tour.description = req.body.description;
                 if (typeof req.body.detail !== 'undefined')
                     _tour.detail = req.body.detail;
+                if (typeof req.body.num_days !== 'undefined')
+                    _tour.num_days = parseInt(req.body.num_days);
                 if (typeof req.body.fk_type_tour !== 'undefined') {
                     if (!isNaN(req.body.fk_type_tour)) {
                         const check_type_tour = await db.type_tour.findByPk(parseInt(req.body.fk_type_tour));
