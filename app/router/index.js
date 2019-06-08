@@ -18,6 +18,7 @@ router.use('/type_passenger', require('./type_passenger'));
 router.use('/payment_method', require('./payment_method'));
 router.use('/cancel_booking', require('./cancel_booking'));
 router.use('/tour_classification', require('./tour_classification'));
+router.use('/roles_admin', require('./roles_admin'));
 
 router.get('/getNumOfTourAndLocation', async (req, res) => {
     const all_tours = await db.tours.findAll();
