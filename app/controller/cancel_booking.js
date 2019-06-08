@@ -238,7 +238,7 @@ exports.cancelTourTurn_CancelBookTourStatusBooked = async (req, res) => {
     }
 }
 
-//trong quy trình hủy chuyến đi //hủy book tour mà đã thanh toán hoặc đang chờ confirm hủy //paid || pending_cancel => cancelled
+//trong quy trình hủy chuyến đi //hủy book tour mà đã thanh toán hoặc đang chờ confirm hủy //paid || pending_cancel => confirm_cancel
 exports.cancelTourTurn_ConfirmCancelBookTour = async (req, res) => {
     try {
         if (typeof req.body.code !== 'undefined' && typeof req.body.refund_period !== 'undefined'

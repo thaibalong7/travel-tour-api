@@ -25,5 +25,12 @@ module.exports = (sequelize, Sequelize) => {
             tableName: 'admins',
             timestamps: false
         });
+
+        Admin.associate = (models) => {
+            Admin.belongsTo(models.roles_admin, { foreignKey: 'fk_role' });
+            Admin.hasMany(models.book_tour_history, { foreignKey: 'fk_staff' });
+            Admin.hasMany(models.cancel_booking, { foreignKey: 'fk_staff' })
+        }
+
     return Admin;
 }

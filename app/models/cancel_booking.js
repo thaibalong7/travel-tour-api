@@ -42,6 +42,7 @@ module.exports = (sequelize, Sequelize) => {
     CancelTourBooking.associate = (models) => {
         CancelTourBooking.belongsTo(models.book_tour_history, { foreignKey: 'fk_book_tour' })
         CancelTourBooking.belongsTo(models.users, { foreignKey: 'fk_user' })
+        CancelTourBooking.belongsTo(models.admins, { foreignKey: 'fk_staff' })
     }
 
     return CancelTourBooking;
