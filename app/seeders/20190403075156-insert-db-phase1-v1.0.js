@@ -50,7 +50,7 @@ module.exports = {
 				"(2, 'transfer');"),
 			queryInterface.sequelize.query("INSERT INTO `admins` (`id`, `username`, `name`, `password`) VALUES" +
 				"(1, 'admin', 'ADMIN', '$2a$10$PqMsU1cjeWI4djNgKQXl6.6fkPWRqvPcNVpg47x1r1tooBEq.IJFK')," +
-				"(2, 'nnlinh97', 'nnlinh', '$2a$10$JyHUnzm6z5/l1NdQR0IJjOrpMnGbm456hRqMa2a2CN26vrTLThrZe');"),
+				"(2, 'nnlinh97', 'Nguyễn Ngọc Linh', '$2a$10$JyHUnzm6z5/l1NdQR0IJjOrpMnGbm456hRqMa2a2CN26vrTLThrZe');"),
 			queryInterface.sequelize.query("INSERT INTO `users` (`id`, `username`, `fullname`, `password`, `sex`, `address`, `birthdate`, `phone`, `email`, `avatar`, `isActive`, `type`) VALUES" +
 				"(1, 'tblong', 'Thái Bá Long', '" + bcrypt.hashSync('123456', null, null).toString() + "', 'male', NULL, '1997-11-24', '0123456789', 'thaibalong7@gmail.com', NULL, 1, 'local')," +
 				"(3, 'lengocha', 'Lê Ngọc Hà', '" + bcrypt.hashSync('123456', null, null).toString() + "', 'female', NULL , '1995-04-14', '0345444564', 'lnha@gmail.com', NULL, 1, 'local')," +
