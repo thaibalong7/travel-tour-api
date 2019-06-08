@@ -590,6 +590,7 @@ exports.refunded = async (req, res) => {
                                 _cancel_booking.refund_message = JSON.stringify(req.body.refund_message);
                         }
                         _cancel_booking.refunded_time = new Date();
+                        _cancel_booking.fk_staff = req.userData.id;
                         await _book_tour_history.save();
                         await _cancel_booking.save();
                         res.status(200).json({

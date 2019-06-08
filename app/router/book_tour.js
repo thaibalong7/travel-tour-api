@@ -1,6 +1,6 @@
 var router = require('express').Router();
 const book_tour = require('../controller/book_tour');
-const { middlewareAuthUser } = require('../middleware/auth')
+const { middlewareAuthUser, middlewareAuthAdmin } = require('../middleware/auth')
 
 router.post('/book_new_tour', book_tour.book_tour);
 
@@ -26,17 +26,17 @@ router.get('/getAllBookTourHistoryGroupByTourTurn', book_tour.getAllBookTourHist
 
 router.get('/getBookTourHistoryByTourTurn/:id', book_tour.getBookTourHistoryByTourTurn) //middlewareAuthAdmin
 
-router.post('/payBookTour', book_tour.payBookTour) //middlewareAuthAdmin
+router.post('/payBookTour', middlewareAuthAdmin, book_tour.payBookTour) //middlewareAuthAdmin
 
 router.post('/unpayBookTour', book_tour.unpayBookTour) //middlewareAuthAdmin
 
 router.post('/cancelBookTourStatusBooked', book_tour.cancelBookTourStatusBooked) //middlewareAuthAdmin
 
-router.post('/cancelBookTourWithNoMoneyRefund', book_tour.cancelBookTourWithNoMoneyRefund) //middlewareAuthAdmin
+router.post('/cancelBookTourWithNoMoneyRefund', middlewareAuthAdmin, book_tour.cancelBookTourWithNoMoneyRefund) //middlewareAuthAdmin
 
 router.post('/confirmCancelBookTourOffline', book_tour.confirmCancelBookTourOffline) //middlewareAuthAdmin
 
-router.post('/CancelBookTourOffline', book_tour.CancelBookTourOffline) //middlewareAuthAdmin
+router.post('/CancelBookTourOffline', middlewareAuthAdmin, book_tour.CancelBookTourOffline) //middlewareAuthAdmin
 
 // router.get('/requestCancelBookTour/:code', book_tour.requestCancelBookTour)
 

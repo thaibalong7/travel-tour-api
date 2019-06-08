@@ -1,6 +1,6 @@
 var router = require('express').Router();
 const cancel_booking = require('../controller/cancel_booking');
-const { middlewareAuthUser } = require('../middleware/auth');
+const { middlewareAuthUser, middlewareAuthAdmin } = require('../middleware/auth');
 
 // create: { idBookTour, message} + token ở header
 router.post('/requestCancel', middlewareAuthUser, cancel_booking.requestCancel);
@@ -9,7 +9,7 @@ router.get('/getAllProcessCancel', cancel_booking.getAllProcessCancel); //middle
 
 router.post('/confirmCancel', cancel_booking.confirmCancel); //middlewareAuthAdmin
 
-router.post('/refunded', cancel_booking.refunded); //middlewareAuthAdmin
+router.post('/refunded', middlewareAuthAdmin, cancel_booking.refunded); //middlewareAuthAdmin
 
 router.post('/updateRefundPeriod', cancel_booking.updateRefundPeriod);  //middlewareAuthAdmin
 

@@ -889,6 +889,7 @@ exports.payBookTour = async (req, res) => {
         if (book_tour) {
             if (book_tour.status === 'booked') { // book tour vừa book mới có thể chuyể thành paid
                 book_tour.status = 'paid' //chuyển thành status đã thanh toán
+                book_tour.fk_staff = req.userData.id;
                 if (typeof req.body.message_pay !== 'undefined') {
                     if (req.body.message_pay !== null)
                         book_tour.message_pay = JSON.stringify(req.body.message_pay)
@@ -1233,6 +1234,7 @@ exports.CancelBookTourOffline = async (req, res) => {
                             money_refunded: parseInt(req.body.money_refunded),
                             refunded_time: curDate,
                             refund_message: JSON.stringify(req.body.request_offline_person),
+                            fk_staff: req.userData.id
                         }
 
                         db.cancel_booking.create(new_cancel_booking).then(async _cancel_booking => {
@@ -1327,7 +1329,8 @@ exports.cancelBookTourWithNoMoneyRefund = async (req, res) => {
                         fk_book_tour: book_tour.id,
                         request_message: req.body.request_message,
                         request_offline_person: JSON.stringify(req.body.request_offline_person),
-                        confirm_time: new Date()
+                        confirm_time: new Date(),
+                        fk_staff: req.userData.id
                     }
                     db.cancel_booking.create(new_request_cancel).then(async _cancel_booking => {
                         book_tour.status = 'refunded';
