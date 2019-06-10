@@ -103,7 +103,10 @@ exports.getListAdmins = async (req, res) => {
         const query = {
             attributes: {
                 exclude: ['password']
-            }
+            },
+            include: [{
+                model: db.roles_admin
+            }]
         }
         admins.findAll(query).then((_admins) => {
             return res.status(200).json({ data: _admins })
