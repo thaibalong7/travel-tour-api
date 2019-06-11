@@ -483,6 +483,7 @@ exports.getHistoryBookTourById = (req, res) => {
             }
             db.book_tour_history.findOne(query).then(async _book_tour_history => {
                 if (_book_tour_history) {
+                    _book_tour_history = _book_tour_history.dataValues;
                     const tour_turn = await db.tour_turns.findOne({
                         where: {
                             id: _book_tour_history.fk_tour_turn
@@ -526,9 +527,10 @@ exports.getHistoryBookTourById = (req, res) => {
                             else
                                 tour_turn.tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + tour_turn.tour.featured_img
                         }
-                        _book_tour_history.dataValues.tour_turn = tour_turn
+                        _book_tour_history.tour_turn = tour_turn;
+                        _book_tour_history.isCancelBooking = await checkPolicy_helper.check_policy_cancel_booking(_book_tour_history);
                     }
-                    _book_tour_history.dataValues.type_passenger_detail = type_passenger_detail
+                    _book_tour_history.type_passenger_detail = type_passenger_detail;
                     return res.status(200).json({
                         data: _book_tour_history
                     })
