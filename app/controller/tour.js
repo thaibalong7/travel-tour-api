@@ -942,7 +942,7 @@ exports.getAllTour = (req, res) => {
 exports.getAllWithoutPagination = (req, res) => {
     try {
         const query = {
-            attributes: ['id', 'name'],
+            attributes: ['id', 'name', 'num_days'],
             include: [{
                 model: db.tour_turns,
                 //admin dùng nên k cần fillter status
