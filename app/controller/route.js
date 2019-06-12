@@ -4,6 +4,7 @@ const helper_add_link = require('../helper/add_full_link');
 const link_img = require('../config/setting').link_img;
 var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
+const helper = require('../helper');
 
 const asyncFor = async (arr, cb) => {
     for (let i = 0; i < arr.length; i++) {
@@ -213,6 +214,9 @@ exports.getByTour = (req, res) => {
             attributes: { exclude: ['fk_type'] },
             include: [{
                 model: db.types
+            },
+            {
+                model: db.provinces
             }]
         },
         {
@@ -222,9 +226,9 @@ exports.getByTour = (req, res) => {
     }
     routes.findAll(query).then(async _routes => {
         const result = await addLinkLocationFeaturedImgOfListRoutesAndAddTour(_routes, req.headers.host)
-        Promise.all(result).then(completed => {
+        Promise.all(result).then(async completed => {
             res.status(200).json({
-                data: completed,
+                data: await helper.convertListRoutes(completed),
             })
         })
     }).catch(err => {

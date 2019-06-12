@@ -41,3 +41,23 @@ exports.toStringDate = (date) => {
 exports.formatNumber = (num) => {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 }
+
+exports.convertListRoutes = async (routes) => {
+    const result_routes = [];
+    for (let i = 0, l = routes.length; i < l; i++) {
+        if (typeof result_routes[routes[i].day - 1] === 'undefined') {
+            result_routes.push({
+                day: routes[i].day,
+                list_routes: [routes[i]],
+                list_province: [routes[i].location.province.name]
+            })
+        }
+        else {
+            result_routes[routes[i].day - 1].list_routes.push(routes[i]);
+            if (result_routes[routes[i].day - 1].list_province.indexOf(routes[i].location.province.name) < 0)
+                result_routes[routes[i].day - 1].list_province.push(routes[i].location.province.name)
+        }
+
+    }
+    return result_routes;
+}
