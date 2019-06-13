@@ -701,6 +701,10 @@ exports.getHistoryBookTourByCode = (req, res) => {
             {
                 model: db.cancel_booking,
                 attributes: { exclude: ['fk_book_tour'] },
+            },
+            {
+                model: db.admins,
+                attributes: ['name']
             }],
             attributes: { exclude: [] },
         }
