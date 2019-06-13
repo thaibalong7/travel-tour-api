@@ -204,6 +204,7 @@ exports.update = async (req, res) => {
 
 exports.getByTour = (req, res) => {
     const idTour = req.params.idTour;
+    const vesion2 = (req.query._vs == 2);
     if (typeof idTour === 'undefined' || isNaN(idTour))
         return res.status(400).json({ msg: 'Param is invalid' })
     const query = {
@@ -228,7 +229,7 @@ exports.getByTour = (req, res) => {
         const result = await addLinkLocationFeaturedImgOfListRoutesAndAddTour(_routes, req.headers.host)
         Promise.all(result).then(async completed => {
             res.status(200).json({
-                data: await helper.convertListRoutes(completed),
+                data: vesion2 == true ? await helper.convertListRoutes(completed) : completed,
             })
         })
     }).catch(err => {
