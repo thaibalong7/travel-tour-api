@@ -769,6 +769,13 @@ exports.getHistoryBookTourByCode = (req, res) => {
                     _book_tour_history.cancel_bookings[0].dataValues.refund_message = JSON.parse(_book_tour_history.cancel_bookings[0].dataValues.refund_message);
                     _book_tour_history.cancel_bookings[0].dataValues.request_offline_person = JSON.parse(_book_tour_history.cancel_bookings[0].dataValues.request_offline_person);
                 }
+                _book_tour_history.dataValues.payment_staff = _book_tour_history.admin;
+                _book_tour_history.dataValues.admin = undefined
+                if (_book_tour_history.cancel_bookings.length !== 0)
+                {
+                    _book_tour_history.cancel_bookings[0].dataValues.refund_staff = _book_tour_history.cancel_bookings[0].admin;
+                    _book_tour_history.cancel_bookings[0].dataValues.admin = undefined;
+                }
                 _book_tour_history.dataValues.message_pay = JSON.parse(_book_tour_history.message_pay);
                 return res.status(200).json({
                     data: _book_tour_history
