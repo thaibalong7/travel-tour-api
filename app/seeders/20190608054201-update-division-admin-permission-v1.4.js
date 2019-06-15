@@ -26,12 +26,20 @@ module.exports = {
 			]).then(() => {
 				return Promise.all([
 					queryInterface.bulkUpdate('admins',
-						{ fk_role: 1 }, //update //admins
+						{
+							fk_role: 1,
+							birthdate: '2019-01-01',
+							password: bcrypt.hashSync('01012019', null, null).toString(),
+						}, //update //admins
 						{ //where
 							id: 1
 						}),
 					queryInterface.bulkUpdate('admins',
-						{ fk_role: 2 }, //update //nnlinh
+						{
+							fk_role: 1,
+							birthdate: '1997-01-01',
+							password: bcrypt.hashSync('01011997', null, null).toString(),
+						}, //update //nnlinh
 						{ //where
 							id: 2
 						}),
@@ -40,7 +48,18 @@ module.exports = {
 							id: '3',
 							username: 'tblong',
 							name: 'Thái Bá Long',
-							password: bcrypt.hashSync('123456', null, null).toString(),
+							password: bcrypt.hashSync('2404111997', null, null).toString(),
+							birthdate: '1997-11-24',
+							fk_role: 2
+						}
+					]),
+					queryInterface.bulkInsert('admins', [
+						{
+							id: '5',
+							username: 'ltb',
+							name: 'Lê Thanh Bình',
+							password: bcrypt.hashSync('01011993', null, null).toString(),
+							birthdate: '1993-01-01',
 							fk_role: 2
 						}
 					]),
@@ -49,9 +68,10 @@ module.exports = {
 							id: '4',
 							username: 'bot',
 							name: 'Bot Server',
-							password: bcrypt.hashSync('123456abcdef', null, null).toString(),
-							fk_role: 2
-						}
+							password: bcrypt.hashSync('01012019', null, null).toString(),
+							fk_role: 2,
+							birthdate: '2019-01-01',
+						},
 					]).then(() => {
 						return queryInterface.bulkUpdate('book_tour_history',
 							{ fk_staff: 4 }, //update //bot

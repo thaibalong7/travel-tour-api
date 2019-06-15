@@ -17,7 +17,11 @@ module.exports = (sequelize, Sequelize) => {
         password: {
             type: Sequelize.STRING,
             allowNull: false
-        }
+        },
+        birthdate: {
+            type: Sequelize.DATEONLY,
+            allowNull: true
+        },
     },
         {
             charset: 'utf8',
@@ -26,11 +30,11 @@ module.exports = (sequelize, Sequelize) => {
             timestamps: false
         });
 
-        Admin.associate = (models) => {
-            Admin.belongsTo(models.roles_admin, { foreignKey: 'fk_role' });
-            Admin.hasMany(models.book_tour_history, { foreignKey: 'fk_staff' });
-            Admin.hasMany(models.cancel_booking, { foreignKey: 'fk_staff' })
-        }
+    Admin.associate = (models) => {
+        Admin.belongsTo(models.roles_admin, { foreignKey: 'fk_role' });
+        Admin.hasMany(models.book_tour_history, { foreignKey: 'fk_staff' });
+        Admin.hasMany(models.cancel_booking, { foreignKey: 'fk_staff' })
+    }
 
     return Admin;
 }

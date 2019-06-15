@@ -126,17 +126,17 @@ module.exports = {
                 "(4, '" + formatDate(+2) + "', '" + formatDate(+2) + "', 2, 20, 215000, 0, 58, 'public', 2)," + //tour tới hạn kiểm tra thanh toán dưới 7 ngày //check trước 2-3 ngày
                 "(5, '2019-04-20', '2019-04-22', 0, 60, 500000, 0, 75, 'public', 3)," +
                 "(6, '" + formatDate(+10) + "', '" + formatDate(+10) + "', 0, 30, 150000, 0, 0, 'private', 4)," +
-                "(7, '" + formatDate(+20) + "', '" + formatDate(+26) + "', 0, 50, 3000000, 0, 47, 'public', 5)," +
+                "(7, '" + formatDate(+20) + "', '" + formatDate(+25) + "', 0, 50, 3000000, 0, 47, 'public', 5)," +
                 "(8, '2019-03-04', '2019-03-06', 0, 60, 7500000, 0, 85, 'public', 6)," +
                 "(13, '" + formatDate(+37) + "', '" + formatDate(+37) + "', 0, 60, 550000, 0, 47, 'public', 1)," +
                 "(14, '" + formatDate(+35) + "', '" + formatDate(+35) + "', 6, 60, 500000, 5, 127, 'public', 2)," +
                 "(15, '2019-04-09', '2019-04-09', 0, 62, 600000, 7, 87, 'public', 1)," +
                 "(16, '" + formatDate(+4) + "', '" + formatDate(+4) + "', 6, 20, 300000, 3, 147, 'public', 4)," + //tour tới hạn kiểm tra thanh toán trên 7 ngày //check trước 4-5 ngày
-                "(17, '" + formatDate(+40) + "', '" + formatDate(+46) + "', 0, 20, 540000, 5, 86, 'public', 5)," +
+                "(17, '" + formatDate(+40) + "', '" + formatDate(+45) + "', 0, 20, 540000, 5, 86, 'public', 5)," +
                 "(18, '" + formatDate(+1) + "', '" + formatDate(+1) + "', 1, 25, 300000, 0, 134, 'public', 2)," +
-                "(19, '" + formatDate(-1) + "', '" + formatDate(+1) + "', 2, 40, 200000, 5, 17, 'public', 4)," + //tour turn đang đi
+                "(19, '" + formatDate(-1) + "', '" + formatDate(+1) + "', 2, 40, 500000, 5, 17, 'public', 3)," + //tour turn đang đi
                 "(20, '" + formatDate(-10) + "', '" + formatDate(-8) + "', 3, 40, 530000, 5, 114, 'public', 3)," + //tour đã đi
-                "(21, '" + formatDate(+45) + "', '" + formatDate(+48) + "', 0, 35, 550000, 0, 148, 'public', 3)," +
+                "(21, '" + formatDate(+45) + "', '" + formatDate(+47) + "', 0, 35, 550000, 0, 148, 'public', 3)," +
                 "(33, '2019-04-06', '2019-04-08', 0, 30, 300000, 6, 0, 'private', 4);"),
             queryInterface.sequelize.query("INSERT INTO `tour_images` (`id`, `name`, `fk_tour`) VALUES" +
                 "(1, 'SG_1.png', 1)," +

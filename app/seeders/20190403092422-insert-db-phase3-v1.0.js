@@ -162,8 +162,8 @@ module.exports = {
                 "(5, '870ae3a0-5059-11e9-8684-5d74946d80db', '" + formatDate(-3) + " 09:27:03', 'booked', 2, 430000, 5, 4, 2)," + //tới hạn nhắc nhỡ gọi điện 
                 "(6, '89216790-5059-11e9-8c7e-c3f82d1fa1ef', '" + formatDate(-15) + " 13:42:47', 'booked', 2, 950000, 6, 14, 1)," + 
                 "(7, '8fae3160-5059-11e9-98a6-11c33d1f98b4', '" + formatDate(-15) + " 14:32:24', 'refunded', 3, 1178000, 7, 14, 1)," + //cancel đã nhận được tiền
-                "(9, '8fae3160-5059-11e9-98a6-11c3f5dd44b4', '" + formatDate(-9) + " 19:18:24', 'cancelled', 1, 190000, 9, 19, 2)," + //tour turn đang đi
-                "(10, '8ssw3160-5059-11e9-98a6-w6c3f5dd44b4', '" + formatDate(-19) + " 08:18:24', 'paid', 2, 380000, 10, 19, 1)," + //tour turn đang đi
+                "(9, '8fae3160-5059-11e9-98a6-11c3f5dd44b4', '" + formatDate(-9) + " 19:18:24', 'cancelled', 1, 475000, 9, 19, 2)," + //tour turn đang đi
+                "(10, '8ssw3160-5059-11e9-98a6-w6c3f5dd44b4', '" + formatDate(-19) + " 08:18:24', 'paid', 2, 950000, 10, 19, 1)," + //tour turn đang đi
                 "(11, '55ff4160-5059-11e9-8ea6-11c355d7s8b4', '" + formatDate(-30) + " 15:04:00', 'finished', 1, 504000, 11, 20, 1)," + //tour đã đi
                 "(12, '55ff4160-d44s-11e9-8ea6-4ss5sed7s8b4', '" + formatDate(-38) + " 17:57:00', 'finished', 2, 745000, 12, 20, 2)," + //tour đã đi
                 "(13, '522s4160-5059-11e9-8ea6-4ss55d4s55e4', '" + formatDate(-28) + " 04:17:00', 'booked', 1, 291000, 13, 16, 1)," + //tới hạn nhắc nhỡ gọi điện 
