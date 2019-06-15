@@ -137,6 +137,34 @@ exports.update = async (req, res) => {
     }
 }
 
+
+exports.resetPassword = async (req, res) => {
+    try {
+        if (req.userData.fk_role === 1) {//role quản lý
+            let _admin = await admins.findByPk(req.body.adminId);
+            if (_admin) {
+                const birthdate = new Date(_admin.birthdate);
+                const new_password = '' + (birthdate.getDate() < 10 ? ('0' + birthdate.getDate()) : birthdate.getDate()) + (birthdate.getMonth() < 9 ? ('0' + (birthdate.getMonth() + 1)) : (birthdate.getMonth() + 1)) + birthdate.getFullYear();
+                _admin.password = bcrypt.hashSync(new_password, null, null).toString();
+                await _admin.save();
+                _admin.dataValues.password = undefined
+                return res.status(200).json({
+                    msg: 'Update successful',
+                    profile: _admin
+                })
+            }
+            else {
+                return res.status(400).json({ msg: 'Wrong id admin' })
+            }
+        }
+        else {
+            return res.status(400).json({ msg: 'You do not have permission to update this information' })
+        }
+    } catch (error) {
+        return res.status(400).json({ msg: err })
+    }
+}
+
 function sortListAdmins(admin1, admin2) {
     if (admin1.fk_role === 1 && admin2.fk_role === 2)
         return -1;
