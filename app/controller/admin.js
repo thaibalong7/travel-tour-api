@@ -107,8 +107,8 @@ exports.update = async (req, res) => {
                     _admin.birthdate = new Date(req.body.birthdate)
                 if (typeof req.body.name !== 'undefined')
                     _admin.name = req.body.name
-                if (typeof req.body.username !== 'undefined')
-                    _admin.username = req.body.username
+                // if (typeof req.body.username !== 'undefined')
+                //     _admin.username = req.body.username
                 if (typeof req.body.fk_role !== 'undefined') {
                     const check_role = await db.roles_admin.findByPk(req.body.fk_role);
                     if (check_role) {
