@@ -48,7 +48,7 @@ module.exports = {
 							id: '3',
 							username: 'tblong',
 							name: 'Thái Bá Long',
-							password: bcrypt.hashSync('2404111997', null, null).toString(),
+							password: bcrypt.hashSync('24111997', null, null).toString(),
 							birthdate: '1997-11-24',
 							fk_role: 2
 						}

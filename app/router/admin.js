@@ -10,4 +10,6 @@ router.get('/me', middlewareAuthAdmin, admins.me);
 router.post('/updatePassword', middlewareAuthAdmin, admins.updatePassword);
 router.get('/getListAdmins', admins.getListAdmins);
 
+router.post('/update', middlewareAuthAdmin, admins.update);
+
 module.exports = router;

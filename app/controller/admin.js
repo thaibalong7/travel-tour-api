@@ -98,6 +98,53 @@ exports.updatePassword = async (req, res) => {
     }
 }
 
+exports.update = async (req, res) => {
+    try {
+        if (req.userData.fk_role === 1) {//role quản lý
+            let _admin = await admins.findByPk(req.body.adminId);
+            if (_admin) {
+                if (typeof req.body.birthdate !== 'undefined')
+                    _admin.birthdate = new Date(req.body.birthdate)
+                if (typeof req.body.name !== 'undefined')
+                    _admin.name = req.body.name
+                if (typeof req.body.username !== 'undefined')
+                    _admin.username = req.body.username
+                if (typeof req.body.fk_role !== 'undefined') {
+                    const check_role = await db.roles_admin.findByPk(req.body.fk_role);
+                    if (check_role) {
+                        _admin.fk_role = req.body.fk_role
+                    }
+                    else {
+                        return res.status(400).json({ msg: 'Wrong role id' })
+                    }
+                }
+                await _admin.save();
+                _admin.dataValues.password = undefined
+                return res.status(200).json({
+                    msg: 'Update successful',
+                    profile: _admin
+                })
+            }
+            else {
+                return res.status(400).json({ msg: 'Wrong id admin' })
+            }
+        }
+        else {
+            return res.status(400).json({ msg: 'You do not have permission to update this information' })
+        }
+    } catch (error) {
+        return res.status(400).json({ msg: err })
+    }
+}
+
+function sortListAdmins(admin1, admin2) {
+    if (admin1.fk_role === 1 && admin2.fk_role === 2)
+        return -1;
+    else if (admin1.fk_role === 2 && admin2.fk_role === 1)
+        return 1;
+    return 0;
+}
+
 exports.getListAdmins = async (req, res) => {
     try {
         const query = {
@@ -109,6 +156,7 @@ exports.getListAdmins = async (req, res) => {
             }]
         }
         admins.findAll(query).then((_admins) => {
+            _admins.sort(sortListAdmins);
             return res.status(200).json({ data: _admins })
         })
     } catch (error) {
