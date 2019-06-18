@@ -14,4 +14,6 @@ router.post('/update', middlewareAuthAdmin, admins.update);
 
 router.post('/resetPassword', middlewareAuthAdmin, admins.resetPassword);
 
+router.post('/statistics', admins.statistics);
+
 module.exports = router;

@@ -1,7 +1,8 @@
 const db = require('../models');
 const admins = db.admins;
 const bcrypt = require('bcrypt-nodejs');
-
+var Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 var upload_image = require('../helper/upload_image');
@@ -189,5 +190,123 @@ exports.getListAdmins = async (req, res) => {
         })
     } catch (error) {
         return res.status(400).json({ msg: err })
+    }
+}
+
+exports.statistics = async (req, res) => {
+    try {
+        const arr_time = ['month', 'quarters'];
+        const time = req.body.time;
+        const year = parseInt(req.body.year);
+        const index_time = arr_time.indexOf(time);
+
+        function statistic(total_spents, total_proceeds, total_tours, total_passengers) {
+            this.total_spents = total_spents;
+            this.total_proceeds = total_proceeds;
+            this.total_tours = total_tours;
+            this.total_passengers = total_passengers;
+        }
+
+        //tính số tour đi và số hành khách đã đi
+        const query_tour_turn = {
+            attributes: {
+                include: [
+                    [Sequelize.literal('MONTH(start_date)'), 'month_start'], //thêm cột tháng đi
+                ]
+            },
+            where: {
+                [Op.and]: [{
+                    status: 'public',
+                    end_date: {
+                        [Op.lte]: new Date() // <= //tức tour đã đi
+                    }
+                },
+                Sequelize.literal('YEAR(start_date) = ' + year) //năm đi bằng year
+                ]
+            }
+        }
+        const result = new Array(12);
+        for (let i = 0, l = result.length; i < l; i++) {
+            result[i] = new statistic(0, 0, 0, 0)
+        }
+
+        const _tour_turn = await db.tour_turns.findAll(query_tour_turn);
+        for (let i = 0, l = _tour_turn.length; i < l; i++) {
+            result[parseInt(_tour_turn[i].dataValues.month_start) - 1].total_tours += 1; //thêm 1 tour đi
+            result[parseInt(_tour_turn[i].dataValues.month_start) - 1].total_passengers += parseInt(_tour_turn[i].num_current_people);
+        }
+
+        //tính số tiền nhận được (tiền nhận từ thanh toán vé)
+        const query_book_tour = {
+            attributes: {
+                include: [
+                    [Sequelize.literal('MONTH(book_time)'), 'month_book'], //thêm cột tháng đi
+                ]
+            },
+            where: {
+                [Op.and]: [{
+                    status: {
+                        [Op.or]: ['paid', 'finished', 'pending_cancel', 'confirm_cancel', 'refunded', 'not_refunded'] //lấy hết những book tour ngoại trừ status booked hay cancelled (mấy cái này chưa thanh toán)
+                    }
+                },
+                Sequelize.literal('YEAR(book_time) = ' + year) //năm đi bằng year
+                ]
+            }
+        }
+        const _book_tour = await db.book_tour_history.findAll(query_book_tour);
+        for (let i = 0, l = _book_tour.length; i < l; i++) {
+            result[parseInt(_book_tour[i].dataValues.month_book) - 1].total_proceeds += parseInt(_book_tour[i].total_pay)
+        }
+
+        //tính số tiền chi trả (trả tiền hoàn vé)
+        const query_cancel_book_tour = {
+            attributes: {
+                include: [
+                    [Sequelize.literal('MONTH(refunded_time)'), 'month_refunded'], //thêm cột tháng đi
+                ]
+            },
+            where: {
+                [Op.and]: [
+                    Sequelize.literal('YEAR(book_time) = ' + year) //năm đi bằng year
+                ]
+            },
+            include: [{
+                model: db.book_tour_history,
+                where: {
+                    status: 'refunded' //đã nhận tiền hoàn trả mới tính
+                }
+            }]
+        }
+        const _cancel_book_tour = await db.cancel_booking.findAll(query_cancel_book_tour);
+        for (let i = 0, l = _cancel_book_tour.length; i < l; i++) {
+            if (parseInt(_cancel_book_tour[i].money_refunded) > 0)
+                result['' + parseInt(_cancel_book_tour[i].dataValues.month_refunded) - 1].total_spents += parseInt(_cancel_book_tour[i].money_refunded)
+        }
+
+
+        if (index_time === 0) { //tính theo tháng
+            return res.status(200).json({ data: result })
+        }
+        else if (index_time === 1) { //tính theo quý
+            const result_quarters = new Array(4);
+            for (let i = 0, l = result_quarters.length; i < l; i++) {
+                result_quarters[i] = new statistic(0, 0, 0, 0)
+            }
+            for (let i = 0, l = result.length; i < l; i++) {
+                const th_quaters = Math.floor(i / 3); //1 năm 4 quý, mỗi quý 3 tháng
+                result_quarters[th_quaters].total_passengers += result[i].total_passengers;
+                result_quarters[th_quaters].total_tours += result[i].total_tours;
+                result_quarters[th_quaters].total_proceeds += result[i].total_proceeds;
+                result_quarters[th_quaters].total_spents += result[i].total_spents;
+            }
+            return res.status(200).json({ data: result_quarters })
+        }
+        else {
+            return res.status(400).json({ msg: "Wrong params time" })
+        }
+
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({ msg: error.toString() })
     }
 }
