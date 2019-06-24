@@ -78,6 +78,7 @@ var server = (app).listen(server_port, function (err) {
 
 socket.createSocketServer(server);
 cronjob.cron_ckeck_token();
+cronjob.cron_update_status_booking_finished();
 
 
 module.exports = server;
