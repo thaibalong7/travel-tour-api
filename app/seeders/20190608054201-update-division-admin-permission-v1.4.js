@@ -29,7 +29,7 @@ module.exports = {
 						{
 							fk_role: 1,
 							birthdate: '2019-01-01',
-							password: bcrypt.hashSync('01012019', null, null).toString(),
+							password: bcrypt.hashSync('admin', null, null).toString(),
 						}, //update //admins
 						{ //where
 							id: 1
