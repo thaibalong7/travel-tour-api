@@ -326,6 +326,9 @@ exports.statistics_v2 = async (req, res) => {
             set_total_proceeds(_total_proceeds) {
                 this.total_proceeds = _total_proceeds;
             };
+            add_total_proceeds(_total_proceeds) {
+                this.total_proceeds += _total_proceeds;
+            };
             set_total_book_tours(_total_book_tours) {
                 this.total_book_tours = _total_book_tours;
             };
@@ -371,7 +374,7 @@ exports.statistics_v2 = async (req, res) => {
                 if (_tour_turn[i].book_tour_histories[j].status !== 'booked' && _tour_turn[i].book_tour_histories[j].status !== 'cancelled')
                     proceeds_money_tour_turn += parseInt(_tour_turn[i].book_tour_histories[j].total_pay);
             }
-            result[parseInt(_tour_turn[i].dataValues.month_start) - 1].set_total_proceeds(proceeds_money_tour_turn);
+            result[parseInt(_tour_turn[i].dataValues.month_start) - 1].add_total_proceeds(proceeds_money_tour_turn);
         }
 
         //thống kê số lần book tour
