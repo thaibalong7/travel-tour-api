@@ -62,7 +62,7 @@ var cronjob = {
     },
     cron_update_status_booking_finished: function () {
         console.log("Start cron job check booking finish ...")
-        var job = new CronJob('*/1 * * * *', function () {
+        var job = new CronJob('* */1 * * *', function () { //run in every hour
             update_status_booking_finished();
         },
             null, true, 'Asia/Ho_Chi_Minh');
