@@ -316,7 +316,7 @@ exports.statistics_v2 = async (req, res) => {
         const time = req.body.time;
         const year = parseInt(req.body.year);
         const index_time = arr_time.indexOf(time);
-
+        console.log(req.headers)
         class statistic_v2 {
             constructor(total_proceeds = 0, total_book_tours = 0, total_cancel_book_tours = 0) {
                 this.total_proceeds = total_proceeds;
@@ -443,110 +443,126 @@ function sortCount(c1, c2) {
     return c2.count - c1.count;
 }
 
-exports.getTop10MostBookedTours = async (req, res) => {
+// exports.getTop10MostBookedTours = async (req, res) => {
+//     try {
+//         const arr_time = ['month', 'quarters'];
+//         const time = req.body.time;
+//         const year = parseInt(req.body.year);
+//         const index_time = arr_time.indexOf(time);
+
+//         const query_book_tour = {
+//             attributes: {
+//                 include: [
+//                     [Sequelize.literal('MONTH(book_time)'), 'month_book'], //thêm cột tháng đi
+//                 ]
+//             },
+//             where: {
+//                 [Op.and]: [
+//                     Sequelize.literal('YEAR(book_time) = ' + year) //năm đi bằng year
+//                 ]
+//             }
+//         };
+//         const _book_tour = await db.book_tour_history.findAll(query_book_tour);
+//         const list_top_tour = new Array([], [], [], [], [], [], [], [], [], [], [], []);
+//         for (let i = 0, l = _book_tour.length; i < l; i++) {
+//             list_top_tour[parseInt(_book_tour[i].dataValues.month_book) - 1].push(_book_tour[i].fk_tour_turn)
+//         }
+
+//         if (index_time === 0) { //tính theo tháng
+//             for (let i = 0, l = list_top_tour.length; i < l; i++) {
+//                 const check_temp = {};
+//                 for (let j = 0, lk = list_top_tour[i].length; j < lk; j++) {
+//                     if (typeof check_temp['' + list_top_tour[i][j]] == 'undefined')
+//                         check_temp['' + list_top_tour[i][j]] = {
+//                             id: list_top_tour[i][j],
+//                             count: 1
+//                         };
+//                     else {
+//                         check_temp['' + list_top_tour[i][j]].count += 1
+//                     }
+
+//                 }
+//                 const temp = [];
+//                 for (k in check_temp) {
+//                     temp.push(check_temp[k]);
+//                 }
+//                 temp.sort(sortCount);
+//                 list_top_tour[i] = temp.slice(0, 10);
+//                 for (let j = 0, lk = list_top_tour[i].length; j < lk; j++) {
+//                     list_top_tour[i][j].tour_turn = await db.tour_turns.findOne({
+//                         where: {
+//                             id: list_top_tour[i][j].id
+//                         },
+//                         include: [{
+//                             model: db.tours,
+//                             attributes: ['id', 'name']
+//                         }]
+//                     })
+
+//                 }
+//             }
+//             return res.status(200).json({ data: list_top_tour })
+//         } else if (index_time === 1) { //tính theo quý
+//             const list_top_tour_quarters = new Array([], [], [], [])
+
+//             for (let i = 0, l = list_top_tour.length; i < l; i++) {
+//                 const th_quaters = Math.floor(i / 3); //1 năm 4 quý, mỗi quý 3 tháng
+//                 list_top_tour_quarters[th_quaters] = list_top_tour_quarters[th_quaters].concat(list_top_tour[i])
+//             }
+
+//             for (let i = 0, l = list_top_tour_quarters.length; i < l; i++) {
+//                 const check_temp = {};
+//                 for (let j = 0, lk = list_top_tour_quarters[i].length; j < lk; j++) {
+//                     if (typeof check_temp['' + list_top_tour_quarters[i][j]] == 'undefined')
+//                         check_temp['' + list_top_tour_quarters[i][j]] = {
+//                             id: list_top_tour_quarters[i][j],
+//                             count: 1
+//                         };
+//                     else {
+//                         check_temp['' + list_top_tour_quarters[i][j]].count += 1
+//                     }
+//                 }
+//                 const temp = [];
+//                 for (k in check_temp) {
+//                     temp.push(check_temp[k]);
+//                 }
+//                 temp.sort(sortCount);
+//                 list_top_tour_quarters[i] = temp.slice(0, 10);
+//                 for (let j = 0, lk = list_top_tour_quarters[i].length; j < lk; j++) {
+//                     list_top_tour_quarters[i][j].tour_turn = await db.tour_turns.findOne({
+//                         where: {
+//                             id: list_top_tour_quarters[i][j].id
+//                         },
+//                         include: [{
+//                             model: db.tours,
+//                             attributes: ['id', 'name']
+//                         }]
+//                     })
+
+//                 }
+//             }
+//             return res.status(200).json({ data: list_top_tour_quarters })
+
+//         }
+//         else {
+//             return res.status(400).json({ msg: "Wrong params time" })
+//         }
+//     } catch (error) {
+//         return res.status(400).json({ msg: error.toString() })
+//     }
+// }
+
+exports.getTop5MostBookedTours = async (req, res) => {
     try {
-        const arr_time = ['month', 'quarters'];
-        const time = req.body.time;
-        const year = parseInt(req.body.year);
-        const index_time = arr_time.indexOf(time);
+        const _tours2 = await db.sequelize.query(`
+        SELECT tours.id, tours.name, COUNT(book_tour_history.id) AS num_book_tour
+        FROM tours, tour_turns, book_tour_history
+        WHERE tours.id = tour_turns.fk_tour AND tour_turns.id = book_tour_history.fk_tour_turn
+        GROUP BY tours.id
+        ORDER BY num_book_tour DESC
+        LIMIT 5`)
 
-        const query_book_tour = {
-            attributes: {
-                include: [
-                    [Sequelize.literal('MONTH(book_time)'), 'month_book'], //thêm cột tháng đi
-                ]
-            },
-            where: {
-                [Op.and]: [
-                    Sequelize.literal('YEAR(book_time) = ' + year) //năm đi bằng year
-                ]
-            }
-        };
-        const _book_tour = await db.book_tour_history.findAll(query_book_tour);
-        const list_top_tour = new Array([], [], [], [], [], [], [], [], [], [], [], []);
-        for (let i = 0, l = _book_tour.length; i < l; i++) {
-            list_top_tour[parseInt(_book_tour[i].dataValues.month_book) - 1].push(_book_tour[i].fk_tour_turn)
-        }
-
-        if (index_time === 0) { //tính theo tháng
-            for (let i = 0, l = list_top_tour.length; i < l; i++) {
-                const check_temp = {};
-                for (let j = 0, lk = list_top_tour[i].length; j < lk; j++) {
-                    if (typeof check_temp['' + list_top_tour[i][j]] == 'undefined')
-                        check_temp['' + list_top_tour[i][j]] = {
-                            id: list_top_tour[i][j],
-                            count: 1
-                        };
-                    else {
-                        check_temp['' + list_top_tour[i][j]].count += 1
-                    }
-
-                }
-                const temp = [];
-                for (k in check_temp) {
-                    temp.push(check_temp[k]);
-                }
-                temp.sort(sortCount);
-                list_top_tour[i] = temp.slice(0, 10);
-                for (let j = 0, lk = list_top_tour[i].length; j < lk; j++) {
-                    list_top_tour[i][j].tour_turn = await db.tour_turns.findOne({
-                        where: {
-                            id: list_top_tour[i][j].id
-                        },
-                        include: [{
-                            model: db.tours,
-                            attributes: ['id', 'name']
-                        }]
-                    })
-
-                }
-            }
-            return res.status(200).json({ data: list_top_tour })
-        } else if (index_time === 1) { //tính theo quý
-            const list_top_tour_quarters = new Array([], [], [], [])
-
-            for (let i = 0, l = list_top_tour.length; i < l; i++) {
-                const th_quaters = Math.floor(i / 3); //1 năm 4 quý, mỗi quý 3 tháng
-                list_top_tour_quarters[th_quaters] = list_top_tour_quarters[th_quaters].concat(list_top_tour[i])
-            }
-
-            for (let i = 0, l = list_top_tour_quarters.length; i < l; i++) {
-                const check_temp = {};
-                for (let j = 0, lk = list_top_tour_quarters[i].length; j < lk; j++) {
-                    if (typeof check_temp['' + list_top_tour_quarters[i][j]] == 'undefined')
-                        check_temp['' + list_top_tour_quarters[i][j]] = {
-                            id: list_top_tour_quarters[i][j],
-                            count: 1
-                        };
-                    else {
-                        check_temp['' + list_top_tour_quarters[i][j]].count += 1
-                    }
-                }
-                const temp = [];
-                for (k in check_temp) {
-                    temp.push(check_temp[k]);
-                }
-                temp.sort(sortCount);
-                list_top_tour_quarters[i] = temp.slice(0, 10);
-                for (let j = 0, lk = list_top_tour_quarters[i].length; j < lk; j++) {
-                    list_top_tour_quarters[i][j].tour_turn = await db.tour_turns.findOne({
-                        where: {
-                            id: list_top_tour_quarters[i][j].id
-                        },
-                        include: [{
-                            model: db.tours,
-                            attributes: ['id', 'name']
-                        }]
-                    })
-
-                }
-            }
-            return res.status(200).json({ data: list_top_tour_quarters })
-
-        }
-        else {
-            return res.status(400).json({ msg: "Wrong params time" })
-        }
+        return res.status(200).json({ data: _tours2[0] })
     } catch (error) {
         return res.status(400).json({ msg: error.toString() })
     }

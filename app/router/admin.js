@@ -18,6 +18,8 @@ router.post('/statistics', admins.statistics);
 
 router.post('/statistics_v2', admins.statistics_v2);
 
-router.post('/getTop10MostBookedTours', admins.getTop10MostBookedTours);
+// router.post('/getTop10MostBookedTours', admins.getTop10MostBookedTours);
+
+router.get('/getTop5MostBookedTours', admins.getTop5MostBookedTours);
 
 module.exports = router;
