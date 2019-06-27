@@ -170,7 +170,7 @@ module.exports = {
                 "(14, '115d4160-5059-11e9-8ea6-4ss55d4s55e4', '" + formatDate(-22) + " 09:25:00', 'paid', 5, 1455000, 14, 16, 2)," +
                 "(15, '1144s160-5s59-11e9-8ea6-4s55s44s55e4', '" + formatDate(-14) + " 16:37:00', 'booked', 1, 200000, 15, 3, 2)," +
                 "(16, '1144s160-5s59-11e9-8ea6-4s5sdd55e4', '" + formatDate(-18) + " 05:15:00', 'confirm_cancel', 2, 400000, 16, 3, 1)," +
-                "(17, '11444d60-5s59-11e9-8ea6-4sddf55ef4', '" + formatDate(-24) + " 17:14:00', 'not_refunded', 1, 2910000, 17, 7, 2)," + //không thèm nhận tiền hoàn trả
+                "(17, '11444d60-5s59-11e9-8ea6-4sddf55ef4', '" + formatDate(-24) + " 17:14:00', 'confirm_cancel', 1, 2910000, 17, 7, 2)," + //không thèm nhận tiền hoàn trả
                 "(18, '15ss4d60-5s59-11e9-8ea6-4sddf55ef4', '" + formatDate(-19) + " 16:08:00', 'refunded', 1, 2910000, 18, 7, 1)," + //ng nhà tới cty xin hủy giùm
                 "(19, '15ss4d60-5s59-11e9-8ea6-41dds55ef4', '" + formatDate(-19) + " 09:28:00', 'paid', 1, 300000, 19, 18, 3)," + //book tour gần tới ngày đi
                 "(20, '15ss4d60-3dd5g-11e9-8ea6-41dds55ef4', '" + formatDate(-28) + " 08:35:00', 'refunded', 1, 500000, 20, 20, 1)," + //book tour đã xin hủy khi gần tới ngày đi //hoàn tiền 0%

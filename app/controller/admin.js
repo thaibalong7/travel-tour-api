@@ -316,7 +316,6 @@ exports.statistics_v2 = async (req, res) => {
         const time = req.body.time;
         const year = parseInt(req.body.year);
         const index_time = arr_time.indexOf(time);
-        console.log(req.headers)
         class statistic_v2 {
             constructor(total_proceeds = 0, total_book_tours = 0, total_cancel_book_tours = 0) {
                 this.total_proceeds = total_proceeds;
@@ -434,14 +433,14 @@ exports.statistics_v2 = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.status(400).json({ msg: error.toString() })
     }
 }
 
-function sortCount(c1, c2) {
-    return c2.count - c1.count;
-}
+// function sortCount(c1, c2) {
+//     return c2.count - c1.count;
+// }
 
 // exports.getTop10MostBookedTours = async (req, res) => {
 //     try {
