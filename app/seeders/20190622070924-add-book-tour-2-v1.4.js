@@ -184,7 +184,7 @@ module.exports = {
 					book_tour_history(33, await generateCode(8), formatDate(-189) + " 04:14:27", 'finished', 5, 5500000, 33, 25, 1, 3, { "name": "Đặng Văn Lý", "passport": "321211026", "note": "", "helper": false }),
 					book_tour_history(34, await generateCode(8), formatDate(-142) + " 01:41:00", 'finished', 4, 4800000, 34, 26, 2, 3, { "name": "Cao Xuân Hà", "passport": "211333215", "note": "", "helper": false }),
 					book_tour_history(35, await generateCode(8), formatDate(-152) + " 14:17:00", 'finished', 1, 1200000, 35, 26, 2, 2, { "name": "Đinh Thị Thảo Vy", "passport": "233649874", "note": "", "helper": false }),
-					book_tour_history(36, await generateCode(8), formatDate(-175) + " 24:05:00", 'finished', 3, 3600000, 36, 26, 3, 2, { "name": "Nguyễn Thị Hải Phượng", "passport": "261549850", "note": "", "helper": false }),
+					book_tour_history(36, await generateCode(8), formatDate(-175) + " 23:05:00", 'finished', 3, 3600000, 36, 26, 3, 2, { "name": "Nguyễn Thị Hải Phượng", "passport": "261549850", "note": "", "helper": false }),
 					book_tour_history(37, await generateCode(8), formatDate(-110) + " 22:34:00", 'finished', 3, 540000, 37, 27, 1, 2, { "name": "Nguyễn Hoàng Dư", "passport": "655454554", "note": "", "helper": false }),
 					book_tour_history(38, await generateCode(8), formatDate(-105) + " 17:54:00", 'finished', 1, 180000, 38, 27, 1, 2, { "name": "Phạm Thị Ngọc Thuý", "passport": "264999870", "note": "", "helper": false }),
 					book_tour_history(39, await generateCode(8), formatDate(-135) + " 04:17:00", 'finished', 1, 180000, 39, 27, 2, 2, { "name": "Trần Thạch Đoàn", "passport": "511222165", "note": "", "helper": false }),
@@ -210,14 +210,14 @@ module.exports = {
 					book_tour_history(59, await generateCode(8), formatDate(-9) + " 18:15:00", 'refunded', 1, 170000, 59, 32, 2, 2, { "name": "Dương Hoài Phương", "passport": "165468788", "note": "", "helper": false }),
 					book_tour_history(60, await generateCode(8), formatDate(-46) + " 14:15:00", 'refunded', 1, 170000, 60, 32, 2, 2, { "name": "Phan Vinh Bính", "passport": "258468888", "note": "", "helper": false }),
 					book_tour_history(61, await generateCode(8), formatDate(-48) + " 21:15:00", 'refunded', 1, 170000, 61, 32, 2, 3, { "name": "Võ Minh Thư", "passport": "035354548", "note": "", "helper": false }),
-					book_tour_history(62, await generateCode(8), formatDate(-80) + " 24:06:00", 'refunded', 1, 120000, 62, 29, 2, 3, { "name": "Phan Huỳnh Ngọc Dung", "passport": "998786544", "note": "", "helper": false }),
+					book_tour_history(62, await generateCode(8), formatDate(-80) + " 23:06:00", 'refunded', 1, 120000, 62, 29, 2, 3, { "name": "Phan Huỳnh Ngọc Dung", "passport": "998786544", "note": "", "helper": false }),
 					book_tour_history(63, await generateCode(8), formatDate(-110) + " 12:06:00", 'refunded', 1, 120000, 63, 29, 2, 3, { "name": "Nguyễn Thế Vinh", "passport": "154468777", "note": "", "helper": false }),
 					book_tour_history(64, await generateCode(8), formatDate(-142) + " 15:24:00", 'refunded', 1, 130000, 64, 31, 1, 2, { "name": "Lê Minh Vương", "passport": "213544687", "note": "", "helper": false }),
 					book_tour_history(65, await generateCode(8), formatDate(-176) + " 21:31:00", 'refunded', 1, 100000, 65, 40, 3, 2, { "name": "Trương Gia Mẫn", "passport": "321435468", "note": "", "helper": false }),
 					book_tour_history(66, await generateCode(8), formatDate(-156) + " 20:39:00", 'refunded', 1, 1400000, 66, 28, 1, 2, { "name": "Châu Thị Kim Anh", "passport": "213545488", "note": "", "helper": false }),
 					book_tour_history(67, await generateCode(8), formatDate(-162) + " 21:38:00", 'refunded', 1, 1400000, 67, 28, 1, 2, { "name": "Nguyễn Minh Châu", "passport": "354987988", "note": "", "helper": false }),
 					book_tour_history(68, await generateCode(8), formatDate(-139) + " 20:33:00", 'refunded', 1, 1400000, 68, 28, 1, 3, { "name": "Lê Trung Kiên", "passport": "688798987", "note": "", "helper": false }),
-					book_tour_history(69, await generateCode(8), formatDate(-86) + " 24:17:00", 'refunded', 1, 150000, 69, 30, 2, 3, { "name": "Phạm Hoàng Nam Trung", "passport": "546878888", "note": "", "helper": false }),
+					book_tour_history(69, await generateCode(8), formatDate(-86) + " 23:17:00", 'refunded', 1, 150000, 69, 30, 2, 3, { "name": "Phạm Hoàng Nam Trung", "passport": "546878888", "note": "", "helper": false }),
 				]).then(() => {
 
 
