@@ -99,7 +99,7 @@ exports.verify = (req, res) => {
                             res.redirect('http://localhost:3000/login')
                         }
                         else {
-                            res.redirect('https://localhost:3000/login')
+                            res.redirect('https://itraveltour.top/login')
                         }
                         // return res.status(200).json({ msg: 'Verification successful' })
                     }

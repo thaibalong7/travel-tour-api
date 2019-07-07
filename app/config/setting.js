@@ -30,7 +30,7 @@ var config = {
     },
     production: {
         users_host: 'https://itraveltour.top',
-        server_host: 'https://itraveltour.top/api/',
+        server_host: 'https://itraveltour.top/api',
     }
 }
 
