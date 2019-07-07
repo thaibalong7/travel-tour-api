@@ -29,8 +29,8 @@ var config = {
         server_host: 'http://localhost:5000',
     },
     production: {
-        users_host: 'https://any.domain.com',
-        server_host: 'http://any.domain.se.com',
+        users_host: 'https://itraveltour.top',
+        server_host: 'https://itraveltour.top/api/',
     }
 }
 
