@@ -7,6 +7,10 @@ const fs = require('fs');
 const jwt = require('jsonwebtoken');
 var upload_image = require('../helper/upload_image');
 
+const imagemin = require('imagemin');
+const imageminPngquant = require('imagemin-pngquant');
+const imageminMozjpeg = require('imagemin-mozjpeg');
+
 // use 'utf8' to get string instead of byte array  (512 bit key)
 var privateKEY = fs.readFileSync('./app/middleware/private.key', 'utf8');
 const signOptions = {
@@ -70,8 +74,19 @@ exports.uploadImage = (req, res) => {
             console.log(err)
             return res.status(400).end(JSON.stringify(err));
         }
-
         res.send(data);
+        (async () => {
+            const files = await imagemin([data.link.substring(1)], {
+                destination: data.fileRoute.substring(1, data.fileRoute.length - 1),
+                plugins: [
+                    imageminMozjpeg(),
+                    imageminPngquant({
+                        quality: [0.6, 0.8]
+                    })
+                ]
+            });
+            console.log('optimize img: ', files);
+        })();
     });
 }
 

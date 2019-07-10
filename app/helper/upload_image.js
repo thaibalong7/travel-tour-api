@@ -93,8 +93,7 @@ function upload(req, callback) {
             if (!status) {
                 return handleStreamError("File does not meet the validation.");
             }
-
-            return callback(null, { link: link });
+            return callback(null, { link: link, fileRoute: fileRoute });
         });
 
         // Save image to disk.
