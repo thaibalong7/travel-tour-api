@@ -7,6 +7,9 @@ const helper_validate = require('../helper/validate');
 const fs = require('fs');
 const link_img = require('../config/setting').link_img;
 
+const sharp = require('sharp');
+const resize_img = require('../config/setting').optimize_img;
+
 const asyncForEach = async (arr, cb) => {
     arr.forEach(cb);
 }
@@ -72,10 +75,12 @@ const delete_list_image = async (deleted_images, idTour) => {
 }
 
 const add_new_images_tour = async (new_images, idTour, timestamp) => {
-    await asyncForEach(new_images, (image, index) => {
+    await asyncForEach(new_images, async (image, index) => {
         if (image.fieldname === 'new_images') {
             const name_image = idTour + '_' + timestamp + '_' + index + '.jpg';
-            fs.writeFile('public' + link_img.link_tour_img + name_image, image.buffer, async (err) => {
+            //optimize ảnh
+            const semiTransparentRedPng = await sharp(image.buffer).resize(resize_img.resize_tour_img).toBuffer();
+            fs.writeFile('public' + link_img.link_tour_img + name_image, semiTransparentRedPng, async (err) => {
                 if (err) {
                     console.log(err);
                 }
@@ -128,7 +133,9 @@ exports.createWithRoutesAndListImage_v2 = async (req, res) => {
                     if (check_type) {
                         // console.log(featured_image)
                         if (featured_image) {
-                            fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', featured_image.buffer, async (err) => {
+                            //optimize ảnh
+                            const semiTransparentRedPng = await sharp(featured_image.buffer).resize(resize_img.resize_tour_img).toBuffer();
+                            fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
                                 if (err) {
                                     return res.status(400).json({ msg: err.toString() })
                                 }
@@ -187,7 +194,9 @@ exports.createWithRoutesAndListImage_v2 = async (req, res) => {
                                     await asyncFor(list_image, async (file, i) => {
                                         if (file.fieldname === 'list_image') {
                                             const name_image = _tour.id + '_' + timestamp + '_' + i + '.jpg';
-                                            fs.writeFile('public' + link_img.link_tour_img + name_image, file.buffer, async (err) => {
+                                            //optimize ảnh
+                                            const semiTransparentRedPng = await sharp(file.buffer).resize(resize_img.resize_tour_img).toBuffer();
+                                            fs.writeFile('public' + link_img.link_tour_img + name_image, semiTransparentRedPng, async (err) => {
                                                 if (err) {
                                                     console.log(err);
                                                 }
@@ -262,7 +271,9 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                     const check_type = await db.type_tour.findByPk(parseInt(req.body.fk_type_tour))
                     if (check_type) {
                         if (featured_image) {
-                            fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', featured_image.buffer, async (err) => {
+                            //optimize ảnh
+                            const semiTransparentRedPng = await sharp(featured_image.buffer).resize(resize_img.resize_tour_img).toBuffer();
+                            fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
                                 if (err) {
                                     return res.status(400).json({ msg: err.toString() })
                                 }
@@ -316,7 +327,9 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                                     await asyncFor(list_image, async (file, i) => {
                                         if (file.fieldname === 'list_image') {
                                             const name_image = _tour.id + '_' + timestamp + '_' + i + '.jpg';
-                                            fs.writeFile('public' + link_img.link_tour_img + name_image, file.buffer, async (err) => {
+                                            //optimize ảnh
+                                            const semiTransparentRedPng = await sharp(file.buffer).resize(resize_img.resize_tour_img).toBuffer();
+                                            fs.writeFile('public' + link_img.link_tour_img + name_image, semiTransparentRedPng, async (err) => {
                                                 if (err) {
                                                     console.log(err);
                                                 }
@@ -375,7 +388,9 @@ exports.createWithRoutes = async (req, res) => {
                 if (typeof req.file !== 'undefined') {
                     var date = new Date();
                     var timestamp = date.getTime();
-                    fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', req.file.buffer, async (err) => {
+                    //optimize ảnh
+                    const semiTransparentRedPng = await sharp(req.file.buffer).resize(resize_img.resize_tour_img).toBuffer();
+                    fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
                         if (err) {
                             return res.status(400).json({ msg: err.toString() })
                         }
@@ -503,7 +518,9 @@ exports.updateWithRoutes = async (req, res) => {
                 if (typeof req.file !== 'undefined') {
                     var date = new Date();
                     var timestamp = date.getTime();
-                    fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', req.file.buffer, async (err) => {
+                    //optimize ảnh
+                    const semiTransparentRedPng = await sharp(req.file.buffer).resize(resize_img.resize_tour_img).toBuffer();
+                    fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
                         if (err) {
                             return res.status(400).json({ msg: err.toString() })
                         }
@@ -655,7 +672,9 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                         return false;
                     }) //list_image chỉ còn lại file có fieldname khác featured_image (new_images)
                     if (featured_image) { //nếu có featured_image
-                        fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', featured_image.buffer, async (err) => {
+                        //optimize ảnh
+                        const semiTransparentRedPng = await sharp(featured_image.buffer).resize(resize_img.resize_tour_img).toBuffer();
+                        fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
                             if (err) {
                                 console.log(err)
                                 throw err;
@@ -827,7 +846,9 @@ exports.updateWithRoutesAndListImage_v2 = async (req, res) => {
                         return false;
                     }) //list_image chỉ còn lại file có fieldname khác featured_image (new_images)
                     if (featured_image) { //nếu có featured_image
-                        fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', featured_image.buffer, async (err) => {
+                        //optimize ảnh
+                        const semiTransparentRedPng = await sharp(featured_image.buffer).resize(resize_img.resize_tour_img).toBuffer();
+                        fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
                             if (err) {
                                 console.log(err)
                                 throw err;

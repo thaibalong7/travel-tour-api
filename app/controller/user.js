@@ -9,6 +9,9 @@ const { sendVerifyEmail, sendForgetPasswordEmail } = require('../helper/send_ema
 const crypto = require('crypto');
 const link_img = require('../config/setting').link_img;
 
+const sharp = require('sharp');
+const resize_img = require('../config/setting').optimize_img;
+
 // use 'utf8' to get string instead of byte array  (512 bit key)
 var privateKEY = fs.readFileSync('./app/middleware/private.key', 'utf8');
 const signOptions = {
@@ -296,9 +299,11 @@ exports.update = async (req, res) => {
     if (typeof req.body.passport !== 'undefined')
         _user.passport = req.body.passport
     if (typeof req.file !== 'undefined') {
+        //optimize ảnh
+        const semiTransparentRedPng = await sharp(req.file.buffer).resize(resize_img.resize_avatar).toBuffer();
         var date = new Date();
         var timestamp = date.getTime();
-        fs.writeFile('public' + link_img.link_avatar_user + _user.id + '-' + timestamp + '.jpg', req.file.buffer, async (err) => {
+        fs.writeFile('public' + link_img.link_avatar_user + _user.id + '-' + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
             if (err) {
                 return res.status(400).json({ msg: err })
             }

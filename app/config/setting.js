@@ -21,7 +21,7 @@ var config = {
         name: 'Tour Travel',
         address: '127 Nguyễn Văn Cừ, Quận 5, TP Hồ Chí Minh'
     },
-    cancel_policy:{
+    cancel_policy: {
         time_receive_money_after_confirm: 3 //số ngày sau khi admin confirm request cancel booking, có thể tới cty nhân lại tiền
     },
     development: {
@@ -31,6 +31,11 @@ var config = {
     production: {
         users_host: 'https://itraveltour.top',
         server_host: 'https://itraveltour.top/api',
+    },
+    optimize_img: {
+        resize_avatar: 600,
+        resize_tour_img: 1024,
+        resize_location_img: 1024,
     }
 }
 
