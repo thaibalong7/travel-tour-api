@@ -7,8 +7,9 @@ const helper_validate = require('../helper/validate');
 const fs = require('fs');
 const link_img = require('../config/setting').link_img;
 
-const sharp = require('sharp');
-const resize_img = require('../config/setting').optimize_img;
+const imagemin = require('imagemin');
+const imageminPngquant = require('imagemin-pngquant');
+const imageminMozjpeg = require('imagemin-mozjpeg');
 
 const asyncForEach = async (arr, cb) => {
     arr.forEach(cb);
@@ -79,8 +80,13 @@ const add_new_images_tour = async (new_images, idTour, timestamp) => {
         if (image.fieldname === 'new_images') {
             const name_image = idTour + '_' + timestamp + '_' + index + '.jpg';
             //optimize ảnh
-            const semiTransparentRedPng = await sharp(image.buffer).resize(resize_img.resize_tour_img).toBuffer();
-            fs.writeFile('public' + link_img.link_tour_img + name_image, semiTransparentRedPng, async (err) => {
+            const buffer_opz = await imagemin.buffer(image.buffer, {
+                plugins: [
+                    imageminMozjpeg(),
+                    imageminPngquant({ quality: '60' })
+                ]
+            })
+            fs.writeFile('public' + link_img.link_tour_img + name_image, buffer_opz, async (err) => {
                 if (err) {
                     console.log(err);
                 }
@@ -134,8 +140,13 @@ exports.createWithRoutesAndListImage_v2 = async (req, res) => {
                         // console.log(featured_image)
                         if (featured_image) {
                             //optimize ảnh
-                            const semiTransparentRedPng = await sharp(featured_image.buffer).resize(resize_img.resize_tour_img).toBuffer();
-                            fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
+                            const buffer_opz = await imagemin.buffer(featured_image.buffer, {
+                                plugins: [
+                                    imageminMozjpeg(),
+                                    imageminPngquant({ quality: '60' })
+                                ]
+                            })
+                            fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', buffer_opz, async (err) => {
                                 if (err) {
                                     return res.status(400).json({ msg: err.toString() })
                                 }
@@ -195,8 +206,13 @@ exports.createWithRoutesAndListImage_v2 = async (req, res) => {
                                         if (file.fieldname === 'list_image') {
                                             const name_image = _tour.id + '_' + timestamp + '_' + i + '.jpg';
                                             //optimize ảnh
-                                            const semiTransparentRedPng = await sharp(file.buffer).resize(resize_img.resize_tour_img).toBuffer();
-                                            fs.writeFile('public' + link_img.link_tour_img + name_image, semiTransparentRedPng, async (err) => {
+                                            const buffer_opz = await imagemin.buffer(file.buffer, {
+                                                plugins: [
+                                                    imageminMozjpeg(),
+                                                    imageminPngquant({ quality: '60' })
+                                                ]
+                                            })
+                                            fs.writeFile('public' + link_img.link_tour_img + name_image, buffer_opz, async (err) => {
                                                 if (err) {
                                                     console.log(err);
                                                 }
@@ -272,8 +288,13 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                     if (check_type) {
                         if (featured_image) {
                             //optimize ảnh
-                            const semiTransparentRedPng = await sharp(featured_image.buffer).resize(resize_img.resize_tour_img).toBuffer();
-                            fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
+                            const buffer_opz = await imagemin.buffer(featured_image.buffer, {
+                                plugins: [
+                                    imageminMozjpeg(),
+                                    imageminPngquant({ quality: '60' })
+                                ]
+                            })
+                            fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', buffer_opz, async (err) => {
                                 if (err) {
                                     return res.status(400).json({ msg: err.toString() })
                                 }
@@ -328,8 +349,13 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                                         if (file.fieldname === 'list_image') {
                                             const name_image = _tour.id + '_' + timestamp + '_' + i + '.jpg';
                                             //optimize ảnh
-                                            const semiTransparentRedPng = await sharp(file.buffer).resize(resize_img.resize_tour_img).toBuffer();
-                                            fs.writeFile('public' + link_img.link_tour_img + name_image, semiTransparentRedPng, async (err) => {
+                                            const buffer_opz = await imagemin.buffer(file.buffer, {
+                                                plugins: [
+                                                    imageminMozjpeg(),
+                                                    imageminPngquant({ quality: '60' })
+                                                ]
+                                            })
+                                            fs.writeFile('public' + link_img.link_tour_img + name_image, buffer_opz, async (err) => {
                                                 if (err) {
                                                     console.log(err);
                                                 }
@@ -389,8 +415,13 @@ exports.createWithRoutes = async (req, res) => {
                     var date = new Date();
                     var timestamp = date.getTime();
                     //optimize ảnh
-                    const semiTransparentRedPng = await sharp(req.file.buffer).resize(resize_img.resize_tour_img).toBuffer();
-                    fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
+                    const buffer_opz = await imagemin.buffer(req.file.buffer, {
+                        plugins: [
+                            imageminMozjpeg(),
+                            imageminPngquant({ quality: '60' })
+                        ]
+                    })
+                    fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', buffer_opz, async (err) => {
                         if (err) {
                             return res.status(400).json({ msg: err.toString() })
                         }
@@ -519,8 +550,13 @@ exports.updateWithRoutes = async (req, res) => {
                     var date = new Date();
                     var timestamp = date.getTime();
                     //optimize ảnh
-                    const semiTransparentRedPng = await sharp(req.file.buffer).resize(resize_img.resize_tour_img).toBuffer();
-                    fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
+                    const buffer_opz = await imagemin.buffer(req.file.buffer, {
+                        plugins: [
+                            imageminMozjpeg(),
+                            imageminPngquant({ quality: '60' })
+                        ]
+                    })
+                    fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', buffer_opz, async (err) => {
                         if (err) {
                             return res.status(400).json({ msg: err.toString() })
                         }
@@ -673,8 +709,13 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                     }) //list_image chỉ còn lại file có fieldname khác featured_image (new_images)
                     if (featured_image) { //nếu có featured_image
                         //optimize ảnh
-                        const semiTransparentRedPng = await sharp(featured_image.buffer).resize(resize_img.resize_tour_img).toBuffer();
-                        fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
+                        const buffer_opz = await imagemin.buffer(featured_image.buffer, {
+                            plugins: [
+                                imageminMozjpeg(),
+                                imageminPngquant({ quality: '60' })
+                            ]
+                        })
+                        fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', buffer_opz, async (err) => {
                             if (err) {
                                 console.log(err)
                                 throw err;
@@ -847,8 +888,13 @@ exports.updateWithRoutesAndListImage_v2 = async (req, res) => {
                     }) //list_image chỉ còn lại file có fieldname khác featured_image (new_images)
                     if (featured_image) { //nếu có featured_image
                         //optimize ảnh
-                        const semiTransparentRedPng = await sharp(featured_image.buffer).resize(resize_img.resize_tour_img).toBuffer();
-                        fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
+                        const buffer_opz = await imagemin.buffer(featured_image.buffer, {
+                            plugins: [
+                                imageminMozjpeg(),
+                                imageminPngquant({ quality: '60' })
+                            ]
+                        })
+                        fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', buffer_opz, async (err) => {
                             if (err) {
                                 console.log(err)
                                 throw err;

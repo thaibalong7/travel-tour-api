@@ -4,8 +4,9 @@ const helper_add_link = require('../helper/add_full_link');
 const fs = require('fs');
 const link_img = require('../config/setting').link_img;
 
-const sharp = require('sharp');
-const resize_img = require('../config/setting').optimize_img;
+const imagemin = require('imagemin');
+const imageminPngquant = require('imagemin-pngquant');
+const imageminMozjpeg = require('imagemin-mozjpeg');
 
 const asyncFor = async (arr, cb) => {
     for (let i = 0; i < arr.length; i++) {
@@ -59,8 +60,13 @@ exports.createByTour = async (req, res) => {
                     await asyncFor(req.files, async (file, i) => {
                         const name_image = idTour + '_' + timestamp + '_' + i + '.jpg';
                         //optimize ảnh
-                        const semiTransparentRedPng = await sharp(file.buffer).resize(resize_img.resize_tour_img).toBuffer();
-                        fs.writeFile('public' + link_img.link_tour_img + name_image, semiTransparentRedPng, async (err) => {
+                        const buffer_opz = await imagemin.buffer(file.buffer, {
+                            plugins: [
+                                imageminMozjpeg(),
+                                imageminPngquant({ quality: '60' })
+                            ]
+                        })
+                        fs.writeFile('public' + link_img.link_tour_img + name_image, buffer_opz, async (err) => {
                             if (err) {
                                 console.log(err);
                             }

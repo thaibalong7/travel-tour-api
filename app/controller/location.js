@@ -5,8 +5,9 @@ const Op = Sequelize.Op;
 const helper_add_link = require('../helper/add_full_link');
 const link_img = require('../config/setting').link_img
 const fs = require('fs');
-const sharp = require('sharp');
-const resize_img = require('../config/setting').optimize_img;
+const imagemin = require('imagemin');
+const imageminPngquant = require('imagemin-pngquant');
+const imageminMozjpeg = require('imagemin-mozjpeg');
 
 const addLinkLocationFeaturedImgOfListLocationsAndAddTour = async (_locations, host) => {
     return _locations.map(async item => {
@@ -71,8 +72,13 @@ exports.create = async (req, res) => {
                             var date = new Date();
                             var timestamp = date.getTime();
                             //optimize ảnh
-                            const semiTransparentRedPng = await sharp(req.file.buffer).resize(resize_img.resize_location_img).toBuffer();
-                            fs.writeFile('public' + link_img.link_location_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
+                            const buffer_opz = await imagemin.buffer(req.file.buffer, {
+                                plugins: [
+                                    imageminMozjpeg(),
+                                    imageminPngquant({ quality: '60' })
+                                ]
+                            })
+                            fs.writeFile('public' + link_img.link_location_featured + timestamp + '.jpg', buffer_opz, async (err) => {
                                 if (err) {
                                     return res.status(400).json({ msg: err })
                                 }
@@ -206,8 +212,13 @@ exports.update = async (req, res) => {
                     var date = new Date();
                     var timestamp = date.getTime();
                     //optimize ảnh
-                    const semiTransparentRedPng = await sharp(req.file.buffer).resize(resize_img.resize_location_img).toBuffer();
-                    fs.writeFile('public' + link_img.link_location_featured + timestamp + '.jpg', semiTransparentRedPng, async (err) => {
+                    const buffer_opz = await imagemin.buffer(req.file.buffer, {
+                        plugins: [
+                            imageminMozjpeg(),
+                            imageminPngquant({ quality: '60' })
+                        ]
+                    })
+                    fs.writeFile('public' + link_img.link_location_featured + timestamp + '.jpg', buffer_opz, async (err) => {
                         if (err) {
                             return res.status(400).json({ msg: err })
                         }
