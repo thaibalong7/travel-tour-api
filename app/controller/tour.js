@@ -83,7 +83,7 @@ const add_new_images_tour = async (new_images, idTour, timestamp) => {
             const buffer_opz = await imagemin.buffer(image.buffer, {
                 plugins: [
                     imageminMozjpeg(),
-                    imageminPngquant({ quality: '60' })
+                    imageminPngquant({ quality: [0.3, 0.8] })
                 ]
             })
             fs.writeFile('public' + link_img.link_tour_img + name_image, buffer_opz, async (err) => {
@@ -143,7 +143,7 @@ exports.createWithRoutesAndListImage_v2 = async (req, res) => {
                             const buffer_opz = await imagemin.buffer(featured_image.buffer, {
                                 plugins: [
                                     imageminMozjpeg(),
-                                    imageminPngquant({ quality: '60' })
+                                    imageminPngquant({ quality: [0.3, 0.8] })
                                 ]
                             })
                             fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', buffer_opz, async (err) => {
@@ -209,7 +209,7 @@ exports.createWithRoutesAndListImage_v2 = async (req, res) => {
                                             const buffer_opz = await imagemin.buffer(file.buffer, {
                                                 plugins: [
                                                     imageminMozjpeg(),
-                                                    imageminPngquant({ quality: '60' })
+                                                    imageminPngquant({ quality: [0.3, 0.8] })
                                                 ]
                                             })
                                             fs.writeFile('public' + link_img.link_tour_img + name_image, buffer_opz, async (err) => {
@@ -291,7 +291,7 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                             const buffer_opz = await imagemin.buffer(featured_image.buffer, {
                                 plugins: [
                                     imageminMozjpeg(),
-                                    imageminPngquant({ quality: '60' })
+                                    imageminPngquant({ quality: [0.3, 0.8] })
                                 ]
                             })
                             fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', buffer_opz, async (err) => {
@@ -352,7 +352,7 @@ exports.createWithRoutesAndListImage = async (req, res) => {
                                             const buffer_opz = await imagemin.buffer(file.buffer, {
                                                 plugins: [
                                                     imageminMozjpeg(),
-                                                    imageminPngquant({ quality: '60' })
+                                                    imageminPngquant({ quality: [0.3, 0.8] })
                                                 ]
                                             })
                                             fs.writeFile('public' + link_img.link_tour_img + name_image, buffer_opz, async (err) => {
@@ -418,7 +418,7 @@ exports.createWithRoutes = async (req, res) => {
                     const buffer_opz = await imagemin.buffer(req.file.buffer, {
                         plugins: [
                             imageminMozjpeg(),
-                            imageminPngquant({ quality: '60' })
+                            imageminPngquant({ quality: [0.3, 0.8] })
                         ]
                     })
                     fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', buffer_opz, async (err) => {
@@ -553,7 +553,7 @@ exports.updateWithRoutes = async (req, res) => {
                     const buffer_opz = await imagemin.buffer(req.file.buffer, {
                         plugins: [
                             imageminMozjpeg(),
-                            imageminPngquant({ quality: '60' })
+                            imageminPngquant({ quality: [0.3, 0.8] })
                         ]
                     })
                     fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', buffer_opz, async (err) => {
@@ -712,7 +712,7 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                         const buffer_opz = await imagemin.buffer(featured_image.buffer, {
                             plugins: [
                                 imageminMozjpeg(),
-                                imageminPngquant({ quality: '60' })
+                                imageminPngquant({ quality: [0.3, 0.8] })
                             ]
                         })
                         fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', buffer_opz, async (err) => {
@@ -891,7 +891,7 @@ exports.updateWithRoutesAndListImage_v2 = async (req, res) => {
                         const buffer_opz = await imagemin.buffer(featured_image.buffer, {
                             plugins: [
                                 imageminMozjpeg(),
-                                imageminPngquant({ quality: '60' })
+                                imageminPngquant({ quality: [0.3, 0.8] })
                             ]
                         })
                         fs.writeFile('public' + link_img.link_tour_featured + timestamp + '.jpg', buffer_opz, async (err) => {

@@ -63,7 +63,7 @@ exports.createByTour = async (req, res) => {
                         const buffer_opz = await imagemin.buffer(file.buffer, {
                             plugins: [
                                 imageminMozjpeg(),
-                                imageminPngquant({ quality: '60' })
+                                imageminPngquant({ quality: [0.3, 0.8] })
                             ]
                         })
                         fs.writeFile('public' + link_img.link_tour_img + name_image, buffer_opz, async (err) => {

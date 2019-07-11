@@ -305,7 +305,7 @@ exports.update = async (req, res) => {
         const buffer_opz = await imagemin.buffer(req.file.buffer, {
             plugins: [
                 imageminMozjpeg(),
-                imageminPngquant({ quality: '60' })
+                imageminPngquant({ quality: [0.3, 0.8] })
             ]
         })
         var date = new Date();
