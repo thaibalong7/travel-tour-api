@@ -738,7 +738,7 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                         if (process.env.NODE_ENV === 'development')
                             result_tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + result_tour.featured_img;
                         else
-                            result_tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _toresult_tourur.featured_img;
+                            result_tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + result_tour.featured_img;
                         return res.status(200).json({
                             msg: 'Update successful',
                             data: result_tour
@@ -751,7 +751,7 @@ exports.updateWithRoutesAndListImage = async (req, res) => {
                         if (process.env.NODE_ENV === 'development')
                             result_tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + result_tour.featured_img;
                         else
-                            result_tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _toresult_tourur.featured_img;
+                            result_tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + result_tour.featured_img;
                         return res.status(200).json({
                             msg: 'Update successful',
                             data: result_tour
@@ -917,7 +917,7 @@ exports.updateWithRoutesAndListImage_v2 = async (req, res) => {
                         if (process.env.NODE_ENV === 'development')
                             result_tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + result_tour.featured_img;
                         else
-                            result_tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _toresult_tourur.featured_img;
+                            result_tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + result_tour.featured_img;
                         return res.status(200).json({
                             msg: 'Update successful',
                             data: result_tour
@@ -930,7 +930,7 @@ exports.updateWithRoutesAndListImage_v2 = async (req, res) => {
                         if (process.env.NODE_ENV === 'development')
                             result_tour.featured_img = 'http://' + req.headers.host + link_img.link_tour_featured + result_tour.featured_img;
                         else
-                            result_tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + _toresult_tourur.featured_img;
+                            result_tour.featured_img = 'https://' + req.headers.host + link_img.link_tour_featured + result_tour.featured_img;
                         return res.status(200).json({
                             msg: 'Update successful',
                             data: result_tour
