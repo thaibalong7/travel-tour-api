@@ -55,6 +55,12 @@ module.exports = {
 					confirm_time: new Date(formatDate(-14) + ' 04:41:37'),
 					refund_period: formatDate(-8),
 					money_refunded: 2500000,
+					refund_message: JSON.stringify({
+						name: 'Trần Lê Ngọc Hải',
+						passport: '251546654',
+						helper: true,
+						note: ''
+					}),
 				}
 			]
 			),
