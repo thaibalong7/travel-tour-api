@@ -320,8 +320,7 @@ exports.cancelTourTurn_ConfirmCancelBookTour = async (req, res) => {
                                     }],
                                 }]
                             })
-                            if (_cancel_booking.book_tour_history.book_tour_contact_info.fk_user !== null)
-                            {
+                            if (_cancel_booking.book_tour_history.book_tour_contact_info.fk_user !== null) {
                                 _cancel_booking.fk_user = _cancel_booking.book_tour_history.book_tour_contact_info.fk_user;
                                 _cancel_booking.save();
                             }
@@ -581,61 +580,61 @@ exports.refunded = async (req, res) => {
                 if (_book_tour_history.status === 'confirm_cancel') {
                     //check xem hiện giờ có nằm trong khoảng có thể refund hay k
                     let curDate = new Date();
-                    const refund_period = new Date(_cancel_booking.refund_period + ' 00:00:00 GMT+07:00');
+                    // const refund_period = new Date(_cancel_booking.refund_period + ' 00:00:00 GMT+07:00');
                     curDate = new Date(curDate.getFullYear() + '-' + (curDate.getMonth() + 1) + '-' + curDate.getDate() + ' 00:00:00 GMT+07:00');
-                    if (curDate <= refund_period) {
-                        _book_tour_history.status = 'refunded';
-                        if (typeof req.body.refund_message !== 'undefined') { //refund_message là một obj
-                            if (req.body.refund_message !== null)
-                                _cancel_booking.refund_message = JSON.stringify(req.body.refund_message);
-                        }
-                        _cancel_booking.refunded_time = new Date();
-                        _cancel_booking.fk_staff = req.userData.id;
-                        await _book_tour_history.save();
-                        await _cancel_booking.save();
-                        res.status(200).json({
-                            msg: 'Refund successful',
-                            data: _cancel_booking
-                        })
+                    // if (curDate <= refund_period) {
+                    _book_tour_history.status = 'refunded';
+                    if (typeof req.body.refund_message !== 'undefined') { //refund_message là một obj
+                        if (req.body.refund_message !== null)
+                            _cancel_booking.refund_message = JSON.stringify(req.body.refund_message);
+                    }
+                    _cancel_booking.refunded_time = new Date();
+                    _cancel_booking.fk_staff = req.userData.id;
+                    await _book_tour_history.save();
+                    await _cancel_booking.save();
+                    res.status(200).json({
+                        msg: 'Refund successful',
+                        data: _cancel_booking
+                    })
 
-                        try {
-                            _cancel_booking = await cancel_booking.findOne({
-                                where: {
-                                    id: req.body.idCancelBooking
-                                },
+                    try {
+                        _cancel_booking = await cancel_booking.findOne({
+                            where: {
+                                id: req.body.idCancelBooking
+                            },
+                            include: [{
+                                model: db.book_tour_history,
                                 include: [{
-                                    model: db.book_tour_history,
+                                    model: db.book_tour_contact_info
+                                },
+                                {
+                                    model: db.payment_method
+                                },
+                                {
+                                    attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
+                                    model: db.passengers,
                                     include: [{
-                                        model: db.book_tour_contact_info
-                                    },
-                                    {
-                                        model: db.payment_method
-                                    },
-                                    {
-                                        attributes: { exclude: ['fk_book_tour', 'fk_type_passenger'] },
-                                        model: db.passengers,
-                                        include: [{
-                                            model: db.type_passenger
-                                        }]
-                                    },
-                                    {
-                                        model: db.tour_turns,
-                                        include: [{
-                                            model: db.tours,
-                                        }]
-                                    }],
-                                }]
-                            })
-                            send_mail_helper.sendRefundedEmail(req, _cancel_booking);
-                            socket.notiBookingChange_Refunded(_cancel_booking);
-                            return;
-                        } catch (error) {
-                            // console.log(error)
-                        }
+                                        model: db.type_passenger
+                                    }]
+                                },
+                                {
+                                    model: db.tour_turns,
+                                    include: [{
+                                        model: db.tours,
+                                    }]
+                                }],
+                            }]
+                        })
+                        send_mail_helper.sendRefundedEmail(req, _cancel_booking);
+                        socket.notiBookingChange_Refunded(_cancel_booking);
+                        return;
+                    } catch (error) {
+                        // console.log(error)
                     }
-                    else {
-                        return res.status(400).json({ msg: 'Beyond the refund period' })
-                    }
+                    // }
+                    // else {
+                    //     return res.status(400).json({ msg: 'Beyond the refund period' })
+                    // }
                 }
                 else {
                     return res.status(400).json({ msg: 'Can not refund this book tour' })
