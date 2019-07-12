@@ -222,7 +222,8 @@ const book_tour = async (req, res, _user = null) => {
                     };
 
                     if (req.body.payment === 'online') {
-                        new_book_tour.status = 'paid' //thanh toán online thì status là đã thanh toán rồi
+                        new_book_tour.status = 'paid'; //thanh toán online thì status là đã thanh toán rồi
+                        new_book_tour.fk_staff = 4; // thanh toán online thì mặc định nhân viên là bot
                     }
 
                     db.book_tour_history.create(new_book_tour).then(async _book_tour => {
