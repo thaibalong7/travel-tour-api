@@ -63,9 +63,10 @@ exports.getTourTurnByCountry = async (req, res) => {
                 }],
                 order: [['start_date', 'ASC']]
             }).then(async (_tour_turns) => {
-                const result = _tour_turns.filter(tour_turn => tour_turn.tour !== null);
+                let result = _tour_turns.filter(tour_turn => tour_turn.tour !== null);
                 var next_page = page + 1;
                 var type_tour = null;
+                result = await checkPolicy_helper.remove_tour_cant_booking(result);
                 //phân trang
                 const result_paginate = await paginate(result, per_page, page)
                 if (result_paginate.length > 0) {
@@ -144,9 +145,10 @@ exports.getTourTurnByProvince = async (req, res) => {
                 }],
                 order: [['start_date', 'ASC']]
             }).then(async (_tour_turns) => {
-                const result = _tour_turns.filter(tour_turn => tour_turn.tour !== null);
+                let result = _tour_turns.filter(tour_turn => tour_turn.tour !== null);
                 var next_page = page + 1;
                 var type_tour = null;
+                result = await checkPolicy_helper.remove_tour_cant_booking(result);
                 //phân trang
                 const result_paginate = await paginate(result, per_page, page)
                 if (result_paginate.length > 0) {
@@ -219,26 +221,30 @@ exports.getTourTurnByType = (req, res) => {
                     },
                 }],
                 order: [['start_date', 'ASC']],
-                limit: per_page,
-                offset: (page - 1) * per_page
+                // limit: per_page,
+                // offset: (page - 1) * per_page
             }).then(async (_tour_turns) => {
+                const rs = await checkPolicy_helper.remove_tour_cant_booking(_tour_turns.rows);
+
                 var next_page = page + 1;
+                //phân trang
+                const result_paginate = await paginate(rs, per_page, page)
                 //Kiểm tra còn dữ liệu không
-                if ((parseInt(_tour_turns.rows.length) + (next_page - 2) * per_page) === parseInt(_tour_turns.count))
-                    next_page = -1;
+                if ((parseInt(result_paginate.length) + (next_page - 2) * per_page) === parseInt(rs.length))
+                    next_page = -1
                 //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
-                if ((parseInt(_tour_turns.rows.length) < per_page))
+                if ((parseInt(result_paginate.length) < per_page))
                     next_page = -1;
-                if (parseInt(_tour_turns.rows.length) === 0)
+                if (parseInt(result_paginate.length) === 0)
                     next_page = -1;
 
-                await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns.rows, req.headers.host)
-                await convertDiscountAndGetNumReviewOfListTourTurn(_tour_turns.rows);
+                await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host)
+                await convertDiscountAndGetNumReviewOfListTourTurn(result_paginate);
                 // const result = _tour_turns.rows.map((node) => node.get({ plain: true }));
-                await checkPolicy_helper.add_is_allow_booking(_tour_turns.rows, false);
+                await checkPolicy_helper.add_is_allow_booking(result_paginate, false);
                 res.status(200).json({
-                    itemCount: _tour_turns.count, //số lượng record được trả về
-                    data: _tour_turns.rows,
+                    itemCount: rs.length, //số lượng record được trả về
+                    data: result_paginate,
                     next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                 })
             })

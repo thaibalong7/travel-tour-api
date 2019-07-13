@@ -4,6 +4,7 @@ var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const helper_add_link = require('../helper/add_full_link');
 const link_img = require('../config/setting').link_img
+const checkPolicy_helper = require('../helper/check_policy');
 const fs = require('fs');
 const imagemin = require('imagemin');
 const imageminPngquant = require('imagemin-pngquant');
@@ -22,7 +23,7 @@ const addLinkLocationFeaturedImgOfListLocationsAndAddTour = async (_locations, h
                     }
                 },
                 {
-                    attributes: ['id', 'start_date', 'code'],
+                    attributes: ['id', 'start_date', 'code', 'status', 'booking_term'],
                     model: db.tour_turns,
                     where: {
                         status: 'public',
@@ -33,14 +34,17 @@ const addLinkLocationFeaturedImgOfListLocationsAndAddTour = async (_locations, h
                 }],
             order: [[db.tour_turns, 'start_date', 'ASC']]
         }
-        item.dataValues.tours = await db.tours.findAll(query);
-        for (let i = 0; i < item.dataValues.tours.length; i++) {
+        const _tours_by_location = await db.tours.findAll(query);
+        const list_tour = [];
+        for (let i = 0; i < _tours_by_location.length; i++) {
             //kiểm tra tour turn có book được không.
-
-
-
-            item.dataValues.tours[i].dataValues.tour_turns = item.dataValues.tours[i].dataValues.tour_turns[0];
+            let fix_tour_turns = await checkPolicy_helper.remove_tour_cant_booking(_tours_by_location[i].tour_turns)
+            if (fix_tour_turns.length > 0) {
+                _tours_by_location[i].dataValues.tour_turns = fix_tour_turns[0];
+                list_tour.push(_tours_by_location[i]);
+            }
         }
+        item.dataValues.tours = list_tour;
         await helper_add_link.addLinkToursFeaturedImgOfListTours(item.dataValues.tours, host);
         if (item.featured_img === null) {
             // location.featured_img = host + '/assets/images/locationDefault/' + item.fk_type + '.jpg';

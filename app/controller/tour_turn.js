@@ -1,6 +1,6 @@
 const db = require('../models');
 const tour_turns = db.tour_turns;
-var Sequelize = require("sequelize");
+let Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const add_link = require('../helper/add_full_link');
 const validate_helper = require('../helper/validate');
@@ -44,19 +44,19 @@ const asyncFor = async (arr, cb) => {
 }
 
 const convertDiscountOfListTourTurn = async (tour_turns) => {
-    for (var i = 0; i < tour_turns.length; i++) {
+    for (let i = 0; i < tour_turns.length; i++) {
         tour_turns[i].discount = parseFloat(tour_turns[i].discount / 100);
     }
 }
 
 // const getNumReviewOfListTourTurn = async (tour_turns) => {
-//     for (var i = 0; i < tour_turns.length; i++) {
+//     for (let i = 0; i < tour_turns.length; i++) {
 //         tour_turns[i].tour.dataValues.num_review = (await db.reviews.findAll({ where: { fk_tour: tour_turns[i].tour.id } })).length
 //     }
 // }
 
 const convertDiscountAndGetNumReviewOfListTourTurn = async (tour_turns, isDataValues = true) => {
-    for (var i = 0; i < tour_turns.length; i++) {
+    for (let i = 0; i < tour_turns.length; i++) {
         tour_turns[i].discount = parseFloat(tour_turns[i].discount / 100);
         if (isDataValues)
             tour_turns[i].tour.dataValues.num_review = (await db.reviews.findAll({ where: { fk_tour: tour_turns[i].tour.id } })).length
@@ -188,7 +188,7 @@ exports.createWithPricePassenger = async (req, res) => {
                 || parseInt(req.body.booking_term) < 0 || parseInt(req.body.payment_term) < 0 //cả hai hạn đều phải là dương
                 || parseInt(req.body.booking_term) >= days_before_go) //booking_term phải nhỏ hơn thời gian từ giờ cho tới lúc khởi hành
                 return res.status(400).json({ msg: 'Booking term and payment term not match' })
-            var list_price_passenger;
+            let list_price_passenger;
             if (!Array.isArray(req.body.price_passenger)) {
                 return res.status(400).json({ msg: 'Wrong list price passenger' })
             }
@@ -312,7 +312,7 @@ exports.getByTour = (req, res) => {
 
 const addPriceOfListPricePassengers = async (_price_passengers, price, discount) => {
     return _price_passengers.map(price_passenger => {
-        var new_obj = {};
+        let new_obj = {};
         new_obj.type = price_passenger.type_passenger.name;
         new_obj.percent = price_passenger.percent;
         new_obj.price = parseFloat(parseInt(price_passenger.percent) / 100) * parseInt(price)
@@ -538,12 +538,12 @@ exports.getAll = (req, res) => { //update here
     try {
         const arr_sortBy = ['price', 'date', 'view', 'booking', 'rating'];
         const arr_sortType = ['ASC', 'DESC'] //ascending (tăng dần) //descending  (giảm dần)
-        var isUniqueTour = (req.query.isUniqueTour == 'true');
+        let isUniqueTour = (req.query.isUniqueTour == 'true');
         const page_default = 1;
         const per_page_default = 10;
-        var page, per_page;
-        var sortBy = req.query.sortBy;
-        var sortType = req.query.sortType;
+        let page, per_page;
+        let sortBy = req.query.sortBy;
+        let sortType = req.query.sortType;
         const isDiscount = (req.query.isDiscount == 'true');
         if (typeof req.query.page === 'undefined') page = page_default;
         else page = req.query.page
@@ -610,15 +610,17 @@ exports.getAll = (req, res) => { //update here
             }
             tour_turns.findAndCountAll(query).then(async _tour_turns => {
                 if (isUniqueTour) { //lấy unique
-                    var next_page = page + 1;
-                    var unique = {};
-                    var distinct = [];
+                    let next_page = page + 1;
+                    let unique = {};
+                    let distinct = [];
                     await asyncForEach(_tour_turns.rows, function (item) {
                         if (!unique[item.tour.id]) {
                             distinct.push(item);
                             unique[item.tour.id] = true;
                         }
                     });
+
+                    distinct = await checkPolicy_helper.remove_tour_cant_booking(distinct);
 
                     //phân trang
                     const result_paginate = await paginate(distinct, per_page, page)
@@ -643,12 +645,14 @@ exports.getAll = (req, res) => { //update here
                     })
                 }
                 else {
-                    var next_page = page + 1;
+                    let next_page = page + 1;
+                    let rs = await checkPolicy_helper.remove_tour_cant_booking(_tour_turns.rows);
+
                     //phân trang
-                    const result_paginate = await paginate(_tour_turns.rows, per_page, page)
+                    const result_paginate = await paginate(rs, per_page, page)
 
                     //Kiểm tra còn dữ liệu không
-                    if ((parseInt(result_paginate.length) + (next_page - 2) * per_page) === parseInt(_tour_turns.rows.length))
+                    if ((parseInt(result_paginate.length) + (next_page - 2) * per_page) === parseInt(rs.length))
                         next_page = -1
                     //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
                     if ((parseInt(result_paginate.length) < per_page))
@@ -661,7 +665,7 @@ exports.getAll = (req, res) => { //update here
                     result = result.map((node) => node.get({ plain: true }));
                     await checkPolicy_helper.add_is_allow_booking(result);
                     res.status(200).json({
-                        itemCount: _tour_turns.rows.length, //số lượng record được trả về
+                        itemCount: rs.length, //số lượng record được trả về
                         data: result,
                         next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                     })
@@ -963,8 +967,8 @@ exports.search = async (req, res) => {
         const price_search = req.query.price;
         const lasting_search = req.query.lasting;
         const rating_search = req.query.rating;
-        var sortBy = req.query.sortBy;
-        var sortType = req.query.sortType;
+        let sortBy = req.query.sortBy;
+        let sortType = req.query.sortType;
         if (typeof price_search !== 'undefined' && isNaN(parseInt(price_search)))
             return res.status(400).json({ msg: 'Wrong price to search' })
         if (typeof lasting_search !== 'undefined' && isNaN(parseInt(lasting_search)))
@@ -973,7 +977,7 @@ exports.search = async (req, res) => {
             return res.status(400).json({ msg: 'Wrong rating to search' })
         const page_default = 1;
         const per_page_default = 10;
-        var page, per_page;
+        let page, per_page;
         if (typeof req.query.page === 'undefined') page = page_default;
         else page = req.query.page
         if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
@@ -1065,7 +1069,7 @@ exports.search = async (req, res) => {
                 }
             }
             tour_turns.findAndCountAll(query).then(async _tour_turns => {
-                var next_page = page + 1;
+                let next_page = page + 1;
                 //Kiểm tra còn dữ liệu không
                 if ((parseInt(_tour_turns.rows.length) + (next_page - 2) * per_page) === parseInt(_tour_turns.count))
                     next_page = -1;
@@ -1101,8 +1105,8 @@ exports.search_v2 = async (req, res) => {
         const price_search = req.query.price;
         const lasting_search = req.query.lasting;
         let rating_search = req.query.rating;
-        var sortBy = req.query.sortBy;
-        var sortType = req.query.sortType;
+        let sortBy = req.query.sortBy;
+        let sortType = req.query.sortType;
         if (typeof price_search !== 'undefined' && isNaN(parseInt(price_search)))
             return res.status(400).json({ msg: 'Wrong price to search' })
         if (typeof lasting_search !== 'undefined' && isNaN(parseInt(lasting_search)))
@@ -1111,7 +1115,7 @@ exports.search_v2 = async (req, res) => {
             return res.status(400).json({ msg: 'Wrong rating to search' })
         const page_default = 1;
         const per_page_default = 10;
-        var page, per_page;
+        let page, per_page;
         if (typeof req.query.page === 'undefined') page = page_default;
         else page = req.query.page
         if (typeof req.query.per_page === 'undefined') per_page = per_page_default;
@@ -1176,8 +1180,8 @@ exports.search_v2 = async (req, res) => {
                                 }
                             ]
                         },
-                        limit: per_page,
-                        offset: (page - 1) * per_page
+                        // limit: per_page,
+                        // offset: (page - 1) * per_page
                     }
 
                     if (typeof price_search !== 'undefined') {
@@ -1226,20 +1230,28 @@ exports.search_v2 = async (req, res) => {
                         }
                     }
                     tour_turns.findAndCountAll(query_tour_turn).then(async _tour_turns => {
-                        var next_page = page + 1;
+                        let next_page = page + 1;
+                        let rs_all = await checkPolicy_helper.remove_tour_cant_booking(_tour_turns.rows);
+
+                        //phân trang
+                        const result_paginate = await paginate(rs_all, per_page, page)
+
                         //Kiểm tra còn dữ liệu không
-                        if ((parseInt(_tour_turns.rows.length) + (next_page - 2) * per_page) === parseInt(_tour_turns.count))
-                            next_page = -1;
+                        if ((parseInt(result_paginate.length) + (next_page - 2) * per_page) === parseInt(rs_all.length))
+                            next_page = -1
                         //Nếu số lượng record nhỏ hơn per_page  ==> không còn dữ liệu nữa => trả về -1 
-                        if ((parseInt(_tour_turns.rows.length) < per_page))
+                        if ((parseInt(result_paginate.length) < per_page))
                             next_page = -1;
-                        if (parseInt(_tour_turns.rows.length) === 0)
+                        if (parseInt(result_paginate.length) === 0)
                             next_page = -1;
-                        await add_link.addLinkToursFeaturedImgOfListTourTurns(_tour_turns.rows, req.headers.host)
-                        await convertDiscountAndGetNumReviewOfListTourTurn(_tour_turns.rows)
-                        return res.status(200).json({
-                            itemCount: _tour_turns.count, //số lượng record được trả về
-                            data: _tour_turns.rows,
+
+                        let result = await add_link.addLinkToursFeaturedImgOfListTourTurns(result_paginate, req.headers.host);
+                        await convertDiscountAndGetNumReviewOfListTourTurn(result);
+                        result = result.map((node) => node.get({ plain: true }));
+                        await checkPolicy_helper.add_is_allow_booking(result);
+                        res.status(200).json({
+                            itemCount: rs_all.length, //số lượng record được trả về
+                            data: result,
                             next_page: next_page //trang kế tiếp, nếu là -1 thì hết data rồi
                         })
                     }).catch(error => {
@@ -1345,8 +1357,8 @@ const addLocationsAroundLocations = async (locations, distance) => {
 }
 
 function uniques(arr) {
-    var a = [];
-    for (var i = 0, l = arr.length; i < l; i++)
+    let a = [];
+    for (let i = 0, l = arr.length; i < l; i++)
         if (a.indexOf(arr[i]) === -1 && arr[i] !== '')
             a.push(arr[i]);
     return a;
@@ -1361,8 +1373,8 @@ exports.getRecommendation = async (req, res) => {
         }
         else {
             const distance_default = 1; //kilometer
-            var isUniqueTour = (req.query.isUniqueTour == 'true');
-            var distance = req.body.distance;
+            let isUniqueTour = (req.query.isUniqueTour == 'true');
+            let distance = req.body.distance;
             if (typeof distance === 'undefined') distance = distance_default;
             distance = parseFloat(distance);
             if (distance) { //nó phải khác 0
@@ -1408,8 +1420,8 @@ exports.getRecommendation = async (req, res) => {
             db.tour_turns.findAll(query).then(async (_tour_turns) => {
                 const _tour_turns_filter = await filterTourTurnRecoment(_tour_turns);
                 if (isUniqueTour) { //lấy unique
-                    var unique = {};
-                    var distinct = [];
+                    let unique = {};
+                    let distinct = [];
                     await asyncForEach(_tour_turns_filter, function (item) {
                         if (!unique[item.tour.id]) {
                             distinct.push(item);
