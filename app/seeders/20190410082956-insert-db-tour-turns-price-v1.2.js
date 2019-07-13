@@ -41,8 +41,8 @@ module.exports = {
 				},
 				{
 					id: 35,
-					start_date: formatDate(33),
-					end_date: formatDate(37),
+					start_date: formatDate(43),
+					end_date: formatDate(47),
 					num_current_people: 0,
 					num_max_people: 30,
 					price: 17000000,
@@ -79,8 +79,8 @@ module.exports = {
 				},
 				{
 					id: 38,
-					start_date: formatDate(22),
-					end_date: formatDate(30),
+					start_date: formatDate(52),
+					end_date: formatDate(60),
 					num_current_people: 0,
 					num_max_people: 40,
 					price: 34000000,
