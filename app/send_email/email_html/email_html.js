@@ -2645,7 +2645,7 @@ const html_refunded_email = (linkTeam, cancel_booking) => {
 	const refunded_time_date = new Date(cancel_booking.refunded_time);
 	const refunded_time_string = helper.toStringDatetime(refunded_time_date);
 
-	const refund_person = JSON.parse(cancel_booking.book_tour_history.message_pay);
+	const refund_person = JSON.parse(cancel_booking.refund_message);
 
 	const refund_person_string = refund_person.name + ' - ' + refund_person.passport;
 
