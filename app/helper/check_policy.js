@@ -4,6 +4,8 @@ const check_policy_allow_booking = (tour_turn) => {
     //trước 3 ngày khởi hành thì mới được book
     if (tour_turn.status === arr_status_tour_turn[0]) // tour turn đang là private
         return false;
+    if (parseInt(tour_turn.num_current_people) >= parseInt(tour_turn.num_max_people))
+        return false;
     const cur_date = new Date();
     const timeDiff = new Date(tour_turn.start_date + ' 00:00:00 GMT+07:00') - cur_date;
     const days_before_go = parseInt(timeDiff / (1000 * 60 * 60 * 24) + 1) //số ngày còn lại trc khi đi;
@@ -16,7 +18,7 @@ const add_is_allow_booking = async (tour_turns, isRawObj = true) => {
         if (isRawObj)
             tour_turns[i].isAllowBooking = await check_policy_allow_booking(tour_turns[i]);
         else
-            tour_turns[i].dataValues.isAllowBooking = await check_policy_allow_booking(tour_turns[i]);
+            tour_turns[i].dataValues.isAllowBooking = await check_policy_allow_booking(tour_turns[i].dataValues);
     }
 }
 

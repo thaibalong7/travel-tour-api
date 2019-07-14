@@ -23,7 +23,7 @@ const addLinkLocationFeaturedImgOfListLocationsAndAddTour = async (_locations, h
                     }
                 },
                 {
-                    attributes: ['id', 'start_date', 'code', 'status', 'booking_term'],
+                    attributes: ['id', 'start_date', 'code', 'status', 'booking_term', 'num_current_people', 'num_max_people'],
                     model: db.tour_turns,
                     where: {
                         status: 'public',
