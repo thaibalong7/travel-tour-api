@@ -99,6 +99,16 @@ function notiBookingChange_Refunded(cancel_booking) { //nhận hoàn tiền
     }
 }
 
+async function test_emit_socket(req, res) {
+    io.sockets.emit('TEST_EMIT_SOCKET', {
+        content: "Socket works fine"
+    });
+    console.log('Emit socket TEST_EMIT_SOCKET');
+    return res.status(200).json({
+        msg: "Emit socket"
+    })
+}
+
 module.exports = {
     createSocketServer,
     notiBookingChange_BookNewTour,
@@ -107,6 +117,7 @@ module.exports = {
     notiBookingChange_CancelBookTourStatusBooked,
     notiBookingChange_ConfirmCancelBookTour,
     notiBookingChange_CancelBookTourOffline,
-    notiBookingChange_Refunded
+    notiBookingChange_Refunded,
+    test_emit_socket
 
 };

@@ -49,6 +49,7 @@ app.use('/', require('./app/router'))
 app.get('/', function (req, res) {
     res.send('Welcome to Passport with Sequelize');
 });
+app.use('/test_socket', require('./app/socket').test_emit_socket);
 
 app.use(express.static(__dirname + '/public')); //Serves resources from public folder
 
